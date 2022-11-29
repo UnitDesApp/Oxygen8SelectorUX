@@ -287,7 +287,20 @@ export default function UnitEdit({ unitType, productType }) {
   });
 
   const onSubmit = async () => {
-    const result = await dispatch(unitReducer.saveUnitInfo(getAllFormData()));
+    const data = {
+      ...getAllFormData(),
+      ddlHandingValue: controlInfo.ddlHandingValue,
+      ddlSupplyAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
+      ddlSupplyAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+      ddlExhaustAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
+      ddlExhaustAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+      ddlOutdoorAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
+      ddlOutdoorAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+      ddlReturnAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
+      ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+    }
+
+    const result = await dispatch(unitReducer.saveUnitInfo(data));
     setOpenSuccessNotification(true);
     navigate(PATH_UNIT.edit(jobId, result), {state});
   };

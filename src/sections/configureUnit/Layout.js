@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // @mui
-import { Box, Card, CardContent, CardActions, Container, Grid, Button, Stack, Snackbar, Alert } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Card, CardContent, Container, Grid, Stack, Snackbar, Alert } from '@mui/material';
 // form
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -13,7 +12,6 @@ import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from '../../redux/store';
 import * as unitReducer from '../../redux/slices/unitReducer';
 // components
-import Iconify from '../../components/Iconify';
 import Image from '../../components/Image';
 import { FormProvider, RHFSelect } from '../../components/hook-form';
 
@@ -27,7 +25,7 @@ export default function Layout({ productType, unitType }) {
   const dispatch = useDispatch();
   const { jobId, unitId } = useParams();
   const isEdit = unitId !== undefined;
-  const { controlInfo, unitInfo, visibleInfo } = useSelector((state) => state.unit);
+  const { controlInfo } = useSelector((state) => state.unit);
 
   const [ddlExhaustAirOpening, setddlExhaustAirOpening] = useState(['2', '2A']);
   const [ddlOutdoorAirOpening, setddlOutdoorAirOpening] = useState(['4', '4A']);
@@ -53,13 +51,13 @@ export default function Layout({ productType, unitType }) {
   const defaultValues = {
     ddlHandingID: 1,
     ddlSupplyAirOpeningID: 1,
-    ddlSupplyAirOpeningText: '1',
+    ddlSupplyAirOpeningText: controlInfo.ddlSupplyAirOpeningText,
     ddlExhaustAirOpeningID: 1,
-    ddlExhaustAirOpeningText: '2',
+    ddlExhaustAirOpeningText: controlInfo.ddlExhaustAirOpeningText,
     ddlOutdoorAirOpeningID: 1,
-    ddlOutdoorAirOpeningText:'4',
+    ddlOutdoorAirOpeningText: controlInfo.ddlOutdoorAirOpeningText,
     ddlReturnAirOpeningID: 1,
-    ddlReturnAirOpeningText: '3',
+    ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
     ddlPreheatCoilHanding: ddlPreheatCoilHandingValue,
     ddlCoolingCoilHanding: ddlCoolingCoilHandingValue,
     ddlHeatingCoilHanding: ddlHeatingCoilHandingValue,
@@ -70,12 +68,7 @@ export default function Layout({ productType, unitType }) {
     defaultValues,
   });
 
-  const {
-    reset,
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
+  const { reset, setValue, getValues, handleSubmit } = methods;
 
   const [successNotification, setOpenSuccessNotification] = React.useState(false);
 
@@ -132,6 +125,7 @@ export default function Layout({ productType, unitType }) {
     setddlExhaustAirOpening(['2', '2A']);
     setddlOutdoorAirOpening(['4', '4A']);
     setddlReturnAirOpening(['3', '3A']);
+    dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   const ddlSupplyAirOpeningChanged = (e) => {
@@ -155,21 +149,26 @@ export default function Layout({ productType, unitType }) {
       setddlOutdoorAirOpening(['4', '4A']);
       setddlReturnAirOpening(['3', '3A']);
     }
+
+    dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   const ddlExhaustAirOpeningChanged = (e) => {
     setValue('ddlExhaustAirOpeningID', e.target.value);
     setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   const ddlOutdoorAirOpeningChanged = (e) => {
     setValue('ddlOutdoorAirOpeningID', e.target.value);
     setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   const ddlReturnAirOpeningChanged = (e) => {
     setValue('ddlReturnAirOpeningID', e.target.value);
     setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   return (
@@ -178,16 +177,6 @@ export default function Layout({ productType, unitType }) {
         <Grid container>
           <Grid item xs={12} sm={6} md={4}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-              <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, mb: 3 }}>
-                <LoadingButton
-                  type="submit"
-                  startIcon={<Iconify icon={isEdit ? 'bx:save' : 'carbon:add'} />}
-                  variant="contained"
-                  loading={isSubmitting}
-                >
-                  {isEdit ? 'Save Changes' : 'Add Unit to Project'}
-                </LoadingButton>
-              </Stack>
               <Card>
                 <CardContent>
                   <Stack spacing={3}>
@@ -254,13 +243,6 @@ export default function Layout({ productType, unitType }) {
                     </RHFSelect>
                   </Stack>
                 </CardContent>
-                <CardActions sx={{ textAlign: 'right' }}>
-                  <Box sx={{ pl: '15px', pb: '15px' }}>
-                    <LoadingButton type="submit" startIcon={<Iconify icon={'bx:save'} />} loading={isSubmitting}>
-                      Save
-                    </LoadingButton>
-                  </Box>
-                </CardActions>
               </Card>
             </FormProvider>
           </Grid>
@@ -269,7 +251,6 @@ export default function Layout({ productType, unitType }) {
           </Grid>
         </Grid>
       </Card>
-      .
       <Snackbar open={successNotification} autoHideDuration={6000} onClose={handleSuccessNotificationClose}>
         <Alert onClose={handleSuccessNotificationClose} severity="success" sx={{ width: '100%' }}>
           {isEdit ? 'Unit update successful!!!' : 'Unit was successfully added!!!'}

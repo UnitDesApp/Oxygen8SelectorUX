@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // utils
 // import axios from '../../utils/axios';
 // store
-import { dispatch } from '../store';
+import { dispatch, useSelector } from '../store';
 // utils
 import axios from '../../utils/axios';
 // config
@@ -125,6 +125,15 @@ const UnitSlice = createSlice({
         divNotesVisible: visibleInfo.divNotesVisible,
         divUnitOpeningsMsgVisible: visibleInfo.divUnitOpeningsMsgVisible,
         div_hx_fp_hiddenVisible: visibleInfo.div_hx_fp_hiddenVisible,
+        ddlHandingID: unitInfo.HandingID,
+        ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
+        ddlSupplyAirOpeningValue: unitInfo.ddlSupplyAirOpeningValue,
+        ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
+        ddlExhaustAirOpeningValue: unitInfo.ddlExhaustAirOpeningValue,
+        ddlOutdoorAirOpeningText:unitInfo.ddlOutdoorAirOpeningText,
+        ddlOutdoorAirOpeningValue: unitInfo.ddlOutdoorAirOpeningValue,
+        ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
+        ddlReturnAirOpeningValue: unitInfo.ddlReturnAirOpeningValue,
       };
       state.unitInfo = unitInfo;
       state.isLoading = false;
@@ -357,6 +366,15 @@ const UnitSlice = createSlice({
         // heatingElectricHeater: data.outputHeatingElecHeater.gvOutHeatElecHeaterDataSource,
         // heatingElectricHeaterVisible: data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
       }
+    },
+    updateLayoutValues(state, action) {
+      state.controlInfo = {
+        ...state.controlInfo,
+        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
+        ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
+        ddlOutdoorAirOpeningText:action.payload.ddlOutdoorAirOpeningText,
+        ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
+      }
     }
   },
 });
@@ -580,6 +598,12 @@ export function getViewSelectionInfo(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
     return response.data;
+  }
+}
+
+export function updateLayoutValues(data) {
+  return async () => {
+    dispatch(UnitSlice.actions.updateLayoutValues(data));
   }
 }
 // ----------------------------------------------------------------------
