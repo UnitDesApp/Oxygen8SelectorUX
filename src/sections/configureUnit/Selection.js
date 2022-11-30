@@ -92,80 +92,105 @@ export default function Selection() {
     );
   }, [dispatch, jobId, unitId, state, preheatElectricHeater]);
 
-  console.log(viewSelectionInfo);
+  console.log(electricalRequirements);
 
-  const SelectionInfo = JSON.stringify(viewSelectionInfo) !== '{}' ? [
-    {
-      groupName: 'Pricing',
-      subGroups: [
-        {
-          title: 'Pricing Detail',
-          data: pricingDetail.map((item) => [item.cLabel, item.cValue, item.cNotes]),
-          visible: performanceVisible,
-        },
-      ],
-    },
-    {
-      groupName: 'Summary',
-      subGroups: [
-        {
-          title: 'Unit Details',
-          data: unitDetails?.map((item) => [item.cLabel, item.cValue]),
-          visible: unitDetailsVisible,
-        },
-      ],
-    },
-    {
-      groupName: 'Electrical Requirements',
-      subGroups: [
-        {
-          title: 'Unit',
-          data: electricalRequirements.unitData.map((item) => [item.cLabel, item.cValue]),
-          visible: electricalRequirements.unitDataVisible,
-        },
-        {
-          title: 'Preheat Electric Heater',
-          data: electricalRequirements.preheatData.map((item) => [item.cLabel, item.cValue]),
-          visible: electricalRequirements.preheatDataVisible,
-        },
-        {
-          title: 'Heating Electric Heater',
-          data: electricalRequirements.heatingData?.map((item) => [item.cLabel, item.cValue]),
-          visible: electricalRequirements.heatingDataVisible,
-        },
-      ],
-    },
-    {
-      groupName: 'Electric Preheat',
-      subGroups: [
-        {
-          title: 'Actual',
-          data: electricPreheat.map((item) => [item.cLabel, item.cValue]),
-          visible: electricPreheatVisible,
-        },
-      ],
-    },
-    {
-      groupName: 'Heat Exchanger',
-      subGroups: [
-        {
-          title: 'Design Conditions',
-          data: heatExchanger.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-          visible: heatExchanger.designConditionsVisible,
-        },
-        {
-          title: 'Performance Leaving Air',
-          data: heatExchanger.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-          visible: heatExchanger.performanceLeavingAirVisible,
-        },
-        {
-          title: 'Performance',
-          data: heatExchanger.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-          visible: heatExchanger.performanceVisible,
-        },
-      ],
-    },
-  ] : [];
+  const SelectionInfo =
+    JSON.stringify(viewSelectionInfo) !== '{}'
+      ? [
+          {
+            groupName: 'Pricing',
+            direction: 'column',
+            style: {},
+            subGroups: [
+              {
+                title: 'Pricing Detail',
+                data: pricingDetail.map((item) => [item.cLabel, item.cValue, item.cNotes]),
+                visible: performanceVisible,
+              },
+            ],
+          },
+          {
+            groupName: 'Summary',
+            direction: 'column',
+            style: {},
+            subGroups: [
+              {
+                title: 'Unit Details',
+                data: unitDetails?.map((item) => [item.cLabel, item.cValue]),
+                visible: unitDetailsVisible,
+              },
+            ],
+          },
+          {
+            groupName: 'Electrical Requirements',
+            direction: 'row',
+            style: {},
+            subGroups: [
+              {
+                title: 'Unit',
+                data: electricalRequirements.unitData.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.unitDataVisible,
+              },
+              {
+                title: 'W-controller',
+                data: electricalRequirements.unitData.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.unitDataVisible,
+              },
+              {
+                title: 'Preheat Electric Heater',
+                data: electricalRequirements.preheatData.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.preheatDataVisible,
+              },
+              {
+                title: 'Heating Electric Heater',
+                data: electricalRequirements.heatingData?.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.heatingDataVisible,
+              },
+            ],
+          },
+          {
+            groupName: 'Electric Preheat',
+            direction: 'column',
+            style: {},
+            subGroups: [
+              {
+                title: 'Actual',
+                data: electricPreheat.map((item) => [item.cLabel, item.cValue]),
+                visible: electricPreheatVisible,
+              },
+            ],
+          },
+          {
+            groupName: 'Heat Exchanger',
+            direction: 'row',
+            style: {
+              // display: 'grid',
+              // gridTemplateColumns: {
+              //   xs: 'repeat(1, 1fr)',
+              //   sm: 'repeat(2, 1fr)',
+              //   md: 'repeat(2, 1fr)',
+              // },
+            },
+            subGroups: [
+              {
+                title: 'Design Conditions',
+                data: heatExchanger.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                visible: heatExchanger.designConditionsVisible,
+              },
+              {
+                title: 'Performance Leaving Air',
+                data: heatExchanger.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                visible: heatExchanger.performanceLeavingAirVisible,
+              },
+              {
+                title: 'Performance',
+                data: heatExchanger.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                visible: heatExchanger.performanceVisible,
+              },
+            ],
+          },
+        ]
+      : [];
 
   const methods = useForm();
 
@@ -186,7 +211,16 @@ export default function Selection() {
                   sx={{ color: 'white' }}
                 />
               </GroupHeaderStyle>
-              <Stack spacing={3} sx={{ background: '#efefef' }}>
+              <Stack
+                direction={item.direction}
+                alignItems="stretch"
+                justifyContent="center"
+                spacing={3}
+                sx={{
+                  ...item.style,
+                  background: '#efefef',
+                }}
+              >
                 {item.subGroups.map((element, index) => (
                   <Card
                     key={element.title + index}
