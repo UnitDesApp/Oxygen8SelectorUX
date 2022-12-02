@@ -18,7 +18,7 @@ const initialState = {
   controlInfo: {},
   unitInfo: {},
   visibleInfo: {},
-  viewSelectionInfo: {}
+  viewSelectionInfo: {},
 };
 
 const UnitSlice = createSlice({
@@ -125,17 +125,20 @@ const UnitSlice = createSlice({
         divNotesVisible: visibleInfo.divNotesVisible,
         divUnitOpeningsMsgVisible: visibleInfo.divUnitOpeningsMsgVisible,
         div_hx_fp_hiddenVisible: visibleInfo.div_hx_fp_hiddenVisible,
-        ddlHandingID: unitInfo.HandingID,
-        ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
-        ddlSupplyAirOpeningValue: unitInfo.ddlSupplyAirOpeningValue,
-        ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
-        ddlExhaustAirOpeningValue: unitInfo.ddlExhaustAirOpeningValue,
-        ddlOutdoorAirOpeningText:unitInfo.ddlOutdoorAirOpeningText,
-        ddlOutdoorAirOpeningValue: unitInfo.ddlOutdoorAirOpeningValue,
-        ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
-        ddlReturnAirOpeningValue: unitInfo.ddlReturnAirOpeningValue,
+        ddlHanding: controlInfo.ddlHanding,
       };
-      state.unitInfo = unitInfo;
+      state.unitInfo = {
+        ...unitInfo,
+        ddlHandingValue: unitInfo.isLayout && unitInfo.ddlHandingValue !== 0 ? unitInfo.ddlHandingValue : 1,
+        ddlSupplyAirOpeningValue: unitInfo.isLayou && unitInfo.ddlSupplyAirOpeningValue !== 0 ? unitInfo.ddlSupplyAirOpeningValue : 1,
+        ddlSupplyAirOpeningText: unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningText !== '' ? unitInfo.ddlSupplyAirOpeningText : '1',
+        ddlExhaustAirOpeningValue: unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningValue !== 0 ? unitInfo.ddlExhaustAirOpeningValue : 1,
+        ddlExhaustAirOpeningText: unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningText !== '' ? unitInfo.ddlExhaustAirOpeningText : '2',
+        ddlOutdoorAirOpeningValue: unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningValue !== 0 ? unitInfo.ddlOutdoorAirOpeningValue : 1,
+        ddlOutdoorAirOpeningText: unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningText !== '' ? unitInfo.ddlOutdoorAirOpeningText : '4',
+        ddlReturnAirOpeningValue: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningValue !== 0 ? unitInfo.ddlReturnAirOpeningValue : 1,
+        ddlReturnAirOpeningText: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText: '3',
+      };
       state.isLoading = false;
     },
     ddlLocationChanged(state, actions) {
@@ -249,9 +252,9 @@ const UnitSlice = createSlice({
         lblPreheatWarningText: data.preheatInfomation.lblPreheatWarningText,
         lblPreheatWarningVisible: data.preheatInfomation.lblPreheatWarningVisible,
         valveAndActuator: data.valveAndActuator,
-        divPreheatSetpointVisible: data.isAUHID? data.divPreheatSetpointVisible: false,
-        divSetpointsVisible: data.isAUHID? data.divSetpointsVisible: false,
-      }
+        divPreheatSetpointVisible: data.isAUHID ? data.divPreheatSetpointVisible : false,
+        divSetpointsVisible: data.isAUHID ? data.divSetpointsVisible : false,
+      };
     },
     ddlCoolingCompChanged(state, actions) {
       const data = actions.payload;
@@ -269,7 +272,7 @@ const UnitSlice = createSlice({
         reheatSetpoints: data.reheatSetpoints,
         divSetpointsVisible: data.divSetpointsVisible,
         customInputs: data.customInputs,
-      }
+      };
     },
     ddlHeatingCompChanged(state, actions) {
       const data = actions.payload;
@@ -281,7 +284,7 @@ const UnitSlice = createSlice({
         divHeatingSetpointVisible: data.divHeatingSetpointVisible,
         divSetpointsVisible: data.divSetpointsVisible,
         customInputs: data.customInputs,
-      }
+      };
     },
     ddlUnitVoltageChanged(state, actions) {
       state.controlInfo = {
@@ -292,50 +295,50 @@ const UnitSlice = createSlice({
     txbSummerOutdoorAirWBChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
-        txbSummerOutdoorAirRH: actions.payload
-      }
+        txbSummerOutdoorAirRH: actions.payload,
+      };
     },
     txbSummerOutdoorAirRHChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
-        txbSummerOutdoorAirWB: actions.payload
-      }
+        txbSummerOutdoorAirWB: actions.payload,
+      };
     },
     txbWinterOutdoorAirWBChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
         txbWinterOutdoorAirRH: actions.payload,
-      }
+      };
     },
     txbWinterOutdoorAirRHChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
         txbWinterOutdoorAirWB: actions.payload,
-      }
+      };
     },
     txbSummerReturnAirWBChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
-        txbSummerReturnAirRH: actions.payload
-      }
+        txbSummerReturnAirRH: actions.payload,
+      };
     },
     txbSummerReturnAirRHChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
-        txbSummerReturnAirWB: actions.payload
-      }
+        txbSummerReturnAirWB: actions.payload,
+      };
     },
     txbWinterReturnAirWBChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
-        txbWinterReturnAirRH: actions.payload
-      }
+        txbWinterReturnAirRH: actions.payload,
+      };
     },
     txbWinterReturnAirRHChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
-        txbWinterReturnAirWB: actions.payload
-      }
+        txbWinterReturnAirWB: actions.payload,
+      };
     },
     getViewSelectionInfo(state, actions) {
       state.isLoading = false;
@@ -343,7 +346,9 @@ const UnitSlice = createSlice({
       state.viewSelectionInfo = {
         pricingDetail: data.outputPricing.gvPricingDataSource,
         performanceVisible: data.outputPricing.divPricingVisible,
-        unitDetails: data.outputUnitDetails.gvOutUnitDetails_1DataSource.concat(data.outputUnitDetails.gvOutUnitDetails_2DataSource),
+        unitDetails: data.outputUnitDetails.gvOutUnitDetails_1DataSource.concat(
+          data.outputUnitDetails.gvOutUnitDetails_2DataSource
+        ),
         unitDetailsVisible: data.outputUnitDetails.divOutUnitDetailsVisible,
         electricalRequirements: {
           unitData: data.outputElecReq.gvOutElecReqUnitDataDataSource,
@@ -365,17 +370,22 @@ const UnitSlice = createSlice({
         },
         // heatingElectricHeater: data.outputHeatingElecHeater.gvOutHeatElecHeaterDataSource,
         // heatingElectricHeaterVisible: data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
-      }
+      };
     },
     updateLayoutValues(state, action) {
-      state.controlInfo = {
-        ...state.controlInfo,
+      state.unitInfo = {
+        ...state.unitInfo,
+        ddlHandingValue: action.payload.ddlHandingID,
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
+        ddlSupplyAirOpeningValue: action.payload.ddlSupplyAirOpeningValue,
         ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlOutdoorAirOpeningText:action.payload.ddlOutdoorAirOpeningText,
+        ddlExhaustAirOpeningValue: action.payload.ddlExhaustAirOpeningValue,
+        ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
+        ddlOutdoorAirOpeningValue: action.payload.ddlOutdoorAirOpeningValue,
         ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
-      }
-    }
+        ddlReturnAirOpeningValue: action.payload.ddlReturnAirOpeningValue,
+      };
+    },
   },
 });
 
@@ -487,7 +497,7 @@ export function ddlUnitVoltageChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlUnitVoltageChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbSummerOutdoorAirWBChanged(data) {
@@ -496,9 +506,8 @@ export function txbSummerOutdoorAirWBChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerOutdoorAirWBChanged(response.data));
     return response.data;
-  }
+  };
 }
-
 
 export function txbSummerOutdoorAirRHChanged(data) {
   return async () => {
@@ -506,7 +515,7 @@ export function txbSummerOutdoorAirRHChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerOutdoorAirRHChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbWinterOutdoorAirWBChanged(data) {
@@ -515,7 +524,7 @@ export function txbWinterOutdoorAirWBChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterOutdoorAirWBChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbWinterOutdoorAirRHChanged(data) {
@@ -524,7 +533,7 @@ export function txbWinterOutdoorAirRHChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterOutdoorAirRHChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbSummerReturnAirWBChanged(data) {
@@ -533,7 +542,7 @@ export function txbSummerReturnAirWBChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerReturnAirWBChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbSummerReturnAirRHChanged(data) {
@@ -543,7 +552,7 @@ export function txbSummerReturnAirRHChanged(data) {
     console.log(UnitSlice.actions);
     dispatch(UnitSlice.actions.txbSummerReturnAirRHChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbWinterReturnAirWBChanged(data) {
@@ -552,7 +561,7 @@ export function txbWinterReturnAirWBChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterReturnAirWBChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function txbWinterReturnAirRHChanged(data) {
@@ -561,7 +570,7 @@ export function txbWinterReturnAirRHChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterReturnAirRHChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function ddlPreheatCompChanged(data) {
@@ -570,7 +579,7 @@ export function ddlPreheatCompChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlPreheatCompChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function ddlCoolingCompChanged(data) {
@@ -579,7 +588,7 @@ export function ddlCoolingCompChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlCoolingCompChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function ddlHeatingCompChanged(data) {
@@ -588,23 +597,23 @@ export function ddlHeatingCompChanged(data) {
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
     return response.data;
-  }
+  };
 }
 
 export function getViewSelectionInfo(data) {
-  return async () => {    
+  return async () => {
     dispatch(UnitSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/units/ViewSelection`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
     return response.data;
-  }
+  };
 }
 
 export function updateLayoutValues(data) {
   return async () => {
     dispatch(UnitSlice.actions.updateLayoutValues(data));
-  }
+  };
 }
 // ----------------------------------------------------------------------
 // console.log(data);

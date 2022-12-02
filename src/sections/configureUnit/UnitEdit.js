@@ -236,15 +236,15 @@ export default function UnitEdit({ unitType, productType }) {
     txbUnitLengthText: isEdit ? unitInfo.txbUnitLengthText : 0,
     txbUnitWeightText: isEdit ? unitInfo.txbUnitWeightText : 0,
     txbUnitWidthText: isEdit ? unitInfo.txbUnitWidthText : 0,
-    ddlHandingValue: isEdit && unitInfo.isLayout ? unitInfo.ddlHandingValue : 1,
-    ddlSupplyAirOpeningValue: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningValue : 1,
-    ddlSupplyAirOpeningText: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningText : '1',
-    ddlExhaustAirOpeningValue: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningValue : 1,
-    ddlExhaustAirOpeningText: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningText : '2',
-    ddlOutdoorAirOpeningValue: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningValue : 1,
-    ddlOutdoorAirOpeningText: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningText : '4',
-    ddlReturnAirOpeningValue: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningValue : 1,
-    ddlReturnAirOpeningText: isEdit && unitInfo.isLayout ? unitInfo.ddlReturnAirOpeningText : '3',
+    ddlHandingID: unitInfo.ddlHandingValue,
+    ddlSupplyAirOpeningValue:unitInfo.ddlSupplyAirOpeningValue,
+    ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
+    ddlExhaustAirOpeningValue: unitInfo.ddlExhaustAirOpeningValue,
+    ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
+    ddlOutdoorAirOpeningValue: unitInfo.ddlOutdoorAirOpeningValue,
+    ddlOutdoorAirOpeningText: unitInfo.ddlOutdoorAirOpeningText,
+    ddlReturnAirOpeningValue: unitInfo.ddlReturnAirOpeningValue,
+    ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
   };
 
   const methods = useForm({
@@ -291,16 +291,19 @@ export default function UnitEdit({ unitType, productType }) {
   const onSubmit = async () => {
     const data = {
       ...getAllFormData(),
-      ddlHandingValue: controlInfo.ddlHandingValue,
-      ddlSupplyAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
-      ddlSupplyAirOpeningText: controlInfo.ddlReturnAirOpeningText,
-      ddlExhaustAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
-      ddlExhaustAirOpeningText: controlInfo.ddlReturnAirOpeningText,
-      ddlOutdoorAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
-      ddlOutdoorAirOpeningText: controlInfo.ddlReturnAirOpeningText,
-      ddlReturnAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
-      ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+      ddlHandingID: unitInfo.ddlHandingValue,
+      ddlSupplyAirOpeningValue: unitInfo.ddlSupplyAirOpeningValue,
+      ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
+      ddlExhaustAirOpeningValue: unitInfo.ddlExhaustAirOpeningValue,
+      ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
+      ddlOutdoorAirOpeningValue: unitInfo.ddlOutdoorAirOpeningValue,
+      ddlOutdoorAirOpeningText: unitInfo.ddlOutdoorAirOpeningText,
+      ddlReturnAirOpeningValue: unitInfo.ddlReturnAirOpeningValue,
+      ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
     };
+
+    console.log("=================================================");
+    console.log(data);
 
     const result = await dispatch(unitReducer.saveUnitInfo(data));
     setOpenSuccessNotification(true);
@@ -656,7 +659,7 @@ export default function UnitEdit({ unitType, productType }) {
                       <RHFTextField
                         size="small"
                         name="txbSupplyAirESP"
-                        label="Supply Air (ERC)"
+                        label="Supply Air ESP (inH2O)"
                         onBlur={txbSupplyAirESPChanged}
                         onChange={(e) => {
                           setValuewithCheck(e, 'txbSupplyAirESP');
@@ -665,7 +668,7 @@ export default function UnitEdit({ unitType, productType }) {
                       <RHFTextField
                         size="small"
                         name="txbExhaustAirESP"
-                        label="Supply Air (DVG)"
+                        label="Supply Air ESP(inH2O)"
                         sx={getDisplay(divExhaustAirESPVisible)}
                         onBlur={txbExhaustAirESPChanged}
                         onChange={(e) => {
@@ -1142,52 +1145,47 @@ export default function UnitEdit({ unitType, productType }) {
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                     <RHFTextField
                       size="small"
-                      name="txbWinterPreheatSetpointDB"
-                      label="Winter Preheat Setpoint DB (F):"
+                      name="txbCoolingSetpointDB"
+                      label="Cooling LAT Setpoint DB (F):"
                       autoComplete="off"
+//                      sx={getDisplay(divPreheatSetpointVisible)}
                       onChange={(e) => {
-                        setValuewithCheck(e, 'txbWinterPreheatSetpointDB');
+                        setValuewithCheck(e, 'txbCoolingSetpointDB');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbSummerCoolingSetpointDB"
-                      label="Summer Cooling Setpoint DB (F):"
+                      name="txbCoolingSetpointWB"
+                      label="Cooling LAT Setpoint WB (F):"
                       autoComplete="off"
+//                      sx={getDisplay(divPreheatSetpointVisible)}
                       onChange={(e) => {
-                        setValuewithCheck(e, 'txbSummerCoolingSetpointDB');
+                        setValuewithCheck(e, 'txbCoolingSetpointWB');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbSummerCoolingSetpointWB"
-                      label="Summer Cooling Setpoint WB (F):"
+                      name="txbHeatingSetpointDB"
+                      label="Heating LAT Setpoint DB (F):"
                       autoComplete="off"
+//                      sx={getDisplay(divPreheatSetpointVisible)}
                       onChange={(e) => {
-                        setValuewithCheck(e, 'txbSummerCoolingSetpointWB');
+                        setValuewithCheck(e, 'txbHeatingSetpointDB');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbWinterHeatingSetpointDB"
-                      label="Winter Heating Setpoint DB (F):"
+                      name="txbReheatSetpointDB"
+                      label="Dehum. Reheat Setpoint DB (F):"
                       autoComplete="off"
+//                      sx={getDisplay(divPreheatSetpointVisible)}
                       onChange={(e) => {
-                        setValuewithCheck(e, 'txbWinterHeatingSetpointDB');
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbSummerReheatSetpointDB"
-                      label="Summer Reheat Setpoint DB (F):"
-                      autoComplete="off"
-                      onChange={(e) => {
-                        setValuewithCheck(e, 'txbSummerReheatSetpointDB');
+                        setValuewithCheck(e, 'txbReheatSetpointDB');
                       }}
                     />
                   </Box>
                 </Box>
-                <Box sx={{ display: 'grid', rowGap: 3, columnGap: 1 }}>
+                {/* <Box sx={{ display: 'grid', rowGap: 3, columnGap: 1 }}>
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                     <RHFTextField
                       size="small"
@@ -1366,7 +1364,7 @@ export default function UnitEdit({ unitType, productType }) {
                       }}
                     />
                   </Box>
-                </Box>
+                </Box> */}
               </CardContent>
             </Card>
             <Card sx={{ ...getDisplay(cooling.divCoolingFluidDesignConditionsVisible), mb: 3 }}>

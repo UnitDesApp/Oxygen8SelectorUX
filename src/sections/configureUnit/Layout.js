@@ -25,23 +25,25 @@ export default function Layout({ productType, unitType }) {
   const dispatch = useDispatch();
   const { jobId, unitId } = useParams();
   const isEdit = unitId !== undefined;
-  const { controlInfo } = useSelector((state) => state.unit);
+  const { controlInfo, unitInfo } = useSelector((state) => state.unit);
+
+  console.log(unitInfo);
 
   const [ddlExhaustAirOpening, setddlExhaustAirOpening] = useState(['2', '2A']);
   const [ddlOutdoorAirOpening, setddlOutdoorAirOpening] = useState(['4', '4A']);
   const [ddlReturnAirOpening, setddlReturnAirOpening] = useState(['3', '3A']);
 
-  const { ddlCoolingCoilHandingValue, ddlHeatingCoilHandingValue, ddlPreheatCoilHandingValue } = controlInfo;
+  const { ddlCoolingCoilHandingValue, ddlHeatingCoilHandingValue, ddlPreheatCoilHandingValue } = unitInfo;
 
   const layoutSchema = Yup.object().shape({
     ddlHandingID: Yup.number().required('This field is required!'),
-    ddlSupplyAirOpeningID: Yup.number().required('This field is required!'),
+    ddlSupplyAirOpeningValue: Yup.number().required('This field is required!'),
     ddlSupplyAirOpeningText: Yup.string(),
-    ddlExhaustAirOpeningID: Yup.number().required('This field is required!'),
+    ddlExhaustAirOpeningValue: Yup.number().required('This field is required!'),
     ddlExhaustAirOpeningText: Yup.string(),
-    ddlOutdoorAirOpeningID: Yup.number().required('This field is required!'),
+    ddlOutdoorAirOpeningValue: Yup.number().required('This field is required!'),
     ddlOutdoorAirOpeningText: Yup.string(),
-    ddlReturnAirOpeningID: Yup.number().required('This field is required!'),
+    ddlReturnAirOpeningValue: Yup.number().required('This field is required!'),
     ddlReturnAirOpeningText: Yup.string(),
     ddlPreheatCoilHanding: Yup.number(),
     ddlCoolingCoilHanding: Yup.number(),
@@ -49,19 +51,21 @@ export default function Layout({ productType, unitType }) {
   });
 
   const defaultValues = {
-    ddlHandingID: 1,
-    ddlSupplyAirOpeningID: 1,
-    ddlSupplyAirOpeningText: controlInfo.ddlSupplyAirOpeningText,
-    ddlExhaustAirOpeningID: 1,
-    ddlExhaustAirOpeningText: controlInfo.ddlExhaustAirOpeningText,
-    ddlOutdoorAirOpeningID: 1,
-    ddlOutdoorAirOpeningText: controlInfo.ddlOutdoorAirOpeningText,
-    ddlReturnAirOpeningID: 1,
-    ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+    ddlHandingID: unitInfo.ddlHandingValue,
+    ddlSupplyAirOpeningValue: unitInfo.ddlSupplyAirOpeningValue,
+    ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
+    ddlExhaustAirOpeningValue:unitInfo.ddlExhaustAirOpeningValue,
+    ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
+    ddlOutdoorAirOpeningValue:unitInfo.ddlOutdoorAirOpeningValue,
+    ddlOutdoorAirOpeningText: unitInfo.ddlOutdoorAirOpeningText,
+    ddlReturnAirOpeningValue: unitInfo.ddlReturnAirOpeningValue,
+    ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
     ddlPreheatCoilHanding: ddlPreheatCoilHandingValue,
     ddlCoolingCoilHanding: ddlCoolingCoilHandingValue,
     ddlHeatingCoilHanding: ddlHeatingCoilHandingValue,
   };
+
+  console.log(defaultValues);
 
   const methods = useForm({
     resolver: yupResolver(layoutSchema),
@@ -113,14 +117,14 @@ export default function Layout({ productType, unitType }) {
   };
 
   const ddlHandingChanged = (e) => {
-    setValue('ddlHandingID', e.target.value);
-    setValue('ddlSupplyAirOpeningID', 1);
+    setValue('ddlHandingID', parseInt(e.target.value, 10));
+    setValue('ddlSupplyAirOpeningValue', 1);
     setValue('ddlSupplyAirOpeningText', '1');
-    setValue('ddlExhaustAirOpeningID', 1);
+    setValue('ddlExhaustAirOpeningValue', 1);
     setValue('ddlExhaustAirOpeningText', '2');
-    setValue('ddlOutdoorAirOpeningID', 1);
+    setValue('ddlOutdoorAirOpeningValue', 1);
     setValue('ddlOutdoorAirOpeningText', '4');
-    setValue('ddlReturnAirOpeningID', 1);
+    setValue('ddlReturnAirOpeningValue', 1);
     setValue('ddlReturnAirOpeningText', '3');
     setddlExhaustAirOpening(['2', '2A']);
     setddlOutdoorAirOpening(['4', '4A']);
@@ -129,11 +133,11 @@ export default function Layout({ productType, unitType }) {
   };
 
   const ddlSupplyAirOpeningChanged = (e) => {
-    setValue('ddlSupplyAirOpeningID', e.target.value);
+    setValue('ddlSupplyAirOpeningValue', parseInt(e.target.value, 10));
     setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
-    setValue('ddlExhaustAirOpeningID', 1);
-    setValue('ddlOutdoorAirOpeningID', 1);
-    setValue('ddlReturnAirOpeningID', 1);
+    setValue('ddlExhaustAirOpeningValue', 1);
+    setValue('ddlOutdoorAirOpeningValue', 1);
+    setValue('ddlReturnAirOpeningValue', 1);
     if (e.target.selectedIndex === 2 || e.target.selectedIndex === 3) {
       setValue('ddlExhaustAirOpeningText', '1');
       setValue('ddlOutdoorAirOpeningText', '3');
@@ -154,19 +158,19 @@ export default function Layout({ productType, unitType }) {
   };
 
   const ddlExhaustAirOpeningChanged = (e) => {
-    setValue('ddlExhaustAirOpeningID', e.target.value);
+    setValue('ddlExhaustAirOpeningValue', parseInt(e.target.value, 10));
     setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
     dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   const ddlOutdoorAirOpeningChanged = (e) => {
-    setValue('ddlOutdoorAirOpeningID', e.target.value);
+    setValue('ddlOutdoorAirOpeningValue', parseInt(e.target.value, 10));
     setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
     dispatch(unitReducer.updateLayoutValues(getValues()));
   };
 
   const ddlReturnAirOpeningChanged = (e) => {
-    setValue('ddlReturnAirOpeningID', e.target.value);
+    setValue('ddlReturnAirOpeningValue', parseInt(e.target.value, 10));
     setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
     dispatch(unitReducer.updateLayoutValues(getValues()));
   };
@@ -185,14 +189,18 @@ export default function Layout({ productType, unitType }) {
                       name="ddlHandingID"
                       label="Handling"
                       placeholder=""
+                      value={getValues('ddlHandingID')}
                       onChange={ddlHandingChanged}
                     >
-                      <option value="1">Left</option>
-                      <option value="2">Right</option>
+                      {controlInfo.ddlHanding.map((item, index) => (
+                        <option key={index} value={item.id}>
+                          {item.items}
+                        </option>
+                      ))}
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlSupplyAirOpeningID"
+                      name="ddlSupplyAirOpeningValue"
                       label="Supply Air Opening"
                       placeholder=""
                       onChange={ddlSupplyAirOpeningChanged}
@@ -204,7 +212,7 @@ export default function Layout({ productType, unitType }) {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlExhaustAirOpeningID"
+                      name="ddlExhaustAirOpeningValue"
                       label="Exhaust Air Opening"
                       placeholder=""
                       onChange={ddlExhaustAirOpeningChanged}
@@ -217,7 +225,7 @@ export default function Layout({ productType, unitType }) {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlOutdoorAirOpeningID"
+                      name="ddlOutdoorAirOpeningValue"
                       label="Outdoor Air Opening"
                       placeholder=""
                       onChange={ddlOutdoorAirOpeningChanged}
@@ -230,7 +238,7 @@ export default function Layout({ productType, unitType }) {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlReturnAirOpeningID"
+                      name="ddlReturnAirOpeningValue"
                       label="Return Air Opening"
                       placeholder=""
                       onChange={ddlReturnAirOpeningChanged}

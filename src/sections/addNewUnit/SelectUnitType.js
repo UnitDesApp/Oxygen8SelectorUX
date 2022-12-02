@@ -49,23 +49,23 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   paddingTop: '100px',
 }));
 
-SelectModel.propTypes = {
-  modelData: PropTypes.object,
+SelectUnitType.propTypes = {
+  unitTypeData: PropTypes.object,
   currentProductTypeId: PropTypes.number,
   onSelectItem: PropTypes.func,
 };
-export default function SelectModel({ modelData, currentProductTypeId, onSelectItem }) {
+export default function SelectUnitType({ unitTypeData, currentProductTypeId, onSelectItem }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedId, setselctedId] = useState(-1);
 
-  const displayedModelInfo = [];
+  const displayedUnitTypeInfo = [];
 
-  modelData.productTypeUnitTypeLink.forEach((item) => {
+  unitTypeData.productTypeUnitTypeLink.forEach((item) => {
     if (item.product_type_id === currentProductTypeId) {
-      modelData.unitType.forEach((unit) => {
+      unitTypeData.unitType.forEach((unit) => {
         if (item.unit_type === unit.dwg_code) {
-          displayedModelInfo.push({ id: unit.id, items: unit.items });
+          displayedUnitTypeInfo.push({ id: unit.id, items: unit.items });
         }
       });
     }
@@ -86,7 +86,7 @@ export default function SelectModel({ modelData, currentProductTypeId, onSelectI
         <CssBaseline />
         <Main open={open}>
           <Card sx={{ minWidth: 500 }}>
-            <CardHeader title="Select Model" sx={{ textAlign: 'center' }} />
+            <CardHeader title="Select Unit" sx={{ textAlign: 'center' }} />
             <CardContent>
               <Box
                 sx={{
@@ -95,12 +95,12 @@ export default function SelectModel({ modelData, currentProductTypeId, onSelectI
                   columnGap: 2,
                   gridTemplateColumns: {
                     xs: 'repeat(1, 1fr)',
-                    sm: `repeat(${displayedModelInfo.length % 2}, 1fr)`,
-                    md: `repeat(${displayedModelInfo.length % 3}, 1fr)`,
+                    sm: `repeat(${displayedUnitTypeInfo.length % 2}, 1fr)`,
+                    md: `repeat(${displayedUnitTypeInfo.length % 3}, 1fr)`,
                   },
                 }}
               >
-                {displayedModelInfo.map((item, index) => (
+                {displayedUnitTypeInfo.map((item, index) => (
                   <UnitItem
                     key={index}
                     id={index}

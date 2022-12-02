@@ -14,8 +14,8 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { SelectModel, SelectProductFamily } from '../sections/addNewUnit';
-
+import { SelectUnitType, SelectProductFamily } from '../sections/addNewUnit';
+import Loading from '../sections/Loading';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -93,6 +93,7 @@ function StepIcon({ active, completed }) {
 
 export default function AddNewUnit() {
   const { jobId } = useParams();
+  // eslint-disable-next-line no-unused-vars
   const [activeStep, setActiveStep] = useState(1);
   const [selectStep, setActiveSelectStep] = useState(0);
   const [unitData, setUnitData] = useState();
@@ -127,7 +128,7 @@ export default function AddNewUnit() {
   return (
     <Page title="Unit: Add">
       {isLoading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : (
         <RootStyle>
           <Container>
@@ -144,8 +145,8 @@ export default function AddNewUnit() {
             {selectStep === 0 ? (
               <SelectProductFamily ProductFamilyData={productType} onSelectItem={onSelectProductFamilyItem} />
             ) : (
-              <SelectModel
-                modelData={{ unitType, productTypeUnitTypeLink }}
+              <SelectUnitType
+                unitTypeData={{ unitType, productTypeUnitTypeLink }}
                 currentProductTypeId={projecTypeId}
                 onSelectItem={onSelectProductModelItem}
               />
