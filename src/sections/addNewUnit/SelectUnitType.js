@@ -95,8 +95,8 @@ export default function SelectUnitType({ unitTypeData, currentProductTypeId, onS
                   columnGap: 2,
                   gridTemplateColumns: {
                     xs: 'repeat(1, 1fr)',
-                    sm: `repeat(${displayedUnitTypeInfo.length % 2}, 1fr)`,
-                    md: `repeat(${displayedUnitTypeInfo.length % 3}, 1fr)`,
+                    sm: `repeat(${displayedUnitTypeInfo.length >= 2 ? 2 : 1}, 1fr)`,
+                    md: `repeat(${displayedUnitTypeInfo.length >= 3 ? 3 : displayedUnitTypeInfo.length}, 1fr)`,
                   },
                 }}
               >

@@ -22,17 +22,12 @@ export default function SelectProductFamily({ ProductFamilyData, onSelectItem })
               columnGap: 2,
               gridTemplateColumns: {
                 xs: 'repeat(1, 1fr)',
-                sm: `repeat(${ProductFamilyData.length%2}, 1fr)`,
+                sm: `repeat(${ProductFamilyData.length >= 2 ? 2 : 1}, 1fr)`,
               },
             }}
           >
             {ProductFamilyData.map((item, index) => (
-              <UnitItem
-                key={index}
-                info={item}
-                id={item.id}
-                onSelectItem={onSelectItem}
-              />
+              <UnitItem key={index} info={item} id={item.id} onSelectItem={onSelectItem} />
             ))}
           </Box>
         </CardContent>

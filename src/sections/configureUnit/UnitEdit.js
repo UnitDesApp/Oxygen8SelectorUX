@@ -237,7 +237,7 @@ export default function UnitEdit({ unitType, productType }) {
     txbUnitWeightText: isEdit ? unitInfo.txbUnitWeightText : 0,
     txbUnitWidthText: isEdit ? unitInfo.txbUnitWidthText : 0,
     ddlHandingID: unitInfo.ddlHandingValue,
-    ddlSupplyAirOpeningValue:unitInfo.ddlSupplyAirOpeningValue,
+    ddlSupplyAirOpeningValue: unitInfo.ddlSupplyAirOpeningValue,
     ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
     ddlExhaustAirOpeningValue: unitInfo.ddlExhaustAirOpeningValue,
     ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
@@ -261,6 +261,10 @@ export default function UnitEdit({ unitType, productType }) {
   } = methods;
 
   const [successNotification, setOpenSuccessNotification] = React.useState(false);
+  const [txbCoolingSetpointDBVisible, setTxbCoolingSetpointDBVisible] = React.useState(divPreheatSetpointVisible);
+  const [txbCoolingSetpointWBVisible, setTxbCoolingSetpointWBVisible] = React.useState(divPreheatSetpointVisible);
+  const [txbHeatingSetpointDBVisible, setTxbHeatingSetpointDBVisible] = React.useState(divPreheatSetpointVisible);
+  const [txbReheatSetpointDBVisible, setTxbReheatSetpointDBVisible] = React.useState(divPreheatSetpointVisible);
 
   const handleSuccessNotificationClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -302,7 +306,7 @@ export default function UnitEdit({ unitType, productType }) {
       ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
     };
 
-    console.log("=================================================");
+    console.log('=================================================');
     console.log(data);
 
     const result = await dispatch(unitReducer.saveUnitInfo(data));
@@ -483,6 +487,7 @@ export default function UnitEdit({ unitType, productType }) {
       result.preheatElectricHeater.electricHeaterVoltageInfo.divElecHeaterVoltageVisible &&
         result.preheatElectricHeater.electricHeaterVoltageInfo.ddlElecHeaterVoltageValue
     );
+    setTxbReheatSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
 
   const ddlHeatExchCompChanged = (e) => {
@@ -492,6 +497,8 @@ export default function UnitEdit({ unitType, productType }) {
   const ddlCoolingCompChanged = async (e) => {
     setValue('ddlCoolingComp', parseInt(e.target.value, 10));
     const result = await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
+    setTxbCoolingSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
+    setTxbCoolingSetpointWBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
 
   const ddlHeatingCompChanged = async (e) => {
@@ -502,6 +509,13 @@ export default function UnitEdit({ unitType, productType }) {
       result.heatElectricHeater.divHeatElecHeaterInstallationVisible &&
         result.heatElectricHeater.ddlHeatElecHeaterInstallationValue
     );
+
+    setTxbHeatingSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
+  };
+
+  const ddlReheatCompChanged = async (e) => {
+    setValue('ddlReheatComp', parseInt(e.target.value, 10));
+    setTxbReheatSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
 
   const txbOA_FilterPDChanged = async (e) => {
@@ -649,7 +663,7 @@ export default function UnitEdit({ unitType, productType }) {
                       <RHFTextField
                         size="small"
                         name="txbSummerReturnAirCFM"
-                        label="Supply Air (ASD)"
+                        label="Exhaust Air (CFM)"
                         sx={getDisplay(divSummerReturnAirCFMVisible)}
                         onBlur={txbSummerReturnAirCFMChanged}
                         onChange={(e) => {
@@ -987,13 +1001,20 @@ export default function UnitEdit({ unitType, productType }) {
                       sx={getDisplay()}
                       checked={isEdit ? unitInfo.ckbDehumidification === 1 : dehumidification.ckbDehumidification === 1}
                     />
-                    {/* <RHFSelect size="small" name="ddlReheatComp" label="Reheat" placeholder="">
+                    <RHFSelect
+                      size="small"
+                      name="ddlReheatComp"
+                      label="Reheat"
+                      placeholder=""
+                      // sx={getDisplay(reheat.ddlReheatComp.divReheatCompVisible)}
+                      onChange={ddlReheatCompChanged}
+                    >
                       {reheat.ddlReheatComp.map((item, index) => (
                         <option key={index} value={item.id}>
                           {item.items}
                         </option>
                       ))}
-                    </RHFSelect> */}
+                    </RHFSelect>
                   </Box>
                   <Divider />
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
@@ -1148,7 +1169,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbCoolingSetpointDB"
                       label="Cooling LAT Setpoint DB (F):"
                       autoComplete="off"
-//                      sx={getDisplay(divPreheatSetpointVisible)}
+                      sx={getDisplay(txbCoolingSetpointDBVisible)}
                       onChange={(e) => {
                         setValuewithCheck(e, 'txbCoolingSetpointDB');
                       }}
@@ -1158,7 +1179,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbCoolingSetpointWB"
                       label="Cooling LAT Setpoint WB (F):"
                       autoComplete="off"
-//                      sx={getDisplay(divPreheatSetpointVisible)}
+                      sx={getDisplay(txbCoolingSetpointWBVisible)}
                       onChange={(e) => {
                         setValuewithCheck(e, 'txbCoolingSetpointWB');
                       }}
@@ -1168,7 +1189,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbHeatingSetpointDB"
                       label="Heating LAT Setpoint DB (F):"
                       autoComplete="off"
-//                      sx={getDisplay(divPreheatSetpointVisible)}
+                      sx={getDisplay(txbHeatingSetpointDBVisible)}
                       onChange={(e) => {
                         setValuewithCheck(e, 'txbHeatingSetpointDB');
                       }}
@@ -1178,7 +1199,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbReheatSetpointDB"
                       label="Dehum. Reheat Setpoint DB (F):"
                       autoComplete="off"
-//                      sx={getDisplay(divPreheatSetpointVisible)}
+                      sx={getDisplay(txbReheatSetpointDBVisible)}
                       onChange={(e) => {
                         setValuewithCheck(e, 'txbReheatSetpointDB');
                       }}

@@ -33,7 +33,7 @@ const FooterStepStyle = styled(Card)(() => ({
   padding: '30px',
   zIndex: 1250,
   width: '100%',
-  bottom: 0
+  bottom: 0,
 }));
 
 // ----------------------------------------------------------------------
@@ -116,8 +116,17 @@ export default function AddNewUnit() {
     setUnitData({ ...unitData, unitType: value });
   };
 
+  const onClickBackStep = () => {
+    if (selectStep === 0) {
+      navigate(PATH_JOB.dashboard(jobId));
+    }
+    if (selectStep === 1) {
+      setActiveSelectStep(0);
+      setUnitData({ ...unitData, unitType: undefined });
+    }
+  };
+
   const onClickNextStep = () => {
-    console.log(unitData);
     navigate(PATH_UNIT.configure(jobId), { state: unitData });
   };
 
@@ -155,9 +164,9 @@ export default function AddNewUnit() {
           <FooterStepStyle>
             <Grid container>
               <Grid item xs={2} textAlign="center">
-                <Button href={PATH_JOB.dashboard(jobId)} color="primary" type="button">
+                <Button onClick={onClickBackStep} color="primary" type="button">
                   <Iconify icon={'akar-icons:arrow-left'} />
-                  Back to job dashboard
+                  {selectStep === 0 ? 'Back to job dashboard' : 'Back to Select Product Family'}
                 </Button>
               </Grid>
               <Grid item xs={8}>
@@ -180,7 +189,11 @@ export default function AddNewUnit() {
                 </Stepper>
               </Grid>
               <Grid item xs={2} textAlign="center">
-                <Button color="primary" onClick={onClickNextStep} disabled={selectStep === 0 || unitData.unitType === undefined || unitType === undefined}>
+                <Button
+                  color="primary"
+                  onClick={onClickNextStep}
+                  disabled={selectStep === 0 || unitData.unitType === undefined || unitType === undefined}
+                >
                   Next Step
                   <Iconify icon={'akar-icons:arrow-right'} />
                 </Button>
