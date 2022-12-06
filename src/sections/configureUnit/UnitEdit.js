@@ -293,6 +293,7 @@ export default function UnitEdit({ unitType, productType }) {
   });
 
   const onSubmit = async () => {
+    console.log('=====================================================');
     const data = {
       ...getAllFormData(),
       ddlHandingID: unitInfo.ddlHandingValue,
@@ -477,16 +478,20 @@ export default function UnitEdit({ unitType, productType }) {
   const ddlPreheatCompChanged = async (e) => {
     setValue('ddlPreheatComp', parseInt(e.target.value, 10));
     const result = await dispatch(unitReducer.ddlPreheatCompChanged(getAllFormData()));
-    setValue(
-      'ddlPreheatElecHeaterInstallation',
-      result.preheatElectricHeater.divPreheatElecHeaterInstallationVisible &&
-        result.preheatElectricHeater.ddlPreheatElecHeaterInstallationValue
-    );
-    setValue(
-      'ddlElecHeaterVoltage',
-      result.preheatElectricHeater.electricHeaterVoltageInfo.divElecHeaterVoltageVisible &&
+
+    if (result.preheatElectricHeater.divPreheatElecHeaterInstallationVisible) {
+      setValue('ddlPreheatElecHeaterInstallation', result.preheatElectricHeater.ddlPreheatElecHeaterInstallationValue);
+    }
+    if (result.preheatElectricHeater.electricHeaterVoltageInfo.divElecHeaterVoltageVisible) {
+      setValue(
+        'ddlElecHeaterVoltage',
         result.preheatElectricHeater.electricHeaterVoltageInfo.ddlElecHeaterVoltageValue
-    );
+      );
+    }
+
+    console.log(getValues('ddlPreheatElecHeaterInstallation'));
+    console.log(getValues('ddlElecHeaterVoltage'));
+
     setTxbReheatSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
 
