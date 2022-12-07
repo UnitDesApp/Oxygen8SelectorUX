@@ -130,7 +130,7 @@ const UnitSlice = createSlice({
       state.unitInfo = {
         ...unitInfo,
         ddlHandingValue: unitInfo.isLayout && unitInfo.ddlHandingValue !== 0 ? unitInfo.ddlHandingValue : 1,
-        ddlSupplyAirOpeningValue: unitInfo.isLayou && unitInfo.ddlSupplyAirOpeningValue !== 0 ? unitInfo.ddlSupplyAirOpeningValue : 1,
+        ddlSupplyAirOpeningValue: unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningValue !== 0 ? unitInfo.ddlSupplyAirOpeningValue : 1,
         ddlSupplyAirOpeningText: unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningText !== '' ? unitInfo.ddlSupplyAirOpeningText : '1',
         ddlExhaustAirOpeningValue: unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningValue !== 0 ? unitInfo.ddlExhaustAirOpeningValue : 1,
         ddlExhaustAirOpeningText: unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningText !== '' ? unitInfo.ddlExhaustAirOpeningText : '2',
