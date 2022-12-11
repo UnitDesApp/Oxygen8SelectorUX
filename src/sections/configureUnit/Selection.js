@@ -70,11 +70,35 @@ export default function Selection() {
     unitDetails,
     unitDetailsVisible,
     electricalRequirements,
-    electricPreheatVisible,
-    electricPreheat,
-    heatExchanger,
-    heatingElectricHeater,
-    heatingElectricHeaterVisible,
+    preheatElecHeater,
+    // preheatElecHeaterVisible,
+    preheatHWC,
+    // preheatHWCVisible,
+    heatExchCORE,
+    heatExchRECUTECH,
+    heatExchPOLYBLOC,
+    coolingCWC,
+    // coolingCWCVisible,
+    coolingDXC,
+    // coolingDXCVisible,
+    heatingCondCoil,
+    // heatingCondCoilVisible,
+    heatingElecHeater,
+    // heatingElecHeaterVisible,
+    heatingHWC,
+    // heatingHWCVisible,
+    reheatElecHeater,
+    // reheatElecHeaterVisible,
+    reheatHWC,
+    // reheatHWCVisible,
+    reheatHGRC,
+    // reheatHGRCVisible,
+    supplyFan,
+    // supplyFanVisible,
+    exhaustFan,
+    // exhaustFanVisible,
+    soundData,
+
   } = viewSelectionInfo;
   const { preheatElectricHeater } = controlInfo;
 
@@ -133,36 +157,67 @@ export default function Selection() {
               },
               {
                 title: 'W-controller',
-                data: electricalRequirements.unitData.map((item) => [item.cLabel, item.cValue]),
-                visible: electricalRequirements.unitDataVisible,
+                data: electricalRequirements.coolingDXCData !== undefined && electricalRequirements.coolingDXCData.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.coolingDXCDataVisible !== undefined && electricalRequirements.coolingDXCDataVisible,
               },
               {
                 title: 'Preheat Electric Heater',
-                data: electricalRequirements.preheatData.map((item) => [item.cLabel, item.cValue]),
-                visible: electricalRequirements.preheatDataVisible,
+                data: electricalRequirements.preheatData !== undefined && electricalRequirements.preheatData.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.preheatDataVisible !== undefined && electricalRequirements.preheatDataVisible,
               },
               {
                 title: 'Heating Electric Heater',
-                data: electricalRequirements.heatingData?.map((item) => [item.cLabel, item.cValue]),
-                visible: electricalRequirements.heatingDataVisible,
+                data: electricalRequirements.heatingData !== undefined && electricalRequirements.heatingData?.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements.heatingDataVisible !== undefined && electricalRequirements.heatingDataVisible,
               },
             ],
           },
           {
-            groupName: 'Electric Preheat',
+            groupName: 'Preheat Electric Heater',
             direction: 'column',
+            visible: preheatElecHeater !== undefined && preheatElecHeater.Visible,
             style: {},
             subGroups: [
               {
                 title: 'Actual',
-                data: electricPreheat.map((item) => [item.cLabel, item.cValue]),
-                visible: electricPreheatVisible,
+                // data: preheatElecHeater !== undefined && preheatElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
+                data: preheatElecHeater !== undefined && preheatElecHeater.Data,
+                visible: preheatElecHeater !== undefined && preheatElecHeater.Visible,
+              },
+            ],
+          },
+          {
+            groupName: 'Preheat HWC',
+            direction: 'row',
+            visible: preheatHWC !== undefined  && preheatHWC.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: preheatHWC !== undefined  && preheatHWC.Data.map((item) => [item.cLabel, item.cValue]),
+                data: preheatHWC !== undefined  && preheatHWC.Data,
+              },
+              {
+                title: 'Entering',
+                // data: preheatHWC !== undefined  && preheatHWC.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: preheatHWC !== undefined  && preheatHWC.Entering,
+              },
+              {
+                title: 'Leaving',
+                // data: preheatHWC !== undefined  && preheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: preheatHWC !== undefined  && preheatHWC.Leaving,
+              },
+              {
+                title: 'Valve & Actuator',
+                // data: preheatHWC !== undefined  && preheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
+                data: preheatHWC !== undefined  && preheatHWC.ValveActuator
               },
             ],
           },
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
+            visible: heatExchCORE !== undefined  && heatExchCORE.performanceVisible,
             style: {
               // display: 'grid',
               // gridTemplateColumns: {
@@ -174,18 +229,341 @@ export default function Selection() {
             subGroups: [
               {
                 title: 'Design Conditions',
-                data: heatExchanger.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-                visible: heatExchanger.designConditionsVisible,
+                // data: heatExchCORE !== undefined  && heatExchCORE.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchCORE !== undefined  && heatExchCORE.designConditions,
               },
               {
                 title: 'Performance Leaving Air',
-                data: heatExchanger.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-                visible: heatExchanger.performanceLeavingAirVisible,
+                // data: heatExchCORE !== undefined  && heatExchCORE.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchCORE !== undefined  && heatExchCORE.performanceLeavingAir,
               },
               {
                 title: 'Performance',
-                data: heatExchanger.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-                visible: heatExchanger.performanceVisible,
+                // data: heatExchCORE !== undefined  && heatExchCORE.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchCORE !== undefined  && heatExchCORE.performance,
+              },
+            ],
+          },
+          {
+            groupName: 'Heat Exchanger',
+            direction: 'row',
+            visible: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performanceVisible,
+            style: {
+              // display: 'grid',
+              // gridTemplateColumns: {
+              //   xs: 'repeat(1, 1fr)',
+              //   sm: 'repeat(2, 1fr)',
+              //   md: 'repeat(2, 1fr)',
+              // },
+            },
+            subGroups: [
+              {
+                title: 'Design Conditions',
+                // data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.designConditions,
+              },
+              {
+                title: 'Performance Leaving Air',
+                // data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performanceLeavingAir,
+              },
+              {
+                title: 'Performance',
+                // data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performance,
+              },
+            ],
+          },
+          {
+            groupName: 'Heat Exchanger',
+            direction: 'row',
+            visible: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performanceVisible,
+            style: {
+              // display: 'grid',
+              // gridTemplateColumns: {
+              //   xs: 'repeat(1, 1fr)',
+              //   sm: 'repeat(2, 1fr)',
+              //   md: 'repeat(2, 1fr)',
+              // },
+            },
+            subGroups: [
+              {
+                title: 'Design Conditions',
+                // data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.designConditions,
+              },
+              {
+                title: 'Performance Leaving Air',
+                // data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performanceLeavingAir,
+              },
+              {
+                title: 'Performance',
+                // data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+                data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performance,
+              },
+            ],
+          },
+          {
+            groupName: 'Cooling CWC',
+            direction: 'row',
+            visible: coolingCWC !== undefined  && coolingCWC.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: coolingCWC !== undefined  && coolingCWC.Data.map((item) => [item.cLabel, item.cValue]),
+                data: coolingCWC !== undefined  && coolingCWC.Data,
+              },
+              {
+                title: 'Entering',
+                // data: coolingCWC !== undefined  && coolingCWC.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: coolingCWC !== undefined  && coolingCWC.Entering,
+              },
+              {
+                title: 'Leaving',
+                // data: coolingCWC !== undefined  && coolingCWC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: coolingCWC !== undefined  && coolingCWC.Leaving,
+              },              
+              {
+                title: 'Valve & Actuator',
+                // data: coolingCWC !== undefined  && coolingCWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
+                data: coolingCWC !== undefined  && coolingCWC.ValveActuator,
+              },
+            ],
+          },
+          {
+            groupName: 'Cooling DXC',
+            direction: 'row',
+            visible: coolingDXC !== undefined  && coolingDXC.coolingDXCVisible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: coolingDXC !== undefined  && coolingDXC.Data.map((item) => [item.cLabel, item.cValue]),
+                data: coolingDXC !== undefined  && coolingDXC.Data,
+              },
+              {
+                title: 'Entering',
+                // data: coolingDXC !== undefined  && coolingDXC.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: coolingDXC !== undefined  && coolingDXC.Entering,
+              },
+              {
+                title: 'Setpoint',
+                // data: coolingDXC !== undefined  && coolingDXC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: coolingDXC !== undefined  && coolingDXC.Leaving,
+              },  
+              {
+                title: 'Coil Performance',
+                // data: coolingDXC !== undefined  && coolingDXC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
+                data: coolingDXC !== undefined  && coolingDXC.PerfOutputs,
+              },        
+              {
+                title: 'VRV Integration Kit',
+                // data: coolingDXC !== undefined  && coolingDXC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),
+                data: coolingDXC !== undefined  && coolingDXC.EKEXV_Kit,
+              },
+            ],
+          },
+          {
+            groupName: 'Heating Mode DX Coil',
+            direction: 'row',
+            visible: heatingCondCoil !== undefined  && heatingCondCoil.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: heatingCondCoil !== undefined  && heatingCondCoil.Data.map((item) => [item.cLabel, item.cValue]),
+                data: heatingCondCoil !== undefined  && heatingCondCoil.Data,
+              },
+              {
+                title: 'Entering',
+                // data: heatingCondCoil !== undefined  && heatingCondCoil.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: heatingCondCoil !== undefined  && heatingCondCoil.Entering,
+              },
+              {
+                title: 'Setpoint',
+                // data: heatingCondCoil !== undefined  && heatingCondCoil.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: heatingCondCoil !== undefined  && heatingCondCoil.Leaving,
+              },  
+            ],
+          },
+          {
+            groupName: 'Heating Electric Heater',
+            direction: 'column',
+            visible: heatingElecHeater !== undefined && heatingElecHeater.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Actual',
+                // data: heatingElecHeater !== undefined && heatingElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
+                data: heatingElecHeater !== undefined && heatingElecHeater.Data,
+              },
+            ],
+          },
+          {
+            groupName: 'Heating HWC',
+            direction: 'row',
+            visible: heatingHWC !== undefined && heatingHWC.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: heatingHWC !== undefined && heatingHWC.Data.map((item) => [item.cLabel, item.cValue]),
+                data: heatingHWC !== undefined && heatingHWC.Data,
+              },
+              {
+                title: 'Entering',
+                // data: heatingHWC !== undefined && heatingHWC.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: heatingHWC !== undefined && heatingHWC.Entering,
+              },
+              {
+                title: 'Leaving',
+                // data: heatingHWC !== undefined && heatingHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: heatingHWC !== undefined && heatingHWC.Leaving,
+              },              
+              {
+                title: 'Valve & Actuator',
+                data: heatingHWC !== undefined && heatingHWC.ValveActuator,
+              },
+            ],
+          },
+          {
+            groupName: 'Reheat Electric Heater',
+            direction: 'column',
+            visible: reheatElecHeater !== undefined && reheatElecHeater.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Actual',
+                // data: reheatElecHeater !== undefined && reheatElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
+                data: reheatElecHeater !== undefined && reheatElecHeater.Data
+              },
+            ],
+          },
+          {
+            groupName: 'Reheat HWC',
+            direction: 'row',
+            visible: heatingElecHeater !== undefined && reheatHWC.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: reheatHWC !== undefined && reheatHWC.Data.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHWC !== undefined && reheatHWC.Data,
+              },
+              {
+                title: 'Entering',
+                // data: reheatHWC !== undefined && reheatHWC.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHWC !== undefined && reheatHWC.Entering,
+              },
+              {
+                title: 'Leaving',
+               //  data: reheatHWC !== undefined && reheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHWC !== undefined && reheatHWC.Leaving,
+              },              
+              {
+                title: 'Valve & Actuator',
+                // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHWC !== undefined && reheatHWC.ValveActuator,
+              },
+            ],
+          },
+          {
+            groupName: 'Reheat HGRC',
+            direction: 'row',
+            visible: reheatHGRC !== undefined && reheatHGRC.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Coil',
+                // data: reheatHGRC !== undefined && reheatHGRC.Data.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHGRC !== undefined && reheatHGRC.Data,
+              },
+              {
+                title: 'Entering',
+                // data: reheatHGRC !== undefined && reheatHGRC.Entering.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHGRC !== undefined && reheatHGRC.Entering,
+              },
+              {
+                title: 'Setpoint',
+                // data: reheatHGRC !== undefined && reheatHGRC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHGRC !== undefined && reheatHGRC.Leaving,
+              },  
+              {
+                title: 'Coil Performance',
+                // data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs,
+              },        
+              {
+                title: 'VRV Integration Kit',
+                // data: reheatHGRC !== undefined && reheatHGRC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHGRC !== undefined && reheatHGRC.EKEXV_Kit,
+              },
+            ],
+          },
+          {
+            groupName: 'Supply Fan',
+            direction: 'row',
+            visible: supplyFan !== undefined && supplyFan.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Fan Data',
+                // data: supplyFan !== undefined && supplyFan.Data.map((item) => [item.cLabel, item.cValue]),
+                data: supplyFan !== undefined && supplyFan.Data,
+              },
+              {
+                title: 'Graph',
+                data: supplyFan !== undefined && supplyFan.Graph
+              },
+              {
+                title: 'Sound Data',
+                // data: supplyFan !== undefined && supplyFan.SoundData.map((item) => [item.cLabel, item.cValue_1]),
+                data: supplyFan !== undefined && supplyFan.SoundData,
+              },  
+            ],
+          },
+          {
+            groupName: 'Exhaust Fan',
+            direction: 'row',
+            visible: exhaustFan !== undefined && exhaustFan.Visible,
+            style: {},
+            subGroups: [
+              {
+                title: 'Fan Data',
+                // data: exhaustFan !== undefined && exhaustFan.Data.map((item) => [item.cLabel, item.cValue]),
+                data: exhaustFan !== undefined && exhaustFan.Data,
+              },
+              {
+                title: 'Graph',
+                data: exhaustFan !== undefined && exhaustFan.Graph,
+              },
+              {
+                title: 'Sound Data',
+                // data: exhaustFan !== undefined && exhaustFan.SoundData.map((item) => [item.cLabel, item.cValue_1]),
+                data: exhaustFan !== undefined && exhaustFan.SoundData,
+              },  
+            ],
+          },
+          {
+            groupName: 'Unit Sound Data (Hz)',
+            direction: 'row',
+            style: {},
+            subGroups: [
+              {
+                // data: soundData.Data.map((item) => [item.cLabel, item.cValue_1, 
+                //                                                   item.cValue_2, 
+                //                                                   item.cValue_3, 
+                //                                                   item.cValue_4, 
+                //                                                   item.cValue_5, 
+                //                                                   item.cValue_6, 
+                //                                                   item.cValue_7, 
+                //                                                   item.cValue_8, 
+                //                                                   item.cValue_9, 
+                //                                                   item.cValue_10]),
+                data: soundData.Data,
+
               },
             ],
           },

@@ -137,7 +137,7 @@ const UnitSlice = createSlice({
         ddlOutdoorAirOpeningValue: unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningValue !== 0 ? unitInfo.ddlOutdoorAirOpeningValue : 1,
         ddlOutdoorAirOpeningText: unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningText !== '' ? unitInfo.ddlOutdoorAirOpeningText : '4',
         ddlReturnAirOpeningValue: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningValue !== 0 ? unitInfo.ddlReturnAirOpeningValue : 1,
-        ddlReturnAirOpeningText: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText: '3',
+        ddlReturnAirOpeningText: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText : '3',
       };
       state.isLoading = false;
     },
@@ -353,21 +353,150 @@ const UnitSlice = createSlice({
         electricalRequirements: {
           unitData: data.outputElecReq.gvOutElecReqUnitDataDataSource,
           unitDataVisible: data.outputElecReq.divOutElecReqUnitDataVisible,
-          preheatData: data.outputElecReq.gvOutElecReqPreheatElecHeaterDataSource,
-          preheatDataVisible: data.outputElecReq.divOutElecReqPreheatElecHeaterVisible,
-          heatingData: data.outputElecReq.gvOutElecReqHeatingElecHeaterDataSource,
-          heatingDataVisible: data.outputElecReq.divOutElecReqHeatingElecHeaterVisible,
+          unitOnlyData: data.outputElecReq.gvOutElecReqUnitOnlyDataDataSource,
+          unitOnlyDataVisible: data.outputElecReq.divOutElecReqUnitOnlyDataVisible,
+          coolingDXCData: data.outputElecReq.gvOutElecReqCoolingDXCDataSource,
+          coolingDXCVisible: data.outputElecReq.gvOutElecReqCoolingDXCVisible,
+          preheatElecHeaterData: data.outputElecReq.gvOutElecReqPreheatElecHeaterDataSource,
+          preheatElecHeaterVisible: data.outputElecReq.divOutElecReqPreheatElecHeaterVisible,
+          heatingElecHeaterData: data.outputElecReq.gvOutElecReqHeatingElecHeaterDataSource,
+          heatingElecHeaterVisible: data.outputElecReq.divOutElecReqHeatingElecHeaterVisible,
         },
-        electricPreheat: data.outputPreheatElecHeater.gvOutPreheatElecHeaterDataSource,
-        electricPreheatVisible: data.outputPreheatElecHeater.divOutPreheatElecHeaterVisible,
-        heatExchanger: {
-          designConditions: data.outputFixedPlateCORE.gvOutHX_FP_EntAirDataSource,
-          designConditionsVisible: data.outputFixedPlateCORE.gvOutHX_FP_EntAirVisible,
-          performanceLeavingAir: data.outputFixedPlateCORE.gvOutHX_FP_LvgAirDataSource,
-          performanceLeavingAirVisible: data.outputFixedPlateCORE.gvOutHX_FP_LvgAirVisible,
-          performance: data.outputFixedPlateCORE.gvOutHX_FP_PerfDataSource,
-          performanceVisible: data.outputFixedPlateCORE.gvOutHX_FP_PerfVisible,
-        },
+        preheatElecHeater: [
+          {
+            Visible: data.outputPreheatElecHeater !== undefined && data.outputPreheatElecHeater.divOutPreheatElecHeaterVisible,
+            Data: data.outputPreheatElecHeater !== undefined && data.outputPreheatElecHeater.gvOutPreheatElecHeaterDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        preheatHWC: [
+          {
+            Visible: data.outputPreheatHWC !== undefined && data.outputPreheatHWC.divOutPreheatHWCVisible,
+            Data: data.outputPreheatHWC !== undefined && data.outputPreheatHWC.gvOutPreheatHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputPreheatHWC !== undefined && data.outputPreheatHWC.gvOutPreheatHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputPreheatHWC !== undefined && data.outputPreheatHWC.gvOutPreheatHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+            ValveActuator: data.outputPreheatHWC !== undefined && data.outputPreheatHWC.gvOutPreheatHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        heatExchCORE: [
+          {
+            performanceVisible: data.outputFixedPlateCORE !== undefined && data.outputFixedPlateCORE.divOutHX_FPVisible,
+            performance: data.outputFixedPlateCORE !== undefined && data.outputFixedPlateCORE.gvOutHX_FP_PerfDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            designConditions: data.outputFixedPlateCORE !== undefined && data.outputFixedPlateCORE.gvOutHX_FP_EntAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            designConditionsVisible: data.outputFixedPlateCORE !== undefined && data.outputFixedPlateCORE.gvOutHX_FP_EntAirVisible,
+            performanceLeavingAir: data.outputFixedPlateCORE !== undefined && data.outputFixedPlateCORE.gvOutHX_FP_LvgAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            performanceLeavingAirVisible: data.outputFixedPlateCORE !== undefined && data.outputFixedPlateCORE.gvOutHX_FP_LvgAirVisible,
+          },
+        ],
+        heatExchRECUTECH: [
+          {
+            performanceVisible: data.outputFixedRECUTECH !== undefined && data.outputFixedRECUTECH.divOutHX_FPVisible,
+            performance: data.outputFixedRECUTECH !== undefined && data.outputFixedRECUTECH.gvOutHX_FP_PerfDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            designConditions: data.outputFixedRECUTECH !== undefined && data.outputFixedRECUTECH.gvOutHX_FP_EntAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            designConditionsVisible: data.outputFixedRECUTECH !== undefined && data.outputFixedRECUTECH.gvOutHX_FP_EntAirVisible,
+            performanceLeavingAir: data.outputFixedRECUTECH !== undefined && data.outputFixedRECUTECH.gvOutHX_FP_LvgAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            performanceLeavingAirVisible: data.outputFixedRECUTECH !== undefined && data.outputFixedRECUTECH.gvOutHX_FP_LvgAirVisible,
+          },
+        ],
+        heatExchPOLYBLOCK: [
+          {
+            performanceVisible: data.outputFixedPOLYBLOC !== undefined && data.outputFixedPOLYBLOC.divOutHX_FPVisible,
+            performance: data.outputFixedPOLYBLOC !== undefined && data.outputFixedPOLYBLOC.gvOutHX_FP_PerfDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            designConditions: data.outputFixedPOLYBLOC !== undefined && data.outputFixedPOLYBLOC.gvOutHX_FP_EntAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            designConditionsVisible: data.outputFixedPOLYBLOC !== undefined && data.outputFixedPOLYBLOC.gvOutHX_FP_EntAirVisible,
+            performanceLeavingAir: data.outputFixedPOLYBLOC !== undefined && data.outputFixedPOLYBLOC.gvOutHX_FP_LvgAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+            performanceLeavingAirVisible: data.outputFixedPOLYBLOC !== undefined && data.outputFixedPOLYBLOC.gvOutHX_FP_LvgAirVisible,
+          },
+        ],
+        coolingCWC: [
+          {
+            Visible: data.outputCoolingCWC !== undefined && data.outputCoolingCWC.divOutCoolingCWCVisible,
+            Data: data.outputCoolingCWC !== undefined && data.outputCoolingCWC.gvOutCoolingCWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputCoolingCWC !== undefined && data.outputCoolingCWC.gvOutCoolingCWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputCoolingCWC !== undefined && data.outputCoolingCWC.gvOutCoolingCWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+            ValveActuator: data.outputCoolingCWC !== undefined && data.outputCoolingCWC.gvOutCoolingCWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        coolingDXC: [
+          {
+            Visible: data.outputCoolingDXC !== undefined && data.outputCoolingDXC.divOutCoolingDXC_RAE_Visible,
+            Data: data.outputCoolingDXC !== undefined && data.outputCoolingDXC.gvOutCoolingDXC_RAE_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputCoolingDXC !== undefined && data.outputCoolingDXC.gvOutCoolingDXC_RAE_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputCoolingDXC !== undefined && data.outputCoolingDXC.gvOutCoolingDXC_RAE_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+            PerfOutputs: data.outputCoolingDXC !== undefined && data.outputCoolingDXC.gvOutCoolingDXC_RAE_PerfOutputsDataSource.map((item) => [item.cLabel, item.cValue]),
+            EKEXV_Kit: data.outputCoolingDXC !== undefined && data.outputCoolingDXC.gvOutCoolingDXC_RAE_EKEXV_KitDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        heatingCondCoil: [
+          {
+            Visible: data.outputHeatingCondCoil !== undefined && data.outputHeatingCondCoil.divOutHeatingCondCoilVisible,
+            Data: data.outputHeatingCondCoil !== undefined && data.outputHeatingCondCoil.gvOutHeatingCondCoil_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputHeatingCondCoil !== undefined && data.outputHeatingCondCoil.gvOutHeatingCondCoil_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputHeatingCondCoil !== undefined && data.outputHeatingCondCoil.gvOutHeatingCondCoil_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        heatingElecHeater: [
+          {
+            Visible: data.outputHeatingElecHeater !== undefined && data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
+            Data: data.outputHeatingElecHeater !== undefined && data.outputHeatingElecHeater.gvOutHeatingElecHeaterDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        heatingHWC: [
+          {
+            Visible: data.outputHeatingHWC !== undefined && data.outputHeatingHWC.divOutHeatingHWCVisible,
+            Data: data.outputHeatingHWC !== undefined && data.outputHeatingHWC.gvOutHeatingHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputHeatingHWC !== undefined && data.outputHeatingHWC.gvOutHeatingHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputHeatingHWC !== undefined && data.outputHeatingHWC.gvOutHeatingHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+            ValveActuator: data.outputHeatingHWC !== undefined && data.outputHeatingHWC.gvOutHeatingHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        reheatElecHeater: [
+          {
+            Visible: data.outputReheatElecHeater !== undefined && data.outputReheatElecHeater.divOutReheatElecHeaterVisible,
+            Data: data.outputReheatElecHeater !== undefined && data.outputReheatElecHeater.gvOutReheatElecHeaterDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        reheatHWC: [
+          {
+            Visible: data.outputReheatHWC !== undefined && data.outputReheatHWC.divOutReheatHWCVisible,
+            Data: data.outputReheatHWC !== undefined && data.outputReheatHWC.gvOutReheatHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputReheatHWC !== undefined && data.outputReheatHWC.gvOutReheatHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputReheatHWC !== undefined && data.outputReheatHWC.gvOutReheatHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+            ValveActuator: data.outputReheatHWC !== undefined && data.outputReheatHWC.gvOutReheatHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        reheatHGRC: [
+          {
+            Visible: data.outputReheatHGRC !== undefined && data.outputReheatHGRC.divOutReheatHGRC_RAEVisible,
+            Data: data.outputReheatHGRC !== undefined && data.outputReheatHGRC.gvOutReheatHGRC_RAE_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            Entering: data.outputReheatHGRC !== undefined && data.outputReheatHGRC.gvOutReheatHGRC_RAE_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data.outputReheatHGRC !== undefined && data.outputReheatHGRC.gvOutCReheatHGRC_RAE_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+            PerfOutputs: data.outputReheatHGRC !== undefined && data.outputReheatHGRC.gvOutReheatHGRC_RAE_PerfOutputsDataSource.map((item) => [item.cLabel, item.cValue]),
+            EKEXV_Kit: data.outputReheatHGRC !== undefined && data.outputReheatHGRC.gvOutReheatHGRC_RAE_EKEXV_KitDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          },
+        ],
+        supplyFan: [
+          {
+            Visible: data.outputSupplyFan !== undefined && data.outputSupplyFan.divOutSF_ZAVisible,
+            Data: data.outputSupplyFan !== undefined && data.outputSupplyFan.gvOutSF_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            GraphImageUrl: data.outputSupplyFan !== undefined && data.outputSupplyFan.imgSF_GraphImageUrl,
+            // SoundData: data.outputSupplyFan !== undefined && data.outputSupplyFan.gvOutSF_SoundDataDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2, item.cValue_3, item.cValue_4,item.cValue_5, item.cValue_6,item.cValue_7, item.cValue_8,item.cValue_9, item.cValue_10]),
+          },
+        ],
+        exhaustFan: [
+          {
+            Visible: data.outputExhaustFan !== undefined && data.outputExhaustFan.divOutEF_ZAVisible,
+            Data: data.outputExhaustFan !== undefined && data.outputExhaustFan.gvOutEF_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+            GraphImageUrl: data.outputExhaustFan !== undefined && data.outputExhaustFan.imgEF_GraphImageUrl,
+            // SoundData: data.outputExhaustFan !== undefined && data.outputExhaustFan.gvOutEF_SoundDataDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2, item.cValue_3, item.cValue_4,item.cValue_5, item.cValue_6,item.cValue_7, item.cValue_8,item.cValue_9, item.cValue_10]),
+          },
+        ],
+        soundData: [
+          {
+            Visible: data.outputSoundData !== undefined && data.outputSoundData.divOutSoundDataVisible,
+            Data: data.outputSoundData !== undefined && data.outputSoundData.gvOutSoundDataDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2, item.cValue_3, item.cValue_4,item.cValue_5, item.cValue_6,item.cValue_7, item.cValue_8,item.cValue_9, item.cValue_10]),
+          },
+        ],
+
         // heatingElectricHeater: data.outputHeatingElecHeater.gvOutHeatElecHeaterDataSource,
         // heatingElectricHeaterVisible: data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
       };
