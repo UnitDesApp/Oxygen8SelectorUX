@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // utils
 // import axios from '../../utils/axios';
 // store
-import { dispatch, useSelector } from '../store';
+import { dispatch } from '../store';
 // utils
 import axios from '../../utils/axios';
 // config
@@ -17,6 +17,7 @@ const initialState = {
   productTypeUnitTypeLink: [],
   controlInfo: {},
   unitInfo: {},
+  layoutInfo: {},
   visibleInfo: {},
   viewSelectionInfo: {},
 };
@@ -130,14 +131,38 @@ const UnitSlice = createSlice({
       state.unitInfo = {
         ...unitInfo,
         ddlHandingValue: unitInfo.isLayout && unitInfo.ddlHandingValue !== 0 ? unitInfo.ddlHandingValue : 1,
-        ddlSupplyAirOpeningValue: unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningValue !== 0 ? unitInfo.ddlSupplyAirOpeningValue : 1,
-        ddlSupplyAirOpeningText: unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningText !== '' ? unitInfo.ddlSupplyAirOpeningText : '1',
-        ddlExhaustAirOpeningValue: unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningValue !== 0 ? unitInfo.ddlExhaustAirOpeningValue : 1,
-        ddlExhaustAirOpeningText: unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningText !== '' ? unitInfo.ddlExhaustAirOpeningText : '2',
-        ddlOutdoorAirOpeningValue: unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningValue !== 0 ? unitInfo.ddlOutdoorAirOpeningValue : 1,
-        ddlOutdoorAirOpeningText: unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningText !== '' ? unitInfo.ddlOutdoorAirOpeningText : '4',
-        ddlReturnAirOpeningValue: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningValue !== 0 ? unitInfo.ddlReturnAirOpeningValue : 1,
-        ddlReturnAirOpeningText: unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText : '3',
+        ddlSupplyAirOpeningValue:
+          unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningValue !== 0 ? unitInfo.ddlSupplyAirOpeningValue : 1,
+        ddlSupplyAirOpeningText:
+          unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningText !== '' ? unitInfo.ddlSupplyAirOpeningText : '1',
+        ddlExhaustAirOpeningValue:
+          unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningValue !== 0 ? unitInfo.ddlExhaustAirOpeningValue : 1,
+        ddlExhaustAirOpeningText:
+          unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningText !== '' ? unitInfo.ddlExhaustAirOpeningText : '2',
+        ddlOutdoorAirOpeningValue:
+          unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningValue !== 0 ? unitInfo.ddlOutdoorAirOpeningValue : 1,
+        ddlOutdoorAirOpeningText:
+          unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningText !== '' ? unitInfo.ddlOutdoorAirOpeningText : '4',
+        ddlReturnAirOpeningValue:
+          unitInfo.isLayout && unitInfo.ddlReturnAirOpeningValue !== 0 ? unitInfo.ddlReturnAirOpeningValue : 1,
+        ddlReturnAirOpeningText:
+          unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText : '3',
+      };
+      state.layoutInfo = {
+        ddlHanding: controlInfo.ddlHanding,
+        ddlHandingID: controlInfo.ddlHanding[0].id,
+        ddlSupplyAirOpeningData: controlInfo.ddlSupplyAirOpeningData,
+        ddlSupplyAirOpeningText: controlInfo.ddlSupplyAirOpeningText,
+        ddlSupplyAirOpeningValue: controlInfo.ddlSupplyAirOpeningValue,
+        ddlExhaustAirOpeningData: controlInfo.ddlExhaustAirOpeningData,
+        ddlExhaustAirOpeningText: controlInfo.ddlExhaustAirOpeningText,
+        ddlExhaustAirOpeningValue: controlInfo.ddlExhaustAirOpeningValue,
+        ddlOutdoorAirOpeningData: controlInfo.ddlOutdoorAirOpeningData,
+        ddlOutdoorAirOpeningText: controlInfo.ddlOutdoorAirOpeningText,
+        ddlOutdoorAirOpeningValue: controlInfo.ddlOutdoorAirOpeningValue,
+        ddlReturnAirOpeningData: controlInfo.ddlReturnAirOpeningData,
+        ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+        ddlReturnAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
       };
       state.isLoading = false;
     },
@@ -502,17 +527,75 @@ const UnitSlice = createSlice({
       };
     },
     updateLayoutValues(state, action) {
+      state.layoutInfo = {
+        ...state.layoutInfo,
+        ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
+        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
+        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
+        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
+        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
+        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+      };
+
       state.unitInfo = {
         ...state.unitInfo,
-        ddlHandingValue: action.payload.ddlHandingID,
+        ddlHandingValue: parseInt(action.payload.ddlHandingID, 10),
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlSupplyAirOpeningValue: action.payload.ddlSupplyAirOpeningValue,
+        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
         ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlExhaustAirOpeningValue: action.payload.ddlExhaustAirOpeningValue,
+        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
         ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlOutdoorAirOpeningValue: action.payload.ddlOutdoorAirOpeningValue,
+        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
         ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
-        ddlReturnAirOpeningValue: action.payload.ddlReturnAirOpeningValue,
+        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+      };
+    },
+    ddlHandingChanged(state, action) {
+      state.layoutInfo = {
+        ...state.layoutInfo,
+        ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
+        ddlSupplyAirOpeningData: action.payload.ddlSupplyAirOpeningData,
+        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
+      };
+
+      state.unitInfo = {
+        ...state.unitInfo,
+        ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
+        ddlPreheatCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
+        ddlCoolingCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
+        ddlHeatingCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
+      };
+    },
+    ddlSupplyAirOpeningChanged(state, action) {
+      state.layoutInfo = {
+        ...state.layoutInfo,
+        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
+        ddlOutdoorAirOpeningData: action.payload.ddlOutdoorAirOpeningData,
+        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
+        ddlExhaustAirOpeningData: action.payload.ddlExhaustAirOpeningData,
+        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
+        ddlReturnAirOpeningData: action.payload.ddlReturnAirOpeningData,
+        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+        ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
+      };
+
+      state.unitInfo = {
+        ...state.unitInfo,
+        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
+        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
+        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
+        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+        ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
       };
     },
   },
@@ -741,7 +824,30 @@ export function getViewSelectionInfo(data) {
 
 export function updateLayoutValues(data) {
   return async () => {
+    console.log('-------------Updated Layout Values--------------');
+    console.log(data);
     dispatch(UnitSlice.actions.updateLayoutValues(data));
+  };
+}
+
+export function ddlHandingChanged(ddlHandingID) {
+  return async () => {
+    console.log('---------------Handing Changed-----------------');
+    const response = await axios.post(`${serverUrl}/api/units/ddlHandingChanged`);
+    console.log({ ...response.data, ddlHandingID });
+    dispatch(UnitSlice.actions.ddlHandingChanged({ ...response.data, ddlHandingID }));
+  };
+}
+
+export function ddlSupplyAirOpeningChanged(data) {
+  return async () => {
+    console.log('-----------SupplyAirOpendingChanged------------');
+    console.log('          -------Input Values--------          ');
+    console.log(data);
+    const response = await axios.post(`${serverUrl}/api/units/ddlSupplyAirOpeningChanged`, data);
+    console.log('          ------Output  Values-------          ');
+    console.log({ ...data, ...response.data });
+    dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged({ ...data, ...response.data }));
   };
 }
 // ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 // import PropTypes from 'prop-types';
@@ -51,8 +51,10 @@ export default function UnitEdit({ unitType, productType }) {
   const { jobId, unitId } = useParams();
   const { state } = useLocation();
 
+  console.log(jobId, unitId);
+
   const isEdit = unitId !== undefined;
-  const { controlInfo, unitInfo } = useSelector((state) => state.unit);
+  const { controlInfo, unitInfo, layoutInfo } = useSelector((state) => state.unit);
   console.log(controlInfo, unitInfo);
 
   const {
@@ -60,7 +62,6 @@ export default function UnitEdit({ unitType, productType }) {
     ddlOrientationValue,
     ddlUnitModel,
     ddlUnitModelValue,
-    divCustomVisible,
     divHeatExchCompVisible,
     divOutdoorAirDesignConditionsVisible,
     divReturnAirDesignConditionsVisible,
@@ -121,8 +122,6 @@ export default function UnitEdit({ unitType, productType }) {
     reheat,
     cooling,
     drainPan,
-    customInputs,
-    reheatSetpoints,
     refrigerantInfo,
     dehumidification,
     valveAndActuator,
@@ -130,8 +129,6 @@ export default function UnitEdit({ unitType, productType }) {
     heatElectricHeater,
     preheatElectricHeater,
     divPreheatSetpointVisible,
-    divCoolingSetpointVisible,
-    divHeatingSetpointVisible,
     divHeatingFluidDesignConditionsVisible,
   } = controlInfo;
 
@@ -293,22 +290,22 @@ export default function UnitEdit({ unitType, productType }) {
   });
 
   const onSubmit = async () => {
-    console.log('=====================================================');
     const data = {
       ...getAllFormData(),
-      ddlHandingID: unitInfo.ddlHandingValue,
-      ddlSupplyAirOpeningValue: unitInfo.ddlSupplyAirOpeningValue,
-      ddlSupplyAirOpeningText: unitInfo.ddlSupplyAirOpeningText,
-      ddlExhaustAirOpeningValue: unitInfo.ddlExhaustAirOpeningValue,
-      ddlExhaustAirOpeningText: unitInfo.ddlExhaustAirOpeningText,
-      ddlOutdoorAirOpeningValue: unitInfo.ddlOutdoorAirOpeningValue,
-      ddlOutdoorAirOpeningText: unitInfo.ddlOutdoorAirOpeningText,
-      ddlReturnAirOpeningValue: unitInfo.ddlReturnAirOpeningValue,
-      ddlReturnAirOpeningText: unitInfo.ddlReturnAirOpeningText,
+      ddlHandingID: layoutInfo.ddlHandingID,
+      ddlSupplyAirOpeningValue: layoutInfo.ddlSupplyAirOpeningValue,
+      ddlSupplyAirOpeningText: layoutInfo.ddlSupplyAirOpeningText,
+      ddlExhaustAirOpeningValue: layoutInfo.ddlExhaustAirOpeningValue,
+      ddlExhaustAirOpeningText: layoutInfo.ddlExhaustAirOpeningText,
+      ddlOutdoorAirOpeningValue: layoutInfo.ddlOutdoorAirOpeningValue,
+      ddlOutdoorAirOpeningText: layoutInfo.ddlOutdoorAirOpeningText,
+      ddlReturnAirOpeningValue: layoutInfo.ddlReturnAirOpeningValue,
+      ddlReturnAirOpeningText: layoutInfo.ddlReturnAirOpeningText,
     };
 
-    console.log('=================================================');
+    console.log('---------------------Start Submit Data----------------------');
     console.log(data);
+    console.log('--------------------- End Submit Data ----------------------');
 
     const result = await dispatch(unitReducer.saveUnitInfo(data));
     setOpenSuccessNotification(true);
@@ -496,12 +493,12 @@ export default function UnitEdit({ unitType, productType }) {
   };
 
   const ddlHeatExchCompChanged = (e) => {
-    // console.log(e.target.value);
+    console.log(e.target.value);
   };
 
   const ddlCoolingCompChanged = async (e) => {
     setValue('ddlCoolingComp', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
+    await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
     setTxbCoolingSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
     setTxbCoolingSetpointWBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
