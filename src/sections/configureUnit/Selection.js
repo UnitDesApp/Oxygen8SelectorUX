@@ -349,7 +349,7 @@ export default function Selection() {
           {
             groupName: 'Cooling DXC',
             direction: 'row',
-            visible: coolingDXC.coolingDXCVisible,
+            visible: coolingDXC.Visible,
             style: {},
             subGroups: [
               {
@@ -608,8 +608,8 @@ export default function Selection() {
               </GroupHeaderStyle>
               <Stack
                 direction={item.direction}
-                alignItems="stretch"
-                justifyContent="center"
+                alignItems="flex-start"
+                justifyContent="left"
                 spacing={3}
                 sx={{
                   ...item.style,

@@ -396,7 +396,7 @@ const UnitSlice = createSlice({
           Data: data?.outputPreheatHWC?.gvOutPreheatHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.outputPreheatHWC?.gvOutPreheatHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.outputPreheatHWC?.gvOutPreheatHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputPreheatHWC?.gvOutPreheatHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputPreheatHWC?.gvOutPreheatHWC_ValveActuatorDataDataSource?.map((item) => [item.cLabel, item.cValue]),
         },
         heatExchCORE: {
           performanceVisible: data.divOutHX_FPVisible && data?.outputFixedPlateCORE?.divOutHX_FPVisible,
@@ -427,10 +427,10 @@ const UnitSlice = createSlice({
           Data: data?.outputCoolingCWC?.gvOutCoolingCWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.outputCoolingCWC?.gvOutCoolingCWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.outputCoolingCWC?.gvOutCoolingCWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputCoolingCWC?.gvOutCoolingCWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputCoolingCWC?.gvOutCoolingCWC_ValveActuatorDataDataSource?.map((item) => [item.cLabel, item.cValue]),
         },
         coolingDXC: {
-          Visible: data.divOutCoolingDXCVisible,
+          Visible: data.divOutCoolingDXC_RAE_Visible,
           Data: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_DataDataSource.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
@@ -452,7 +452,7 @@ const UnitSlice = createSlice({
           Data: data?.outputHeatingHWC?.gvOutHeatingHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.outputHeatingHWC?.gvOutHeatingHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.outputHeatingHWC?.gvOutHeatingHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputHeatingHWC?.gvOutHeatingHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputHeatingHWC?.gvOutHeatingHWC_ValveActuatorDataDataSource?.map((item) => [item.cLabel, item.cValue]),
         },
         reheatElecHeater: {
           Visible: data.divOutReheatElecHeaterVisible,
@@ -775,6 +775,15 @@ export function ddlHeatingCompChanged(data) {
     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
+    return response.data;
+  };
+}
+
+export function ddlReheatCompChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
     return response.data;
   };
 }
