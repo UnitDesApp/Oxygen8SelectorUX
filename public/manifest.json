@@ -1,0 +1,8 @@
+{
+  "name": "Oxygen8Selector",
+  "short_name": "Oxygen8",
+  "display": "standalone",
+  "start_url": "/",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
