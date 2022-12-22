@@ -147,6 +147,10 @@ const UnitSlice = createSlice({
           unitInfo.isLayout && unitInfo.ddlReturnAirOpeningValue !== 0 ? unitInfo.ddlReturnAirOpeningValue : 1,
         ddlReturnAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText : '3',
+        ddlSupplyAirOpeningData: unitInfo.ddlSupplyAirOpeningData,
+        ddlOutdoorAirOpeningData: unitInfo.ddlOutdoorAirOpeningData,
+        ddlExhaustAirOpeningData: unitInfo.ddlExhaustAirOpeningData,
+        ddlReturnAirOpeningData: unitInfo.ddlReturnAirOpeningData,
       };
       state.layoutInfo = {
         ddlHanding: controlInfo.ddlHanding,
@@ -310,6 +314,18 @@ const UnitSlice = createSlice({
         divHeatingSetpointVisible: data.divHeatingSetpointVisible,
         divSetpointsVisible: data.divSetpointsVisible,
         customInputs: data.customInputs,
+      };
+    },
+    ddlReheatCompChanged(state, actions) {
+      const data = actions.payload;
+      state.controlInfo = {
+        ...state.controlInfo,
+        heatElectricHeater: data.heatElectricHeater,
+        divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
+        valveAndActuator: data.valveAndActuator,
+        divReheatSetpointVisible: data.divReheatSetpointVisible,
+        divSetpointsVisible: data.divSetpointsVisible,
+        elecHeaterVoltage: data.elecHeaterVoltage,
       };
     },
     ddlUnitVoltageChanged(state, actions) {
@@ -637,7 +653,7 @@ const UnitSlice = createSlice({
 
       state.unitInfo = {
         ...state.unitInfo,
-        ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
+        ddlHandingValue: parseInt(action.payload.ddlHandingID, 10),
         ddlPreheatCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
         ddlCoolingCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
         ddlHeatingCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
@@ -881,6 +897,15 @@ export function ddlHeatingCompChanged(data) {
     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
+    return response.data;
+  };
+}
+
+export function ddlReheatCompChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
     return response.data;
   };
 }

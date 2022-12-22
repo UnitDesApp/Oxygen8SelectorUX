@@ -30,6 +30,8 @@ import * as unitReducer from '../../redux/slices/unitReducer';
 import Iconify from '../../components/Iconify';
 import { FormProvider, RHFTextField, RHFSelect, RHFCheckbox, RHFControlCheckbox } from '../../components/hook-form';
 import { PATH_UNIT } from '../../routes/paths';
+// config
+import * as IDs from './config';
 //------------------------------------------------
 
 const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
@@ -38,7 +40,6 @@ const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
 }));
 
 const dblTempErrorValue = 0.0;
-const naValueId = 1;
 // -----------------------------------------------
 
 UnitEdit.propTypes = {
@@ -73,7 +74,7 @@ export default function UnitEdit({ unitType, productType }) {
     ddlControlsPreferenceValue,
     ddlDamperAndActuator,
     ddlDamperAndActuatorValue,
-    ddlDamperAndActuatorVisible,
+    // ddlDamperAndActuatorVisible,
     ddlCoolingCoilHanding,
     ddlCoolingCoilHandingValue,
     ddlHeatingCoilHanding,
@@ -127,13 +128,14 @@ export default function UnitEdit({ unitType, productType }) {
     divDXC_MsgVisible,
     heatElectricHeater,
     preheatElectricHeater,
-    divPreheatSetpointVisible,
-    divHeatingFluidDesignConditionsVisible,
+    // divPreheatSetpointVisible,
+    // divHeatingFluidDesignConditionsVisible,
   } = controlInfo;
 
   const [ckbDehumidification, setCkbDehumidification] = useState(
     isEdit ? unitInfo.ckbDehumidification === 1 : controlInfo.dehumidification.ckbDehumidification === 1
   );
+  // const [flag, setFlag] = useState(true);
 
   const defaultValues = {
     txtTag: isEdit ? unitInfo.txbTagText : '',
@@ -500,8 +502,9 @@ export default function UnitEdit({ unitType, productType }) {
     );
   };
 
-  const ddlReheatCompChanged = (e) => {
+  const ddlReheatCompChanged = async (e) => {
     setValue('ddlReheatComp', parseInt(e.target.value, 10));
+    await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
   };
 
   const txbOA_FilterPDChanged = async (e) => {
@@ -539,6 +542,30 @@ export default function UnitEdit({ unitType, productType }) {
     setValue(key, 1 - getValues(key));
     console.log(getValues(key));
   };
+
+  const isCkbValuesAndActuatorVisible = () =>
+    getValues('ddlPreheatComp') === IDs.intCompHWC_ID ||
+    getValues('ddlHeatingComp') === IDs.intCompHWC_ID ||
+    getValues('ddlReheatComp') === IDs.intCompHWC_ID ||
+    getValues('ddlCoolingComp') === IDs.intCompCWC_ID;
+
+  const isDdlElecHeaterVoltageVisible = () =>
+    getValues('ddlPreheatComp') === IDs.intCompElecHeaterID ||
+    getValues('ddlHeatingComp') === IDs.intCompElecHeaterID ||
+    getValues('ddlReheatComp') === IDs.intCompElecHeaterID;
+
+  const isCkbDehumidificationVisible = () =>
+    getValues('ddlCoolingComp') === IDs.intCompCWC_ID || getValues('ddlCoolingComp') === IDs.intCompDX_ID;
+  const isTxbReheatSetpointDBVisible = () =>
+    getValues('ddlReheatComp') !== IDs.intCompNA_ID &&
+    getValues('ddlCoolingComp') !== IDs.intCompNA_ID &&
+    ckbDehumidification;
+  const isDdlHeatElecHeaterInstallationVisible = () =>
+    getValues('ddlHeatingComp') === IDs.intCompElecHeaterID || getValues('ddlReheatComp') === IDs.intCompElecHeaterID;
+  const idDivHeatingFluidDesignConditionsVisible = () =>
+    getValues('ddlPreheatComp') === IDs.intCompHWC_ID ||
+    getValues('ddlHeatingComp') === IDs.intCompHWC_ID ||
+    getValues('ddlReheatComp') === IDs.intCompHWC_ID;
 
   return (
     <Container>
@@ -976,14 +1003,14 @@ export default function UnitEdit({ unitType, productType }) {
                       size="small"
                       name="ckbHeatPump"
                       label="Heat Pump"
-                      sx={getDisplay(getValues('ddlCoolingComp') !== naValueId)}
+                      sx={getDisplay(getValues('ddlCoolingComp') === IDs.intCompDX_ID)}
                       checked={getValues('ckbHeatPump')}
                     />
                     <RHFControlCheckbox
                       size="small"
                       name="ckbDehumidification"
                       label="Dehumidification"
-                      sx={getDisplay(getValues('ddlCoolingComp') !== naValueId)}
+                      sx={getDisplay(isCkbDehumidificationVisible())}
                       checked={ckbDehumidification}
                       onChange={() => {
                         setCkbDehumidification(!ckbDehumidification);
@@ -991,13 +1018,13 @@ export default function UnitEdit({ unitType, productType }) {
                     />
                     <RHFSelect
                       size="small"
-                      name="ddlReheatComp" 
+                      name="ddlReheatComp"
                       label="Reheat"
                       placeholder=""
-                      sx={getDisplay(ckbDehumidification && getValues('ddlCoolingComp') !== naValueId)}
+                      sx={getDisplay(ckbDehumidification && getValues('ddlCoolingComp') !== IDs.intCompNA_ID)}
                       onChange={ddlReheatCompChanged}
                     >
-                      {reheat.ddlReheatComp.map((item, index) => (
+                      {reheat?.ddlReheatComp.map((item, index) => (
                         <option key={index} value={item.id}>
                           {item.items}
                         </option>
@@ -1010,7 +1037,7 @@ export default function UnitEdit({ unitType, productType }) {
                       size="small"
                       name="ddlDamperAndActuator"
                       label="Dampers & Actuator"
-                      sx={getDisplay(ddlDamperAndActuatorVisible)}
+                      sx={getDisplay(getValues('ddlLocation') === IDs.intLocationIndoorID)}
                       onChange={(e) => {
                         setValue('ddlDamperAndActuator', parseInt(e.target.value, 10));
                       }}
@@ -1027,49 +1054,50 @@ export default function UnitEdit({ unitType, productType }) {
                       name="ddlElecHeaterVoltage"
                       label="Elec. Heater Voltage"
                       placeholder=""
-                      sx={getDisplay(preheatElectricHeater.divElecHeaterVoltageVisible)}
+                      sx={getDisplay(isDdlElecHeaterVoltageVisible())}
                       onChange={ddlElecHeaterVoltageChanged}
                     >
-                      {elecHeaterVoltage.ddlElecHeaterVoltage.map((item, index) => (
+                      {elecHeaterVoltage?.ddlElecHeaterVoltage.map((item, index) => (
                         <option key={index} value={item.id}>
                           {item.items}
                         </option>
                       ))}
                     </RHFSelect>
-                    {preheatElectricHeater.divPreheatElecHeaterInstallationVisible && (
-                      <RHFSelect
-                        size="small"
-                        name="ddlPreheatElecHeaterInstallation"
-                        label="Preheat Elec. Heater Installation"
-                        placeholder=""
-                      >
-                        {preheatElectricHeater.ddlPreheatElecHeaterInstallation.map((item, index) => (
+                    <RHFSelect
+                      size="small"
+                      name="ddlPreheatElecHeaterInstallation"
+                      label="Preheat Elec. Heater Installation"
+                      sx={getDisplay(getValues('ddlPreheatComp') === IDs.intCompElecHeaterID)}
+                      placeholder=""
+                    >
+                      {preheatElectricHeater.ddlPreheatElecHeaterInstallation !== undefined &&
+                        preheatElectricHeater.ddlPreheatElecHeaterInstallation.map((item, index) => (
                           <option key={index} value={item.id}>
                             {item.items}
                           </option>
                         ))}
-                      </RHFSelect>
-                    )}
+                    </RHFSelect>
 
                     <RHFSelect
                       size="small"
                       name="ddlHeatElecHeaterInstallation"
                       label="Heating Elec. Heater Installation"
-                      sx={getDisplay(heatElectricHeater.divHeatElecHeaterInstallationVisible)}
+                      sx={getDisplay(isDdlHeatElecHeaterInstallationVisible())}
                       onChange={(e) => setValue('ddlHeatElecHeaterInstallation', parseInt(e.target.value, 10))}
                       placeholder=""
                     >
-                      {heatElectricHeater.ddlHeatElecHeaterInstallation.map((item, index) => (
-                        <option key={index} value={item.id}>
-                          {item.items}
-                        </option>
-                      ))}
+                      {heatElectricHeater.ddlHeatElecHeaterInstallation !== undefined &&
+                        heatElectricHeater.ddlHeatElecHeaterInstallation.map((item, index) => (
+                          <option key={index} value={item.id}>
+                            {item.items}
+                          </option>
+                        ))}
                     </RHFSelect>
                     <RHFCheckbox
                       size="small"
                       name="ckbValveAndActuator"
                       label="Include Valves & Actuator"
-                      sx={getDisplay(valveAndActuator.divValveAndActuatorVisible)}
+                      sx={getDisplay(isCkbValuesAndActuatorVisible())}
                       checked={
                         isEdit ? unitInfo.ckbValveAndActuator === 1 : valveAndActuator.ckbValveAndActuatorChecked === 1
                       }
@@ -1157,7 +1185,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbCoolingSetpointDB"
                       label="Cooling LAT Setpoint DB (F):"
                       autoComplete="off"
-                      sx={getDisplay(getValues('ddlCoolingComp') !== naValueId)}
+                      sx={getDisplay(getValues('ddlCoolingComp') !== IDs.intCompNA_ID)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbCoolingSetpointDB');
                       }}
@@ -1167,7 +1195,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbCoolingSetpointWB"
                       label="Cooling LAT Setpoint WB (F):"
                       autoComplete="off"
-                      sx={getDisplay(getValues('ddlCoolingComp') !== naValueId)}
+                      sx={getDisplay(getValues('ddlCoolingComp') !== IDs.intCompNA_ID)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbCoolingSetpointWB');
                       }}
@@ -1177,7 +1205,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbHeatingSetpointDB"
                       label="Heating LAT Setpoint DB (F):"
                       autoComplete="off"
-                      sx={getDisplay(getValues('ddlHeatingComp') !== naValueId)}
+                      sx={getDisplay(getValues('ddlHeatingComp') !== IDs.intCompNA_ID)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbHeatingSetpointDB');
                       }}
@@ -1187,11 +1215,7 @@ export default function UnitEdit({ unitType, productType }) {
                       name="txbReheatSetpointDB"
                       label="Dehum. Reheat Setpoint DB (F):"
                       autoComplete="off"
-                      sx={getDisplay(
-                        getValues('ddlReheatComp') !== naValueId &&
-                          getValues('ddlCoolingComp') !== naValueId &&
-                          ckbDehumidification
-                      )}
+                      sx={getDisplay(isTxbReheatSetpointDBVisible())}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbReheatSetpointDB');
                       }}
@@ -1452,7 +1476,7 @@ export default function UnitEdit({ unitType, productType }) {
                 </Box>
               </CardContent>
             </Card>
-            <Card sx={{ ...getDisplay(divHeatingFluidDesignConditionsVisible), mb: 3 }}>
+            <Card sx={{ ...getDisplay(idDivHeatingFluidDesignConditionsVisible()), mb: 3 }}>
               <CardHeaderStyle title="Heating Fluid Design Conditions" />
               <CardContent sx={{ height: 'auto' }}>
                 <Box sx={{ display: 'grid', rowGap: 3, columnGap: 1 }}>

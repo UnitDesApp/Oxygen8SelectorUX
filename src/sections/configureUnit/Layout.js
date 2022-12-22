@@ -51,8 +51,6 @@ export default function Layout() {
     [isEdit, unitInfo, layoutInfo]
   );
 
-  console.log(defaultValues);
-
   const methods = useForm({
     resolver: yupResolver(layoutSchema),
     defaultValues,
