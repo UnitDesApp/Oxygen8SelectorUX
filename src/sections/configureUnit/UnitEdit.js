@@ -518,6 +518,8 @@ export default function UnitEdit({ unitType, productType }) {
 
   const ddlCoolingCompChanged = async (e) => {
     setValue('ddlCoolingComp', parseInt(e.target.value, 10));
+    if (getValues("ddlCoolingComp") !== IDs.intCompDX_ID) setCkbHeatPump(false);
+    if (getValues("ddlCoolingComp") === IDs.intCompNA_ID) setCkbDehumidification(false);
     await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
   };
 
