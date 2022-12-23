@@ -176,8 +176,8 @@ export default function UnitEdit({ unitType, productType }) {
     txbWinterPreheatSetpointDB: isEdit ? unitInfo.txbWinterPreheatSetpointDBText : 0,
     txbSummerCoolingSetpointDB: isEdit ? unitInfo.txbSummerCoolingSetpointDBText : 55,
     txbSummerCoolingSetpointWB: isEdit ? unitInfo.txbSummerCoolingSetpointWBText : 55,
-    txbWinterHeatingSetpointDB: isEdit ? unitInfo.txbUnitHeightText : 88,
-    txbSummerReheatSetpointDB: isEdit ? unitInfo.txbReheatSetpointDBText : 72,
+    txbWinterHeatingSetpointDB: isEdit ? unitInfo.txbWinterHeatingSetpointDBText : 72,
+    txbSummerReheatSetpointDB: isEdit ? unitInfo.txbSummerReheatSetpointDBText : 70,
     ddlOA_FilterModel: isEdit ? unitInfo.OA_FilterModelID : ddlOA_FilterModelValue,
     ddlRA_FilterModel: isEdit ? unitInfo.RA_FilterModelID : ddlRA_FilterModelValue,
     ddlPreheatComp: isEdit ? unitInfo.PreheatCompID : ddlPreheatCompValue,
@@ -203,11 +203,11 @@ export default function UnitEdit({ unitType, productType }) {
     ddlCoolingCoilHanding: isEdit ? unitInfo.CoolingCoilHandingID : ddlCoolingCoilHandingValue,
     ddlHeatingCoilHanding: isEdit ? unitInfo.HeatingCoilHandingID : ddlHeatingCoilHandingValue,
     ddlValveType: isEdit ? unitInfo.ValveTypeID : ddlValveTypeValue,
-    txbPreheatSetpointDB: isEdit ? unitInfo.txbWinterPreheatSetpointDBText : 0,
-    txbCoolingSetpointDB: isEdit ? unitInfo.txbSummerCoolingSetpointDBText : 55,
-    txbCoolingSetpointWB: isEdit ? unitInfo.txbSummerCoolingSetpointWBText : 54,
-    txbHeatingSetpointDB: isEdit ? unitInfo.txbWinterHeatingSetpointDBText : 72,
-    txbReheatSetpointDB: isEdit ? unitInfo.txbSummerReheatSetpointDBText : 70,
+    txbPreheatSetpointDB: isEdit ? unitInfo.txbPreheatSetpointDBText : 0,
+    txbCoolingSetpointDB: isEdit ? unitInfo.txbCoolingSetpointDBText : 55,
+    txbCoolingSetpointWB: isEdit ? unitInfo.txbCoolingSetpointWBText : 54,
+    txbHeatingSetpointDB: isEdit ? unitInfo.txbHeatingSetpointDBText : 72,
+    txbReheatSetpointDB: isEdit ? unitInfo.txbReheatSetpointDBText : 70,
     ckbPreheatHWC_UseCap: isEdit && unitInfo.isCustoms ? unitInfo.ckbPreheatHWC_UseCapValue === 1 : false,
     txbPreheatHWC_Cap: isEdit && unitInfo.isCustoms ? unitInfo.txbPreheatHWC_CapText : 0,
     ckbPreheatHWC_UseFlowRate: isEdit && unitInfo.isCustoms ? unitInfo.ckbPreheatHWC_UseFlowRateValue === 1 : false,
@@ -1228,42 +1228,42 @@ export default function UnitEdit({ unitType, productType }) {
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                     <RHFTextField
                       size="small"
-                      name="txbCoolingSetpointDB"
+                      name="txbSummerCoolingSetpointDB"
                       label="Cooling LAT Setpoint DB (F):"
                       autoComplete="off"
                       sx={getDisplay(getValues('ddlCoolingComp') !== IDs.intCompNA_ID)}
                       onChange={(e) => {
-                        setValueWithCheck(e, 'txbCoolingSetpointDB');
+                        setValueWithCheck(e, 'txbSummerCoolingSetpointDB');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbCoolingSetpointWB"
+                      name="txbSummerCoolingSetpointWB"
                       label="Cooling LAT Setpoint WB (F):"
                       autoComplete="off"
                       sx={getDisplay(getValues('ddlCoolingComp') !== IDs.intCompNA_ID)}
                       onChange={(e) => {
-                        setValueWithCheck(e, 'txbCoolingSetpointWB');
+                        setValueWithCheck(e, 'txbSummerCoolingSetpointWB');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbHeatingSetpointDB"
+                      name="txbWinterHeatingSetpointDB"
                       label="Heating LAT Setpoint DB (F):"
                       autoComplete="off"
                       sx={getDisplay(getValues('ddlHeatingComp') !== IDs.intCompNA_ID)}
                       onChange={(e) => {
-                        setValueWithCheck(e, 'txbHeatingSetpointDB');
+                        setValueWithCheck(e, 'txbWinterHeatingSetpointDB');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbReheatSetpointDB"
+                      name="txbSummerReheatSetpointDB"
                       label="Dehum. Reheat Setpoint DB (F):"
                       autoComplete="off"
                       sx={getDisplay(isTxbReheatSetpointDBVisible())}
                       onChange={(e) => {
-                        setValueWithCheck(e, 'txbReheatSetpointDB');
+                        setValueWithCheck(e, 'txbSummerReheatSetpointDB');
                       }}
                     />
                   </Box>
