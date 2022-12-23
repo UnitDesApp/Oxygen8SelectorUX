@@ -637,7 +637,8 @@ export default function Selection() {
                       <TableContainer component={Paper}>
                         <Table size="small">
                           <TableBody>
-                            {element.data?.map((row, index) => (
+                            {element.data && 
+                              element.data?.map((row, index) => (
                               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 {row.map((item, index) => (
                                   <TableCell key={index} component="th" scope="row" align="left">
