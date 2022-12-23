@@ -107,12 +107,14 @@ export default function AddNewUnit() {
   // const isComplete = activeStep === STEPS.length;
 
   const onSelectProductFamilyItem = (value) => {
+    console.log(value);
     setProjectTypeId(value);
     setUnitData({ ...unitData, productType: value });
     setActiveSelectStep(1);
   };
 
   const onSelectProductModelItem = (value) => {
+    console.log(value);
     setUnitData({ ...unitData, unitType: value });
   };
 

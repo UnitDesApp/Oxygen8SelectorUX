@@ -43,7 +43,6 @@ export const useUnitEditFormSchema = Yup.object().shape({
     ddlHeatingComp: Yup.number().required('This field is required!'),
     txbOA_FilterPD: Yup.number().required('This field is required!'),
     txbRA_FilterPD: Yup.number().required('This field is required!'),
-    ckbHeatPump: Yup.boolean(),
     ddlReheatComp: Yup.number().required('This field is required!'),
     ddlDamperAndActuator: Yup.number().required('This field is required!'),
     ddlElecHeaterVoltage: Yup.number().required('This field is required!'),
