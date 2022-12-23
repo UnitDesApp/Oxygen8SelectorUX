@@ -177,8 +177,8 @@ export default function UnitEdit({ unitType, productType }) {
     txbWinterPreheatSetpointDB: isEdit ? unitInfo.txbWinterPreheatSetpointDBText : 0,
     txbSummerCoolingSetpointDB: isEdit ? unitInfo.txbSummerCoolingSetpointDBText : 55,
     txbSummerCoolingSetpointWB: isEdit ? unitInfo.txbSummerCoolingSetpointWBText : 55,
-    txbWinterHeatingSetpointDB: isEdit ? unitInfo.txbUnitHeightText : 88,
-    txbSummerReheatSetpointDB: isEdit ? unitInfo.txbReheatSetpointDBText : 72,
+    txbWinterHeatingSetpointDB: isEdit ? unitInfo.txbWinterHeatingSetpointDBText : 72,
+    txbSummerReheatSetpointDB: isEdit ? unitInfo.txbReheatSetpointDBText : 70,
     ddlOA_FilterModel: isEdit ? unitInfo.OA_FilterModelID : ddlOA_FilterModelValue,
     ddlRA_FilterModel: isEdit ? unitInfo.RA_FilterModelID : ddlRA_FilterModelValue,
     ddlPreheatComp: isEdit ? unitInfo.PreheatCompID : ddlPreheatCompValue,
@@ -602,7 +602,6 @@ export default function UnitEdit({ unitType, productType }) {
     getValues('ddlPreheatComp') === IDs.intCompHWC_ID ||
     getValues('ddlHeatingComp') === IDs.intCompHWC_ID ||
     getValues('ddlReheatComp') === IDs.intCompHWC_ID;
-
   const isPreheatCompHWC = () => unitId === IDs.intUnitTypeAHU_ID && getValues("ddlPreheatComp") === IDs.intCompHWC_ID;
   const isCoolingCompCWC = () => getValues("ddlCoolingComp") === IDs.intCompCWC_ID;
   const isHeatingCompHWC = () => getValues("ddlHeatingComp") === IDs.intCompHWC_ID;
