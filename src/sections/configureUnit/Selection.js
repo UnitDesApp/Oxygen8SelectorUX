@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -62,7 +62,24 @@ export default function Selection() {
   const dispatch = useDispatch();
   const { state } = useLocation();
 
-  const { controlInfo, unitInfo, isLoading, viewSelectionInfo } = useSelector((state) => state.unit);
+  const { controlInfo, viewSelectionInfo } = useSelector((state) => state.unit);
+
+  const { preheatElectricHeater } = controlInfo;
+
+  useEffect(() => {
+    dispatch(
+      getViewSelectionInfo({
+        intUserID: localStorage.getItem('userId'),
+        intUAL: localStorage.getItem('UAL'),
+        intJobID: jobId,
+        intProductTypeID: state.productType,
+        intUnitTypeID: state.unitType,
+        intUnitNo: unitId === undefined ? -1 : unitId,
+        ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
+      })
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     pricingDetail,
@@ -99,22 +116,6 @@ export default function Selection() {
     // exhaustFanVisible,
     soundData,
   } = viewSelectionInfo;
-  const { preheatElectricHeater } = controlInfo;
-
-  useEffect(() => {
-    dispatch(
-      getViewSelectionInfo({
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
-        intProductTypeID: state.productType,
-        intUnitTypeID: state.unitType,
-        intUnitNo: unitId === undefined ? -1 : unitId,
-        ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
-      })
-    );
-  }, [dispatch, jobId, unitId, state, preheatElectricHeater]);
-
   // console.log(electricalRequirements);
 
   const SelectionInfo =
