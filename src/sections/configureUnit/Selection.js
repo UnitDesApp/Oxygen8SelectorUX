@@ -351,7 +351,7 @@ export default function Selection() {
           {
             groupName: 'Cooling DXC',
             direction: 'row',
-            visible: coolingDXC.coolingDXCVisible,
+            visible: coolingDXC.Visible,
             style: {},
             subGroups: [
               {
