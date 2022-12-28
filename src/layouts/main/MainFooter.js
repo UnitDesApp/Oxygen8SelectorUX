@@ -12,7 +12,7 @@ import SocialsButton from '../../components/SocialsButton';
 
 const LINKS = [
   {
-    headline: 'Minimal',
+    headline: 'Oxygen',
     children: [
       { name: 'About us', href: PATH_PAGE.about },
       { name: 'Contact us', href: PATH_PAGE.contact },
@@ -29,7 +29,7 @@ const LINKS = [
   {
     headline: 'Contact',
     children: [
-      { name: 'support@minimals.cc', href: '#' },
+      { name: 'support@oxygen8selector.cc', href: '#' },
       { name: 'Los Angeles, 359  Hidden Valley Road', href: '#' },
     ],
   },
@@ -56,11 +56,6 @@ export default function MainFooter() {
             <Logo sx={{ mx: { xs: 'auto', md: 'inherit' } }} />
           </Grid>
           <Grid item xs={8} md={3}>
-            <Typography variant="body2" sx={{ pr: { md: 5 } }}>
-              The starting point for your next project with Minimal UI Kit, built on the newest
-              version of Material-UI ©, ready to be customized to your style.
-            </Typography>
-
             <Stack
               direction="row"
               justifyContent={{ xs: 'center', md: 'flex-start' }}

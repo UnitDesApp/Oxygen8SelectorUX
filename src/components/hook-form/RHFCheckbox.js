@@ -8,7 +8,7 @@ import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 RHFCheckbox.propTypes = {
   name: PropTypes.string.isRequired,
-  defaultChecked: PropTypes.bool
+  defaultChecked: PropTypes.bool,
 };
 
 export function RHFCheckbox({ name, defaultChecked, ...other }) {
@@ -20,7 +20,7 @@ export function RHFCheckbox({ name, defaultChecked, ...other }) {
         <Controller
           name={name}
           control={control}
-          render={({ field }) => <Checkbox {...field} defaultChecked={defaultChecked}/>}
+          render={({ field }) => <Checkbox {...field} defaultChecked={defaultChecked} />}
         />
       }
       {...other}
@@ -64,6 +64,31 @@ export function RHFMultiCheckbox({ name, options, ...other }) {
           </FormGroup>
         );
       }}
+    />
+  );
+}
+
+// ----------------------------------------------------------------------
+
+RHFControlCheckbox.propTypes = {
+  name: PropTypes.string.isRequired,
+  checked: PropTypes.bool,
+  onChange: PropTypes.func,
+};
+
+export function RHFControlCheckbox({ name, checked, onChange, ...other }) {
+  const { control } = useFormContext();
+
+  return (
+    <FormControlLabel
+      control={
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => <Checkbox {...field} checked={checked} onChange={(e) => onChange(e)} />}
+        />
+      }
+      {...other}
     />
   );
 }

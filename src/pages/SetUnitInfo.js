@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { capitalCase } from 'change-case';
 import { useLocation, useParams } from 'react-router';
 // @mui
@@ -8,7 +8,7 @@ import { Container, Tab, Box, Tabs } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getInitUnitinfo } from '../redux/slices/unitReducer';
 // routes
-import { PATH_JOBS, PATH_JOB, PATH_UNIT } from '../routes/paths';
+import { PATH_JOBS, PATH_JOB } from '../routes/paths';
 // hooks
 import useTabs from '../hooks/useTabs';
 import useSettings from '../hooks/useSettings';
@@ -34,10 +34,13 @@ export default function SetUnitInfo() {
   const { themeStretch } = useSettings();
   const { jobId, unitId } = useParams();
   const { state } = useLocation();
-  // console.log(state);
   const dispatch = useDispatch();
-  const { currentTab, onChangeTab } = useTabs('Unit Info');
+  // console.log(state);
+  const [isSelection, setIsSelection] = useState({state: false, event: undefined});
+
+  const onSubmit = useRef();
   const { unitInfo } = useSelector((state) => state.unit);
+  const { currentTab, onChangeTab } = useTabs('Unit Info');
 
   useEffect(() => {
     dispatch(
@@ -50,7 +53,24 @@ export default function SetUnitInfo() {
         intUnitNo: unitId === undefined ? -1 : unitId,
       })
     );
-  }, [dispatch, state, jobId, unitId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onChangeTabHandler = async (e, newValue) => {
+    if (newValue === 'Selection' && isSelection !== 'Selection') {
+      await setIsSelection({state: true, event: e});
+      await onSubmit.current.click();
+    } else {
+      onChangeTab(e, newValue);
+    }
+  };
+
+  const onChangeTabInChild = async () => {
+    if (isSelection.state) {
+      await setIsSelection({state: false, event: null});
+      await onChangeTab(isSelection.event, 'Selection');
+    }
+  };
 
   const isLoading = JSON.stringify(unitInfo) === '{}';
 
@@ -59,7 +79,14 @@ export default function SetUnitInfo() {
         {
           value: 'Unit Info',
           icon: <Iconify icon={'fa-brands:unity'} width={20} height={20} />,
-          component: <UnitEdit unitType={state.unitType.toString()} productType={state.productType} />,
+          component: (
+            <UnitEdit
+              unitType={state.unitType.toString()}
+              productType={state.productType}
+              refSubmit={onSubmit}
+              onChangeTab={onChangeTabInChild}
+            />
+          ),
         },
         {
           value: 'Layout',
@@ -99,7 +126,7 @@ export default function SetUnitInfo() {
             variant="scrollable"
             scrollButtons="auto"
             value={currentTab}
-            onChange={onChangeTab}
+            onChange={onChangeTabHandler}
           >
             {ACCOUNT_TABS.map((tab) => (
               <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
