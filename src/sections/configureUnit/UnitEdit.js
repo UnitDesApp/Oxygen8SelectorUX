@@ -61,79 +61,114 @@ export default function UnitEdit({ unitType, productType, refSubmit, onChangeTab
   console.log(controlInfo, unitInfo);
 
   const {
-    ddlOrientation,
-    ddlOrientationValue,
-    ddlUnitModel,
-    ddlUnitModelValue,
-    divHeatExchCompVisible,
-    divOutdoorAirDesignConditionsVisible,
-    divReturnAirDesignConditionsVisible,
-    divSetpoint_1Visible,
-    divSubmittalItemsVisible,
-    ddlUnitType,
-    ddlUnitTypeValue,
-    ddlControlsPreference,
-    ddlControlsPreferenceValue,
-    ddlDamperAndActuator,
-    ddlDamperAndActuatorValue,
-    ddlDamperAndActuatorVisible,
-    ddlCoolingCoilHanding,
-    ddlCoolingCoilHandingValue,
-    ddlHeatingCoilHanding,
-    ddlHeatingCoilHandingValue,
-    ddlPreheatCoilHanding,
-    ddlPreheatCoilHandingValue,
-    ddlValveType,
-    ddlValveTypeValue,
-    ckbVoltageSPP,
-    divUnitBypassVisible,
-    divVoltageSPPVisible,
-    ddlLocation,
-    ddlLocationValue,
-    ckbDownshot,
-    ddlOA_FilterModel,
-    ddlOA_FilterModelValue,
-    ddlRA_FilterModel,
-    ddlRA_FilterModelValue,
-    ddlPreheatComp,
-    ddlPreheatCompValue,
-    ddlHeatExchComp,
-    ddlHeatExchCompValue,
-    ddlCoolingComp,
-    ddlCoolingCompValue,
-    ddlHeatingComp,
-    ddlHeatingCompValue,
-    ddlCoolingFluidType,
-    ddlCoolingFluidTypeValue,
-    ddlCoolingFluidConcentration,
-    ddlCoolingFluidConcentrationValue,
-    ddlHeatingFluidType,
-    ddlHeatingFluidTypeValue,
-    ddlHeatingFluidConcentration,
-    ddlHeatingFluidConcentrationValue,
-    divCoolingCompVisible,
-    divExhaustAirESPVisible,
-    divHeatingCompVisible,
-    divPreheatCompVisible,
-    divRA_FilterModelVisible,
-    divRA_FilterPDVisible,
-    divSummerReturnAirCFMVisible,
-    ddlUnitVoltage,
-    ddlUnitVoltageValue,
-    elecHeaterVoltage,
-    ckbBypass,
-    reheat,
-    cooling,
-    drainPan,
-    refrigerantInfo,
-    dehumidification,
-    valveAndActuator,
-    divDXC_MsgVisible,
-    heatElectricHeater,
-    preheatElectricHeater,
-    divPreheatSetpointVisible,
-    divHeatingFluidDesignConditionsVisible,
-  } = controlInfo;
+    // ddlOrientationDataTbl,
+    // ddlOrientationId,
+    // ddlUnitModelDataTbl,
+    // ddlUnitModelId,
+    // divHeatExchCompVisible,
+    // divOutdoorAirDesignConditionsVisible,
+    // divReturnAirDesignConditionsVisible,
+    // divSetpoint_1Visible,
+    // divDXRefrigSetpointVisible,
+    // divCondRefrigSetpointVisible,
+    // divSubmittalItemsVisible,
+    // ddlUnitTypeDataTbl,
+    // ddlUnitTypeId,
+    // ddlControlsPreferenceDataTbl,
+    // ddlControlsPreferenceId,
+    // ddlDamperAndActuatorDataTbl,
+    // ddlDamperAndActuatorId,
+    // // ddlDamperAndActuatorVisible,
+    // ddlCoolingCoilHandingDataTbl,
+    // ddlCoolingCoilHandingId,
+    // ddlHeatingCoilHandingDataTbl,
+    // ddlHeatingCoilHandingId,
+    // ddlPreheatCoilHandingDataTbl,
+    // ddlPreheatCoilHandingId,
+    // ddlValveTypeDataTbl,
+    // ddlValveTypeId,
+    // ckbVoltageSPP,
+    // divUnitBypassVisible,
+    // divVoltageSPPVisible,
+    // ddlLocationDataTbl,
+    // ddlLocationId,
+    // // ckbDownshot,
+    // ddlOA_FilterModelDataTbl,
+    // ddlOA_FilterModelId,
+    // ddlRA_FilterModelDataTbl,
+    // ddlRA_FilterModelId,
+    // ddlPreheatCompDataTbl,
+    // ddlPreheatCompId,
+    // ddlHeatExchCompDataTbl,
+    // ddlHeatExchCompId,
+    // ddlCoolingCompDataTbl,
+    // ddlCoolingCompId,
+    // ddlHeatingCompDataTbl,
+    // ddlHeatingCompId,
+    // ddlCoolingFluidTypeDataTbl,
+    // ddlCoolingFluidTypeId,
+    // ddlCoolingFluidConcentrationDataTbl,
+    // ddlCoolingFluidConcentrationId,
+    // ddlHeatingFluidTypeDataTbl,
+    // ddlHeatingFluidTypeId,
+    // ddlHeatingFluidConcentrationDataTbl,
+    // ddlHeatingFluidConcentrationId,
+    // divCoolingCompVisible,
+    // divExhaustAirESPVisible,
+    // divHeatingCompVisible,
+    // divPreheatCompVisible,
+    // divRA_FilterModelVisible,
+    // divRA_FilterPDVisible,
+    // divSummerReturnAirCFMVisible,
+    // ddlUnitVoltageDataTbl,
+    // ddlUnitVoltageId,
+    // divDXC_MsgVisible,
+    // ckbBypass,
+    // drainPanInfo,
+    
+    ualInfo,
+    locationInfo,
+    orientationInfo,
+    controlsPreferenceInfo,
+    unitTypeInfo,
+    unitModelInfo,
+    unitVoltageInfo,
+    unitVoltageSPPInfo,
+    bypassInfo,
+    summerSupplyAirCFMInfo,
+    summerReturnAirCFMInfo,
+    supplyAirESPInfo,
+    returnAirESPInfo,
+    outdoorAirFilterInfo,
+    returnAirFilterInfo,
+    preheatRequiredInfo,
+    componentInfo,
+    heatPumpInfo,
+    dehumidificationInfo,
+    reheatInfo,
+    damperAndActuatorInfo,
+    elecHeaterVoltageInfo,
+    preheatElecHeaterInstallationInfo,
+    heatElecHeaterInstallationInfo,
+    valveAndActuatorInfo,
+    drainPanInfo,
+    setpointsInfo,
+    coolingSetpointInfo,
+    heatingSetpointInfo,
+    reheatSetpointInfo,
+    customInputsInfo, 
+    coolingFluidDesignCondInfo,
+    heatingFluidDesignCondInfo,
+    dxCoilRefrigDesignCondInfo,
+    condCoilRefrigDesignCondInfo,
+    handingInfo,
+    preheatCoilHandingInfo,
+    coolingCoilHandingInfo,
+    heatingCoilHandingInfo,
+    valveTypeInfo,
+    supplyAirOpeningInfo,
+    remainingOpeningsInfo,
+} = controlInfo;
 
   /* Start State Variables *
   ----------------------------------------------------------------------- */
@@ -271,11 +306,6 @@ export default function UnitEdit({ unitType, productType, refSubmit, onChangeTab
   } = methods;
 
   const [successNotification, setOpenSuccessNotification] = React.useState(false);
-  const [txbCoolingSetpointDBVisible, setTxbCoolingSetpointDBVisible] = React.useState(divPreheatSetpointVisible);
-  const [txbCoolingSetpointWBVisible, setTxbCoolingSetpointWBVisible] = React.useState(divPreheatSetpointVisible);
-  const [txbHeatingSetpointDBVisible, setTxbHeatingSetpointDBVisible] = React.useState(divPreheatSetpointVisible);
-  const [txbReheatSetpointDBVisible, setTxbReheatSetpointDBVisible] = React.useState(divPreheatSetpointVisible);
-
   const handleSuccessNotificationClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -524,17 +554,9 @@ const ckbDehumidificationInfo = (e) => {
     if (result.preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) {
       setValue('ddlPreheatElecHeaterInstallationId', result.preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationId);
     }
-    if (result.preheatElectricHeater.electricHeaterVoltageInfo.divElecHeaterVoltageVisible) {
-      setValue(
-        'ddlElecHeaterVoltage',
-        result.preheatElectricHeater.electricHeaterVoltageInfo.ddlElecHeaterVoltageValue
-      );
+    if (result.elecHeaterVoltageInfo.divElecHeaterVoltageVisible) {
+      setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
     }
-
-    console.log(getValues('ddlPreheatElecHeaterInstallation'));
-    console.log(getValues('ddlElecHeaterVoltage'));
-
-    setTxbReheatSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
 
   const ddlHeatExchCompChanged = (e) => {
@@ -556,13 +578,11 @@ const ckbDehumidificationInfo = (e) => {
       result.heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible &&
         result.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId
     );
-
-    setTxbHeatingSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
   };
 
   const ddlReheatCompChanged = async (e) => {
-    setValue('ddlReheatComp', parseInt(e.target.value, 10));
-    setTxbReheatSetpointDBVisible(e.target.options[e.target.selectedIndex].text !== 'NA');
+    setValue('ddlReheatCompId', parseInt(e.target.value, 10));
+    await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
   };
 
   const txbOA_FilterPDChanged = async (e) => {
@@ -1123,7 +1143,7 @@ const ckbDehumidificationInfo = (e) => {
                       name="ddlElecHeaterVoltageId"
                       label="Elec. Heater Voltage"
                       placeholder=""
-                      sx={getDisplay(preheatElectricHeater.divElecHeaterVoltageVisible)}
+                      sx={getDisplay(elecHeaterVoltageInfo.divElecHeaterVoltageVisible)}
                       onChange={ddlElecHeaterVoltageChanged}
                     >
                       {elecHeaterVoltageInfo.ddlElecHeaterVoltageDataTbl?.map((item, index) => (
@@ -1246,22 +1266,12 @@ const ckbDehumidificationInfo = (e) => {
               <CardContent sx={{ height: 'auto' }}>
                 <Box sx={{ display: 'grid', rowGap: 2, columnGap: 1 }}>
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                  <RHFTextField
-                      size="small"
-                      name="txbPreheatSetpointDB"
-                      label="Cooling LAT Setpoint DB (F):"
-                      autoComplete="off"
-                      sx={getDisplay(divPreheatSetpointVisible)}
-                      onChange={(e) => {
-                        setValuewithCheck(e, 'txbPreheatSetpointDB');
-                      }}
-                    />                  
                     <RHFTextField
                       size="small"
                       name="txbSummerCoolingSetpointDB"
                       label="Cooling LAT Setpoint DB (F):"
                       autoComplete="off"
-                      sx={getDisplay(txbCoolingSetpointDBVisible)}
+                      sx={getDisplay(coolingSetpointInfo.divCoolingSetpointVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbSummerCoolingSetpointDB');
                       }}
@@ -1271,7 +1281,7 @@ const ckbDehumidificationInfo = (e) => {
                       name="txbSummerCoolingSetpointWB"
                       label="Cooling LAT Setpoint WB (F):"
                       autoComplete="off"
-                      sx={getDisplay(txbCoolingSetpointWBVisible)}
+                      sx={getDisplay(coolingSetpointInfo.divCoolingSetpointVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbSummerCoolingSetpointWB');
                       }}
@@ -1281,7 +1291,7 @@ const ckbDehumidificationInfo = (e) => {
                       name="txbWinterHeatingSetpointDB"
                       label="Heating LAT Setpoint DB (F):"
                       autoComplete="off"
-                      sx={getDisplay(txbHeatingSetpointDBVisible)}
+                      sx={getDisplay(heatingSetpointInfo.divHeatingSetpointVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbWinterHeatingSetpointDB');
                       }}
@@ -1291,7 +1301,7 @@ const ckbDehumidificationInfo = (e) => {
                       name="txbSummerReheatSetpointDB"
                       label="Dehum. Reheat Setpoint DB (F):"
                       autoComplete="off"
-                      sx={getDisplay(txbReheatSetpointDBVisible)}
+                      sx={getDisplay(reheatSetpointInfo.divReheatSetpointVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbSummerReheatSetpointDB');
                       }}
