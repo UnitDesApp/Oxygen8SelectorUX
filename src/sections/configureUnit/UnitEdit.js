@@ -45,8 +45,10 @@ const dblTempErrorValue = 0.0;
 UnitEdit.propTypes = {
   unitType: PropTypes.string,
   productType: PropTypes.number,
+  refSubmit: PropTypes.any,
+  onChangeTab: PropTypes.func
 };
-export default function UnitEdit({ unitType, productType }) {
+export default function UnitEdit({ unitType, productType, refSubmit, onChangeTab }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { jobId, unitId } = useParams();
@@ -170,14 +172,17 @@ export default function UnitEdit({ unitType, productType }) {
 
   /* Start State Variables *
   ----------------------------------------------------------------------- */
-  const [ckbDehumidification, setCkbDehumidification] = useState( isEdit ? unitInfo.ckbDehumidification === 1 : controlInfo.dehumidificationInfo.ckbDehumidification === 1 );
-  const [ckbHeatPump, setCkbHeatPump] = useState( isEdit ? unitInfo.ckbHeatPump === 1 : heatPumpInfo.ckbHeatPumpChecked === 1 );
-  const [ckbDownshot, setCkbDownshot] = useState( isEdit ? unitInfo.ckbDownshot === 1 : ckbDownshot === 1 );
+  const [ckbDehumidification, setCkbDehumidification] = useState(
+    isEdit ? unitInfo.ckbDehumidification === 1 : controlInfo.dehumidification.ckbDehumidification === 1
+  );
+  const [ckbHeatPump, setCkbHeatPump] = useState(
+    isEdit ? unitInfo.ckbHeatPump === 1 : cooling.ckbHeatPumpChecked === 1
+  );
+  const [ckbDownshot, setCkbDownshot] = useState(isEdit ? unitInfo.ckbDownshot === 1 : ckbDownshot === 1);
   // const [flag, setFlag] = useState(true);
 
   /* -----------------------------------------------------------------------
-  * End State Variables */
-  
+   * End State Variables */
 
   /* Start Initialize Form *
   ----------------------------------------------------------------------- */
@@ -332,9 +337,8 @@ const ckbDehumidificationInfo = (e) => {
 }
 
   /* -----------------------------------------------------------------------
-  * End Initialize Form */
+   * End Initialize Form */
 
-  
   /* Start Submit function *
   ----------------------------------------------------------------------- */
 
@@ -351,7 +355,7 @@ const ckbDehumidificationInfo = (e) => {
       ddlReturnAirOpeningId: layoutInfo.ddlReturnAirOpeningId,
       ddlReturnAirOpeningText: layoutInfo.ddlReturnAirOpeningText,
       ckbDehumidification,
-      ckbHeatPump
+      ckbHeatPump,
     };
 
     console.log('---------------------Start Submit Data----------------------');
@@ -360,11 +364,16 @@ const ckbDehumidificationInfo = (e) => {
 
     const result = await dispatch(unitReducer.saveUnitInfo(data));
     setOpenSuccessNotification(true);
+    onChangeTab();
     navigate(PATH_UNIT.edit(jobId, result), { state });
   };
 
+  // useImperativeHandle(refSubmit, () => ({
+  //   doSomething: onSubmit
+  // }));
+
   /* -------------------------------------------------------------------------
-  * End Submit Function */
+   * End Submit Function */
 
   /* Start Event Functions *
   -------------------------------------------------------------------------- */
@@ -555,9 +564,9 @@ const ckbDehumidificationInfo = (e) => {
   };
 
   const ddlCoolingCompChanged = async (e) => {
-    setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
-    if (getValues("ddlCoolingCompId") !== IDs.intCompDX_ID) setCkbHeatPump(false);
-    if (getValues("ddlCoolingCompId") === IDs.intCompNA_ID) setCkbDehumidification(false);
+    setValue('ddlCoolingComp', parseInt(e.target.value, 10));
+    if (getValues("ddlCoolingComp") !== IDs.intCompDX_ID) setCkbHeatPump(false);
+    if (getValues("ddlCoolingComp") === IDs.intCompNA_ID) setCkbDehumidification(false);
     await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
   };
 
@@ -608,12 +617,8 @@ const ckbDehumidificationInfo = (e) => {
     }
   };
 
-  const clickedCheckbox = (key) => {
-    setValue(key, 1 - getValues(key));
-  };
-
   /* -------------------------------------------------------------------------
-  * End Event Functions */
+   * End Event Functions */
 
   /* Start Visible Validation Functions *
   -------------------------------------------------------------------------- */
@@ -644,8 +649,13 @@ const ckbDehumidificationInfo = (e) => {
   const isHeatingCompHWC = () => getValues("ddlHeatingCompId") === IDs.intCompHWC_ID;
   const isReheatCompHWC = () => getValues("ddlReheatCompId") === IDs.intCompHWC_ID;
 
+  const isPreheatCompHWC = () => unitId === IDs.intUnitTypeAHU_ID && getValues("ddlPreheatComp") === IDs.intCompHWC_ID;
+  const isCoolingCompCWC = () => getValues("ddlCoolingComp") === IDs.intCompCWC_ID;
+  const isHeatingCompHWC = () => getValues("ddlHeatingComp") === IDs.intCompHWC_ID;
+  const isReheatCompHWC = () => getValues("ddlReheatComp") === IDs.intCompHWC_ID;
+
   /* -------------------------------------------------------------------------
-  * End Visible Validation Functions */
+   * End Visible Validation Functions */
 
   return (
     <Container>
@@ -653,6 +663,7 @@ const ckbDehumidificationInfo = (e) => {
         <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, mb: 3 }}>
           <LoadingButton
             type="submit"
+            ref={refSubmit}
             startIcon={<Iconify icon={isEdit ? 'bx:save' : 'carbon:add'} />}
             variant="contained"
             loading={isSubmitting}
@@ -689,16 +700,13 @@ const ckbDehumidificationInfo = (e) => {
                         </option>
                       ))}
                     </RHFSelect>
-                    <RHFCheckbox
+                    <RHFControlCheckbox
                       size="small"
                       name="ckbDownshot"
                       label="Downshot"
                       sx={getDisplay(ckbDownshot === 1)}
-                      defaultChecked={getValues('ckbDownshot') === 1}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        clickedCheckbox('ckbDownshot');
-                      }}
+                      checked={ckbDownshot}
+                      onChange={() => setCkbDownshot(!ckbDownshot)}
                     />
                     <RHFSelect
                       size="small"

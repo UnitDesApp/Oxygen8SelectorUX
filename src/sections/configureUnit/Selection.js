@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -62,7 +62,24 @@ export default function Selection() {
   const dispatch = useDispatch();
   const { state } = useLocation();
 
-  const { controlInfo, unitInfo, isLoading, viewSelectionInfo } = useSelector((state) => state.unit);
+  const { controlInfo, viewSelectionInfo } = useSelector((state) => state.unit);
+
+  const { preheatElectricHeater } = controlInfo;
+
+  useEffect(() => {
+    dispatch(
+      getViewSelectionInfo({
+        intUserID: localStorage.getItem('userId'),
+        intUAL: localStorage.getItem('UAL'),
+        intJobID: jobId,
+        intProductTypeID: state.productType,
+        intUnitTypeID: state.unitType,
+        intUnitNo: unitId === undefined ? -1 : unitId,
+        ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     pricingDetail,
@@ -99,22 +116,6 @@ export default function Selection() {
     // exhaustFanVisible,
     soundData,
   } = viewSelectionInfo;
-  const { preheatElectricHeater } = controlInfo;
-
-  useEffect(() => {
-    dispatch(
-      getViewSelectionInfo({
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
-        intProductTypeID: state.productType,
-        intUnitTypeID: state.unitType,
-        intUnitNo: unitId === undefined ? -1 : unitId,
-        ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
-      })
-    );
-  }, [dispatch, jobId, unitId, state, preheatElectricHeater]);
-
   // console.log(electricalRequirements);
 
   const SelectionInfo =
@@ -134,14 +135,22 @@ export default function Selection() {
             ],
           },
           {
-            groupName: 'Summary',
+            groupName: 'Unit Details',
             direction: 'column',
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             visible: unitDetailsVisible,
             subGroups: [
               {
-                title: 'Unit Details',
-                data: unitDetails?.map((item) => [item.cLabel, item.cValue]),
+                title: 'Unit Details 1',
+                data: unitDetails?.slice(0, 5).map((item) => [item.cLabel, item.cValue]),
+                visible: unitDetailsVisible,
+              },
+              {
+                title: 'Unit Details 2',
+                data: unitDetails?.slice(5).map((item) => [item.cLabel, item.cValue]),
                 visible: unitDetailsVisible,
               },
             ],
@@ -235,12 +244,8 @@ export default function Selection() {
             direction: 'row',
             visible: heatExchCORE.performanceVisible,
             style: {
-              // display: 'grid',
-              // gridTemplateColumns: {
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              //   md: 'repeat(2, 1fr)',
-              // },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(1, 1fr)',
             },
             subGroups: [
               {
@@ -324,7 +329,10 @@ export default function Selection() {
             groupName: 'Cooling CWC',
             direction: 'row',
             visible: coolingCWC.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -351,8 +359,11 @@ export default function Selection() {
           {
             groupName: 'Cooling DXC',
             direction: 'row',
-            visible: coolingDXC.Visible,
-            style: {},
+            visible: coolingDXC.coolingDXCVisible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -364,16 +375,18 @@ export default function Selection() {
                 // data: coolingDXC !== undefined  && coolingDXC.Entering.map((item) => [item.cLabel, item.cValue]),
                 data: coolingDXC?.Entering,
               },
-              {
-                title: 'Setpoint',
-                // data: coolingDXC !== undefined  && coolingDXC.Leaving.map((item) => [item.cLabel, item.cValue]),
-                data: coolingDXC?.Leaving,
-              },
-              {
-                title: 'Coil Performance',
-                // data: coolingDXC !== undefined  && coolingDXC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
-                data: coolingDXC?.PerfOutputs,
-              },
+              [
+                {
+                  title: 'Setpoint',
+                  // data: coolingDXC !== undefined  && coolingDXC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                  data: coolingDXC?.Leaving,
+                },
+                {
+                  title: 'Coil Performance',
+                  // data: coolingDXC !== undefined  && coolingDXC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
+                  data: coolingDXC?.PerfOutputs,
+                },
+              ],
               {
                 title: 'VRV Integration Kit',
                 // data: coolingDXC !== undefined  && coolingDXC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),
@@ -618,26 +631,13 @@ export default function Selection() {
                   background: '#efefef',
                 }}
               >
-                {item.subGroups.map((element, index) => (
-                  <Card
-                    key={element.title + index}
-                    sx={{ display: element.data !== undefined &&  element.data.length > 0 ? 'block' : 'none', m: '20px 30px!important' }}
-                  >
-                    <CardHeaderStyle
-                      title={
-                        <CardHeaderRHFTextFieldStyle
-                          size="small"
-                          name={element.title}
-                          label={element.title}
-                          variant={'filled'}
-                        />
-                      }
-                    />
-                    <CardContent>
-                      <TableContainer component={Paper}>
-                        <Table size="small">
-                          <TableBody>
-                            {element.data && element.data.map((row, index) => (
+                {item.subGroups.length === 1 ? (
+                  <>
+                    <TableContainer component={Paper}>
+                      <Table size="small">
+                        <TableBody>
+                          {item.subGroups[0].data &&
+                            item.subGroups[0].data.map((row, index) => (
                               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 {row.map((item, index) => (
                                   <TableCell key={index} component="th" scope="row" align="left">
@@ -646,12 +646,92 @@ export default function Selection() {
                                 ))}
                               </TableRow>
                             ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </CardContent>
-                  </Card>
-                ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </>
+                ) : (
+                  // eslint-disable-next-line valid-typeof
+                  item.subGroups.map((element, index) => (typeof element === 'Array') ? 
+                  <>
+                    {element.map((ele) =>
+                      <Card
+                        key={ele.title + index}
+                        sx={{
+                          display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
+                          m: '20px 30px!important',
+                        }}
+                      >
+                        <CardHeaderStyle
+                          title={
+                            <CardHeaderRHFTextFieldStyle
+                              size="small"
+                              name={ele.title}
+                              label={ele.title}
+                              variant={'filled'}
+                            />
+                          }
+                        />
+                        <CardContent>
+                          <TableContainer component={Paper}>
+                            <Table size="small">
+                              <TableBody>
+                                {ele.data &&
+                                  ele.data.map((row, index) => (
+                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                      {row.map((item, index) => (
+                                        <TableCell key={index} component="th" scope="row" align="left">
+                                          {item}
+                                        </TableCell>
+                                      ))}
+                                    </TableRow>
+                                  ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </>
+                  :( 
+                    <Card
+                      key={element.title + index}
+                      sx={{
+                        display: element.data !== undefined && element.data.length > 0 ? 'block' : 'none',
+                        m: '20px 30px!important',
+                      }}
+                    >
+                      <CardHeaderStyle
+                        title={
+                          <CardHeaderRHFTextFieldStyle
+                            size="small"
+                            name={element.title}
+                            label={element.title}
+                            variant={'filled'}
+                          />
+                        }
+                      />
+                      <CardContent>
+                        <TableContainer component={Paper}>
+                          <Table size="small">
+                            <TableBody>
+                              {element.data &&
+                                element.data.map((row, index) => (
+                                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    {row.map((item, index) => (
+                                      <TableCell key={index} component="th" scope="row" align="left">
+                                        {item}
+                                      </TableCell>
+                                    ))}
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </Stack>
             </Box>
           ))}
