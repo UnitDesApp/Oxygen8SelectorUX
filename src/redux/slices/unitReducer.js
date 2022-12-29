@@ -12,9 +12,9 @@ import { serverUrl } from '../../config';
 
 const initialState = {
   isLoading: true,
-  productType: [],
-  unitType: [],
-  productTypeUnitTypeLink: [],
+  productTypeDataTbl: [],
+  unitTypeDataTbl: [],
+  productTypeUnitTypeLinkDataTbl: [],
   controlInfo: {},
   unitInfo: {},
   layoutInfo: {},
@@ -30,139 +30,191 @@ const UnitSlice = createSlice({
       state.isLoading = true;
     },
     setJobInfo(state, actions) {
-      state.productType = actions.payload.productType;
-      state.unitType = actions.payload.unitType;
-      state.productTypeUnitTypeLink = actions.payload.productTypeUnitTypeLink;
+      state.productTypeDataTbl = actions.payload.productTypeDataTbl;
+      state.unitTypeDataTbl = actions.payload.unitTypeDataTbl;
+      state.productTypeUnitTypeLinkDataTbl = actions.payload.productTypeUnitTypeLinkDataTbl;
       state.isLoading = false;
     },
     setInitInfo(state, actions) {
-      const { controlInfo, unitInfo, visibleInfo } = actions.payload;
+      const { controlInfo, unitInfo } = actions.payload;
       state.controlInfo = {
-        ddlOrientation: controlInfo.mainControlData.ddlOrientation,
-        ddlOrientationValue: controlInfo.mainControlData.ddlOrientationValue,
-        ddlUnitModel: controlInfo.mainControlData.ddlUnitModel,
-        ddlUnitModelValue: controlInfo.mainControlData.ddlUnitModelValue,
-        divCustomVisible: visibleInfo.divCustomVisible,
-        divHeatExchCompVisible: visibleInfo.divHeatExchCompVisible,
-        divOutdoorAirDesignConditionsVisible: visibleInfo.divOutdoorAirDesignConditionsVisible,
-        divReturnAirDesignConditionsVisible: visibleInfo.divReturnAirDesignConditionsVisible,
-        divSetpoint_1Visible: visibleInfo.divSetpoint_1Visible,
-        divSubmittalItemsVisible: visibleInfo.divSubmittalItemsVisible,
-        ddlUnitType: controlInfo.ddlUnitType,
-        ddlUnitTypeValue: controlInfo.ddlUnitTypeValue,
-        ddlControlsPreference: controlInfo.ddlControlsPreference,
-        ddlControlsPreferenceValue: controlInfo.ddlControlsPreferenceValue,
-        ddlDamperAndActuator: controlInfo.ddlDamperAndActuator,
-        ddlDamperAndActuatorValue: controlInfo.ddlDamperAndActuatorValue,
-        ddlDamperAndActuatorVisible: controlInfo.ddlDamperAndActuatorVisible,
-        ddlCoolingCoilHanding: controlInfo.ddlCoolingCoilHanding,
-        ddlCoolingCoilHandingValue: controlInfo.ddlCoolingCoilHandingValue,
-        ddlHeatingCoilHanding: controlInfo.ddlHeatingCoilHanding,
-        ddlHeatingCoilHandingValue: controlInfo.ddlHeatingCoilHandingValue,
-        ddlPreheatCoilHanding: controlInfo.ddlPreheatCoilHanding,
-        ddlPreheatCoilHandingValue: controlInfo.ddlPreheatCoilHandingValue,
-        ddlValveType: controlInfo.ddlValveType,
-        ddlValveTypeValue: controlInfo.ddlValveTypeValue,
-        ckbVoltageSPP: controlInfo.ckbVoltageSPP,
-        divUnitBypassVisible: controlInfo.divUnitBypassVisible,
-        divVoltageSPPVisible: controlInfo.divVoltageSPPVisible,
-        ddlLocation: controlInfo.unitTypes.ddlLocation,
-        ddlLocationValue: controlInfo.unitTypes.ddlLocationValue,
-        ckbDownshot: controlInfo.unitTypes.ckbDownshot,
-        ddlOA_FilterModel: controlInfo.unitTypes.ddlOA_FilterModel,
-        ddlOA_FilterModelValue: controlInfo.unitTypes.ddlOA_FilterModelValue,
-        ddlRA_FilterModel: controlInfo.unitTypes.ddlRA_FilterModel,
-        ddlRA_FilterModelValue: controlInfo.unitTypes.ddlRA_FilterModelValue,
-        ddlPreheatComp: controlInfo.unitTypes.ddlPreheatComp,
-        ddlPreheatCompValue: controlInfo.unitTypes.ddlPreheatCompValue,
-        ddlHeatExchComp: controlInfo.unitTypes.ddlHeatExchComp,
-        ddlHeatExchCompValue: controlInfo.unitTypes.ddlHeatExchCompValue,
-        ddlCoolingComp: controlInfo.unitTypes.ddlCoolingComp,
-        ddlCoolingCompValue: controlInfo.unitTypes.ddlCoolingCompValue,
-        ddlHeatingComp: controlInfo.unitTypes.ddlHeatingComp,
-        ddlHeatingCompValue: controlInfo.unitTypes.ddlHeatingCompValue,
-        ddlCoolingFluidType: controlInfo.unitTypes.ddlCoolingFluidType,
-        ddlCoolingFluidTypeValue: controlInfo.unitTypes.ddlCoolingFluidTypeValue,
-        ddlCoolingFluidConcentration: controlInfo.unitTypes.ddlCoolingFluidConcentration,
-        ddlCoolingFluidConcentrationValue: controlInfo.unitTypes.ddlCoolingFluidConcentrationValue,
-        ddlHeatingFluidType: controlInfo.unitTypes.ddlHeatingFluidType,
-        ddlHeatingFluidTypeValue: controlInfo.unitTypes.ddlHeatingFluidTypeValue,
-        ddlHeatingFluidConcentration: controlInfo.unitTypes.ddlHeatingFluidConcentration,
-        ddlHeatingFluidConcentrationValue: controlInfo.unitTypes.ddlHeatingFluidConcentrationValue,
-        divCoolingCompVisible: controlInfo.unitTypes.divCoolingCompVisible,
-        divExhaustAirESPVisible: controlInfo.unitTypes.divExhaustAirESPVisible,
-        divHeatingCompVisible: controlInfo.unitTypes.divHeatingCompVisible,
-        divPreheatCompVisible: controlInfo.unitTypes.divPreheatCompVisible,
-        divRA_FilterModelVisible: controlInfo.unitTypes.divRA_FilterModelVisible,
-        divRA_FilterPDVisible: controlInfo.unitTypes.divRA_FilterPDVisible,
-        divSummerReturnAirCFMVisible: controlInfo.unitTypes.divSummerReturnAirCFMVisible,
-        reheat: controlInfo.unitTypes.componentOptions.reheat,
-        cooling: controlInfo.unitTypes.componentOptions.cooling,
-        drainPan: controlInfo.unitTypes.componentOptions.drainPan,
-        customInputs: controlInfo.unitTypes.componentOptions.customInputs,
-        reheatSetpoints: controlInfo.unitTypes.componentOptions.reheatSetpoints,
-        refrigerantInfo: controlInfo.unitTypes.componentOptions.refrigerantInfo,
-        dehumidification: controlInfo.unitTypes.componentOptions.dehumidification,
-        valveAndActuator: controlInfo.unitTypes.componentOptions.valveAndActuator,
-        divDXC_MsgVisible: controlInfo.unitTypes.componentOptions.divDXC_MsgVisible,
-        heatElectricHeater: controlInfo.unitTypes.componentOptions.heatElectricHeater,
-        preheatElectricHeater: controlInfo.unitTypes.componentOptions.preheatElectricHeater,
-        electricHeaterVoltage: controlInfo.unitTypes.componentOptions.electricHeaterVoltage,
-        divPreheatSetpointVisible: controlInfo.unitTypes.componentOptions.divPreheatSetpointVisible,
-        divCoolingSetpointVisible: controlInfo.unitTypes.componentOptions.divCoolingSetpointVisible,
-        divHeatingSetpointVisible: controlInfo.unitTypes.componentOptions.divHeatingSetpointVisible,
-        divSetpointsVisible: controlInfo.unitTypes.componentOptions.divSetpointsVisible,
-        divHeatingFluidDesignConditionsVisible:
-          controlInfo.unitTypes.componentOptions.divHeatingFluidDesignConditionsVisible,
-        ddlUnitVoltage: controlInfo.mainControlData.others.ddlUnitVoltage,
-        ddlUnitVoltageValue: controlInfo.mainControlData.others.ddlUnitVoltageValue,
-        elecHeaterVoltage: controlInfo.mainControlData.others.elecHeaterVoltage,
-        ckbBypass: controlInfo.mainControlData.others.ckbBypass,
-        btnNextVisible: visibleInfo.btnNextVisible,
-        btnOutputVisible: visibleInfo.btnOutputVisible,
-        btnQuoteVisible: visibleInfo.btnQuoteVisible,
-        btnSubmittalsVisible: visibleInfo.btnSubmittalsVisible,
-        btnViewModelOptionVisible: visibleInfo.btnViewModelOptionVisible,
-        divNotesVisible: visibleInfo.divNotesVisible,
-        divUnitOpeningsMsgVisible: visibleInfo.divUnitOpeningsMsgVisible,
-        div_hx_fp_hiddenVisible: visibleInfo.div_hx_fp_hiddenVisible,
-        ddlHanding: controlInfo.ddlHanding,
+        // ddlUnitTypeDataTbl: controlInfo.ddlUnitTypeDataTbl,
+        // ddlUnitTypeId: controlInfo.ddlUnitTypeId,
+        // ddlOrientationDataTbl: controlInfo.mainControlData.ddlOrientationDataTbl,
+        // ddlOrientationId: controlInfo.mainControlData.ddlOrientationId,
+        // ddlUnitModelDataTbl: controlInfo.mainControlData.ddlUnitModelDataTbl,
+        // ddlUnitModelId: controlInfo.mainControlData.ddlUnitModelId,
+        // divCustomVisible: visibleInfo.divCustomVisible,
+        // divHeatExchCompVisible: visibleInfo.divHeatExchCompVisible,
+        // divOutdoorAirDesignConditionsVisible: visibleInfo.divOutdoorAirDesignConditionsVisible,
+        // divReturnAirDesignConditionsVisible: visibleInfo.divReturnAirDesignConditionsVisible,
+        // divSetpoint_1Visible: visibleInfo.divSetpoint_1Visible,
+        // divSubmittalItemsVisible: visibleInfo.divSubmittalItemsVisible,
+        // ddlControlsPreferenceDataTbl: controlInfo.ddlControlsPreferenceDataTbl,
+        // ddlControlsPreferenceId: controlInfo.ddlControlsPreferenceId,
+        // ddlDamperAndActuatorDataTbl: controlInfo.ddlDamperAndActuatorDataTbl,
+        // ddlDamperAndActuatorId: controlInfo.ddlDamperAndActuatorId,
+        // ddlDamperAndActuatorVisible: controlInfo.ddlDamperAndActuatorVisible,
+        // ddlCoolingCoilHandingDataTbl: controlInfo.ddlCoolingCoilHandingDataTbl,
+        // ddlCoolingCoilHandingId: controlInfo.ddlCoolingCoilHandingId,
+        // ddlHeatingCoilHandingDataTbl: controlInfo.ddlHeatingCoilHandingDataTbl,
+        // ddlHeatingCoilHandingId: controlInfo.ddlHeatingCoilHandingId,
+        // ddlPreheatCoilHandingDataTbl: controlInfo.ddlPreheatCoilHandingDataTbl,
+        // ddlPreheatCoilHandingId: controlInfo.ddlPreheatCoilHandingId,
+        // ddlValveTypeDataTbl: controlInfo.ddlValveTypeDataTbl,
+        // ddlValveTypeId: controlInfo.ddlValveTypeId,
+        // ckbVoltageSPP: controlInfo.ckbVoltageSPP,
+        // divUnitBypassVisible: controlInfo.divUnitBypassVisible,
+        // divVoltageSPPVisible: controlInfo.divVoltageSPPVisible,
+        // ddlLocationDataTbl: controlInfo.unitTypes.ddlLocationDataTbl,
+        // ddlLocationId: controlInfo.unitTypes.ddlLocationId,
+        // ckbDownshot: controlInfo.unitTypes.ckbDownshot,
+        // ddlOA_FilterModelDataTbl: controlInfo.unitTypes.ddlOA_FilterModelDataTbl,
+        // ddlOA_FilterModelId: controlInfo.unitTypes.ddlOA_FilterModelId,
+        // ddlRA_FilterModelDataTbl: controlInfo.unitTypes.ddlRA_FilterModelDataTbl,
+        // ddlRA_FilterModelId: controlInfo.unitTypes.ddlRA_FilterModelId,
+        // ddlPreheatCompDataTbl: controlInfo.unitTypes.ddlPreheatCompDataTbl,
+        // ddlPreheatCompId: controlInfo.unitTypes.ddlPreheatCompId,
+        // ddlHeatExchCompDataTbl: controlInfo.unitTypes.ddlHeatExchCompDataTbl,
+        // ddlHeatExchCompId: controlInfo.unitTypes.ddlHeatExchCompId,
+        // ddlCoolingCompDataTbl: controlInfo.unitTypes.ddlCoolingCompDataTbl,
+        // ddlCoolingCompId: controlInfo.unitTypes.ddlCoolingCompId,
+        // ddlHeatingCompDataTbl: controlInfo.unitTypes.ddlHeatingCompDataTbl,
+        // ddlHeatingCompId: controlInfo.unitTypes.ddlHeatingCompId,
+        // ddlCoolingFluidTypeDataTbl: controlInfo.unitTypes.ddlCoolingFluidTypeDataTbl,
+        // ddlCoolingFluidTypeId: controlInfo.unitTypes.ddlCoolingFluidTypeId,
+        // ddlCoolingFluidConcentrationDataTbl: controlInfo.unitTypes.ddlCoolingFluidConcentrationDataTbl,
+        // ddlCoolingFluidConcentrationId: controlInfo.unitTypes.ddlCoolingFluidConcentrationId,
+        // ddlHeatingFluidTypeDataTbl: controlInfo.unitTypes.ddlHeatingFluidTypeDataTbl,
+        // ddlHeatingFluidTypeId: controlInfo.unitTypes.ddlHeatingFluidTypeId,
+        // ddlHeatingFluidConcentrationDataTbl: controlInfo.unitTypes.ddlHeatingFluidConcentrationDataTbl,
+        // ddlHeatingFluidConcentrationId: controlInfo.unitTypes.ddlHeatingFluidConcentrationId,
+        // divCoolingCompVisible: controlInfo.unitTypes.divCoolingCompVisible,
+        // divExhaustAirESPVisible: controlInfo.unitTypes.divExhaustAirESPVisible,
+        // divHeatingCompVisible: controlInfo.unitTypes.divHeatingCompVisible,
+        // divPreheatCompVisible: controlInfo.unitTypes.divPreheatCompVisible,
+        // divRA_FilterModelVisible: controlInfo.unitTypes.divRA_FilterModelVisible,
+        // divRA_FilterPDVisible: controlInfo.unitTypes.divRA_FilterPDVisible,
+        // divSummerReturnAirCFMVisible: controlInfo.unitTypes.divSummerReturnAirCFMVisible,
+        // // reheatInfo: controlInfo.unitTypes.componentOptions.reheatInfo,
+        // coolingInfo: controlInfo.unitTypes.componentOptions.coolingInfo,
+        // drainPanInfo: controlInfo.unitTypes.componentOptions.drainPanInfo,
+        // customInputs: controlInfo.unitTypes.componentOptions.customInputs,
+        // reheatSetpoints: controlInfo.unitTypes.componentOptions.reheatSetpoints,
+        // dehumidification: controlInfo.unitTypes.componentOptions.dehumidification,
+        // // valveAndActuatorInfo: controlInfo.unitTypes.componentOptions.valveAndActuatorInfo,
+        // divDXC_MsgVisible: controlInfo.unitTypes.componentOptions.divDXC_MsgVisible,
+        // // elecHeaterVoltageInfo: controlInfo.unitTypes.componentOptions.elecHeaterVoltageInfo,
+        // // preheatElecHeaterInstallationInfo: controlInfo.unitTypes.componentOptions.preheatElecHeaterInstallationInfo,
+        // // heatElecHeaterInstallationInfo: controlInfo.unitTypes.componentOptions.heatElecHeaterInstallationInfo,
+        // ddlElecHeaterVoltageId: controlInfo.unitTypes.componentOptions.ddlElecHeaterVoltageId,
+        // ddlPreheatElecHeaterInstallationId: controlInfo.unitTypes.componentOptions.ddlPreheatElecHeaterInstallationId,
+        // ddlHeatElecHeaterInstallationId: controlInfo.unitTypes.componentOptions.ddlHeatElecHeaterInstallationId,
+        // divPreheatSetpointVisible: controlInfo.unitTypes.componentOptions.divPreheatSetpointVisible,
+        // divCoolingSetpointVisible: controlInfo.unitTypes.componentOptions.divCoolingSetpointVisible,
+        // divHeatingSetpointVisible: controlInfo.unitTypes.componentOptions.divHeatingSetpointVisible,
+        // divSetpointsVisible: controlInfo.unitTypes.componentOptions.divSetpointsVisible,
+        // divHeatingFluidDesignConditionsVisible: controlInfo.unitTypes.componentOptions.divHeatingFluidDesignConditionsVisible,
+        // // divCoolingFluidDesignConditionsVisible: controlInfo.unitTypes.componentOptions.coolingInfo.divCoolingFluidDesignConditionsVisible,
+        // divDXRefrigSetpointVisible: controlInfo.unitTypes.componentOptions.divDXRefrigSetpointVisible,
+        // divCondRefrigSetpointVisible: controlInfo.unitTypes.componentOptions.divDXRefrigSetpointVisible,
+        // // ddlUnitVoltageDataTbl: controlInfo.mainControlData.others.ddlUnitVoltageDataTbl,
+        // // ddlUnitVoltageId: controlInfo.mainControlData.others.ddlUnitVoltageId,
+        // // ckbBypass: controlInfo.mainControlData.others.ckbBypass,
+        // btnNextVisible: visibleInfo.btnNextVisible,
+        // btnOutputVisible: visibleInfo.btnOutputVisible,
+        // btnQuoteVisible: visibleInfo.btnQuoteVisible,
+        // btnSubmittalsVisible: visibleInfo.btnSubmittalsVisible,
+        // btnViewModelOptionVisible: visibleInfo.btnViewModelOptionVisible,
+        // divNotesVisible: visibleInfo.divNotesVisible,
+        // divUnitOpeningsMsgVisible: visibleInfo.divUnitOpeningsMsgVisible,
+        // div_hx_fp_hiddenVisible: visibleInfo.div_hx_fp_hiddenVisible,
+        // ddlHandingDataTbl: controlInfo.ddlHandingDataTbl,
+
+        ualInfo: controlInfo.ualInfo,
+        locationInfo: controlInfo.locationInfo,
+        downshotInfo: controlInfo.downshotInfo,
+        orientationInfo: controlInfo.orientationInfo,
+        controlsPreferenceInfo: controlInfo.controlsPreferenceInfo,
+        unitTypeInfo: controlInfo.unitTypeInfo,
+        unitModelInfo: controlInfo.unitModelInfo,
+        unitVoltageInfo: controlInfo.unitVoltageInfo,
+        unitVoltageSPPInfo: controlInfo.unitVoltageSPPInfo,
+        bypassInfo: controlInfo.bypassInfo,
+        summerSupplyAirCFMInfo: controlInfo.summerSupplyAirCFMInfo,
+        summerReturnAirCFMInfo: controlInfo.summerReturnAirCFMInfo,
+        supplyAirESPInfo: controlInfo.supplyAirESPInfo,
+        returnAirESPInfo: controlInfo.returnAirESPInfo,
+        outdoorAirFilterInfo: controlInfo.outdoorAirFilterInfo,
+        returnAirFilterInfo: controlInfo.returnAirFilterInfo,
+        preheatRequiredInfo: controlInfo.preheatRequiredInfo,
+        componentInfo: controlInfo.componentInfo,
+        heatPumpInfo: controlInfo.heatPumpInfo,
+        dehumidificationInfo :controlInfo.dehumidificationInfo,
+        reheatInfo :controlInfo.reheatInfo,
+        damperAndActuatorInfo :controlInfo.damperAndActuatorInfo,
+        elecHeaterVoltageInfo : controlInfo.elecHeaterVoltageInfo,
+        preheatElecHeaterInstallationInfo :  controlInfo.preheatElecHeaterInstallationInfo,
+        heatElecHeaterInstallationInfo: controlInfo.heatElecHeaterInstallationInfo,
+        valveAndActuatorInfo : controlInfo.valveAndActuatorInfo,
+        drainPanInfo : controlInfo.drainPanInfo,
+        setpointsInfo :controlInfo.setpointsInfo,
+        preheatSetpointInfo :controlInfo.preheatSetpointInfo,
+        coolingSetpointInfo :controlInfo.coolingSetpointInfo,
+        heatingSetpointInfo : controlInfo.heatingSetpointInfo,
+        reheatSetpointInfo:  controlInfo.reheatSetpointInfo,
+        customInputsInfo: controlInfo.customInputsInfo, 
+        coolingFluidDesignCondInfo:  controlInfo.coolingFluidDesignCondInfo,
+        heatingFluidDesignCondInfo : controlInfo.heatingFluidDesignCondInfo,
+        dxCoilRefrigDesignCondInfo:  controlInfo.dxCoilRefrigDesignCondInfo,
+        condCoilRefrigDesignCondInfo: controlInfo.condCoilRefrigDesignCondInfo,
+        handingInfo: controlInfo.handingInfo,
+        preheatCoilHandingInfo: controlInfo.preheatCoilHandingInfo,
+        coolingCoilHandingInfo: controlInfo.coolingCoilHandingInfo,
+        heatingCoilHandingInfo: controlInfo.heatingCoilHandingInfo,
+        valveTypeInfo: controlInfo.valveTypeInfo,
+        supplyAirOpeningInfo:  controlInfo.supplyAirOpeningInfo,
+        remainingOpeningsInfo:  controlInfo.remainingOpeningsInfo,
       };
       state.unitInfo = {
         ...unitInfo,
-        ddlHandingValue: unitInfo.isLayout && unitInfo.ddlHandingValue !== 0 ? unitInfo.ddlHandingValue : 1,
-        ddlSupplyAirOpeningValue:
-          unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningValue !== 0 ? unitInfo.ddlSupplyAirOpeningValue : 1,
+        ddlHandingId: unitInfo.isLayout && unitInfo.ddlHandingId !== 0 ? unitInfo.ddlHandingId : 1,
+        ddlSupplyAirOpeningId:
+          unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningId !== 0 ? unitInfo.ddlSupplyAirOpeningId : 1,
         ddlSupplyAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningText !== '' ? unitInfo.ddlSupplyAirOpeningText : '1',
-        ddlExhaustAirOpeningValue:
-          unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningValue !== 0 ? unitInfo.ddlExhaustAirOpeningValue : 1,
+        ddlExhaustAirOpeningId:
+          unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningId!== 0 ? unitInfo.ddlExhaustAirOpeningId : 1,
         ddlExhaustAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningText !== '' ? unitInfo.ddlExhaustAirOpeningText : '2',
-        ddlOutdoorAirOpeningValue:
-          unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningValue !== 0 ? unitInfo.ddlOutdoorAirOpeningValue : 1,
+        ddlOutdoorAirOpeningId:
+          unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningId !== 0 ? unitInfo.ddlOutdoorAirOpeningId : 1,
         ddlOutdoorAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningText !== '' ? unitInfo.ddlOutdoorAirOpeningText : '4',
-        ddlReturnAirOpeningValue:
-          unitInfo.isLayout && unitInfo.ddlReturnAirOpeningValue !== 0 ? unitInfo.ddlReturnAirOpeningValue : 1,
+        ddlReturnAirOpeningId:
+          unitInfo.isLayout && unitInfo.ddlReturnAirOpeningId !== 0 ? unitInfo.ddlReturnAirOpeningId: 1,
         ddlReturnAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText : '3',
+        ddlSupplyAirOpeningDataTbl: unitInfo.ddlSupplyAirOpeningDataTbl,
+        ddlOutdoorAirOpeningDataTbl: unitInfo.ddlOutdoorAirOpeningDataTbl,
+        ddlExhaustAirOpeningDataTbl: unitInfo.ddlExhaustAirOpeningDataTbl,
+        ddlReturnAirOpeningDataTbl: unitInfo.ddlReturnAirOpeningDataTbl,
       };
       state.layoutInfo = {
-        ddlHanding: controlInfo.ddlHanding,
-        ddlHandingID: controlInfo.ddlHanding[0].id,
-        ddlSupplyAirOpeningData: controlInfo.ddlSupplyAirOpeningData,
-        ddlSupplyAirOpeningText: controlInfo.ddlSupplyAirOpeningText,
-        ddlSupplyAirOpeningValue: controlInfo.ddlSupplyAirOpeningValue,
-        ddlExhaustAirOpeningData: controlInfo.ddlExhaustAirOpeningData,
-        ddlExhaustAirOpeningText: controlInfo.ddlExhaustAirOpeningText,
-        ddlExhaustAirOpeningValue: controlInfo.ddlExhaustAirOpeningValue,
-        ddlOutdoorAirOpeningData: controlInfo.ddlOutdoorAirOpeningData,
-        ddlOutdoorAirOpeningText: controlInfo.ddlOutdoorAirOpeningText,
-        ddlOutdoorAirOpeningValue: controlInfo.ddlOutdoorAirOpeningValue,
-        ddlReturnAirOpeningData: controlInfo.ddlReturnAirOpeningData,
-        ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
-        ddlReturnAirOpeningValue: controlInfo.ddlReturnAirOpeningValue,
+        // ddlHandingDataTbl: controlInfo.ddlHandingDataTbl,
+        // ddlHandingId: controlInfo.ddlHandingDataTbl[0].id,
+        // ddlSupplyAirOpeningDataTbl: controlInfo.ddlSupplyAirOpeningDataTbl,
+        // ddlSupplyAirOpeningText: controlInfo.ddlSupplyAirOpeningText,
+        // ddlSupplyAirOpeningId: controlInfo.ddlSupplyAirOpeningId,
+        // ddlExhaustAirOpeningDataTbl: controlInfo.ddlExhaustAirOpeningDataTbl,
+        // ddlExhaustAirOpeningText: controlInfo.ddlExhaustAirOpeningText,
+        // ddlExhaustAirOpeningId: controlInfo.ddlExhaustAirOpeningId,
+        // ddlOutdoorAirOpeningDataTbl: controlInfo.ddlOutdoorAirOpeningDataTbl,
+        // ddlOutdoorAirOpeningText: controlInfo.ddlOutdoorAirOpeningText,
+        // ddlOutdoorAirOpeningId: controlInfo.ddlOutdoorAirOpeningId,
+        // ddlReturnAirOpeningDataTbl: controlInfo.ddlReturnAirOpeningDataTbl,
+        // ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
+        // ddlReturnAirOpeningId: controlInfo.ddlReturnAirOpeningId,
       };
       state.isLoading = false;
     },
@@ -170,145 +222,158 @@ const UnitSlice = createSlice({
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        ddlOrientation: data.ddlOrientation,
-        ddlOrientationValue: data.ddlOrientationValue,
-        ddlDamperAndActuatorValue: data.ddlDamperAndActuatorValue,
-        ddlDamperAndActuatorVisible: data.divDamperAndActuatorVisible,
-        ddlUnitModel: data.ddlUnitModel,
-        ddlUnitModelValue: data.ddlUnitModelValue,
-        ddlUnitVoltage: data.others.ddlUnitVoltage,
-        ddlUnitVoltageValue: data.others.ddlUnitVoltageValue,
-        elecHeaterVoltage: data.others.elecHeaterVoltage,
-        ckbBypass: data.others.ckbBypass.ckbBypassChecked,
-        ckbDownshot: data.downshot,
-        electricHeaterVoltage: data.electricHeaterVoltage,
-        preheatElectricHeater: data.preheatElectricHeater,
-      };
-
-      state.unitInfo = {
-        ...state.unitInfo,
-        txbSupplyAirESP: data.txbSupplyAirESP,
-        txbExhaustAirESP: data.txbExhaustAirESP,
+        orientationInfo: data.orientationInfo,
+        downshotInfo: data.downshotInfo,
+        unitModelInfo: data.unitModelInfo,
+        damperAndActuatorInfo: data.damperAndActuatorInfo,
+        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+        preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
+        bypassInfo: data.bypassInfo,
+        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
       };
     },
     ddlOrientationChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        ddlUnitModel: data.ddlUnitModel,
-        ddlUnitModelValue: data.ddlUnitModelValue,
-        ddlUnitVoltage: data.others.ddlUnitVoltage,
-        ddlUnitVoltageValue: data.others.ddlUnitVoltageValue,
-        elecHeaterVoltage: data.others.elecHeaterVoltage,
-        ckbBypass: data.others.ckbBypass.ckbBypassChecked,
-        ddlSupplyAirOpening: data.ddlSupplyAirOpening,
-      };
-
-      state.unitInfo = {
-        ...state.unitInfo,
-        ddlSupplyAirOpeningValue: data.ddlSupplyAirOpeningValue,
-        ddlSupplyAirOpeningText: data.ddlSupplyAirOpeningText,
+        unitModelInfo: data.unitModelInfo,
+        bypassInfo: data.bypassInfo,
+        supplyAirOpeningInfo: data.others.supplyAirOpeningInfo,
       };
     },
     txbSummerSupplyAirCFMChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        ddlOrientation: data.ddlOrientation,
-        ddlOrientationValue: data.ddlOrientationValue,
-        ddlUnitModel: data.ddlUnitModel,
-        ddlUnitModelValue: data.ddlUnitModelValue,
-        ddlUnitVoltage: data.others.ddlUnitVoltage,
-        ddlUnitVoltageValue: data.others.ddlUnitVoltageValue,
-        ddlSupplyAirOpening: data.ddlSupplyAirOpening,
-        elecHeaterVoltage: data.others.elecHeaterVoltage,
-        ckbBypass: data.others.ckbBypass,
-      };
-
-      state.unitInfo = {
-        ...state.unitInfo,
-        txbSummerSupplyAirCFM: data.txbSummerSupplyAirCFM,
-        txbSummerReturnAirCFM: data.txbSummerReturnAirCFM,
-        ddlSupplyAirOpeningValue: data.ddlSupplyAirOpeningValue,
-        ddlSupplyAirOpeningText: data.ddlSupplyAirOpeningText,
+        summerSupplyAirCFMInfo: data.summerSupplyAirCFMInfo,
+        orientationInfo: data.orientationInfo,
+        unitModelInfo: data.unitModelInfo,
+        bypassInfo: data.bypassInfo,
+        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+        remainingOpeningsInfo: data.remainingOpeningsInfo,
       };
     },
     txbSummerReturnAirCFMChanged(state, actions) {
-      state.unitInfo = {
-        ...state.unitInfo,
-        txbSummerReturnAirCFM: actions.payload,
+      state.controlInfo = {
+        ...state.controlInfo,
+        summerReturnAirCFMInfo: actions.payload.summerReturnAirCFMInfo,
       };
     },
     txbSupplyAirESPChanged(state, actions) {
-      state.unitInfo = {
-        ...state.unitInfo,
-        txbSupplyAirESP: actions.payload,
+      state.controlInfo = {
+        ...state.controlInfo,
+        supplyAirOpeningInfo: actions.payload,
       };
     },
     txbExhaustAirESPChanged(state, actions) {
-      state.unitInfo = {
-        ...state.unitInfo,
-        txbExhaustAirESP: actions.payload,
+      state.controlInfo = {
+        ...state.controlInfo,
+        exhaustAirESPInfo: actions.payload,
       };
     },
     ddlUnitModelChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        ddlUnitVoltage: data.ddlUnitVoltage,
-        ddlUnitVoltageValue: data.ddlUnitVoltageValue,
-        elecHeaterVoltage: data.elecHeaterVoltage,
-        ckbBypass: data.ckbBypass,
-      };
-
-      state.unitInfo = {
-        ...state.unitInfo,
-        txbSupplyAirESP: data.txbSupplyAirESP,
+        unitVoltageInfo: data.unitVoltageInfo,
+        supplyAirESPInfo: data.supplyAirESPInfo,
+        exhaustAirESPInfo: data.exhaustAirESPInfo,
+        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+        bypassInfo: data.bypassInfo,
       };
     },
     ddlPreheatCompChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        customInputs: data.customInputs,
-        divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
-        preheatElectricHeater: data.preheatElectricHeater,
-        elecHeaterVoltage: data.preheatElectricHeater.electricHeaterVoltageInfo,
-        lblPreheatWarningText: data.preheatInfomation.lblPreheatWarningText,
-        lblPreheatWarningVisible: data.preheatInfomation.lblPreheatWarningVisible,
-        valveAndActuator: data.valveAndActuator,
-        divPreheatSetpointVisible: data.isAUHID ? data.divPreheatSetpointVisible : false,
-        divSetpointsVisible: data.isAUHID ? data.divSetpointsVisible : false,
+        preheatRequiredInfo: data.preheatRequiredInfo,
+        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+        preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
+        valveAndActuatorInfo: data.valveAndActuatorInfo,
+        preheatCoilHandingInfo: data.preheatCoilHandingInfo,
+        valveTypeInfo: data.valveTypeInfo,
+        preheatSetpointInfo: data.preheatSetpointInfo,
+        setpointsInfo: data.setpointsInfo,
+        customInputsInfo: data.customInputsInfo,
+        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
       };
     },
     ddlCoolingCompChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        reheat: data.reheat,
-        cooling: data.cooling,
-        dehumidification: data.dehumidification,
-        valveAndActuator: data.valveAndActuator,
-        heatElectricHeater: data.heatElectricHeater,
-        divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
-        refrigerantInfo: data.refrigerantInfo,
-        divCoolingSetpointVisible: data.divCoolingSetpointVisible,
-        divHeatingSetpointVisible: data.divHeatingSetpointVisible,
-        reheatSetpoints: data.reheatSetpoints,
-        divSetpointsVisible: data.divSetpointsVisible,
-        customInputs: data.customInputs,
+        heatPumpInfo: data.heatPumpInfo,
+        dehumidificationInfo:  data.dehumidificationInfo,
+        reheatInfo: data.reheatInfo,
+        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+        valveAndActuatorInfo: data.valveAndActuatorInfo,
+        coolingCoilHandingInfo: data.coolingCoilHandingInfo,
+        valveTypeInfo: data.valveTypeInfo,
+//        setpointsInfo: data.setpointsInfo,
+        coolingSetpointInfo: data.coolingSetpointInfo,
+        heatingSetpointInfo: data.heatingSetpointInfo,
+        reheatSetpointInfo: data.reheatSetpointInfo,
+        customInputsInfo: data.customInputsInfo,
+        coolingFluidDesignCondInfo: data.coolingFluidDesignCondInfo,
+        dxCoilRefrigDesignCondInfo: data.dxCoilRefrigDesignCondInfo,
+        condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
+        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+        remainingOpeningsInfo: data.remainingOpeningsInfo,
+
       };
     },
     ddlHeatingCompChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        heatElectricHeater: data.heatElectricHeater,
-        divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
-        valveAndActuator: data.valveAndActuator,
-        divHeatingSetpointVisible: data.divHeatingSetpointVisible,
-        divSetpointsVisible: data.divSetpointsVisible,
-        customInputs: data.customInputs,
+        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+        valveAndActuatorInfo: data.valveAndActuatorInfo,
+        heatingCoilHandingInfo: data.heatingCoilHandingInfo,
+        valveTypeInfo: data.valveTypeInfo,
+        heatingSetpointInfo: data.heatingSetpointInfo,
+        customInputsInfo: data.customInputsInfo,
+        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+        setpointsInfo: data.setpointsInfo,
+        // ddlHeatElecHeaterInstallationId: data.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId,
+        // divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
+        // divHeatingSetpointVisible: data.divHeatingSetpointVisible,
+        // divSetpointsVisible: data.divSetpointsVisible,
+        // ddlElecHeaterVoltageId: data.elecHeaterVoltageInfo.ddlElecHeaterVoltageId,
+      };
+    },
+    ckbDehumidificationChanged(state, actions) {
+      const data = actions.payload;
+      state.controlInfo = {
+        ...state.controlInfo,
+        reheatInfo: data.reheatInfo,
+      };
+    },
+    ckbHeatPumpChanged(state, actions) {
+      const data = actions.payload;
+      state.controlInfo = {
+        ...state.controlInfo,
+        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+        valveAndActuatorInfo: data.valveAndActuatorInfo,
+        reheatSetpointInfo: data.reheatSetpointInfo,
+        condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
+      };
+    },
+    ddlReheatCompChanged(state, actions) {
+      const data = actions.payload;
+      state.controlInfo = {
+        ...state.controlInfo,
+        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+        valveAndActuatorInfo: data.valveAndActuatorInfo,
+        heatingCoilHandingInfo: data.heatingCoilHandingInfo,
+        valveTypeInfo: data.valveTypeInfo,
+        reheatSetpointInfo: data.reheatSetpointInfo,
+        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+        condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
       };
     },
     ddlUnitVoltageChanged(state, actions) {
@@ -389,70 +454,151 @@ const UnitSlice = createSlice({
         },
         preheatElecHeater: {
           Visible: data.divOutPreheatElecHeaterVisible,
-          Data: data?.outputPreheatElecHeater?.gvOutPreheatElecHeaterDataSource.map((item) => [item.cLabel, item.cValue]),
+          Data: data?.outputPreheatElecHeater?.gvOutPreheatElecHeaterDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         preheatHWC: {
           Visible: data?.divOutPreheatHWCVisible,
           Data: data?.outputPreheatHWC?.gvOutPreheatHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.outputPreheatHWC?.gvOutPreheatHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+          Entering: data?.outputPreheatHWC?.gvOutPreheatHWC_EnteringDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
           Leaving: data?.outputPreheatHWC?.gvOutPreheatHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputPreheatHWC?.gvOutPreheatHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputPreheatHWC?.gvOutPreheatHWC_ValveActuatorDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         heatExchCORE: {
           performanceVisible: data.divOutHX_FPVisible && data?.outputFixedPlateCORE?.divOutHX_FPVisible,
-          performance: data?.outputFixedPlateCORE?.gvOutHX_FP_PerfDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-          designConditions: data?.outputFixedPlateCORE?.gvOutHX_FP_EntAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+          performance: data?.outputFixedPlateCORE?.gvOutHX_FP_PerfDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
+          designConditions: data?.outputFixedPlateCORE?.gvOutHX_FP_EntAirDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
           designConditionsVisible: data?.outputFixedPlateCORE?.gvOutHX_FP_EntAirVisible,
-          performanceLeavingAir: data?.outputFixedPlateCORE?.gvOutHX_FP_LvgAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+          performanceLeavingAir: data?.outputFixedPlateCORE?.gvOutHX_FP_LvgAirDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
           performanceLeavingAirVisible: data?.outputFixedPlateCORE?.gvOutHX_FP_LvgAirVisible,
         },
         heatExchRECUTECH: {
           performanceVisible: data.divOutHX_FPVisible && data?.outputFixedRECUTECH?.divOutHX_FPVisible,
-          performance: data?.outputFixedRECUTECH?.gvOutHX_FP_PerfDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-          designConditions: data?.outputFixedRECUTECH?.gvOutHX_FP_EntAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+          performance: data?.outputFixedRECUTECH?.gvOutHX_FP_PerfDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
+          designConditions: data?.outputFixedRECUTECH?.gvOutHX_FP_EntAirDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
           designConditionsVisible: data?.outputFixedRECUTECH?.gvOutHX_FP_EntAirVisible,
-          performanceLeavingAir: data?.outputFixedRECUTECH?.gvOutHX_FP_LvgAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+          performanceLeavingAir: data?.outputFixedRECUTECH?.gvOutHX_FP_LvgAirDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
           performanceLeavingAirVisible: data?.outputFixedRECUTECH?.gvOutHX_FP_LvgAirVisible,
         },
         heatExchPOLYBLOC: {
           performanceVisible: data.divOutHX_FPVisible && data?.outputFixedPOLYBLOC?.divOutHX_FPVisible,
-          performance: data?.outputFixedPOLYBLOC?.gvOutHX_FP_PerfDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
-          designConditions: data?.outputFixedPOLYBLOC?.gvOutHX_FP_EntAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+          performance: data?.outputFixedPOLYBLOC?.gvOutHX_FP_PerfDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
+          designConditions: data?.outputFixedPOLYBLOC?.gvOutHX_FP_EntAirDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
           designConditionsVisible: data?.outputFixedPOLYBLOC?.gvOutHX_FP_EntAirVisible,
-          performanceLeavingAir: data?.outputFixedPOLYBLOC?.gvOutHX_FP_LvgAirDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
+          performanceLeavingAir: data?.outputFixedPOLYBLOC?.gvOutHX_FP_LvgAirDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+          ]),
           performanceLeavingAirVisible: data?.outputFixedPOLYBLOC?.gvOutHX_FP_LvgAirVisible,
         },
         coolingCWC: {
           Visible: data.divOutCoolingCWCVisible,
           Data: data?.outputCoolingCWC?.gvOutCoolingCWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.outputCoolingCWC?.gvOutCoolingCWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+          Entering: data?.outputCoolingCWC?.gvOutCoolingCWC_EnteringDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
           Leaving: data?.outputCoolingCWC?.gvOutCoolingCWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputCoolingCWC?.gvOutCoolingCWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputCoolingCWC?.gvOutCoolingCWC_ValveActuatorDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         coolingDXC: {
-          Visible: data.divOutCoolingDXCVisible,
+          Visible: data.divOutCoolingDXC_RAE_Visible,
           Data: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_DataDataSource.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          PerfOutputs: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_PerfOutputsDataSource.map((item) => [item.cLabel, item.cValue]),
-          EKEXV_Kit: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_EKEXV_KitDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          Entering: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_EnteringDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          Leaving: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_LeavingDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          PerfOutputs: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_PerfOutputsDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          EKEXV_Kit: data?.outputCoolingDXC?.gvOutCoolingDXC_RAE_EKEXV_KitDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         heatingCondCoil: {
           Visible: data.divOutHeatingCondCoilVisible,
-          Data: data?.outputHeatingCondCoil?.gvOutHeatingCondCoil_DataDataSource.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.outputHeatingCondCoil?.gvOutHeatingCondCoil_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.outputHeatingCondCoil?.gvOutHeatingCondCoil_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
+          Data: data?.outputHeatingCondCoil?.gvOutHeatingCondCoil_DataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          Entering: data?.outputHeatingCondCoil?.gvOutHeatingCondCoil_EnteringDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          Leaving: data?.outputHeatingCondCoil?.gvOutHeatingCondCoil_LeavingDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         heatingElecHeater: {
           Visible: data.divOutHeatingElecHeaterVisible,
-          Data: data?.outputHeatingElecHeater?.gvOutHeatingElecHeaterDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          Data: data?.outputHeatingElecHeater?.gvOutHeatingElecHeaterDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         heatingHWC: {
           Visible: data.divOutHeatingHWCVisible,
           Data: data?.outputHeatingHWC?.gvOutHeatingHWC_DataDataSource.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.outputHeatingHWC?.gvOutHeatingHWC_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
+          Entering: data?.outputHeatingHWC?.gvOutHeatingHWC_EnteringDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
           Leaving: data?.outputHeatingHWC?.gvOutHeatingHWC_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputHeatingHWC?.gvOutHeatingHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputHeatingHWC?.gvOutHeatingHWC_ValveActuatorDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         reheatElecHeater: {
           Visible: data.divOutReheatElecHeaterVisible,
@@ -468,10 +614,22 @@ const UnitSlice = createSlice({
         reheatHGRC: {
           Visible: data.divOutReheatHGRCVisible,
           Data: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_DataDataSource.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_EnteringDataSource.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_LeavingDataSource.map((item) => [item.cLabel, item.cValue]),
-          PerfOutputs: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_PerfOutputsDataSource.map((item) => [item.cLabel, item.cValue]),
-          EKEXV_Kit: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_EKEXV_KitDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          Entering: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_EnteringDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          Leaving: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_LeavingDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          PerfOutputs: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_PerfOutputsDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
+          EKEXV_Kit: data?.outputReheatHGRC?.gvOutReheatHGRC_RAE_EKEXV_KitDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue,
+          ]),
         },
         supplyFan: {
           Visible: data.divOutSF_ZAVisible,
@@ -487,7 +645,19 @@ const UnitSlice = createSlice({
         },
         soundData: {
           Visible: data.divOutSoundDataVisible,
-          Data: data?.outputSoundData?.gvOutSoundDataDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2, item.cValue_3, item.cValue_4,item.cValue_5, item.cValue_6,item.cValue_7, item.cValue_8,item.cValue_9, item.cValue_10]),
+          Data: data?.outputSoundData?.gvOutSoundDataDataSource.map((item) => [
+            item.cLabel,
+            item.cValue_1,
+            item.cValue_2,
+            item.cValue_3,
+            item.cValue_4,
+            item.cValue_5,
+            item.cValue_6,
+            item.cValue_7,
+            item.cValue_8,
+            item.cValue_9,
+            item.cValue_10,
+          ]),
         },
         // heatingElectricHeater: data.outputHeatingElecHeater.gvOutHeatElecHeaterDataSource,
         // heatingElectricHeaterVisible: data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
@@ -498,70 +668,70 @@ const UnitSlice = createSlice({
         ...state.layoutInfo,
         ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
         ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlExhaustAirOpeningId: parseInt(action.payload.ddlExhaustAirOpeningId, 10),
         ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlOutdoorAirOpeningId: parseInt(action.payload.ddlOutdoorAirOpeningId, 10),
         ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
-        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+        ddlReturnAirOpeningId: parseInt(action.payload.ddlReturnAirOpeningId, 10),
       };
 
       state.unitInfo = {
         ...state.unitInfo,
-        ddlHandingValue: parseInt(action.payload.ddlHandingID, 10),
+        ddlHandingId: parseInt(action.payload.ddlHandingID, 10),
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
         ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlExhaustAirOpeningId: parseInt(action.payload.ddlExhaustAirOpeningId, 10),
         ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlOutdoorAirOpeningId: parseInt(action.payload.ddlOutdoorAirOpeningId, 10),
         ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
-        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+        ddlReturnAirOpeningId: parseInt(action.payload.ddlReturnAirOpeningId, 10),
       };
     },
     ddlHandingChanged(state, action) {
       state.layoutInfo = {
         ...state.layoutInfo,
-        ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
-        ddlSupplyAirOpeningData: action.payload.ddlSupplyAirOpeningData,
-        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlHandingId: parseInt(action.payload.ddlHandingId, 10),
+        ddlSupplyAirOpeningDataTbl: action.payload.ddlSupplyAirOpeningDataTbl,
+        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
       };
 
       state.unitInfo = {
         ...state.unitInfo,
-        ddlHandingID: parseInt(action.payload.ddlHandingID, 10),
-        ddlPreheatCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
-        ddlCoolingCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
-        ddlHeatingCoilHandingValue: parseInt(action.payload.ddlHandingID, 10),
+        ddlHandingId: parseInt(action.payload.ddlHandingId, 10),
+        ddlPreheatCoilHandingId: parseInt(action.payload.ddlHandingId, 10),
+        ddlCoolingCoilHandingId: parseInt(action.payload.ddlHandingId, 10),
+        ddlHeatingCoilHandingId: parseInt(action.payload.ddlHandingId, 10),
       };
     },
     ddlSupplyAirOpeningChanged(state, action) {
       state.layoutInfo = {
         ...state.layoutInfo,
-        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlOutdoorAirOpeningData: action.payload.ddlOutdoorAirOpeningData,
-        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlOutdoorAirOpeningDataTbl: action.payload.ddlOutdoorAirOpeningDataTbl,
+        ddlOutdoorAirOpeningId: parseInt(action.payload.ddlOutdoorAirOpeningId, 10),
         ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlExhaustAirOpeningData: action.payload.ddlExhaustAirOpeningData,
-        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlExhaustAirOpeningDataTbl: action.payload.ddlExhaustAirOpeningDataTbl,
+        ddlExhaustAirOpeningId: parseInt(action.payload.ddlExhaustAirOpeningId, 10),
         ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlReturnAirOpeningData: action.payload.ddlReturnAirOpeningData,
-        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+        ddlReturnAirOpeningDataTbl: action.payload.ddlReturnAirOpeningDataTbl,
+        ddlReturnAirOpeningId: parseInt(action.payload.ddlReturnAirOpeningId, 10),
         ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
       };
 
       state.unitInfo = {
         ...state.unitInfo,
-        ddlSupplyAirOpeningValue: parseInt(action.payload.ddlSupplyAirOpeningValue, 10),
+        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
         ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlOutdoorAirOpeningValue: parseInt(action.payload.ddlOutdoorAirOpeningValue, 10),
+        ddlOutdoorAirOpeningId: parseInt(action.payload.ddlOutdoorAirOpeningId, 10),
         ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlExhaustAirOpeningValue: parseInt(action.payload.ddlExhaustAirOpeningValue, 10),
+        ddlExhaustAirOpeningId: parseInt(action.payload.ddlExhaustAirOpeningId, 10),
         ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlReturnAirOpeningValue: parseInt(action.payload.ddlReturnAirOpeningValue, 10),
+        ddlReturnAirOpeningId: parseInt(action.payload.ddlReturnAirOpeningId, 10),
         ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
       };
     },
@@ -609,7 +779,7 @@ export function saveLayout(data) {
 
 export function ddlLocationChanged(data) {
   return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/locationchanged`, data);
+    const response = await axios.post(`${serverUrl}/api/units/LocationChanged`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlLocationChanged(response.data));
     return response.data;
@@ -618,7 +788,7 @@ export function ddlLocationChanged(data) {
 
 export function ddlOrientationChanged(data) {
   return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/orientationchanged`, data);
+    const response = await axios.post(`${serverUrl}/api/units/OrientationChanged`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlOrientationChanged(response.data));
     return response.data;
@@ -756,7 +926,7 @@ export function ddlPreheatCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlPreheatCompChanged`, data);
     console.log(response.data);
-    dispatch(UnitSlice.actions.ddlPreheatCompChanged(response.data));
+    dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, ddlPreheatCompId: data.ddlPreheatCompId }));
     return response.data;
   };
 }
@@ -775,6 +945,33 @@ export function ddlHeatingCompChanged(data) {
     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
+    return response.data;
+  };
+}
+
+export function ckbDehumidificationChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ckbDehumidificationChanged`, data);
+    dispatch(UnitSlice.actions.ckbDehumidificationChanged(response.data));
+    return response.data;
+  };
+}
+
+export function ckbHeatPumpChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ckbHeatPumpChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ckbHeatPumpChanged(response.data));
+    return response.data;
+  };
+}
+
+
+export function ddlReheatCompChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
     return response.data;
   };
 }

@@ -51,8 +51,6 @@ export default function Layout() {
     [isEdit, unitInfo, layoutInfo]
   );
 
-  console.log(defaultValues);
-
   const methods = useForm({
     resolver: yupResolver(layoutSchema),
     defaultValues,
@@ -121,7 +119,7 @@ export default function Layout() {
                       value={getValues('ddlHandingID')}
                       onChange={ddlHandingChanged}
                     >
-                      {layoutInfo.ddlHanding.map((data, index) => (
+                      {layoutInfo.ddlHandingDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -134,7 +132,7 @@ export default function Layout() {
                       placeholder=""
                       onChange={ddlSupplyAirOpeningChanged}
                     >
-                      {layoutInfo.ddlSupplyAirOpeningData.map((data, index) => (
+                      {layoutInfo.ddlSupplyAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -147,7 +145,7 @@ export default function Layout() {
                       placeholder=""
                       onChange={ddlExhaustAirOpeningChanged}
                     >
-                      {layoutInfo.ddlExhaustAirOpeningData.map((data, index) => (
+                      {layoutInfo.ddlExhaustAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -160,7 +158,7 @@ export default function Layout() {
                       placeholder=""
                       onChange={ddlOutdoorAirOpeningChanged}
                     >
-                      {layoutInfo.ddlOutdoorAirOpeningData.map((data, index) => (
+                      {layoutInfo.ddlOutdoorAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -173,7 +171,7 @@ export default function Layout() {
                       placeholder=""
                       onChange={ddlReturnAirOpeningChanged}
                     >
-                      {layoutInfo.ddlReturnAirOpeningData.map((data, index) => (
+                      {layoutInfo.ddlReturnAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
