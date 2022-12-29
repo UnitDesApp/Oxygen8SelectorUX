@@ -48,8 +48,8 @@ export default function SetUnitInfo() {
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
         intJobID: jobId,
-        intProductTypeID: state.productType,
-        intUnitTypeID: state.unitType,
+        intProductTypeID: state.intProductTypeID,
+        intUnitTypeID: state.intUnitTypeID,
         intUnitNo: unitId === undefined ? -1 : unitId,
       })
     );
@@ -81,8 +81,8 @@ export default function SetUnitInfo() {
           icon: <Iconify icon={'fa-brands:unity'} width={20} height={20} />,
           component: (
             <UnitEdit
-              unitType={state.unitType.toString()}
-              productType={state.productType}
+              intUnitTypeID={state.intUnitTypeID.toString()}
+              intProductTypeID={state.intProductTypeID}
               refSubmit={onSubmit}
               onChangeTab={onChangeTabInChild}
             />
@@ -91,7 +91,7 @@ export default function SetUnitInfo() {
         {
           value: 'Layout',
           icon: <Iconify icon={'ant-design:layout-outlined'} width={20} height={20} />,
-          component: <Layout unitType={state.unitType.toString()} productType={state.productType} />,
+          component: <Layout intUnitTypeID={state.intUnitTypeID.toString()} intProductTypeID={state.intProductTypeID} />,
         },
         {
           value: 'Drawing',
