@@ -402,13 +402,6 @@ const UnitSlice = createSlice({
         heatingFluidDesignCondInfo: data.heatingFluidDesignConditionsInfo,
       };
     },
-    ckbDehumidificationChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        reheatInfo: data.reheatInfo,
-      };
-    },
     ckbHeatPumpChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
@@ -419,6 +412,13 @@ const UnitSlice = createSlice({
         valveAndActuatorInfo: data.valveAndActuatorInfo,
         reheatSetpointInfo: data.reheatSetpointInfo,
         condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
+      };
+    },
+    ckbDehumidificationChanged(state, actions) {
+      const data = actions.payload;
+      state.controlInfo = {
+        ...state.controlInfo,
+        reheatInfo: data.reheatInfo,
       };
     },
     ddlReheatCompChanged(state, actions) {
@@ -995,6 +995,25 @@ export function ddlCoolingCompChanged(data) {
   };
 }
 
+export function ckbHeatPumpChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ckbHeatPumpChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ckbHeatPumpChanged(response.data));
+    return response.data;
+  };
+}
+
+export function ckbDehumidificationChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ckbDehumidificationChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ckbDehumidificationChanged(response.data));
+    return response.data;
+  };
+}
+
+
 export function ddlHeatingCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
@@ -1003,6 +1022,17 @@ export function ddlHeatingCompChanged(data) {
     return response.data;
   };
 }
+
+
+export function ddlReheatCompChanged(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
+    console.log(response.data);
+    dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
+    return response.data;
+  };
+}
+
 
 export function getViewSelectionInfo(data) {
   return async () => {

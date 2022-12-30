@@ -176,7 +176,7 @@ export default function UnitEdit({ unitType, productType, refSubmit, onChangeTab
     isEdit ? unitInfo.ckbDehumidification === 1 : controlInfo.dehumidification.ckbDehumidification === 1
   );
   const [ckbHeatPump, setCkbHeatPump] = useState(
-    isEdit ? unitInfo.ckbHeatPump === 1 : cooling.ckbHeatPumpChecked === 1
+    isEdit ? unitInfo.ckbHeatPump === 1 : heatPumpInfo.ckbHeatPumpChecked === 1
   );
   const [ckbDownshot, setCkbDownshot] = useState(isEdit ? unitInfo.ckbDownshot === 1 : ckbDownshot === 1);
   // const [flag, setFlag] = useState(true);
@@ -332,9 +332,6 @@ export default function UnitEdit({ unitType, productType, refSubmit, onChangeTab
     intUserID: localStorage.getItem('userId'),
   });
 
-const ckbDehumidificationInfo = (e) => {
-  dispatch(unitReducer.ckbDehumidificationChanged(e.target.checked));
-}
 
   /* -----------------------------------------------------------------------
    * End Initialize Form */
@@ -564,10 +561,21 @@ const ckbDehumidificationInfo = (e) => {
   };
 
   const ddlCoolingCompChanged = async (e) => {
-    setValue('ddlCoolingComp', parseInt(e.target.value, 10));
+    setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
     if (getValues("ddlCoolingComp") !== IDs.intCompDX_ID) setCkbHeatPump(false);
     if (getValues("ddlCoolingComp") === IDs.intCompNA_ID) setCkbDehumidification(false);
     await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
+  };
+
+  const ckbHeatPumpChanged = async (e) => {
+    setValue('ckbHeatPumpVal', e.target.checked);
+    await dispatch(unitReducer.ckbHeatPumpChanged(getAllFormData()));
+  };
+
+
+  const ckbDehumidificationChanged = async (e) => {
+    setValue('ckbDehumidificationVal', e.target.checked);
+    await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
   };
 
   const ddlHeatingCompChanged = async (e) => {
@@ -649,10 +657,7 @@ const ckbDehumidificationInfo = (e) => {
   const isHeatingCompHWC = () => getValues("ddlHeatingCompId") === IDs.intCompHWC_ID;
   const isReheatCompHWC = () => getValues("ddlReheatCompId") === IDs.intCompHWC_ID;
 
-  const isPreheatCompHWC = () => unitId === IDs.intUnitTypeAHU_ID && getValues("ddlPreheatComp") === IDs.intCompHWC_ID;
-  const isCoolingCompCWC = () => getValues("ddlCoolingComp") === IDs.intCompCWC_ID;
-  const isHeatingCompHWC = () => getValues("ddlHeatingComp") === IDs.intCompHWC_ID;
-  const isReheatCompHWC = () => getValues("ddlReheatComp") === IDs.intCompHWC_ID;
+
 
   /* -------------------------------------------------------------------------
    * End Visible Validation Functions */
@@ -702,7 +707,7 @@ const ckbDehumidificationInfo = (e) => {
                     </RHFSelect>
                     <RHFControlCheckbox
                       size="small"
-                      name="ckbDownshot"
+                      name="ckbDownshotVal"
                       label="Downshot"
                       sx={getDisplay(ckbDownshot === 1)}
                       checked={ckbDownshot}
@@ -717,7 +722,7 @@ const ckbDehumidificationInfo = (e) => {
                     >
                       {orientationInfo.ddlOrientationDataTbl.map((item, index) => (
                         <option key={index} value={item.id}>
-                          {item.items}
+                          {item.items}..
                         </option>
                       ))}
                     </RHFSelect>
@@ -794,7 +799,7 @@ const ckbDehumidificationInfo = (e) => {
                     <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                       <RHFCheckbox
                         size="small"
-                        name="ckbBypass"
+                        name="ckbBypassVal"
                         label="Bypass for Economizer"
                         sx={getDisplay(bypassInfo.divUnitBypassVisible)}
                         checked={getValues('ckbBypass') === 1}
@@ -820,10 +825,10 @@ const ckbDehumidificationInfo = (e) => {
                       </RHFSelect>
                       <RHFCheckbox
                         size="small"
-                        name="ckbVoltageSPP"
+                        name="ckbVoltageSPPVal"
                         label="Single Point Power Connection"
                         sx={getDisplay(unitVoltageInfo.divVoltageSPPVisible)}
-                        checked={isEdit ? unitInfo.ckbVoltageSPP === 1 : unitVoltageInfo.ckbVoltageSPP === 1}
+                        checked={isEdit ? unitInfo.ckbVoltageSPPVal === 1 : unitVoltageInfo.ckbVoltageSPPVal === 1}
                       />
                     </Box>
                   </Box>
@@ -1089,21 +1094,19 @@ const ckbDehumidificationInfo = (e) => {
                     />
                     <RHFControlCheckbox
                       size="small"
-                      name="ckbHeatPump"
+                      name="ckbHeatPumpVal"
                       label="Heat Pump"
                       sx={getDisplay(heatPumpInfo.divHeatPumpVisible)}
-                      checked={heatPumpInfo.ckbHeatPump}
-                      onChange={() => {
-                        setCkbHeatPump(!ckbHeatPump);
-                      }}
+                      checked={heatPumpInfo.ckbHeatPumpVal}
+                      onChange={ckbHeatPumpChanged}
                     />
                     <RHFControlCheckbox
                       size="small"
-                      name="ckbDehumidification"
+                      name="ckbDehumidificationVal"
                       label="Dehumidification"
                       sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
-                      checked={dehumidificationInfo.ckbDehumidification}
-                      onChange={ckbDehumidificationInfo}
+                      checked={dehumidificationInfo.ckbDehumidificationVal}
+                      onChange={ckbDehumidificationChanged}
                     />
                     <RHFSelect
                       size="small"
@@ -1181,19 +1184,19 @@ const ckbDehumidificationInfo = (e) => {
                     </RHFSelect>
                     <RHFCheckbox
                       size="small"
-                      name="ckbValveAndActuator"
+                      name="ckbValveAndActuatorVal"
                       label="Include Valves & Actuator"
                       sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible )}
                       checked={
-                        isEdit ? unitInfo.ckbValveAndActuator === 1 : valveAndActuatorInfo.ckbValveAndActuatorChecked === 1
+                        isEdit ? unitInfo.ckbValveAndActuator === 1 : valveAndActuatorInfo.ckbValveAndActuatorVal === 1
                       }
                     />
                     <RHFCheckbox
                       size="small"
-                      name="ckbDrainPan"
+                      name="ckbDrainPanVal"
                       label="Drain Pan Required"
                       sx={getDisplay(drainPanInfo.divDrainPanVisible)}
-                      checked={isEdit ? unitInfo.ckbDrainPan === 1 : drainPanInfo.ckbDrainPanChecked === 1}
+                      checked={isEdit ? unitInfo.ckbDrainPan === 1 : drainPanInfo.ckbDrainPanVal === 1}
                     />
                   </Box>
                 </Box>
