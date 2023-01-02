@@ -534,13 +534,13 @@ const UnitSlice = createSlice({
         },
         supplyFan: {
           Visible: data.divOutSF_ZAVisible,
-          Data: data?.outputSupplyFan?.gvOutSF_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+          Data: data?.outputSupplyFan?.gvOutSF_DataSource.map((item) => [item.cLabel, item.cValue]),
           GraphImageUrl: data?.outputSupplyFan.imgSF_GraphImageUrl,
           // SoundData: data.outputSupplyFan !== undefined && data.outputSupplyFan.gvOutSF_SoundDataDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2, item.cValue_3, item.cValue_4,item.cValue_5, item.cValue_6,item.cValue_7, item.cValue_8,item.cValue_9, item.cValue_10]),
         },
         exhaustFan: {
           Visible: data.divOutEF_ZAVisible,
-          Data: data?.outputExhaustFan?.gvOutEF_DataDataSource.map((item) => [item.cLabel, item.cValue]),
+          Data: data?.outputExhaustFan?.gvOutEF_DataSource.map((item) => [item.cLabel, item.cValue]),
           GraphImageUrl: data?.outputExhaustFan?.imgEF_GraphImageUrl,
           // SoundData: data.outputExhaustFan !== undefined && data.outputExhaustFan.gvOutEF_SoundDataDataSource.map((item) => [item.cLabel, item.cValue_1, item.cValue_2, item.cValue_3, item.cValue_4,item.cValue_5, item.cValue_6,item.cValue_7, item.cValue_8,item.cValue_9, item.cValue_10]),
         },

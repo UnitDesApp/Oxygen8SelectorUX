@@ -145,12 +145,12 @@ export default function Selection() {
             subGroups: [
               {
                 title: 'Unit Details 1',
-                data: unitDetails?.slice(0, 5).map((item) => [item.cLabel, item.cValue]),
+                data: unitDetails?.slice(0, 6).map((item) => [item.cLabel, item.cValue]),
                 visible: unitDetailsVisible,
               },
               {
                 title: 'Unit Details 2',
-                data: unitDetails?.slice(5).map((item) => [item.cLabel, item.cValue]),
+                data: unitDetails?.slice(6).map((item) => [item.cLabel, item.cValue]),
                 visible: unitDetailsVisible,
               },
             ],
