@@ -72,10 +72,10 @@ export default function Selection() {
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
         intJobID: jobId,
-        intProductTypeID: state.productType,
-        intUnitTypeID: state.unitType,
+        intProductTypeID: state.intProductTypeID,
+        intUnitTypeID: state.intUnitTypeID,
         intUnitNo: unitId === undefined ? -1 : unitId,
-        ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
+       // ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

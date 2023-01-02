@@ -61,9 +61,9 @@ export default function SelectUnitType({ unitTypeData, currentProductTypeId, onS
 
   const displayedUnitTypeInfo = [];
 
-  unitTypeData.productTypeUnitTypeLink.forEach((item) => {
+  unitTypeData.productTypeUnitTypeLinkDataTbl.forEach((item) => {
     if (item.product_type_id === currentProductTypeId) {
-      unitTypeData.unitType.forEach((unit) => {
+      unitTypeData.unitTypeDataTbl.forEach((unit) => {
         if (item.unit_type === unit.dwg_code) {
           displayedUnitTypeInfo.push({ id: unit.id, items: unit.items });
         }

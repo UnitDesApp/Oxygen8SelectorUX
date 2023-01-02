@@ -97,25 +97,23 @@ export default function AddNewUnit() {
   const [activeStep, setActiveStep] = useState(1);
   const [selectStep, setActiveSelectStep] = useState(0);
   const [unitData, setUnitData] = useState();
-  const [projecTypeId, setProjectTypeId] = useState(0);
-  const { productType, unitType, productTypeUnitTypeLink, isLoading } = useSelector((state) => state.unit);
+  const [productTypeId, setProductTypeId] = useState(0);
+  const { productTypeDataTbl, unitTypeDataTbl, productTypeUnitTypeLinkDataTbl, isLoading } = useSelector((state) => state.unit);
 
-  console.log(productType, unitType);
+  console.log(productTypeDataTbl, unitTypeDataTbl);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const isComplete = activeStep === STEPS.length;
 
   const onSelectProductFamilyItem = (value) => {
-    console.log(value);
-    setProjectTypeId(value);
-    setUnitData({ ...unitData, productType: value });
+    setProductTypeId(value);
+    setUnitData({ ...unitData, intProductTypeID: value });
     setActiveSelectStep(1);
   };
 
   const onSelectProductModelItem = (value) => {
-    console.log(value);
-    setUnitData({ ...unitData, unitType: value });
+    setUnitData({ ...unitData, intUnitTypeID: value });
   };
 
   const onClickBackStep = () => {
@@ -124,17 +122,19 @@ export default function AddNewUnit() {
     }
     if (selectStep === 1) {
       setActiveSelectStep(0);
-      setUnitData({ ...unitData, unitType: undefined });
+      setUnitData({ ...unitData, intUnitTypeID: undefined });
     }
   };
 
   const onClickNextStep = () => {
+    console.log(unitData);
     navigate(PATH_UNIT.configure(jobId), { state: unitData });
   };
 
   useEffect(() => {
     dispatch(getUnitTypeInfo({ jobId }));
-  }, [dispatch, jobId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Page title="Unit: Add">
@@ -154,11 +154,11 @@ export default function AddNewUnit() {
             />
 
             {selectStep === 0 ? (
-              <SelectProductFamily ProductFamilyData={productType} onSelectItem={onSelectProductFamilyItem} />
+              <SelectProductFamily ProductFamilyData={productTypeDataTbl} onSelectItem={onSelectProductFamilyItem} />
             ) : (
               <SelectUnitType
-                unitTypeData={{ unitType, productTypeUnitTypeLink }}
-                currentProductTypeId={projecTypeId}
+                unitTypeData={{ unitTypeDataTbl, productTypeUnitTypeLinkDataTbl }}
+                currentProductTypeId={productTypeId}
                 onSelectItem={onSelectProductModelItem}
               />
             )}
@@ -194,7 +194,7 @@ export default function AddNewUnit() {
                 <Button
                   color="primary"
                   onClick={onClickNextStep}
-                  disabled={selectStep === 0 || unitData.unitType === undefined || unitType === undefined}
+                  disabled={selectStep === 0 || unitData.intProductTypeID === undefined || unitData.intUnitTypeID === undefined}
                 >
                   Next Step
                   <Iconify icon={'akar-icons:arrow-right'} />
