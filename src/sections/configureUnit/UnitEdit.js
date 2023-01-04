@@ -187,7 +187,7 @@ componentInfo,
     txbOA_FilterPDId: isEdit ? unitInfo.txbOA_FilterPDText : 0.5,
     txbRA_FilterPDId: isEdit ? unitInfo.txbRA_FilterPDText : 0.5,
     ddlReheatCompId: isEdit ? unitInfo.ReheatCompID : reheatInfo.ddlReheatCompId,
-    ddlDamperAndActuatorId: isEdit ? unitInfo.DamperActuatorID : damperAndActuatorInfo.ddlDamperAndActuatorId,
+    ddlDamperAndActuatorId: isEdit ? unitInfo.DamperAndActuatorID : damperAndActuatorInfo.ddlDamperAndActuatorId,
     ddlElecHeaterVoltageId: isEdit ? unitInfo.ElecHeaterVoltageID : elecHeaterVoltageInfo.ddlElecHeaterVoltageId,
     ddlPreheatElecHeaterInstallationId: isEdit
       ? unitInfo.PreheatElecHeaterInstallationID
@@ -523,7 +523,7 @@ componentInfo,
   };
 
   const ddlCoolingCompChanged = async (e) => {
-    setValue('ddlCoolingCompIdId', parseInt(e.target.value, 10));
+    setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
     if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPump(false);
     if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidification(false);
     await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
@@ -1166,7 +1166,7 @@ componentInfo,
                       size="small"
                       name="ddlDamperAndActuatorId"
                       label="Dampers & Actuator"
-                      sx={getDisplay(damperAndActuatorInfo.divDamperActuatorVisible)}
+                      sx={getDisplay(damperAndActuatorInfo.divDamperAndActuatorVisible)}
                       onChange={(e) => {
                         setValue('ddlDamperAndActuatorId', parseInt(e.target.value, 10));
                       }}
