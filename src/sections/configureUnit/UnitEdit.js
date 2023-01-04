@@ -96,15 +96,15 @@ componentInfo,
     preheatSetpointInfo,
     heatingSetpointInfo,
     coolingSetpointInfo,
-    customInputsInfo,
     reheatSetpointInfo,
+    customInputsInfo,
     supplyAirOpeningInfo,
     remainingOpeningsInfo,
+    supplyAirESPInfo,
     returnAirESPInfo,
     returnAirFilterInfo,
     summerReturnAirCFMInfo,
     summerSupplyAirCFMInfo,
-    supplyAirESPInfo,
 
   } = controlInfo;
 
