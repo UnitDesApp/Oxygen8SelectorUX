@@ -89,11 +89,6 @@ export default function SetUnitInfo() {
           ),
         },
         {
-          value: 'Layout',
-          icon: <Iconify icon={'ant-design:layout-outlined'} width={20} height={20} />,
-          component: <Layout intUnitTypeID={state.intUnitTypeID.toString()} intProductTypeID={state.intProductTypeID} />,
-        },
-        {
           value: 'Drawing',
           icon: <Iconify icon={'arcticons:grid-drawing-for-artist'} width={20} height={20} />,
           component: <Drawing />,

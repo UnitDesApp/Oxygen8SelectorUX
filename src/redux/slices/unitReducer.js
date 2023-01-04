@@ -286,7 +286,7 @@ const UnitSlice = createSlice({
     ddlUnitVoltageChanged(state, actions) {
       state.controlInfo = {
         ...state.controlInfo,
-        elecHeaterVoltage: actions.payload,
+        elecHeaterVoltageInfo: actions.payload,
       };
     },
     txbSummerOutdoorAirWBChanged(state, actions) {
@@ -592,48 +592,18 @@ const UnitSlice = createSlice({
       };
     },
     ddlHandingChanged(state, action) {
+      const data = action.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        ddlHandingId: parseInt(action.payload.ddlHandingId, 10),
-        ddlSupplyAirOpeningDataTbl: action.payload.ddlSupplyAirOpeningDataTbl,
-        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
-        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-      };
-
-      state.unitInfo = {
-        ...state.unitInfo,
-        ddlHandingId: parseInt(action.payload.ddlHandingId, 10),
-        ddlPreheatCoilHandingId: parseInt(action.payload.ddlHandingId, 10),
-        ddlCoolingCoilHandingId: parseInt(action.payload.ddlHandingId, 10),
-        ddlHeatingCoilHandingId: parseInt(action.payload.ddlHandingId, 10),
+        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+        remainingOpeningsInfo: data.remainingOpeningsInfo,
       };
     },
     ddlSupplyAirOpeningChanged(state, action) {
+      const data = action.payload;
       state.controlInfo = {
         ...state.controlInfo,
-        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
-        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlOutdoorAirOpeningDataTbl: action.payload.ddlOutdoorAirOpeningDataTbl,
-        ddlOutdoorAirOpeningId: parseInt(action.payload.ddlOutdoorAirOpeningId, 10),
-        ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlExhaustAirOpeningDataTbl: action.payload.ddlExhaustAirOpeningDataTbl,
-        ddlExhaustAirOpeningId: parseInt(action.payload.ddlExhaustAirOpeningId, 10),
-        ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlReturnAirOpeningDataTbl: action.payload.ddlReturnAirOpeningDataTbl,
-        ddlReturnAirOpeningId: parseInt(action.payload.ddlReturnAirOpeningId, 10),
-        ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
-      };
-
-      state.unitInfo = {
-        ...state.unitInfo,
-        ddlSupplyAirOpeningId: parseInt(action.payload.ddlSupplyAirOpeningId, 10),
-        ddlSupplyAirOpeningText: action.payload.ddlSupplyAirOpeningText,
-        ddlOutdoorAirOpeningId: parseInt(action.payload.ddlOutdoorAirOpeningId, 10),
-        ddlOutdoorAirOpeningText: action.payload.ddlOutdoorAirOpeningText,
-        ddlExhaustAirOpeningId: parseInt(action.payload.ddlExhaustAirOpeningId, 10),
-        ddlExhaustAirOpeningText: action.payload.ddlExhaustAirOpeningText,
-        ddlReturnAirOpeningId: parseInt(action.payload.ddlReturnAirOpeningId, 10),
-        ddlReturnAirOpeningText: action.payload.ddlReturnAirOpeningText,
+        remainingOpeningsInfo: data.remainingOpeningsInfo,
       };
     },
   },
@@ -911,13 +881,9 @@ export function ddlHandingChanged(data) {
 export function ddlSupplyAirOpeningChanged(data) {
   return async () => {
     console.log('-----------SupplyAirOpendingChanged------------');
-    console.log('          -------Input Values--------          ');
     // console.log(data);
     const response = await axios.post(`${serverUrl}/api/units/ddlSupplyAirOpeningChanged`, data);
-    console.log('          ------Output  Values-------          ');
-    // console.log({ ...data, ...response.data });
     console.log(response.data);
-    // dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged({ ...data, ...response.data }));
     dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged(response.data));
     return response.data;
   };
