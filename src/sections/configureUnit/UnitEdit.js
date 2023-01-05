@@ -93,18 +93,18 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     heatingFluidDesignCondInfo,
     outdoorAirFilterInfo,
     setpointsInfo,
-    preheatSetpointInfo,
+    // preheatSetpointInfo,
     heatingSetpointInfo,
     coolingSetpointInfo,
-    customInputsInfo,
+    // customInputsInfo,
     reheatSetpointInfo,
     supplyAirOpeningInfo,
     remainingOpeningsInfo,
-    returnAirESPInfo,
+    // returnAirESPInfo,
     returnAirFilterInfo,
-    summerReturnAirCFMInfo,
-    summerSupplyAirCFMInfo,
-    supplyAirESPInfo,
+    // summerReturnAirCFMInfo,
+    // summerSupplyAirCFMInfo,
+    // supplyAirESPInfo,
   } = controlInfo;
 
   console.log(controlInfo, unitInfo);
@@ -520,13 +520,13 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
   };
 
   const ddlCoolingCompChanged = async (e) => {
-    setValue('ddlCoolingCompIdId', parseInt(e.target.value, 10));
+    setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
     if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPumpVal(false);
     if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidificationVal(false);
     await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
   };
 
-  const ckbHeatPumpChanged = async (e) => {
+  const ckbHeatPumpChanged = async () => {
     setCkbHeatPumpVal(!ckbHeatPumpVal);
     const data = {
       ...getAllFormData(),
