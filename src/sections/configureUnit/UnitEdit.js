@@ -112,25 +112,25 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
   /* Start State Variables *
   ----------------------------------------------------------------------- */
   const [ckbBypassVal, setCkbBypassVal] = useState(
-    intProductTypeID === IDs.intProdTypeNovaID ? !!bypassInfo.ckbBypassVal : false
+    isEdit? !!unitInfo.ckbBypass : !!bypassInfo?.ckbBypassVal
   );
   const [ckbDrainPanVal, setCkbDrainPanVal] = useState(
-    drainPanInfo === undefined ? false : !!drainPanInfo.ckbDrainPanVal
+    isEdit? !!unitInfo.ckbDrainPan : !!drainPanInfo?.ckbDrainPanVal
   );
   const [ckbVoltageSPPVal, setCkbVoltageSPPVal] = useState(
-    isEdit ? unitInfo.ckbVoltageSPPVal : !!unitVoltageSPPInfo.ckbVoltageSPPVal
+    isEdit ? !!unitInfo.ckbVoltageSPP : !!unitVoltageSPPInfo.ckbVoltageSPPVal
   );
   const [ckbDehumidificationVal, setCkbDehumidificationVal] = useState(
-    isEdit ? !!unitInfo.ckbDehumidificationVal : !!dehumidificationInfo.ckbDehumidificationVal
+    isEdit ? !!unitInfo.ckbDehumidification : !!dehumidificationInfo.ckbDehumidificationVal
   );
   const [ckbValveAndActuator, setCkbValveAndActuatorVal] = useState(
-    isEdit ? !!unitInfo.ckbValveAndActuatorVal : !!valveAndActuatorInfo.ckbValveAndActuatorVal
+    isEdit ? !!unitInfo.ckbValveAndActuator : !!valveAndActuatorInfo.ckbValveAndActuatorVal
   );
   const [ckbHeatPumpVal, setCkbHeatPumpVal] = useState(
-    isEdit ? !!unitInfo.ckbHeatPumpVal : !!heatPumpInfo.ckbHeatPumpVal
+    isEdit ? !!unitInfo.ckbHeatPump : !!heatPumpInfo.ckbHeatPumpVal
   );
   const [ckbDownshotVal, setCkbDownshotVal] = useState(
-    isEdit ? !!unitInfo.ckbDownshotVal : !!downshotInfo.isDownshotVal
+    isEdit ? !!unitInfo.ckbDownshot : !!downshotInfo.isDownshotVal
   );
   const [ckbFlowRateAndCap, setCkbFlowRateAndCap] = useState({
     ckbPreheatHWC_UseCap: false,
@@ -1146,7 +1146,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       name="ckbHeatPumpVal"
                       label="Heat Pump"
                       sx={getDisplay(heatPumpInfo.divHeatPumpVisible)}
-                      checked={heatPumpInfo.ckbHeatPumpVal}
+                      checked={ckbHeatPumpVal}
                       onChange={ckbHeatPumpChanged}
                     />
                     <RHFControlCheckbox
