@@ -504,7 +504,7 @@ const UnitSlice = createSlice({
         },
         reheatElecHeater: {
           Visible: data?.divOutReheatElecHeaterVisible,
-          Data: data?.outputReheatElecHeater?.gvOutReheatElecHeaterDataSource?.map((item) => [item.cLabel, item.cValue]),
+          Data: data?.outputReheatElecHeater?.gvOutReheatElecHeaterDataDataSource?.map((item) => [item.cLabel, item.cValue]),
         },
         reheatHWC: {
           Visible: data?.divOutReheatHWCVisible,

@@ -112,13 +112,13 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
   /* Start State Variables *
   ----------------------------------------------------------------------- */
   const [ckbBypassVal, setCkbBypassVal] = useState(
-    intProductTypeID === IDs.intProdTypeNovaID ? !!bypassInfo.ckbBypassVal : false
+    isEdit? !!unitInfo.ckbBypass : !!bypassInfo?.ckbBypassVal
   );
   const [ckbDrainPanVal, setCkbDrainPanVal] = useState(
-    drainPanInfo === undefined ? false : !!drainPanInfo.ckbDrainPanVal
+    isEdit? !!unitInfo.ckbDrainPan : !!drainPanInfo?.ckbDrainPanVal
   );
   const [ckbVoltageSPPVal, setCkbVoltageSPPVal] = useState(
-    isEdit ? unitInfo.ckbVoltageSPPVal : !!unitVoltageSPPInfo.ckbVoltageSPPVal
+    isEdit ? !!unitInfo.ckbVoltageSPP : !!unitVoltageSPPInfo.ckbVoltageSPPVal
   );
   const [ckbDehumidificationVal, setCkbDehumidificationVal] = useState(
     isEdit ? !!unitInfo.ckbDehumidificationVal : !!dehumidificationInfo.ckbDehumidificationVal
@@ -130,7 +130,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     isEdit ? !!unitInfo.ckbHeatPumpVal : !!heatPumpInfo.ckbHeatPumpVal
   );
   const [ckbDownshotVal, setCkbDownshotVal] = useState(
-    isEdit ? !!unitInfo.ckbDownshotVal : !!downshotInfo.isDownshotVal
+    isEdit ? !!unitInfo.ckbDownshot : !!downshotInfo.isDownshotVal
   );
   const [ckbFlowRateAndCap, setCkbFlowRateAndCap] = useState({
     ckbPreheatHWC_UseCap: false,

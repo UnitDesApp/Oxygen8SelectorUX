@@ -2,24 +2,24 @@ import * as React from 'react';
 
 import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+
+// PropTypes
+import { PropTypes } from 'prop-types';
 
 // @mui
 import { styled } from '@mui/material/styles';
 
 import {
   Box,
-  Card,
   Paper,
-  CardContent,
   Container,
   TableContainer,
   Table,
   TableBody,
   TableRow,
   TableCell,
-  CardHeader,
   Stack,
+  Typography,
 } from '@mui/material';
 
 // redux
@@ -28,43 +28,70 @@ import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
 // components
 // import Iconify from '../../components/Iconify';
 
-// hooks
-import { FormProvider, RHFTextField } from '../../components/hook-form';
 // sections
 import Loading from '../Loading';
 // ----------------------------------------------------------------------
 
-const GroupHeaderStyle = styled(Box)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  padding: '5px 25px',
-  backgroundColor: theme.palette.primary.main,
+const CustomGroupBoxBorder = styled(Box)(() => ({
+  display: 'inline-flex',
+  flexDirection: 'column',
+  position: 'relative',
+  minWidth: '0',
+  padding: '10px',
+  margin: '0',
+  verticalAlign: 'top',
+  width: '100%',
+  border: '1px solid black',
+  borderRadius: '8px',
+  zIndex: '-999999',
 }));
 
-const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
-  padding: '0 0 2px',
-  color: 'white',
-  backgroundColor: theme.palette.primary.main,
-}));
-
-const CardHeaderRHFTextFieldStyle = styled(RHFTextField)(() => ({
-  '& .MuiFilledInput-root': {
-    background: 'rgb(255, 255, 255)',
-    '&:hover': {
-      background: 'rgb(239, 239, 239)',
-    },
-  },
+const CustomGroupBoxTitle = styled(Typography)(() => ({
+  lineHeight: '1.4375em',
+  fontSize: '25px',
+  fontFamily: '"Public Sans", sans-serif',
+  fontWeight: 400,
+  // color: 'rgb(145, 158, 171)',
+  display: 'block',
+  transformOrigin: 'left top',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: 'calc(133% - 24px)',
+  position: 'absolute',
+  left: '0px',
+  top: '0px',
+  transform: 'translate(40px, -12px) scale(0.75)',
+  transition: 'color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms, transform 200ms',
+  zIndex: 100,
+  background: 'white',
+  paddingLeft: '10px',
+  paddingRight: '10px',
 }));
 
 // ----------------------------------------------------------------------
+CustomGroupBox.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.node,
+  bordersx: PropTypes.object,
+  titlesx: PropTypes.object,
+};
+
+function CustomGroupBox({ title, children, bordersx, titlesx }) {
+  return (
+    <CustomGroupBoxBorder sx={{ ...bordersx }}>
+      <CustomGroupBoxTitle sx={{ ...titlesx }}>{title}</CustomGroupBoxTitle>
+      {children}
+    </CustomGroupBoxBorder>
+  );
+}
 
 export default function Selection() {
   const { jobId, unitId } = useParams();
   const dispatch = useDispatch();
   const { state } = useLocation();
 
-  const { controlInfo, viewSelectionInfo } = useSelector((state) => state.unit);
-
-  const { preheatElectricHeater } = controlInfo;
+  const { viewSelectionInfo } = useSelector((state) => state.unit);
 
   useEffect(() => {
     dispatch(
@@ -75,7 +102,7 @@ export default function Selection() {
         intProductTypeID: state.intProductTypeID,
         intUnitTypeID: state.intUnitTypeID,
         intUnitNo: unitId === undefined ? -1 : unitId,
-       // ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
+        // ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +166,7 @@ export default function Selection() {
             direction: 'column',
             style: {
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: 'repeat(2, 2fr)',
             },
             visible: unitDetailsVisible,
             subGroups: [
@@ -359,7 +386,7 @@ export default function Selection() {
           {
             groupName: 'Cooling DXC',
             direction: 'row',
-            visible: coolingDXC?.coolingDXCVisible,
+            visible: coolingDXC?.Visible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -599,8 +626,6 @@ export default function Selection() {
         ]
       : [];
 
-  const methods = useForm();
-
   console.log(viewSelectionInfo);
   console.log(SelectionInfo);
 
@@ -608,135 +633,52 @@ export default function Selection() {
     <Loading />
   ) : (
     <Container>
-      <FormProvider methods={methods}>
-        <Stack spacing={5} sx={{ mt: 2 }}>
-          {SelectionInfo.map((item, index) => (
-            <Box key={index} sx={{ display: item.visible !== true ? 'none' : 'block' }}>
-              <GroupHeaderStyle>
-                <RHFTextField
-                  size="small"
-                  name={item.groupName}
-                  color={'info'}
-                  label={item.groupName}
-                  sx={{ color: 'white' }}
-                />
-              </GroupHeaderStyle>
-              <Stack
-                direction={item.direction}
-                alignItems="flex-start"
-                justifyContent="left"
-                spacing={3}
-                sx={{
-                  ...item.style,
-                  background: '#efefef',
-                }}
-              >
-                {item.subGroups.length === 1 ? (
-                  <>
-                    <TableContainer component={Paper}>
-                      <Table size="small">
-                        <TableBody>
-                          {item.subGroups[0].data &&
-                            item.subGroups[0].data.map((row, index) => (
-                              <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                {row.map((item, index) => (
-                                  <TableCell key={index} component="th" scope="row" align="left">
-                                    {item}
-                                  </TableCell>
-                                ))}
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </>
-                ) : (
-                  // eslint-disable-next-line valid-typeof
-                  item.subGroups.map((element, index) => (typeof element === 'Array') ? 
-                  <>
-                    {element.map((ele) =>
-                      <Card
-                        key={ele.title + index}
-                        sx={{
-                          display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
-                          m: '20px 30px!important',
-                        }}
-                      >
-                        <CardHeaderStyle
-                          title={
-                            <CardHeaderRHFTextFieldStyle
-                              size="small"
-                              name={ele.title}
-                              label={ele.title}
-                              variant={'filled'}
-                            />
-                          }
-                        />
-                        <CardContent>
-                          <TableContainer component={Paper}>
-                            <Table size="small">
-                              <TableBody>
-                                {ele.data &&
-                                  ele.data.map((row, index) => (
-                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                      {row.map((item, index) => (
-                                        <TableCell key={index} component="th" scope="row" align="left">
-                                          {item}
-                                        </TableCell>
-                                      ))}
-                                    </TableRow>
-                                  ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </>
-                  :( 
-                    <Card
-                      key={element.title + index}
-                      sx={{
-                        display: element.data !== undefined && element.data.length > 0 ? 'block' : 'none',
-                        m: '20px 30px!important',
-                      }}
-                    >
-                      <CardHeaderStyle
-                        title={
-                          <CardHeaderRHFTextFieldStyle
-                            size="small"
-                            name={element.title}
-                            label={element.title}
-                            variant={'filled'}
-                          />
-                        }
-                      />
-                      <CardContent>
-                        <TableContainer component={Paper}>
-                          <Table size="small">
-                            <TableBody>
-                              {element.data &&
-                                element.data.map((row, index) => (
-                                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    {row.map((item, index) => (
-                                      <TableCell key={index} component="th" scope="row" align="left">
-                                        {item}
-                                      </TableCell>
-                                    ))}
-                                  </TableRow>
-                                ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
-      </FormProvider>
+      <Stack spacing={5} sx={{ mt: 2 }}>
+        {SelectionInfo.map((item, index) => (
+          <CustomGroupBox
+            title={item.groupName}
+            key={index}
+            bordersx={{ ...item.style, display: item.visible !== true ? 'none' : 'block' }}
+            titlesx={{ fontSize: '25px', transform: 'translate(40px, -12px) scale(0.75)' }}
+          >
+            <Stack direction={item.direction} alignItems="flex-start" justifyContent="left" spacing={3}>
+              {item.subGroups.map((element, index) => (
+                <CustomGroupBox
+                  title={element.title}
+                  key={element.title + index}
+                  bordersx={{
+                    display: element.data !== undefined && element.data.length > 0 ? 'block' : 'none',
+                    width: 'auto',
+                    m: '20px 30px!important',
+                    padding: '20px',
+                  }}
+                  titlesx={{
+                    fontSize: '18px',
+                    transform: 'translate(25px, -10px) scale(0.75)',
+                  }}
+                >
+                  <TableContainer component={Paper}>
+                    <Table size="small">
+                      <TableBody>
+                        {element.data &&
+                          element.data.map((row, index) => (
+                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                              {row.map((item, index) => (
+                                <TableCell key={index} component="th" scope="row" align="left">
+                                  {item}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </CustomGroupBox>
+              ))}
+            </Stack>
+          </CustomGroupBox>
+        ))}
+      </Stack>
     </Container>
   );
 }
