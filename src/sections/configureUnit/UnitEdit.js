@@ -93,18 +93,19 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     heatingFluidDesignCondInfo,
     outdoorAirFilterInfo,
     setpointsInfo,
-    preheatSetpointInfo,
+    // preheatSetpointInfo,
     heatingSetpointInfo,
     coolingSetpointInfo,
+    customInputsInfo,
     reheatSetpointInfo,
     customInputsInfo,
     supplyAirOpeningInfo,
     remainingOpeningsInfo,
-    supplyAirESPInfo,
     returnAirESPInfo,
     returnAirFilterInfo,
     summerReturnAirCFMInfo,
     summerSupplyAirCFMInfo,
+    supplyAirESPInfo,
   } = controlInfo;
 
   console.log(controlInfo, unitInfo);
@@ -531,8 +532,12 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
   };
 
   const ckbHeatPumpChanged = async (e) => {
-    setValue('ckbHeatPumpVal', e.target.checked);
-    await dispatch(unitReducer.ckbHeatPumpChanged(getAllFormData()));
+    setCkbHeatPumpVal(!ckbHeatPumpVal);
+    const data = {
+      ...getAllFormData(),
+      ckbHeatPumpVal: !ckbHeatPumpVal,
+    };
+    await dispatch(unitReducer.ckbHeatPumpChanged(data));
   };
 
   const ckbDehumidificationChanged = async (e) => {

@@ -21,12 +21,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
+import { getViewSelectionInfo, DownloadSelection } from '../../redux/slices/unitReducer';
 // components
-// import Iconify from '../../components/Iconify';
+import Iconify from '../../components/Iconify';
+import GraphChart from './GraphChart';
 
 // sections
 import Loading from '../Loading';
@@ -297,12 +299,8 @@ export default function Selection() {
             direction: 'row',
             visible: heatExchRECUTECH?.performanceVisible,
             style: {
-              // display: 'grid',
-              // gridTemplateColumns: {
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              //   md: 'repeat(2, 1fr)',
-              // },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(1, 1fr)',
             },
             subGroups: [
               {
@@ -327,12 +325,8 @@ export default function Selection() {
             direction: 'row',
             visible: heatExchPOLYBLOC?.performanceVisible,
             style: {
-              // display: 'grid',
-              // gridTemplateColumns: {
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              //   md: 'repeat(2, 1fr)',
-              // },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(1, 1fr)',
             },
             subGroups: [
               {
@@ -561,8 +555,11 @@ export default function Selection() {
           {
             groupName: 'Supply Fan',
             direction: 'row',
-            visible: supplyFan?.Visible,
-            style: {},
+            visible: supplyFan.Visible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Fan Data',
@@ -583,7 +580,7 @@ export default function Selection() {
           {
             groupName: 'Exhaust Fan',
             direction: 'row',
-            visible: exhaustFan?.Visible,
+            visible: exhaustFan.Visible,
             style: {},
             subGroups: [
               {
@@ -606,7 +603,7 @@ export default function Selection() {
             groupName: 'Unit Sound Data (Hz)',
             direction: 'row',
             style: {},
-            visible: soundData?.Visible,
+            visible: soundData.Visible,
             subGroups: [
               {
                 // data: soundData.Data.map((item) => [item.cLabel, item.cValue_1,
@@ -629,52 +626,138 @@ export default function Selection() {
   console.log(viewSelectionInfo);
   console.log(SelectionInfo);
 
+  const downloadPDF = async () => {
+    const data = {
+      intJobID: jobId,
+      intUnitNo: unitId,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+    const result = await dispatch(DownloadSelection(data));
+    console.log(result);
+  };
+
   return JSON.stringify(viewSelectionInfo) === '{}' ? (
     <Loading />
   ) : (
     <Container>
+      <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, mb: 3 }}>
+        <LoadingButton
+          variant="contained"
+          endIcon={<Iconify icon={'carbon:generate-pdf'} width="20px" height="20px" />}
+          onClick={downloadPDF}
+        >
+          Download
+        </LoadingButton>
+      </Stack>
       <Stack spacing={5} sx={{ mt: 2 }}>
         {SelectionInfo.map((item, index) => (
           <CustomGroupBox
             title={item.groupName}
             key={index}
-            bordersx={{ ...item.style, display: item.visible !== true ? 'none' : 'block' }}
+            bordersx={{ display: item.visible !== true ? 'none' : 'block' }}
             titlesx={{ fontSize: '25px', transform: 'translate(40px, -12px) scale(0.75)' }}
           >
-            <Stack direction={item.direction} alignItems="flex-start" justifyContent="left" spacing={3}>
-              {item.subGroups.map((element, index) => (
-                <CustomGroupBox
-                  title={element.title}
-                  key={element.title + index}
-                  bordersx={{
-                    display: element.data !== undefined && element.data.length > 0 ? 'block' : 'none',
-                    width: 'auto',
-                    m: '20px 30px!important',
-                    padding: '20px',
-                  }}
-                  titlesx={{
-                    fontSize: '18px',
-                    transform: 'translate(25px, -10px) scale(0.75)',
-                  }}
-                >
-                  <TableContainer component={Paper}>
-                    <Table size="small">
-                      <TableBody>
-                        {element.data &&
-                          element.data.map((row, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              {row.map((item, index) => (
-                                <TableCell key={index} component="th" scope="row" align="left">
-                                  {item}
-                                </TableCell>
+            <Stack
+              direction={item.direction}
+              alignItems="stretch"
+              justifyContent="left"
+              spacing={3}
+              sx={{ ...item.style }}
+            >
+              {item.subGroups.map((element, index) =>
+                Array.isArray(element) ? (
+                  <>
+                    {element.map((ele, index) => (
+                      <CustomGroupBox
+                        title={ele.title}
+                        key={ele.title + index}
+                        bordersx={{
+                          display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
+                          width: 'auto',
+                          m: '20px 30px!important',
+                          padding: '20px',
+                        }}
+                        titlesx={{
+                          fontSize: '18px',
+                          transform: 'translate(25px, -10px) scale(0.75)',
+                        }}
+                      >
+                        <TableContainer component={Paper}>
+                          <Table size="small">
+                            <TableBody>
+                              {ele.data &&
+                                ele.data.map((row, index) => (
+                                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    {row.map((item, index) => (
+                                      <TableCell key={index} component="th" scope="row" align="left">
+                                        {item}
+                                      </TableCell>
+                                    ))}
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </CustomGroupBox>
+                    ))}
+                  </>
+                ) : (
+                  <CustomGroupBox
+                    title={element.title}
+                    key={element.title + index}
+                    bordersx={{
+                      display:
+                        element.title === 'Graph' ||
+                        (element.data !== undefined && element.data.length > 0 ? 'block' : 'none'),
+                      width: 'auto',
+                      m: '20px 30px!important',
+                      padding: '20px',
+                    }}
+                    titlesx={{
+                      fontSize: '18px',
+                      transform: 'translate(25px, -10px) scale(0.75)',
+                    }}
+                  >
+                    {element.title === 'Graph' && (
+                      <GraphChart
+                        // title="Yearly Sales"
+                        subheader="Air Performance"
+                        chartLabels={['200', '400', '600', '800', '1000', '1200', '1400']}
+                        chartData={{
+                          data: [
+                            { name: '1', data: [0.7, 0.5, 0.3, 0, 0, 0, 0] },
+                            { name: '2', data: [1.3, 1.0, 0.7, 0.5, 0, 0, 0] },
+                            { name: '3', data: [1.7, 1.3, 0.9, 0.6, 0, 0, 0] },
+                            { name: '4', data: [2.2, 1.6, 1.1, 0.7, 0.3, 0, 0] },
+                            { name: '5', data: [2.7, 2.2, 1.7, 1.0, 0.5, 0, 0] },
+                            { name: '6', data: [3.5, 3.0, 2.4, 1.9, 1.2, 0.5, 0] },
+                          ],
+                        }}
+                      />
+                    )}
+
+                    {element.title !== 'Graph' && (
+                      <TableContainer component={Paper}>
+                        <Table size="small">
+                          <TableBody>
+                            {element.data &&
+                              element.data.map((row, index) => (
+                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  {row.map((item, index) => (
+                                    <TableCell key={index} component="th" scope="row" align="left">
+                                      {item}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
                               ))}
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </CustomGroupBox>
-              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    )}
+                  </CustomGroupBox>
+                )
+              )}
             </Stack>
           </CustomGroupBox>
         ))}
