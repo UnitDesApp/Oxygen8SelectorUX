@@ -890,5 +890,13 @@ export function ddlSupplyAirOpeningChanged(data) {
     return response.data;
   };
 }
+
+
+export function DownloadSelection(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/DownloadSelection`, data);
+    return response.data;
+  }
+}
 // ----------------------------------------------------------------------
 // console.log(data);
