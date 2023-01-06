@@ -25,7 +25,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
+import { getViewSelectionInfo, DownloadSelection } from '../../redux/slices/unitReducer';
 // components
 import Iconify from '../../components/Iconify';
 import GraphChart from './GraphChart';
@@ -632,20 +632,30 @@ export default function Selection() {
   console.log(viewSelectionInfo);
   console.log(SelectionInfo);
 
+  const downloadPDF = async () => {
+    const data = {
+      intJobID: jobId,
+      intUnitNo: unitId,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+    const result = await dispatch(DownloadSelection(data));
+    console.log(result);
+  };
+
   return JSON.stringify(viewSelectionInfo) === '{}' ? (
     <Loading />
   ) : (
     <Container>
       <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, mb: 3 }}>
-          <LoadingButton 
-            variant="contained"
-            endIcon={
-              <Iconify icon={'carbon:generate-pdf'} width="20px" height="20px"/>
-            }
-          >
-            Download
-          </LoadingButton >
-        </Stack>
+        <LoadingButton
+          variant="contained"
+          endIcon={<Iconify icon={'carbon:generate-pdf'} width="20px" height="20px" />}
+          onClick={downloadPDF}
+        >
+          Download
+        </LoadingButton>
+      </Stack>
       <Stack spacing={5} sx={{ mt: 2 }}>
         {SelectionInfo.map((item, index) => (
           <CustomGroupBox
@@ -656,52 +666,56 @@ export default function Selection() {
           >
             <Stack
               direction={item.direction}
-              alignItems="flex-start"
+              alignItems="stretch"
               justifyContent="left"
               spacing={3}
               sx={{ ...item.style }}
             >
               {item.subGroups.map((element, index) =>
                 Array.isArray(element) ? (
-                  element.map((ele, index) => (
-                    <CustomGroupBox
-                      title={ele.title}
-                      key={ele.title + index}
-                      bordersx={{
-                        display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
-                        width: 'auto',
-                        m: '20px 30px!important',
-                        padding: '20px',
-                      }}
-                      titlesx={{
-                        fontSize: '18px',
-                        transform: 'translate(25px, -10px) scale(0.75)',
-                      }}
-                    >
-                      <TableContainer component={Paper}>
-                        <Table size="small">
-                          <TableBody>
-                            {ele.data &&
-                              ele.data.map((row, index) => (
-                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                  {row.map((item, index) => (
-                                    <TableCell key={index} component="th" scope="row" align="left">
-                                      {item}
-                                    </TableCell>
-                                  ))}
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </CustomGroupBox>
-                  ))
+                  <>
+                    {element.map((ele, index) => (
+                      <CustomGroupBox
+                        title={ele.title}
+                        key={ele.title + index}
+                        bordersx={{
+                          display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
+                          width: 'auto',
+                          m: '20px 30px!important',
+                          padding: '20px',
+                        }}
+                        titlesx={{
+                          fontSize: '18px',
+                          transform: 'translate(25px, -10px) scale(0.75)',
+                        }}
+                      >
+                        <TableContainer component={Paper}>
+                          <Table size="small">
+                            <TableBody>
+                              {ele.data &&
+                                ele.data.map((row, index) => (
+                                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    {row.map((item, index) => (
+                                      <TableCell key={index} component="th" scope="row" align="left">
+                                        {item}
+                                      </TableCell>
+                                    ))}
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </CustomGroupBox>
+                    ))}
+                  </>
                 ) : (
                   <CustomGroupBox
                     title={element.title}
                     key={element.title + index}
                     bordersx={{
-                      display: element.title === 'Graph' || (element.data !== undefined && element.data.length > 0 ? 'block' : 'none'),
+                      display:
+                        element.title === 'Graph' ||
+                        (element.data !== undefined && element.data.length > 0 ? 'block' : 'none'),
                       width: 'auto',
                       m: '20px 30px!important',
                       padding: '20px',
