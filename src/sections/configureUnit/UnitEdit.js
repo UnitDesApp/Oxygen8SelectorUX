@@ -92,6 +92,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     valveTypeInfo,
     heatingFluidDesignCondInfo,
     outdoorAirFilterInfo,
+    returnAirFilterInfo,
     setpointsInfo,
     // preheatSetpointInfo,
     heatingSetpointInfo,
@@ -102,7 +103,6 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     remainingOpeningsInfo,
     supplyAirESPInfo,
     returnAirESPInfo,
-    returnAirFilterInfo,
     summerReturnAirCFMInfo,
     summerSupplyAirCFMInfo,
   } = controlInfo;
