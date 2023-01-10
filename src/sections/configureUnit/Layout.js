@@ -20,35 +20,42 @@ export default function Layout() {
   const dispatch = useDispatch();
   const { unitId } = useParams();
   const isEdit = unitId !== undefined;
-  const { unitInfo, layoutInfo } = useSelector((state) => state.unit);
+  const { controlInfo, unitInfo, layoutInfo } = useSelector((state) => state.unit);
+  const {
+    ualInfo,
+    handingInfo,
+    supplyAirOpeningInfo,
+    remainingOpeningsInfo,
 
-  console.log(unitInfo, layoutInfo);
+  } = controlInfo;
+
+  console.log(controlInfo, unitInfo, layoutInfo);
 
   const layoutSchema = Yup.object().shape({
-    ddlHandingID: Yup.number().required('This field is required!'),
-    ddlSupplyAirOpeningValue: Yup.number().required('This field is required!'),
+    ddlHandingId: Yup.number().required('This field is required!'),
+    ddlSupplyAirOpeningId: Yup.number().required('This field is required!'),
     ddlSupplyAirOpeningText: Yup.string(),
-    ddlExhaustAirOpeningValue: Yup.number().required('This field is required!'),
+    ddlExhaustAirOpeningId: Yup.number().required('This field is required!'),
     ddlExhaustAirOpeningText: Yup.string(),
-    ddlOutdoorAirOpeningValue: Yup.number().required('This field is required!'),
+    ddlOutdoorAirOpeningId: Yup.number().required('This field is required!'),
     ddlOutdoorAirOpeningText: Yup.string(),
-    ddlReturnAirOpeningValue: Yup.number().required('This field is required!'),
+    ddlReturnAirOpeningId: Yup.number().required('This field is required!'),
     ddlReturnAirOpeningText: Yup.string(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      ddlHandingID: isEdit ? unitInfo.ddlHandingValue : layoutInfo.ddlHandingID,
-      ddlSupplyAirOpeningValue: isEdit ? unitInfo.ddlSupplyAirOpeningValue : layoutInfo.ddlSupplyAirOpeningValue,
-      ddlSupplyAirOpeningText: isEdit ? unitInfo.ddlSupplyAirOpeningText : layoutInfo.ddlSupplyAirOpeningText,
-      ddlExhaustAirOpeningValue: isEdit ? unitInfo.ddlExhaustAirOpeningValue : layoutInfo.ddlExhaustAirOpeningValue,
-      ddlExhaustAirOpeningText: isEdit ? unitInfo.ddlExhaustAirOpeningText : layoutInfo.ddlExhaustAirOpeningText,
-      ddlOutdoorAirOpeningValue: isEdit ? unitInfo.ddlOutdoorAirOpeningValue : layoutInfo.ddlOutdoorAirOpeningValue,
-      ddlOutdoorAirOpeningText: isEdit ? unitInfo.ddlOutdoorAirOpeningText : layoutInfo.ddlOutdoorAirOpeningText,
-      ddlReturnAirOpeningValue: isEdit ? unitInfo.ddlReturnAirOpeningValue : layoutInfo.ddlReturnAirOpeningValue,
-      ddlReturnAirOpeningText: isEdit ? unitInfo.ddlReturnAirOpeningText : layoutInfo.ddlReturnAirOpeningText,
+      ddlHandingId: isEdit ? unitInfo.ddlHandingId : handingInfo.ddlHandingId,
+      ddlSupplyAirOpeningId: isEdit ? unitInfo.ddlSupplyAirOpeningId : supplyAirOpeningInfo.ddlSupplyAirOpeningId,
+      ddlSupplyAirOpeningText: isEdit ? unitInfo.ddlSupplyAirOpeningText : supplyAirOpeningInfo.ddlSupplyAirOpeningText,
+      ddlExhaustAirOpeningId: isEdit ? unitInfo.ddlExhaustAirOpeningId : remainingOpeningsInfo.ddlExhaustAirOpeningId,
+      ddlExhaustAirOpeningText: isEdit ? unitInfo.ddlExhaustAirOpeningText : remainingOpeningsInfo.ddlExhaustAirOpeningText,
+      ddlOutdoorAirOpeningId: isEdit ? unitInfo.ddlOutdoorAirOpeningId : remainingOpeningsInfo.ddlOutdoorAirOpeningId,
+      ddlOutdoorAirOpeningText: isEdit ? unitInfo.ddlOutdoorAirOpeningText : remainingOpeningsInfo.ddlOutdoorAirOpeningText,
+      ddlReturnAirOpeningId: isEdit ? unitInfo.ddlReturnAirOpeningId : remainingOpeningsInfo.ddlReturnAirOpeningId,
+      ddlReturnAirOpeningText: isEdit ? unitInfo.ddlReturnAirOpeningText : remainingOpeningsInfo.ddlReturnAirOpeningText,
     }),
-    [isEdit, unitInfo, layoutInfo]
+    [isEdit, controlInfo, unitInfo, layoutInfo]
   );
 
   const methods = useForm({
@@ -69,7 +76,7 @@ export default function Layout() {
   const ddlSupplyAirOpeningChanged = (e) => {
     const data = {
       ...getValues(),
-      ddlSupplyAirOpeningValue: e.target.value,
+      ddlSupplyAirOpeningId: e.target.value,
       ddlSupplyAirOpeningText: e.target.options[e.target.selectedIndex].text,
     };
     dispatch(unitReducer.ddlSupplyAirOpeningChanged(data));
@@ -78,7 +85,7 @@ export default function Layout() {
   const ddlExhaustAirOpeningChanged = (e) => {
     const data = {
       ...getValues(),
-      ddlExhaustAirOpeningValue: e.target.value,
+      ddlExhaustAirOpeningId: e.target.value,
       ddlExhaustAirOpeningText: e.target.options[e.target.selectedIndex].text,
     };
     dispatch(unitReducer.updateLayoutValues(data));
@@ -87,7 +94,7 @@ export default function Layout() {
   const ddlOutdoorAirOpeningChanged = (e) => {
     const data = {
       ...getValues(),
-      ddlOutdoorAirOpeningValue: e.target.value,
+      ddlOutdoorAirOpeningId: e.target.value,
       ddlOutdoorAirOpeningText: e.target.options[e.target.selectedIndex].text,
     };
     dispatch(unitReducer.updateLayoutValues(data));
@@ -96,7 +103,7 @@ export default function Layout() {
   const ddlReturnAirOpeningChanged = (e) => {
     const data = {
       ...getValues(),
-      ddlReturnAirOpeningValue: e.target.value,
+      ddlReturnAirOpeningId: e.target.value,
       ddlReturnAirOpeningText: e.target.options[e.target.selectedIndex].text,
     };
     dispatch(unitReducer.updateLayoutValues(data));
@@ -113,13 +120,13 @@ export default function Layout() {
                   <Stack spacing={3}>
                     <RHFSelect
                       size="small"
-                      name="ddlHandingID"
+                      name="ddlHandingId"
                       label="Handing"
                       placeholder=""
-                      value={getValues('ddlHandingID')}
+                      value={getValues('ddlHandingId')}
                       onChange={ddlHandingChanged}
                     >
-                      {layoutInfo.ddlHandingDataTbl.map((data, index) => (
+                      {handingInfo.ddlHandingDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -127,12 +134,12 @@ export default function Layout() {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlSupplyAirOpeningValue"
+                      name="ddlSupplyAirOpeningId"
                       label="Supply Air Opening"
                       placeholder=""
                       onChange={ddlSupplyAirOpeningChanged}
                     >
-                      {layoutInfo.ddlSupplyAirOpeningDataTbl.map((data, index) => (
+                      {supplyAirOpeningInfo.ddlSupplyAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -140,12 +147,12 @@ export default function Layout() {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlExhaustAirOpeningValue"
+                      name="ddlExhaustAirOpeningId"
                       label="Exhaust Air Opening"
                       placeholder=""
                       onChange={ddlExhaustAirOpeningChanged}
                     >
-                      {layoutInfo.ddlExhaustAirOpeningDataTbl.map((data, index) => (
+                      {remainingOpeningsInfo.ddlExhaustAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -153,12 +160,12 @@ export default function Layout() {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlOutdoorAirOpeningValue"
+                      name="ddlOutdoorAirOpeningId"
                       label="Outdoor Air Opening"
                       placeholder=""
                       onChange={ddlOutdoorAirOpeningChanged}
                     >
-                      {layoutInfo.ddlOutdoorAirOpeningDataTbl.map((data, index) => (
+                      {remainingOpeningsInfo.ddlOutdoorAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>
@@ -166,12 +173,12 @@ export default function Layout() {
                     </RHFSelect>
                     <RHFSelect
                       size="small"
-                      name="ddlReturnAirOpeningValue"
+                      name="ddlReturnAirOpeningId"
                       label="Return Air Opening"
                       placeholder=""
                       onChange={ddlReturnAirOpeningChanged}
                     >
-                      {layoutInfo.ddlReturnAirOpeningDataTbl.map((data, index) => (
+                      {remainingOpeningsInfo.ddlReturnAirOpeningDataTbl.map((data, index) => (
                         <option key={index} value={data.id}>
                           {data.items}
                         </option>

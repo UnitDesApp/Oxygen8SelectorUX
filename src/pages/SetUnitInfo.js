@@ -17,7 +17,7 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { UnitEdit, Drawing, Layout, Selection } from '../sections/configureUnit';
+import { UnitEdit, Drawing, Selection } from '../sections/configureUnit';
 import Loading from '../sections/Loading';
 // ----------------------------------------------------------------------
 
@@ -87,11 +87,6 @@ export default function SetUnitInfo() {
               onChangeTab={onChangeTabInChild}
             />
           ),
-        },
-        {
-          value: 'Layout',
-          icon: <Iconify icon={'ant-design:layout-outlined'} width={20} height={20} />,
-          component: <Layout intUnitTypeID={state.intUnitTypeID.toString()} intProductTypeID={state.intProductTypeID} />,
         },
         {
           value: 'Drawing',

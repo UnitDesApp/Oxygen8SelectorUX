@@ -2,69 +2,98 @@ import * as React from 'react';
 
 import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+
+// PropTypes
+import { PropTypes } from 'prop-types';
 
 // @mui
 import { styled } from '@mui/material/styles';
 
 import {
   Box,
-  Card,
   Paper,
-  CardContent,
   Container,
   TableContainer,
   Table,
   TableBody,
   TableRow,
   TableCell,
-  CardHeader,
   Stack,
+  Typography,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
+import { getViewSelectionInfo, DownloadSelection } from '../../redux/slices/unitReducer';
 // components
-// import Iconify from '../../components/Iconify';
+import Iconify from '../../components/Iconify';
+import GraphChart from './GraphChart';
 
-// hooks
-import { FormProvider, RHFTextField } from '../../components/hook-form';
 // sections
 import Loading from '../Loading';
 // ----------------------------------------------------------------------
 
-const GroupHeaderStyle = styled(Box)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  padding: '5px 25px',
-  backgroundColor: theme.palette.primary.main,
+const CustomGroupBoxBorder = styled(Box)(() => ({
+  display: 'inline-flex',
+  flexDirection: 'column',
+  position: 'relative',
+  minWidth: '0',
+  padding: '10px',
+  margin: '0',
+  verticalAlign: 'top',
+  width: '100%',
+  border: '1px solid black',
+  borderRadius: '8px',
+  zIndex: '-999999',
 }));
 
-const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
-  padding: '0 0 2px',
-  color: 'white',
-  backgroundColor: theme.palette.primary.main,
-}));
-
-const CardHeaderRHFTextFieldStyle = styled(RHFTextField)(() => ({
-  '& .MuiFilledInput-root': {
-    background: 'rgb(255, 255, 255)',
-    '&:hover': {
-      background: 'rgb(239, 239, 239)',
-    },
-  },
+const CustomGroupBoxTitle = styled(Typography)(() => ({
+  lineHeight: '1.4375em',
+  fontSize: '25px',
+  fontFamily: '"Public Sans", sans-serif',
+  fontWeight: 400,
+  // color: 'rgb(145, 158, 171)',
+  display: 'block',
+  transformOrigin: 'left top',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: 'calc(133% - 24px)',
+  position: 'absolute',
+  left: '0px',
+  top: '0px',
+  transform: 'translate(40px, -12px) scale(0.75)',
+  transition: 'color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms, transform 200ms',
+  zIndex: 100,
+  background: 'white',
+  paddingLeft: '10px',
+  paddingRight: '10px',
 }));
 
 // ----------------------------------------------------------------------
+CustomGroupBox.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.node,
+  bordersx: PropTypes.object,
+  titlesx: PropTypes.object,
+};
+
+function CustomGroupBox({ title, children, bordersx, titlesx }) {
+  return (
+    <CustomGroupBoxBorder sx={{ ...bordersx }}>
+      <CustomGroupBoxTitle sx={{ ...titlesx }}>{title}</CustomGroupBoxTitle>
+      {children}
+    </CustomGroupBoxBorder>
+  );
+}
 
 export default function Selection() {
   const { jobId, unitId } = useParams();
   const dispatch = useDispatch();
   const { state } = useLocation();
 
-  const { controlInfo, viewSelectionInfo } = useSelector((state) => state.unit);
-
-  const { preheatElectricHeater } = controlInfo;
+  const { viewSelectionInfo } = useSelector((state) => state.unit);
 
   useEffect(() => {
     dispatch(
@@ -75,7 +104,7 @@ export default function Selection() {
         intProductTypeID: state.intProductTypeID,
         intUnitTypeID: state.intUnitTypeID,
         intUnitNo: unitId === undefined ? -1 : unitId,
-        ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
+        // ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,18 +168,18 @@ export default function Selection() {
             direction: 'column',
             style: {
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: 'repeat(2, 2fr)',
             },
             visible: unitDetailsVisible,
             subGroups: [
               {
                 title: 'Unit Details 1',
-                data: unitDetails?.slice(0, 5).map((item) => [item.cLabel, item.cValue]),
+                data: unitDetails?.slice(0, 6).map((item) => [item.cLabel, item.cValue]),
                 visible: unitDetailsVisible,
               },
               {
                 title: 'Unit Details 2',
-                data: unitDetails?.slice(5).map((item) => [item.cLabel, item.cValue]),
+                data: unitDetails?.slice(6).map((item) => [item.cLabel, item.cValue]),
                 visible: unitDetailsVisible,
               },
             ],
@@ -158,64 +187,72 @@ export default function Selection() {
           {
             groupName: 'Electrical Requirements',
             direction: 'row',
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             visible:
-              electricalRequirements.coolingDXCDataVisible ||
-              electricalRequirements.unitDataVisible ||
-              electricalRequirements.preheatDataVisible ||
-              electricalRequirements.heatingDataVisible,
+              electricalRequirements?.coolingDXCDataVisible ||
+              electricalRequirements?.unitDataVisible ||
+              electricalRequirements?.preheatDataVisible ||
+              electricalRequirements?.heatingDataVisible,
             subGroups: [
               {
                 title: 'Unit',
-                data: electricalRequirements.unitData.map((item) => [item.cLabel, item.cValue]),
-                visible: electricalRequirements.unitDataVisible,
+                data: electricalRequirements?.unitData?.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements?.unitDataVisible,
               },
               {
                 title: 'W-controller',
                 data:
-                  electricalRequirements.coolingDXCData !== undefined &&
-                  electricalRequirements.coolingDXCData.map((item) => [item.cLabel, item.cValue]),
+                  electricalRequirements?.coolingDXCData !== undefined &&
+                  electricalRequirements?.coolingDXCData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements.coolingDXCDataVisible !== undefined &&
-                  electricalRequirements.coolingDXCDataVisible,
+                  electricalRequirements?.coolingDXCDataVisible !== undefined &&
+                  electricalRequirements?.coolingDXCDataVisible,
               },
               {
                 title: 'Preheat Electric Heater',
                 data:
-                  electricalRequirements.preheatData !== undefined &&
-                  electricalRequirements.preheatData.map((item) => [item.cLabel, item.cValue]),
+                  electricalRequirements?.preheatData !== undefined &&
+                  electricalRequirements?.preheatData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements.preheatDataVisible !== undefined && electricalRequirements.preheatDataVisible,
+                  electricalRequirements?.preheatDataVisible !== undefined &&
+                  electricalRequirements?.preheatDataVisible,
               },
               {
                 title: 'Heating Electric Heater',
                 data:
-                  electricalRequirements.heatingData !== undefined &&
-                  electricalRequirements.heatingData?.map((item) => [item.cLabel, item.cValue]),
+                  electricalRequirements?.heatingData !== undefined &&
+                  electricalRequirements?.heatingData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements.heatingDataVisible !== undefined && electricalRequirements.heatingDataVisible,
+                  electricalRequirements?.heatingDataVisible !== undefined &&
+                  electricalRequirements?.heatingDataVisible,
               },
             ],
           },
           {
             groupName: 'Preheat Electric Heater',
             direction: 'column',
-            visible: preheatElecHeater.Visible,
+            visible: preheatElecHeater?.Visible,
             style: {},
             subGroups: [
               {
                 title: 'Actual',
                 // data: preheatElecHeater !== undefined && preheatElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
                 data: preheatElecHeater?.Data,
-                visible: preheatElecHeater.Visible,
+                visible: preheatElecHeater?.Visible,
               },
             ],
           },
           {
             groupName: 'Preheat HWC',
             direction: 'row',
-            visible: preheatHWC.Visible,
-            style: {},
+            visible: preheatHWC?.Visible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -242,7 +279,7 @@ export default function Selection() {
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
-            visible: heatExchCORE.performanceVisible,
+            visible: heatExchCORE?.performanceVisible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(1, 1fr)',
@@ -268,14 +305,10 @@ export default function Selection() {
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
-            visible: heatExchRECUTECH.performanceVisible,
+            visible: heatExchRECUTECH?.performanceVisible,
             style: {
-              // display: 'grid',
-              // gridTemplateColumns: {
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              //   md: 'repeat(2, 1fr)',
-              // },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(1, 1fr)',
             },
             subGroups: [
               {
@@ -298,14 +331,10 @@ export default function Selection() {
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
-            visible: heatExchPOLYBLOC.performanceVisible,
+            visible: heatExchPOLYBLOC?.performanceVisible,
             style: {
-              // display: 'grid',
-              // gridTemplateColumns: {
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              //   md: 'repeat(2, 1fr)',
-              // },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(1, 1fr)',
             },
             subGroups: [
               {
@@ -328,7 +357,7 @@ export default function Selection() {
           {
             groupName: 'Cooling CWC',
             direction: 'row',
-            visible: coolingCWC.Visible,
+            visible: coolingCWC?.Visible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -359,7 +388,7 @@ export default function Selection() {
           {
             groupName: 'Cooling DXC',
             direction: 'row',
-            visible: coolingDXC.coolingDXCVisible,
+            visible: coolingDXC?.Visible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -397,7 +426,7 @@ export default function Selection() {
           {
             groupName: 'Heating Mode DX Coil',
             direction: 'row',
-            visible: heatingCondCoil.Visible,
+            visible: heatingCondCoil?.Visible,
             style: {},
             subGroups: [
               {
@@ -420,7 +449,7 @@ export default function Selection() {
           {
             groupName: 'Heating Electric Heater',
             direction: 'column',
-            visible: heatingElecHeater.Visible,
+            visible: heatingElecHeater?.Visible,
             style: {},
             subGroups: [
               {
@@ -433,8 +462,11 @@ export default function Selection() {
           {
             groupName: 'Heating HWC',
             direction: 'row',
-            visible: heatingHWC.Visible,
-            style: {},
+            visible: heatingHWC?.Visible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -460,7 +492,7 @@ export default function Selection() {
           {
             groupName: 'Reheat Electric Heater',
             direction: 'column',
-            visible: reheatElecHeater.Visible,
+            visible: reheatElecHeater?.Visible,
             style: {},
             subGroups: [
               {
@@ -473,8 +505,11 @@ export default function Selection() {
           {
             groupName: 'Reheat HWC',
             direction: 'row',
-            visible: reheatHWC.Visible,
-            style: {},
+            visible: reheatHWC?.Visible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -501,8 +536,11 @@ export default function Selection() {
           {
             groupName: 'Reheat HGRC',
             direction: 'row',
-            visible: reheatHGRC.Visible,
-            style: {},
+            visible: reheatHGRC?.Visible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -514,16 +552,18 @@ export default function Selection() {
                 // data: reheatHGRC !== undefined && reheatHGRC.Entering.map((item) => [item.cLabel, item.cValue]),
                 data: reheatHGRC?.Entering,
               },
-              {
-                title: 'Setpoint',
-                // data: reheatHGRC !== undefined && reheatHGRC.Leaving.map((item) => [item.cLabel, item.cValue]),
-                data: reheatHGRC?.Leaving,
-              },
-              {
-                title: 'Coil Performance',
-                // data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
-                data: reheatHGRC?.PerfOutputs,
-              },
+              [
+                {
+                  title: 'Setpoint',
+                  // data: reheatHGRC !== undefined && reheatHGRC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                  data: reheatHGRC?.Leaving,
+                },
+                {
+                  title: 'Coil Performance',
+                  // data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
+                  data: reheatHGRC?.PerfOutputs,
+                },
+              ],
               {
                 title: 'VRV Integration Kit',
                 // data: reheatHGRC !== undefined && reheatHGRC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),
@@ -535,7 +575,10 @@ export default function Selection() {
             groupName: 'Supply Fan',
             direction: 'row',
             visible: supplyFan.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Fan Data',
@@ -599,127 +642,74 @@ export default function Selection() {
         ]
       : [];
 
-  const methods = useForm();
-
   console.log(viewSelectionInfo);
   console.log(SelectionInfo);
+
+  const downloadPDF = async () => {
+    const data = {
+      intJobID: jobId,
+      intUnitNo: unitId,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+    const result = await dispatch(DownloadSelection(data));
+    console.log(result);
+  };
 
   return JSON.stringify(viewSelectionInfo) === '{}' ? (
     <Loading />
   ) : (
     <Container>
-      <FormProvider methods={methods}>
-        <Stack spacing={5} sx={{ mt: 2 }}>
-          {SelectionInfo.map((item, index) => (
-            <Box key={index} sx={{ display: item.visible !== true ? 'none' : 'block' }}>
-              <GroupHeaderStyle>
-                <RHFTextField
-                  size="small"
-                  name={item.groupName}
-                  color={'info'}
-                  label={item.groupName}
-                  sx={{ color: 'white' }}
-                />
-              </GroupHeaderStyle>
-              <Stack
-                direction={item.direction}
-                alignItems="stretch"
-                justifyContent="center"
-                spacing={3}
-                sx={{
-                  ...item.style,
-                  background: '#efefef',
-                }}
-              >
-                {item.subGroups.length === 1 ? (
-                  <>
-                    <TableContainer component={Paper}>
-                      <Table size="small">
-                        <TableBody>
-                          {item.subGroups[0].data &&
-                            item.subGroups[0].data.map((row, index) => (
-                              <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                {row.map((item, index) => (
-                                  <TableCell key={index} component="th" scope="row" align="left">
-                                    {item}
-                                  </TableCell>
-                                ))}
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </>
-                ) : (
-                  // eslint-disable-next-line valid-typeof
-                  item.subGroups.map((element, index) => (typeof element === 'Array') ? 
-                  <>
-                    {element.map((ele) =>
-                      <Card
+      <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, mb: 3 }}>
+        <LoadingButton
+          variant="contained"
+          endIcon={<Iconify icon={'carbon:generate-pdf'} width="20px" height="20px" />}
+          onClick={downloadPDF}
+        >
+          Download
+        </LoadingButton>
+      </Stack>
+      <Stack spacing={5} sx={{ mt: 2 }}>
+        {SelectionInfo.map((item, index) => (
+          <CustomGroupBox
+            title={item.groupName}
+            key={item.groupName + index}
+            bordersx={{ display: item.visible !== true ? 'none' : 'block' }}
+            titlesx={{ fontSize: '25px', transform: 'translate(40px, -12px) scale(0.75)' }}
+          >
+            <Stack
+              direction={item.direction}
+              alignItems="stretch"
+              justifyContent="left"
+              spacing={3}
+              sx={{ ...item.style }}
+            >
+              {item.subGroups.map((element, index) =>
+                Array.isArray(element) ? (
+                  <Box>
+                    {element.map((ele, index) => (
+                      <CustomGroupBox
+                        title={ele.title}
                         key={ele.title + index}
-                        sx={{
+                        bordersx={{
                           display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
+                          width: 'auto',
                           m: '20px 30px!important',
+                          padding: '20px',
+                        }}
+                        titlesx={{
+                          fontSize: '18px',
+                          transform: 'translate(25px, -10px) scale(0.75)',
                         }}
                       >
-                        <CardHeaderStyle
-                          title={
-                            <CardHeaderRHFTextFieldStyle
-                              size="small"
-                              name={ele.title}
-                              label={ele.title}
-                              variant={'filled'}
-                            />
-                          }
-                        />
-                        <CardContent>
-                          <TableContainer component={Paper}>
-                            <Table size="small">
-                              <TableBody>
-                                {ele.data &&
-                                  ele.data.map((row, index) => (
-                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                      {row.map((item, index) => (
-                                        <TableCell key={index} component="th" scope="row" align="left">
-                                          {item}
-                                        </TableCell>
-                                      ))}
-                                    </TableRow>
-                                  ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </>
-                  :( 
-                    <Card
-                      key={element.title + index}
-                      sx={{
-                        display: element.data !== undefined && element.data.length > 0 ? 'block' : 'none',
-                        m: '20px 30px!important',
-                      }}
-                    >
-                      <CardHeaderStyle
-                        title={
-                          <CardHeaderRHFTextFieldStyle
-                            size="small"
-                            name={element.title}
-                            label={element.title}
-                            variant={'filled'}
-                          />
-                        }
-                      />
-                      <CardContent>
                         <TableContainer component={Paper}>
                           <Table size="small">
                             <TableBody>
-                              {element.data &&
-                                element.data.map((row, index) => (
+                              {ele.data &&
+                                ele.data.map((row, index) => (
                                   <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     {row.map((item, index) => (
-                                      <TableCell key={index} component="th" scope="row" align="left">
+                                      <TableCell key={item + index} component="th" scope="row" align="left">
                                         {item}
                                       </TableCell>
                                     ))}
@@ -728,15 +718,69 @@ export default function Selection() {
                             </TableBody>
                           </Table>
                         </TableContainer>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
-      </FormProvider>
+                      </CustomGroupBox>
+                    ))}
+                  </Box>
+                ) : (
+                  <CustomGroupBox
+                    title={element.title}
+                    key={element.title + index}
+                    bordersx={{
+                      display:
+                        element.title === 'Graph' ||
+                        (element.data !== undefined && element.data.length > 0 ? 'block' : 'none'),
+                      width: 'auto',
+                      m: '20px 30px!important',
+                      padding: '20px',
+                    }}
+                    titlesx={{
+                      fontSize: '18px',
+                      transform: 'translate(25px, -10px) scale(0.75)',
+                    }}
+                  >
+                    {element.title === 'Graph' && (
+                      <GraphChart
+                        // title="Yearly Sales"
+                        subheader="Air Performance"
+                        chartLabels={['200', '400', '600', '800', '1000', '1200', '1400']}
+                        chartData={{
+                          data: [
+                            { name: '1', data: [0.7, 0.5, 0.3, 0, 0, 0, 0] },
+                            { name: '2', data: [1.3, 1.0, 0.7, 0.5, 0, 0, 0] },
+                            { name: '3', data: [1.7, 1.3, 0.9, 0.6, 0, 0, 0] },
+                            { name: '4', data: [2.2, 1.6, 1.1, 0.7, 0.3, 0, 0] },
+                            { name: '5', data: [2.7, 2.2, 1.7, 1.0, 0.5, 0, 0] },
+                            { name: '6', data: [3.5, 3.0, 2.4, 1.9, 1.2, 0.5, 0] },
+                          ],
+                        }}
+                      />
+                    )}
+
+                    {element.title !== 'Graph' && (
+                      <TableContainer component={Paper}>
+                        <Table size="small">
+                          <TableBody>
+                            {element.data &&
+                              element.data.map((row, index) => (
+                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  {row.map((item, index) => (
+                                    <TableCell key={index} component="th" scope="row" align="left">
+                                      {item}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    )}
+                  </CustomGroupBox>
+                )
+              )}
+            </Stack>
+          </CustomGroupBox>
+        ))}
+      </Stack>
     </Container>
   );
 }
