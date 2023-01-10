@@ -96,15 +96,16 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     // preheatSetpointInfo,
     heatingSetpointInfo,
     coolingSetpointInfo,
-    // customInputsInfo,
+    customInputsInfo,
     reheatSetpointInfo,
+    customInputsInfo,
     supplyAirOpeningInfo,
     remainingOpeningsInfo,
-    // returnAirESPInfo,
+    returnAirESPInfo,
     returnAirFilterInfo,
-    // summerReturnAirCFMInfo,
-    // summerSupplyAirCFMInfo,
-    // supplyAirESPInfo,
+    summerReturnAirCFMInfo,
+    summerSupplyAirCFMInfo,
+    supplyAirESPInfo,
   } = controlInfo;
 
   console.log(controlInfo, unitInfo);
@@ -121,13 +122,13 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     isEdit ? !!unitInfo.ckbVoltageSPP : !!unitVoltageSPPInfo.ckbVoltageSPPVal
   );
   const [ckbDehumidificationVal, setCkbDehumidificationVal] = useState(
-    isEdit ? !!unitInfo.ckbDehumidification : !!dehumidificationInfo.ckbDehumidificationVal
+    isEdit ? !!unitInfo.ckbDehumidificationVal : !!dehumidificationInfo.ckbDehumidificationVal
   );
-  const [ckbValveAndActuator, setCkbValveAndActuatorVal] = useState(
-    isEdit ? !!unitInfo.ckbValveAndActuator : !!valveAndActuatorInfo.ckbValveAndActuatorVal
+  const [ckbValveAndActuatorVal, setCkbValveAndActuatorVal] = useState(
+    isEdit ? !!unitInfo.ckbValveAndActuatorVal : !!valveAndActuatorInfo.ckbValveAndActuatorVal
   );
   const [ckbHeatPumpVal, setCkbHeatPumpVal] = useState(
-    isEdit ? !!unitInfo.ckbHeatPump : !!heatPumpInfo.ckbHeatPumpVal
+    isEdit ? !!unitInfo.ckbHeatPumpVal : !!heatPumpInfo.ckbHeatPumpVal
   );
   const [ckbDownshotVal, setCkbDownshotVal] = useState(
     isEdit ? !!unitInfo.ckbDownshot : !!downshotInfo.isDownshotVal
@@ -184,8 +185,10 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     ddlHeatExchCompId: isEdit ? unitInfo.HeatExchCompID : componentInfo.ddlHeatExchCompId,
     ddlCoolingCompId: isEdit ? unitInfo.CoolingCompID : componentInfo.ddlCoolingCompId,
     ddlHeatingCompId: isEdit ? unitInfo.HeatingCompID : componentInfo.ddlHeatingCompId,
-    txbOA_FilterPDId: isEdit ? unitInfo.txbOA_FilterPDText : 0.5,
-    txbRA_FilterPDId: isEdit ? unitInfo.txbRA_FilterPDText : 0.5,
+    txbOA_FilterPD: isEdit ? unitInfo.txbOA_FilterPDText : 0.5,
+    txbRA_FilterPD: isEdit ? unitInfo.txbRA_FilterPDText : 0.5,
+    ckbHeatPumpVal: isEdit ? unitInfo.ckbHeatPumpVal : heatPumpInfo.ckbHeatPumpVal,
+    ckbDehumidificationVal: isEdit ? unitInfo.ckbDehumidificationVal : dehumidificationInfo.ckbDehumidificationVal, 
     ddlReheatCompId: isEdit ? unitInfo.ReheatCompID : reheatInfo.ddlReheatCompId,
     ddlDamperAndActuatorId: isEdit ? unitInfo.DamperActuatorID : damperAndActuatorInfo.ddlDamperAndActuatorId,
     ddlElecHeaterVoltageId: isEdit ? unitInfo.ElecHeaterVoltageID : elecHeaterVoltageInfo.ddlElecHeaterVoltageId,
@@ -195,6 +198,8 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     ddlHeatElecHeaterInstallationId: isEdit
       ? unitInfo.HeatElecHeaterInstallationID
       : heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId,
+    ckbValveAndActuatorVal: isEdit ? unitInfo.ckbValveAndActuatorVal : valveAndActuatorInfo.ckbValveAndActuatorVal, 
+    ckbDrainPanVal: isEdit ? unitInfo.ckbDrainPanVal : drainPanInfo.ckbDrainPanVal,
     ddlPreheatCoilHandingId: isEdit ? unitInfo.PreheatCoilHandingID : preheatCoilHandingInfo.ddlPreheatCoilHandingId,
     ddlCoolingCoilHandingId: isEdit ? unitInfo.CoolingCoilHandingID : coolingCoilHandingInfo.ddlCoolingCoilHandingId,
     ddlHeatingCoilHandingId: isEdit ? unitInfo.HeatingCoilHandingID : heatingCoilHandingInfo.ddlHeatingCoilHandingId,
@@ -284,13 +289,13 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     intUnitTypeID,
     intUAL: localStorage.getItem('UAL'),
     intUserID: localStorage.getItem('userId'),
-    ckbBypassVal,
-    ckbDrainPanVal,
-    ckbVoltageSPPVal,
-    ckbDehumidificationVal,
-    ckbValveAndActuator,
-    ckbHeatPumpVal,
-    ckbDownshotVal,
+    // ckbBypassVal,
+    // ckbDrainPanVal,
+    // ckbVoltageSPPVal,
+    // ckbDehumidificationVal,
+    // ckbValveAndActuatorVal,
+    // ckbHeatPumpVal,
+    // ckbDownshotVal,
     ...ckbFlowRateAndCap,
   });
 
@@ -526,7 +531,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
   };
 
-  const ckbHeatPumpChanged = async () => {
+  const ckbHeatPumpChanged = async (e) => {
     setCkbHeatPumpVal(!ckbHeatPumpVal);
     const data = {
       ...getAllFormData(),
@@ -535,13 +540,9 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     await dispatch(unitReducer.ckbHeatPumpChanged(data));
   };
 
-  const ckbDehumidificationChanged = async () => {
-    setCkbDehumidificationVal(!ckbDehumidificationVal);
-    const data = {
-      ...getAllFormData(),
-      ckbDehumidificationVal: !ckbDehumidificationVal,
-    };
-    await dispatch(unitReducer.ckbDehumidificationChanged(data));
+  const ckbDehumidificationChanged = async (e) => {
+    setValue('ckbDehumidificationVal', e.target.checked);
+    await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
   };
 
   const ddlHeatingCompChanged = async (e) => {
@@ -1146,7 +1147,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       name="ckbHeatPumpVal"
                       label="Heat Pump"
                       sx={getDisplay(heatPumpInfo.divHeatPumpVisible)}
-                      checked={ckbHeatPumpVal}
+                      checked={heatPumpInfo.ckbHeatPumpVal}
                       onChange={ckbHeatPumpChanged}
                     />
                     <RHFControlCheckbox
@@ -1154,7 +1155,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       name="ckbDehumidificationVal"
                       label="Dehumidification"
                       sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
-                      checked={ckbDehumidificationVal}
+                      checked={dehumidificationInfo.ckbDehumidificationVal}
                       onChange={ckbDehumidificationChanged}
                     />
                     <RHFSelect
@@ -1178,7 +1179,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ddlDamperAndActuatorId"
                       label="Dampers & Actuator"
-                      sx={getDisplay(damperAndActuatorInfo.divDamperActuatorVisible)}
+                      sx={getDisplay(damperAndActuatorInfo.divDamperAndActuatorVisible)}
                       onChange={(e) => {
                         setValue('ddlDamperAndActuatorId', parseInt(e.target.value, 10));
                       }}
@@ -1237,8 +1238,8 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       name="ckbValveAndActuatorVal"
                       label="Include Valves & Actuator"
                       sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible)}
-                      checked={ckbValveAndActuator}
-                      onChange={() => setCkbValveAndActuatorVal(!ckbValveAndActuator)}
+                      checked={ckbValveAndActuatorVal}
+                      onChange={() => setCkbValveAndActuatorVal(!ckbValveAndActuatorVal)}
                     />
                     <RHFControlCheckbox
                       size="small"
@@ -1252,7 +1253,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                 </Box>
               </CardContent>
             </Card>
-            <Card sx={{ ...getDisplay(getValues('intPreheatCompId') > 1), mb: 3 }}>
+            <Card sx={{ ...getDisplay(ualInfo.divHandingValveVisible), mb: 3 }}>
               <CardHeaderStyle title="SUBMITTALS" />
               <CardContent sx={{ height: 'auto' }}>
                 <Box sx={{ display: 'grid', rowGap: 3, columnGap: 1 }}>
@@ -1273,7 +1274,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ddlCoolingCoilHandingId"
                       label="Cooling Coil Handing"
-                      sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible)}
+                      sx={getDisplay(coolingCoilHandingInfo.divCoolingCoilHandingVisible)}
                       onChange={(e) => setValue('ddlCoolingCoilHandingId', parseInt(e.target.value, 10))}
                     >
                       {coolingCoilHandingInfo.ddlCoolingCoilHandingDataTbl?.map((item, index) => (
@@ -1286,7 +1287,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ddlHeatingCoilHandingId"
                       label="Heating Coil Handing"
-                      sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible)}
+                      sx={getDisplay(heatingCoilHandingInfo.divHeatingCoilHandingVisible)}
                       onChange={(e) => setValue('ddlHeatingCoilHandingId', parseInt(e.target.value, 10))}
                     >
                       {heatingCoilHandingInfo.ddlHeatingCoilHandingDataTbl?.map((item, index) => (
@@ -1298,7 +1299,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                     <RHFSelect
                       size="small"
                       name="ddlValveTypeId"
-                      sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible)}
+                      sx={getDisplay(valveTypeInfo.divValveTypeVisible)}
                       label="Valve Type"
                     >
                       {valveTypeInfo.ddlValveTypeDataTbl?.map((item, index) => (
@@ -1360,6 +1361,11 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                     />
                   </Box>
                 </Box>
+              </CardContent>
+            </Card>
+            <Card sx={{ ...getDisplay(ualInfo.divCustomVisible), mb: 3 }}>
+              <CardHeaderStyle title="CUSTOMS INPUTS" />
+              <CardContent sx={{ height: 'auto' }}>
                 <Box sx={{ display: 'grid', rowGap: 3, columnGap: 1 }}>
                   <Divider />
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
@@ -1367,7 +1373,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbPreheatHWC_UseCap"
                       label="Preheat HWC Use Capacity"
-                      sx={getDisplay(isPreheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divPreheatHWC_UseCapVisible)}
                       checked={ckbFlowRateAndCap.ckbPreheatHWC_UseCap}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1380,7 +1386,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbPreheatHWC_Cap"
                       label="Preheat HWC Capacity (MBH)"
-                      sx={getDisplay(isPreheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divPreheatHWC_UseCapVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbPreheatHWC_Cap');
                       }}
@@ -1389,7 +1395,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbPreheatHWC_UseFlowRate"
                       label="Preheat HWC Use Flow Rate"
-                      sx={getDisplay(isPreheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divPreheatHWC_UseFlowRateVisible)}
                       checked={ckbFlowRateAndCap.ckbPreheatHWC_UseFlowRate}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1402,7 +1408,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbPreheatHWC_FlowRate"
                       label="Preheat HWC Flow Rate (GPM)"
-                      sx={getDisplay(isPreheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divPreheatHWC_UseFlowRateVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbPreheatHWC_FlowRate');
                       }}
@@ -1411,7 +1417,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbCoolingCWC_UseCap"
                       label="Cooling CWC Use Capacity"
-                      sx={getDisplay(isCoolingCompCWC())}
+                      sx={getDisplay(customInputsInfo.divCoolingCWC_UseCapVisible)}
                       checked={ckbFlowRateAndCap.ckbCoolingCWC_UseCap}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1424,7 +1430,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbCoolingCWC_Cap"
                       label="Cooling CWC Capacity (MBH)"
-                      sx={getDisplay(isCoolingCompCWC())}
+                      sx={getDisplay(customInputsInfo.divCoolingCWC_UseCapVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbCoolingCWC_Cap');
                       }}
@@ -1433,7 +1439,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbCoolingCWC_UseFlowRate"
                       label="Cooling CWC Use Flow Rate"
-                      sx={getDisplay(isCoolingCompCWC())}
+                      sx={getDisplay(customInputsInfo.divCoolingCWC_UseFlowRateVisible)}
                       checked={ckbFlowRateAndCap.ckbCoolingCWC_UseFlowRate}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1446,7 +1452,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbCoolingCWC_FlowRate"
                       label="Cooling CWC Flow Rate (GPM)"
-                      sx={getDisplay(isCoolingCompCWC())}
+                      sx={getDisplay(customInputsInfo.divCoolingCWC_UseFlowRateVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbCoolingCWC_FlowRate');
                       }}
@@ -1455,7 +1461,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbHeatingHWC_UseCap"
                       label="Heating HWC Use Capacity"
-                      sx={getDisplay(isHeatingCompHWC())}
+                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseCapVisible)}
                       checked={ckbFlowRateAndCap.ckbHeatingHWC_UseCap}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1468,7 +1474,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbHeatingHWC_Cap"
                       label="Heating HWC Capacity (MBH)"
-                      sx={getDisplay(isHeatingCompHWC())}
+                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseCapVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbHeatingHWC_Cap');
                       }}
@@ -1477,7 +1483,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbHeatingHWC_UseFlowRate"
                       label="Heating HWC Use Flow Rate"
-                      sx={getDisplay(isHeatingCompHWC())}
+                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseFlowRateVisible)}
                       checked={ckbFlowRateAndCap.ckbHeatingHWC_UseFlowRate}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1490,7 +1496,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbHeatingHWC_FlowRate"
                       label="Heating HWC Flow Rate (GPM)"
-                      sx={getDisplay(isHeatingCompHWC())}
+                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseFlowRateVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbHeatingHWC_FlowRate');
                       }}
@@ -1499,7 +1505,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbReheatHWC_UseCap"
                       label="Reheat HWC Use Capacity"
-                      sx={getDisplay(isReheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divReheatHWC_UseCapVisible)}
                       checked={ckbFlowRateAndCap.ckbReheatHWC_UseCap}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1512,7 +1518,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbReheatHWC_Cap"
                       label="Reheat HWC Capacity (MBH)"
-                      sx={getDisplay(isReheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divReheatHWC_UseCapVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbReheatHWC_Cap');
                       }}
@@ -1521,7 +1527,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="ckbReheatHWC_UseFlowRate"
                       label="Reheat HWC Use Flow Rate"
-                      sx={getDisplay(isReheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
                       checked={ckbFlowRateAndCap.ckbReheatHWC_UseFlowRate}
                       onChange={() => {
                         setCkbFlowRateAndCap({
@@ -1534,7 +1540,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                       size="small"
                       name="txbReheatHWC_FlowRate"
                       label="Reheat HWC Flow Rate (GPM)"
-                      sx={getDisplay(isReheatCompHWC())}
+                      sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
                       onChange={(e) => {
                         setValueWithCheck(e, 'txbReheatHWC_FlowRate');
                       }}

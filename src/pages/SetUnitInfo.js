@@ -17,7 +17,7 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { UnitEdit, Drawing, Layout, Selection } from '../sections/configureUnit';
+import { UnitEdit, Drawing, Selection } from '../sections/configureUnit';
 import Loading from '../sections/Loading';
 // ----------------------------------------------------------------------
 

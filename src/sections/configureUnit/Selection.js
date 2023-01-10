@@ -189,61 +189,61 @@ export default function Selection() {
             direction: 'row',
             style: {},
             visible:
-              electricalRequirements.coolingDXCDataVisible ||
-              electricalRequirements.unitDataVisible ||
-              electricalRequirements.preheatDataVisible ||
-              electricalRequirements.heatingDataVisible,
+              electricalRequirements?.coolingDXCDataVisible ||
+              electricalRequirements?.unitDataVisible ||
+              electricalRequirements?.preheatDataVisible ||
+              electricalRequirements?.heatingDataVisible,
             subGroups: [
               {
                 title: 'Unit',
-                data: electricalRequirements.unitData.map((item) => [item.cLabel, item.cValue]),
-                visible: electricalRequirements.unitDataVisible,
+                data: electricalRequirements?.unitData?.map((item) => [item.cLabel, item.cValue]),
+                visible: electricalRequirements?.unitDataVisible,
               },
               {
                 title: 'W-controller',
                 data:
-                  electricalRequirements.coolingDXCData !== undefined &&
-                  electricalRequirements.coolingDXCData.map((item) => [item.cLabel, item.cValue]),
+                  electricalRequirements?.coolingDXCData !== undefined &&
+                  electricalRequirements?.coolingDXCData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements.coolingDXCDataVisible !== undefined &&
-                  electricalRequirements.coolingDXCDataVisible,
+                  electricalRequirements?.coolingDXCDataVisible !== undefined &&
+                  electricalRequirements?.coolingDXCDataVisible,
               },
               {
                 title: 'Preheat Electric Heater',
                 data:
-                  electricalRequirements.preheatData !== undefined &&
-                  electricalRequirements.preheatData.map((item) => [item.cLabel, item.cValue]),
+                  electricalRequirements?.preheatData !== undefined &&
+                  electricalRequirements?.preheatData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements.preheatDataVisible !== undefined && electricalRequirements.preheatDataVisible,
+                  electricalRequirements?.preheatDataVisible !== undefined && electricalRequirements?.preheatDataVisible,
               },
               {
                 title: 'Heating Electric Heater',
                 data:
-                  electricalRequirements.heatingData !== undefined &&
-                  electricalRequirements.heatingData?.map((item) => [item.cLabel, item.cValue]),
+                  electricalRequirements?.heatingData !== undefined &&
+                  electricalRequirements?.heatingData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements.heatingDataVisible !== undefined && electricalRequirements.heatingDataVisible,
+                  electricalRequirements?.heatingDataVisible !== undefined && electricalRequirements?.heatingDataVisible,
               },
             ],
           },
           {
             groupName: 'Preheat Electric Heater',
             direction: 'column',
-            visible: preheatElecHeater.Visible,
+            visible: preheatElecHeater?.Visible,
             style: {},
             subGroups: [
               {
                 title: 'Actual',
                 // data: preheatElecHeater !== undefined && preheatElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
                 data: preheatElecHeater?.Data,
-                visible: preheatElecHeater.Visible,
+                visible: preheatElecHeater?.Visible,
               },
             ],
           },
           {
             groupName: 'Preheat HWC',
             direction: 'row',
-            visible: preheatHWC.Visible,
+            visible: preheatHWC?.Visible,
             style: {},
             subGroups: [
               {
@@ -271,7 +271,7 @@ export default function Selection() {
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
-            visible: heatExchCORE.performanceVisible,
+            visible: heatExchCORE?.performanceVisible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(1, 1fr)',
@@ -297,7 +297,7 @@ export default function Selection() {
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
-            visible: heatExchRECUTECH.performanceVisible,
+            visible: heatExchRECUTECH?.performanceVisible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(1, 1fr)',
@@ -323,7 +323,7 @@ export default function Selection() {
           {
             groupName: 'Heat Exchanger',
             direction: 'row',
-            visible: heatExchPOLYBLOC.performanceVisible,
+            visible: heatExchPOLYBLOC?.performanceVisible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(1, 1fr)',
@@ -349,7 +349,7 @@ export default function Selection() {
           {
             groupName: 'Cooling CWC',
             direction: 'row',
-            visible: coolingCWC.Visible,
+            visible: coolingCWC?.Visible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -380,7 +380,7 @@ export default function Selection() {
           {
             groupName: 'Cooling DXC',
             direction: 'row',
-            visible: coolingDXC.coolingDXCVisible,
+            visible: coolingDXC?.Visible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -418,7 +418,7 @@ export default function Selection() {
           {
             groupName: 'Heating Mode DX Coil',
             direction: 'row',
-            visible: heatingCondCoil.Visible,
+            visible: heatingCondCoil?.Visible,
             style: {},
             subGroups: [
               {
@@ -441,7 +441,7 @@ export default function Selection() {
           {
             groupName: 'Heating Electric Heater',
             direction: 'column',
-            visible: heatingElecHeater.Visible,
+            visible: heatingElecHeater?.Visible,
             style: {},
             subGroups: [
               {
@@ -454,7 +454,7 @@ export default function Selection() {
           {
             groupName: 'Heating HWC',
             direction: 'row',
-            visible: heatingHWC.Visible,
+            visible: heatingHWC?.Visible,
             style: {},
             subGroups: [
               {
@@ -481,7 +481,7 @@ export default function Selection() {
           {
             groupName: 'Reheat Electric Heater',
             direction: 'column',
-            visible: reheatElecHeater.Visible,
+            visible: reheatElecHeater?.Visible,
             style: {},
             subGroups: [
               {
@@ -494,7 +494,7 @@ export default function Selection() {
           {
             groupName: 'Reheat HWC',
             direction: 'row',
-            visible: reheatHWC.Visible,
+            visible: reheatHWC?.Visible,
             style: {},
             subGroups: [
               {
@@ -522,7 +522,7 @@ export default function Selection() {
           {
             groupName: 'Reheat HGRC',
             direction: 'row',
-            visible: reheatHGRC.Visible,
+            visible: reheatHGRC?.Visible,
             style: {},
             subGroups: [
               {
@@ -581,10 +581,7 @@ export default function Selection() {
             groupName: 'Exhaust Fan',
             direction: 'row',
             visible: exhaustFan.Visible,
-            style: {
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-            },
+            style: {},
             subGroups: [
               {
                 title: 'Fan Data',
@@ -605,10 +602,7 @@ export default function Selection() {
           {
             groupName: 'Unit Sound Data (Hz)',
             direction: 'row',
-            style: {
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-            },
+            style: {},
             visible: soundData.Visible,
             subGroups: [
               {
