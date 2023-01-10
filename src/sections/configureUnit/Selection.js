@@ -187,7 +187,10 @@ export default function Selection() {
           {
             groupName: 'Electrical Requirements',
             direction: 'row',
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             visible:
               electricalRequirements?.coolingDXCDataVisible ||
               electricalRequirements?.unitDataVisible ||
@@ -214,7 +217,8 @@ export default function Selection() {
                   electricalRequirements?.preheatData !== undefined &&
                   electricalRequirements?.preheatData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements?.preheatDataVisible !== undefined && electricalRequirements?.preheatDataVisible,
+                  electricalRequirements?.preheatDataVisible !== undefined &&
+                  electricalRequirements?.preheatDataVisible,
               },
               {
                 title: 'Heating Electric Heater',
@@ -222,7 +226,8 @@ export default function Selection() {
                   electricalRequirements?.heatingData !== undefined &&
                   electricalRequirements?.heatingData?.map((item) => [item.cLabel, item.cValue]),
                 visible:
-                  electricalRequirements?.heatingDataVisible !== undefined && electricalRequirements?.heatingDataVisible,
+                  electricalRequirements?.heatingDataVisible !== undefined &&
+                  electricalRequirements?.heatingDataVisible,
               },
             ],
           },
@@ -244,7 +249,10 @@ export default function Selection() {
             groupName: 'Preheat HWC',
             direction: 'row',
             visible: preheatHWC?.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -455,7 +463,10 @@ export default function Selection() {
             groupName: 'Heating HWC',
             direction: 'row',
             visible: heatingHWC?.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -495,7 +506,10 @@ export default function Selection() {
             groupName: 'Reheat HWC',
             direction: 'row',
             visible: reheatHWC?.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -523,7 +537,10 @@ export default function Selection() {
             groupName: 'Reheat HGRC',
             direction: 'row',
             visible: reheatHGRC?.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -535,16 +552,18 @@ export default function Selection() {
                 // data: reheatHGRC !== undefined && reheatHGRC.Entering.map((item) => [item.cLabel, item.cValue]),
                 data: reheatHGRC?.Entering,
               },
-              {
-                title: 'Setpoint',
-                // data: reheatHGRC !== undefined && reheatHGRC.Leaving.map((item) => [item.cLabel, item.cValue]),
-                data: reheatHGRC?.Leaving,
-              },
-              {
-                title: 'Coil Performance',
-                // data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
-                data: reheatHGRC?.PerfOutputs,
-              },
+              [
+                {
+                  title: 'Setpoint',
+                  // data: reheatHGRC !== undefined && reheatHGRC.Leaving.map((item) => [item.cLabel, item.cValue]),
+                  data: reheatHGRC?.Leaving,
+                },
+                {
+                  title: 'Coil Performance',
+                  // data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
+                  data: reheatHGRC?.PerfOutputs,
+                },
+              ],
               {
                 title: 'VRV Integration Kit',
                 // data: reheatHGRC !== undefined && reheatHGRC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),

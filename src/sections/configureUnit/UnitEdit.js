@@ -98,7 +98,6 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     coolingSetpointInfo,
     customInputsInfo,
     reheatSetpointInfo,
-    customInputsInfo,
     supplyAirOpeningInfo,
     remainingOpeningsInfo,
     returnAirESPInfo,
