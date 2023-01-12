@@ -455,7 +455,10 @@ export default function Selection() {
             groupName: 'Heating HWC',
             direction: 'row',
             visible: heatingHWC?.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Coil',
@@ -556,7 +559,10 @@ export default function Selection() {
             groupName: 'Supply Fan',
             direction: 'row',
             visible: supplyFan?.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Fan Data',
@@ -577,8 +583,11 @@ export default function Selection() {
           {
             groupName: 'Exhaust Fan',
             direction: 'row',
-            visible: exhaustFan?.Visible,
-            style: {},
+            visible: exhaustFan.Visible,
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Fan Data',
@@ -651,7 +660,7 @@ export default function Selection() {
         {SelectionInfo.map((item, index) => (
           <CustomGroupBox
             title={item.groupName}
-            key={index}
+            key={item.groupName + index}
             bordersx={{ display: item.visible !== true ? 'none' : 'block' }}
             titlesx={{ fontSize: '25px', transform: 'translate(40px, -12px) scale(0.75)' }}
           >
@@ -664,7 +673,7 @@ export default function Selection() {
             >
               {item.subGroups.map((element, index) =>
                 Array.isArray(element) ? (
-                  <>
+                  <Box>
                     {element.map((ele, index) => (
                       <CustomGroupBox
                         title={ele.title}
@@ -687,7 +696,7 @@ export default function Selection() {
                                 ele.data.map((row, index) => (
                                   <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     {row.map((item, index) => (
-                                      <TableCell key={index} component="th" scope="row" align="left">
+                                      <TableCell key={item + index} component="th" scope="row" align="left">
                                         {item}
                                       </TableCell>
                                     ))}
@@ -698,7 +707,7 @@ export default function Selection() {
                         </TableContainer>
                       </CustomGroupBox>
                     ))}
-                  </>
+                  </Box>
                 ) : (
                   <CustomGroupBox
                     title={element.title}
