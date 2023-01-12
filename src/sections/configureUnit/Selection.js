@@ -3,6 +3,9 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 
+// file-saver
+import { saveAs } from 'file-saver';
+
 // PropTypes
 import { PropTypes } from 'prop-types';
 
@@ -25,11 +28,14 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { getViewSelectionInfo, DownloadSelection } from '../../redux/slices/unitReducer';
+import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
 // components
 import Iconify from '../../components/Iconify';
 import GraphChart from './GraphChart';
-
+// utils
+import axios from '../../utils/axios';
+// config
+import { serverUrl } from '../../config';
 // sections
 import Loading from '../Loading';
 // ----------------------------------------------------------------------
@@ -600,7 +606,10 @@ export default function Selection() {
             groupName: 'Exhaust Fan',
             direction: 'row',
             visible: exhaustFan.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Fan Data',
@@ -652,8 +661,25 @@ export default function Selection() {
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
-    const result = await dispatch(DownloadSelection(data));
-    console.log(result);
+
+    await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
+      console.log(response);
+      // Get File Name
+      let filename = '';
+      const disposition = response.headers['content-disposition'];
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      // Save File
+      saveAs(response.data, `${filename}.pdf`);
+    });
+
+    console.log('Successed');
   };
 
   return JSON.stringify(viewSelectionInfo) === '{}' ? (

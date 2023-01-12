@@ -561,21 +561,21 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
 
   const txbOA_FilterPDChanged = async (e) => {
     if (e.target.value > 1.0) {
-      setValue('txbOA_FilterPDId', 1.0);
+      setValue('txbOA_FilterPD', 1.0);
     } else if (e.target.value < 0.3) {
-      setValue('txbOA_FilterPDId', 0.3);
+      setValue('txbOA_FilterPD', 0.3);
     } else {
-      setValue('txbOA_FilterPDId', parseFloat(e.target.value, 10));
+      setValue('txbOA_FilterPD', parseFloat(e.target.value, 10));
     }
   };
 
   const txbRA_FilterPDChanged = (e) => {
     if (e.target.value > 1.0) {
-      setValue('txbRA_FilterPDId', 1.0);
+      setValue('txbRA_FilterPD', 1.0);
     } else if (e.target.value < 0.3) {
-      setValue('txbRA_FilterPDId', 0.3);
+      setValue('txbRA_FilterPD', 0.3);
     } else {
-      setValue('txbRA_FilterPDId', parseFloat(e.target.value, 10));
+      setValue('txbRA_FilterPD', parseFloat(e.target.value, 10));
     }
   };
 
@@ -1124,21 +1124,21 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
                   <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                     <RHFTextField
                       size="small"
-                      name="txbOA_FilterPDId"
+                      name="txbOA_FilterPD"
                       label="QA Filter PD (in w.g.)"
                       onBlur={txbOA_FilterPDChanged}
                       onChange={(e) => {
-                        setValueWithCheck(e, 'txbOA_FilterPDId');
+                        setValueWithCheck(e, 'txbOA_FilterPD');
                       }}
                     />
                     <RHFTextField
                       size="small"
-                      name="txbRA_FilterPDId"
+                      name="txbRA_FilterPD"
                       label="RA Filter PD (in w.g.)"
                       sx={getDisplay(returnAirFilterInfo.divRA_FilterPDVisible)}
                       onBlur={txbRA_FilterPDChanged}
                       onChange={(e) => {
-                        setValueWithCheck(e, 'txbRA_FilterPDId');
+                        setValueWithCheck(e, 'txbRA_FilterPD');
                       }}
                     />
                     <RHFControlCheckbox
