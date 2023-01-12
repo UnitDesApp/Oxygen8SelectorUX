@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 // import axios from '../../utils/axios';
+// FileSaveer
+import { saveAs } from 'file-saver';
 // store
 import { dispatch } from '../store';
 // utils
@@ -890,13 +892,4 @@ export function ddlSupplyAirOpeningChanged(data) {
     return response.data;
   };
 }
-
-
-export function DownloadSelection(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/DownloadSelection`, data);
-    return response.data;
-  }
-}
 // ----------------------------------------------------------------------
-// console.log(data);
