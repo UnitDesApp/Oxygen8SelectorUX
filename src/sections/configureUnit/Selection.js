@@ -30,6 +30,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useSelector, useDispatch } from '../../redux/store';
 import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
 // components
+import Image from '../../components/Image';
 import Iconify from '../../components/Iconify';
 import GraphChart from './GraphChart';
 // utils
@@ -532,11 +533,11 @@ export default function Selection() {
                 //  data: reheatHWC !== undefined && reheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                 data: reheatHWC?.Leaving,
               },
-              // {
-              //   title: 'Valve & Actuator',
-              //   // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
-              //   data: reheatHWC?.ValveActuator,
-              // },
+              {
+                title: 'Valve & Actuator',
+                // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHWC?.ValveActuator,
+              },
             ],
           },
           {
@@ -593,7 +594,7 @@ export default function Selection() {
               },
               {
                 title: 'Graph',
-                data: supplyFan?.Graph,
+                data: supplyFan?.GraphImageUrl,
               },
               {
                 title: 'Sound Data',
@@ -618,7 +619,7 @@ export default function Selection() {
               },
               {
                 title: 'Graph',
-                data: exhaustFan?.Graph,
+                data: exhaustFan?.GraphImageUrl,
               },
               {
                 title: 'Sound Data',
@@ -765,21 +766,7 @@ export default function Selection() {
                     }}
                   >
                     {element.title === 'Graph' && (
-                      <GraphChart
-                        // title="Yearly Sales"
-                        subheader="Air Performance"
-                        chartLabels={['200', '400', '600', '800', '1000', '1200', '1400']}
-                        chartData={{
-                          data: [
-                            { name: '1', data: [0.7, 0.5, 0.3, 0, 0, 0, 0] },
-                            { name: '2', data: [1.3, 1.0, 0.7, 0.5, 0, 0, 0] },
-                            { name: '3', data: [1.7, 1.3, 0.9, 0.6, 0, 0, 0] },
-                            { name: '4', data: [2.2, 1.6, 1.1, 0.7, 0.3, 0, 0] },
-                            { name: '5', data: [2.7, 2.2, 1.7, 1.0, 0.5, 0, 0] },
-                            { name: '6', data: [3.5, 3.0, 2.4, 1.9, 1.2, 0.5, 0] },
-                          ],
-                        }}
-                      />
+                      <Image src={state.intProductTypeID === 3 ? `/${element.data}` : element.data} height="100%" />
                     )}
 
                     {element.title !== 'Graph' && (
