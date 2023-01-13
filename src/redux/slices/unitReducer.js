@@ -502,7 +502,7 @@ const UnitSlice = createSlice({
             item.cValue,
           ]),
           Leaving: data?.outputHeatingHWC?.gvOutHeatingHWC_LeavingDataSource?.map((item) => [item.cLabel, item.cValue]),
-          ValveActuator: data?.outputHeatingHWC?.gvOutHeatingHWC_ValveActuatorDataDataSource?.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputHeatingHWC?.gvOutHeatingHWC_ValveActuatorDataSource?.map((item) => [item.cLabel, item.cValue]),
         },
         reheatElecHeater: {
           Visible: data?.divOutReheatElecHeaterVisible,
@@ -513,7 +513,7 @@ const UnitSlice = createSlice({
           Data: data?.outputReheatHWC?.gvOutReheatHWC_DataDataSource?.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.outputReheatHWC?.gvOutReheatHWC_EnteringDataSource?.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.outputReheatHWC?.gvOutReheatHWC_LeavingDataSource?.map((item) => [item.cLabel, item.cValue]),
-          // ValveActuator: data?.outputReheatHWC?.gvOutReheatHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
+          ValveActuator: data?.outputReheatHWC?.gvOutReheatHWC_ValveActuatorDataDataSource.map((item) => [item.cLabel, item.cValue]),
         },
         reheatHGRC: {
           Visible: data?.divOutReheatHGRCVisible,

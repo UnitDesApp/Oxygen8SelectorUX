@@ -532,11 +532,10 @@ export default function Selection() {
                 //  data: reheatHWC !== undefined && reheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                 data: reheatHWC?.Leaving,
               },
-              // {
-              //   title: 'Valve & Actuator',
-              //   // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
-              //   data: reheatHWC?.ValveActuator,
-              // },
+              {
+                title: 'Valve & Actuator',
+                data: reheatHWC?.ValveActuator,
+              },
             ],
           },
           {

@@ -152,7 +152,7 @@ export default function UnitEdit({ intUnitTypeID, intProductTypeID, refSubmit, o
     txbQty: isEdit ? unitInfo.txbQtyText : '1',
     ddlLocationId: isEdit ? unitInfo.locationID : locationInfo.ddlLocationId,
     ddlOrientationId: isEdit ? unitInfo.orientationID : orientationInfo.ddlOrientationId,
-    ddlUnitTypeId: isEdit ? unitInfo.unitTypeID : unitTypeInfo.unitTypeId,
+    ddlUnitTypeId: isEdit ? unitInfo.unitTypeID : unitTypeInfo.ddlUnitTypeId,
     ddlControlsPreferenceId: isEdit ? unitInfo.ddlControlsPreferenceId : controlsPreferenceInfo.ddlControlsPreferenceId,
     txbSummerSupplyAirCFM: isEdit ? unitInfo.txbSummerSupplyAirCFMText : 325,
     txbSummerReturnAirCFM: isEdit ? unitInfo.txbSummerReturnAirCFMText : 325,
