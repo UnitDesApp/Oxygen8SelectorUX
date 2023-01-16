@@ -3,6 +3,9 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 
+// file-saver
+import { saveAs } from 'file-saver';
+
 // PropTypes
 import { PropTypes } from 'prop-types';
 
@@ -25,11 +28,15 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { getViewSelectionInfo, DownloadSelection } from '../../redux/slices/unitReducer';
+import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
 // components
+import Image from '../../components/Image';
 import Iconify from '../../components/Iconify';
 import GraphChart from './GraphChart';
-
+// utils
+import axios from '../../utils/axios';
+// config
+import { serverUrl } from '../../config';
 // sections
 import Loading from '../Loading';
 // ----------------------------------------------------------------------
@@ -526,11 +533,11 @@ export default function Selection() {
                 //  data: reheatHWC !== undefined && reheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                 data: reheatHWC?.Leaving,
               },
-              // {
-              //   title: 'Valve & Actuator',
-              //   // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
-              //   data: reheatHWC?.ValveActuator,
-              // },
+              {
+                title: 'Valve & Actuator',
+                // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
+                data: reheatHWC?.ValveActuator,
+              },
             ],
           },
           {
@@ -574,7 +581,7 @@ export default function Selection() {
           {
             groupName: 'Supply Fan',
             direction: 'row',
-            visible: supplyFan.Visible,
+            visible: supplyFan?.Visible,
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
@@ -587,7 +594,7 @@ export default function Selection() {
               },
               {
                 title: 'Graph',
-                data: supplyFan?.Graph,
+                data: supplyFan?.GraphImageUrl,
               },
               {
                 title: 'Sound Data',
@@ -600,7 +607,10 @@ export default function Selection() {
             groupName: 'Exhaust Fan',
             direction: 'row',
             visible: exhaustFan.Visible,
-            style: {},
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+            },
             subGroups: [
               {
                 title: 'Fan Data',
@@ -609,7 +619,7 @@ export default function Selection() {
               },
               {
                 title: 'Graph',
-                data: exhaustFan?.Graph,
+                data: exhaustFan?.GraphImageUrl,
               },
               {
                 title: 'Sound Data',
@@ -652,8 +662,25 @@ export default function Selection() {
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
-    const result = await dispatch(DownloadSelection(data));
-    console.log(result);
+
+    await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
+      console.log(response);
+      // Get File Name
+      let filename = '';
+      const disposition = response.headers['content-disposition'];
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      // Save File
+      saveAs(response.data, `${filename}.pdf`);
+    });
+
+    console.log('Successed');
   };
 
   return JSON.stringify(viewSelectionInfo) === '{}' ? (
@@ -739,21 +766,7 @@ export default function Selection() {
                     }}
                   >
                     {element.title === 'Graph' && (
-                      <GraphChart
-                        // title="Yearly Sales"
-                        subheader="Air Performance"
-                        chartLabels={['200', '400', '600', '800', '1000', '1200', '1400']}
-                        chartData={{
-                          data: [
-                            { name: '1', data: [0.7, 0.5, 0.3, 0, 0, 0, 0] },
-                            { name: '2', data: [1.3, 1.0, 0.7, 0.5, 0, 0, 0] },
-                            { name: '3', data: [1.7, 1.3, 0.9, 0.6, 0, 0, 0] },
-                            { name: '4', data: [2.2, 1.6, 1.1, 0.7, 0.3, 0, 0] },
-                            { name: '5', data: [2.7, 2.2, 1.7, 1.0, 0.5, 0, 0] },
-                            { name: '6', data: [3.5, 3.0, 2.4, 1.9, 1.2, 0.5, 0] },
-                          ],
-                        }}
-                      />
+                      <Image src={state.intProductTypeID === 3 ? `/${element.data}` : element.data} height="100%" />
                     )}
 
                     {element.title !== 'Graph' && (
