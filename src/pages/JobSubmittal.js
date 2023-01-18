@@ -27,7 +27,7 @@ import { LoadingButton } from '@mui/lab';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 // paths
-import { PATH_JOB, PATH_JOBS } from '../routes/paths';
+import { PATH_JOB, PATH_JOBS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector } from '../redux/store';
 import { updateJob } from '../redux/slices/jobsReducer';
@@ -96,17 +96,17 @@ export default function JobSubmittal() {
     ddlCoilHandling: Yup.string().required('Please Select a Coil Handling'),
     notes: Yup.string(),
     shipping: Yup.string(),
-    ckbBACNetPointList: Yup.boolean(),
-    ckbBackdraftDamper: Yup.boolean(),
-    ckbBypassDefrost: Yup.boolean(),
-    ckbConstantVolume: Yup.boolean(),
-    ckbFireAlarm: Yup.boolean(),
-    ckbHumidification: Yup.boolean(),
-    ckbHydronicPreheat: Yup.boolean(),
-    ckbOJHMISpec: Yup.boolean(),
-    ckbTemControl: Yup.boolean(),
-    ckbTerminalWiring: Yup.boolean(),
-    ckbVoltageTable: Yup.boolean(),
+    // ckbBACNetPointList: Yup.boolean(),
+    // ckbBackdraftDamper: Yup.boolean(),
+    // ckbBypassDefrost: Yup.boolean(),
+    // ckbConstantVolume: Yup.boolean(),
+    // ckbFireAlarm: Yup.boolean(),
+    // ckbHumidification: Yup.boolean(),
+    // ckbHydronicPreheat: Yup.boolean(),
+    // ckbOJHMISpec: Yup.boolean(),
+    // ckbTemControl: Yup.boolean(),
+    // ckbTerminalWiring: Yup.boolean(),
+    // ckbVoltageTable: Yup.boolean(),
   });
 
   const methods = useForm({
@@ -183,17 +183,17 @@ export default function JobSubmittal() {
         setValue('txbShippingPostalCode', data.txbShippingPostalCodeText);
         setValue('ddlCountry', data.intCountryID);
         setValue('ddlDockType', data.intDockTypeID);
-        setValue('ckbBACNetPointList', data.ckbBACNetPointList === 1);
-        setValue('ckbBackdraftDamper', data.ckbBackdraftDamper === 1);
-        setValue('ckbBypassDefrost', data.ckbBypassDefrost === 1);
-        setValue('ckbConstantVolume', data.ckbConstantVolume === 1);
-        setValue('ckbFireAlarm', data.ckbFireAlarm === 1);
-        setValue('ckbHumidification', data.ckbHumidification === 1);
-        setValue('ckbHydronicPreheat', data.ckbHydronicPreheat === 1);
-        setValue('ckbOJHMISpec', data.ckbOJHMISpec === 1);
-        setValue('ckbTemControl', data.ckbTemControl === 1);
-        setValue('ckbTerminalWiring', data.ckbTerminalWiring === 1);
-        setValue('ckbVoltageTable', data.ckbVoltageTable === 1);
+        // setValue('ckbBACNetPointList', data.ckbBACNetPointList === 1);
+        // setValue('ckbBackdraftDamper', data.ckbBackdraftDamper === 1);
+        // setValue('ckbBypassDefrost', data.ckbBypassDefrost === 1);
+        // setValue('ckbConstantVolume', data.ckbConstantVolume === 1);
+        // setValue('ckbFireAlarm', data.ckbFireAlarm === 1);
+        // setValue('ckbHumidification', data.ckbHumidification === 1);
+        // setValue('ckbHydronicPreheat', data.ckbHydronicPreheat === 1);
+        // setValue('ckbOJHMISpec', data.ckbOJHMISpec === 1);
+        // setValue('ckbTemControl', data.ckbTemControl === 1);
+        // setValue('ckbTerminalWiring', data.ckbTerminalWiring === 1);
+        // setValue('ckbVoltageTable', data.ckbVoltageTable === 1);
         setIsLoading(false);
       });
   }, [jobId, setValue]);
@@ -217,10 +217,29 @@ export default function JobSubmittal() {
                 { name: 'Job Submittal' },
               ]}
               action={
-                <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
+                <Stack direction="row" spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
+                  <Button
+                    href={PATH_JOB.jobEdit(jobId)}
+                  >
+                    Edit Project
+                  </Button>
+                  <Button
+                    href={PATH_UNIT.view(jobId)}
+                  >
+                    Unit List
+                  </Button>
+                  <Button
+                    startIcon={<Iconify icon={'grommet-icons:document-pdf'} />}
+                  >
+                    Roport
+                  </Button>
+                  <Button 
+                    startIcon={<Iconify icon={'file-icons:microsoft-excel'} />}
+                  >
+                    Epicor Report
+                  </Button>
                   <LoadingButton
                     type="submit"
-                    variant="string"
                     startIcon={<Iconify icon={'fluent:save-24-regular'} />}
                     loading={isSubmitting}
                   >
@@ -278,7 +297,7 @@ export default function JobSubmittal() {
                 </Card>
               </Grid>
             </Grid>
-            <Grid container spacing={3}>
+            {/* <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={4}>
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="All (defualt)" />
@@ -421,7 +440,7 @@ export default function JobSubmittal() {
                   </CardContent>
                 </Card>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card sx={{ mb: 3 }}>
