@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import * as Yup from 'yup';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -20,17 +20,22 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  TextField,
   Button,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+// file-saver
+import { saveAs } from 'file-saver';
 // paths
 import { PATH_JOB, PATH_JOBS, PATH_UNIT } from '../routes/paths';
 // redux
-import { useSelector } from '../redux/store';
-import { updateJob } from '../redux/slices/jobsReducer';
+import { useSelector, useDispatch } from '../redux/store';
+import { addNewNote, addNewShippingNote, getSubmittalInfo, saveSubmittalInfo } from '../redux/slices/submittalReducer';
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
@@ -43,6 +48,7 @@ import axios from '../utils/axios';
 import { serverUrl } from '../config';
 // sections
 import Loading from '../sections/Loading';
+
 //------------------------------------------------
 
 const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
@@ -77,8 +83,19 @@ const ProjectInfoTableHeader = [
 
 export default function JobSubmittal() {
   const { jobId } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, submittalInfo, submittalDetailInfo, notes, shippingNotes } = useSelector(
+    (state) => state.submittal
+  );
 
+  // State
+  const [note, setNote] = useState('');
+  const [shippingNote, setShippingNote] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [fail, setFail] = useState(false);
+
+  // Form Schema
   const UpdateJobInfoSchema = Yup.object().shape({
     txbJobName: Yup.string(),
     txbRepName: Yup.string(),
@@ -93,114 +110,186 @@ export default function JobSubmittal() {
     txbShippingPostalCode: Yup.string().required('Please enter a Zip'),
     ddlCountry: Yup.string().required('Please Select a Country'),
     ddlDockType: Yup.string().required('Please Select a Dock type'),
-    ddlCoilHandling: Yup.string().required('Please Select a Coil Handling'),
-    notes: Yup.string(),
-    shipping: Yup.string(),
-    // ckbBACNetPointList: Yup.boolean(),
-    // ckbBackdraftDamper: Yup.boolean(),
-    // ckbBypassDefrost: Yup.boolean(),
-    // ckbConstantVolume: Yup.boolean(),
-    // ckbFireAlarm: Yup.boolean(),
-    // ckbHumidification: Yup.boolean(),
-    // ckbHydronicPreheat: Yup.boolean(),
-    // ckbOJHMISpec: Yup.boolean(),
-    // ckbTemControl: Yup.boolean(),
-    // ckbTerminalWiring: Yup.boolean(),
-    // ckbVoltageTable: Yup.boolean(),
+    // ddlCoilHandling: Yup.string().required('Please Select a Coil Handling'),
+    ckbBACNetPointList: Yup.boolean(),
+    ckbBackdraftDamper: Yup.boolean(),
+    ckbBypassDefrost: Yup.boolean(),
+    ckbConstantVolume: Yup.boolean(),
+    ckbFireAlarm: Yup.boolean(),
+    ckbHumidification: Yup.boolean(),
+    ckbHydronicPreheat: Yup.boolean(),
+    ckbOJHMISpec: Yup.boolean(),
+    ckbTemControl: Yup.boolean(),
+    ckbTerminalWiring: Yup.boolean(),
+    ckbVoltageTable: Yup.boolean(),
   });
 
+  // default values for form depend on redux
+  const defaultValues = useMemo(
+    () => ({
+      txbJobName: submittalInfo.txbJobName === undefined ? '' : submittalInfo.txbJobName,
+      txbRepName: submittalInfo.txbRepName === undefined ? '' : submittalInfo.txbRepName,
+      txbSalesEngineer: submittalInfo.txbSalesEngineer === undefined ? '' : submittalInfo.txbSalesEngineer,
+      txbLeadTime: submittalInfo.txbLeadTime === undefined ? '' : submittalInfo.txbLeadTime,
+      txbRevisionNo: submittalInfo.txbRevisionNo === undefined ? '' : submittalInfo.txbRevisionNo,
+      txbPONumber: submittalInfo.txbPONumber === undefined ? '' : submittalInfo.txbPONumber,
+      txbShipName: submittalInfo.txbShipName === undefined ? '' : submittalInfo.txbShipName,
+      txbShippingStreetAddress:
+        submittalInfo.txbShippingStreetAddress === undefined ? '' : submittalInfo.txbShippingStreetAddress,
+      txbShippingCity: submittalInfo.txbShippingCity === undefined ? '' : submittalInfo.txbShippingCity,
+      txbShippingProvince: submittalInfo.txbShippingProvince === undefined ? '' : submittalInfo.txbShippingProvince,
+      txbShippingPostalCode:
+        submittalInfo.txbShippingPostalCode === undefined ? '' : submittalInfo.txbShippingPostalCode,
+      ddlCountry: submittalInfo.ddlCountry === undefined ? '' : submittalInfo.ddlCountry,
+      ddlDockType: submittalInfo.ddlDockType === undefined ? '' : submittalInfo.ddlDockType,
+      // ddlCoilHandling: submittalInfo.ddlCoilHandling,
+      ckbBACNetPointList: false,
+      ckbBackdraftDamper: false,
+      ckbBypassDefrost: false,
+      ckbConstantVolume: false,
+      ckbFireAlarm: false,
+      ckbHumidification: false,
+      ckbHydronicPreheat: false,
+      ckbOJHMISpec: false,
+      ckbTemControl: false,
+      ckbTerminalWiring: false,
+      ckbVoltageTable: false,
+    }),
+    [submittalInfo]
+  );
+
+  // form setting using useForm
   const methods = useForm({
     resolver: yupResolver(UpdateJobInfoSchema),
-    // defaultValues,
+    defaultValues,
   });
-
-  const [Notes, setNotes] = useState([]);
-  const [ShippingNotes, setShippingNotes] = useState([]);
-  const [SubmittalDetailsDataSource, setSubmittalDetailsDataSource] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const {
     handleSubmit,
-    setValue,
-    getValues,
+    reset,
     formState: { isSubmitting },
   } = methods;
 
+  // will be updated when default valuse is changed depend on redux
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
+  // getting all form data from server
+  useEffect(() => {
+    dispatch(
+      getSubmittalInfo({
+        intUserID: localStorage.getItem('userId'),
+        intUAL: localStorage.getItem('UAL'),
+        intJobID: jobId,
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // event handler for addding note
   const addNoteClicked = () => {
-    if ( getValues('notes') === "") return;
-    setNotes([...Notes, {notes_no: Notes.length, tba: '', notes_nbr: Notes.length, notes: getValues('notes')}]);
-    setValue('notes', "");
+    if (note === '') return;
+    const data = {
+      intUserID: localStorage.getItem('userId'),
+      intUAL: localStorage.getItem('UAL'),
+      intJobID: jobId,
+      txbNote: note,
+    };
+    dispatch(addNewNote(data));
+    setNote('');
   };
 
+  // event handler for adding shipping note
   const addShippingInstructionClicked = () => {
-    if ( getValues('shipping') === "") return;
-    setShippingNotes([...ShippingNotes, {shipping_notes_no: ShippingNotes.length, tba: '', shipping_notes_nbr: ShippingNotes.length, shipping_notes: getValues('shipping')}]);
-    setValue('shipping', "");
+    if (shippingNote === '') return;
+    const data = {
+      intUserID: localStorage.getItem('userId'),
+      intUAL: localStorage.getItem('UAL'),
+      intJobID: jobId,
+      txbShippingNote: shippingNote,
+    };
+    dispatch(addNewShippingNote(data));
+    setShippingNote('');
   };
 
+  // export pdf of form data
+  const downloadPDF = async () => {
+    const data = {
+      intJobID: jobId,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+
+    const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
+    console.log(response);
+    // Get File Name
+    let filename = '';
+    const disposition = response.headers['content-disposition'];
+    if (disposition && disposition.indexOf('attachment') !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, '');
+      }
+    }
+
+    // Save File
+    saveAs(response.data, `${filename}.pdf`);
+
+    console.log('Successed');
+  };
+
+  // export pdf of form data
+  const downloadEpicor = async () => {
+    const data = {
+      intJobID: jobId,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+
+    const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
+    if (response.data.type === "application/json") {
+      setFail(true);
+      return;
+    }
+
+    // Get File Name
+    let filename = '';
+    const disposition = response.headers['content-disposition'];
+    if (disposition && disposition.indexOf('attachment') !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, '');
+      }
+    }
+
+    // Save File
+    saveAs(response.data, `${filename}.pdf`);
+
+    console.log('Successed');
+  };
+
+  // submmit function
   const onJobInfoSubmit = async (data) => {
     try {
-      axios
-      .post(`${serverUrl}/api/Submittals/save`, {
+      const requestData = {
         ...data,
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
         intJobID: jobId,
-      }).then((response)=>{
-        const {data} = response;
-        if (data) {
-          navigate(PATH_JOB.dashboard(jobId));
-        }
-      })
+      };
+      await dispatch(saveSubmittalInfo(requestData));
+      setSuccess(true);
     } catch (error) {
-      console.error(error);
+      setFail(true);
     }
   };
 
-  useEffect(() => {
-    axios
-      .post(`${serverUrl}/api/Submittals/getAllData`, {
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
-      })
-      .then((response) => {
-        const { data } = response;
-        console.log(data);
-        setNotes(data.gvNotes.gvNotesDataSource);
-        setSubmittalDetailsDataSource(data.gvSubmittals.gvSubmittalDetailsDataSource);
-        setShippingNotes(data.gvShippingNotes.gvShippingNotesDataSource);
-        setValue('txbJobName', data.txbProjectNameText);
-        setValue('txbRepName', data.txbRepNameText);
-        setValue('txbSalesEngineer', data.txbSalesEngineerText);
-        setValue('txbLeadTime', data.txbLeadTimeText);
-        setValue('txbRevisionNo', data.txbRevisionNoText);
-        setValue('txbPONumber', data.txbPO_NumberText);
-        setValue('txbShipName', data.txbShippingNameText);
-        setValue('txbShippingStreetAddress', data.txbShippingStreetAddressText);
-        setValue('txbShippingCity', data.txbShippingCityText);
-        setValue('txbShippingProvince', data.txbShippingProvinceText);
-        setValue('txbShippingPostalCode', data.txbShippingPostalCodeText);
-        setValue('ddlCountry', data.intCountryID);
-        setValue('ddlDockType', data.intDockTypeID);
-        // setValue('ckbBACNetPointList', data.ckbBACNetPointList === 1);
-        // setValue('ckbBackdraftDamper', data.ckbBackdraftDamper === 1);
-        // setValue('ckbBypassDefrost', data.ckbBypassDefrost === 1);
-        // setValue('ckbConstantVolume', data.ckbConstantVolume === 1);
-        // setValue('ckbFireAlarm', data.ckbFireAlarm === 1);
-        // setValue('ckbHumidification', data.ckbHumidification === 1);
-        // setValue('ckbHydronicPreheat', data.ckbHydronicPreheat === 1);
-        // setValue('ckbOJHMISpec', data.ckbOJHMISpec === 1);
-        // setValue('ckbTemControl', data.ckbTemControl === 1);
-        // setValue('ckbTerminalWiring', data.ckbTerminalWiring === 1);
-        // setValue('ckbVoltageTable', data.ckbVoltageTable === 1);
-        setIsLoading(false);
-      });
-  }, [jobId, setValue]);
-
-  const clickCheckbox = (key) => {
-    setValue(key, !getValues(key));
-  };
+  // const clickCheckbox = (key) => {
+  //   setValue(key, !getValues(key));
+  // };
 
   return isLoading ? (
     <Loading />
@@ -218,24 +307,12 @@ export default function JobSubmittal() {
               ]}
               action={
                 <Stack direction="row" spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                  <Button
-                    href={PATH_JOB.jobEdit(jobId)}
-                  >
-                    Edit Project
-                  </Button>
-                  <Button
-                    href={PATH_UNIT.view(jobId)}
-                  >
-                    Unit List
-                  </Button>
-                  <Button
-                    startIcon={<Iconify icon={'grommet-icons:document-pdf'} />}
-                  >
+                  <Button href={PATH_JOB.jobEdit(jobId)}>Edit Project</Button>
+                  <Button href={PATH_UNIT.view(jobId)}>Unit List</Button>
+                  <Button startIcon={<Iconify icon={'grommet-icons:document-pdf'} />} onClick={downloadPDF}>
                     Roport
                   </Button>
-                  <Button 
-                    startIcon={<Iconify icon={'file-icons:microsoft-excel'} />}
-                  >
+                  <Button startIcon={<Iconify icon={'file-icons:microsoft-excel'} />} onClick={downloadEpicor}>
                     Epicor Report
                   </Button>
                   <LoadingButton
@@ -286,12 +363,12 @@ export default function JobSubmittal() {
                         <option value="" />
                         <option value="1">Canada</option>
                         <option value="2">USA</option>
-                      </RHFSelect>{' '}
+                      </RHFSelect>
                       <RHFSelect size="small" name="ddlDockType" label="Dock Type" placeholder="">
                         <option value="" />
                         <option value="1">Type1</option>
                         <option value="2">Type2</option>
-                      </RHFSelect>{' '}
+                      </RHFSelect>
                     </Box>
                   </CardContent>
                 </Card>
@@ -460,7 +537,7 @@ export default function JobSubmittal() {
                           </TableHead>
 
                           <TableBody>
-                            {SubmittalDetailsDataSource.map((row, index) => (
+                            {submittalDetailInfo.map((row, index) => (
                               <Row row={row} key={index} />
                             ))}
                           </TableBody>
@@ -476,37 +553,42 @@ export default function JobSubmittal() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Notes" />
                   <CardContent>
-                    <Box>
-                      <RHFTextField
+                    <Stack direction="row" spacing={2}>
+                      <TextField
                         sx={{ width: '70%' }}
                         size="small"
                         name="notes"
                         label="Enter Notes"
-                        onChange={(e) => setValue('notes', e.target.value)}
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
                       />
-                      <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+                      <Button
+                        sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
+                        variant="contained"
+                        onClick={addNoteClicked}
+                      >
                         Add Note
                       </Button>
-                    </Box>
-                    <Box sx={{pt : "10px"}}>
+                    </Stack>
+                    <Box sx={{ pt: '10px' }}>
                       <Table size="small">
                         <TableHead>
                           <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" scope="row" align="left">
+                            <TableCell component="th" sx={{ width: '20%' }} scope="row" align="center">
                               No
                             </TableCell>
-                            <TableCell component="th" scope="row" align="left">
+                            <TableCell component="th" sx={{ width: '80%' }} scope="row" align="center">
                               Note
                             </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {Notes.map((row, index) => (
+                          {notes.gvNotesDataSource.map((row, index) => (
                             <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              <TableCell component="th" scope="row" align="left">
-                                {index}
+                              <TableCell component="th" scope="row" align="center">
+                                {index + 1}
                               </TableCell>
-                              <TableCell component="th" scope="row" align="left">
+                              <TableCell component="th" scope="row" align="center">
                                 {row.notes}
                               </TableCell>
                             </TableRow>
@@ -523,37 +605,42 @@ export default function JobSubmittal() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Shipping Instructions" />
                   <CardContent>
-                    <Box>
-                      <RHFTextField
+                    <Stack direction="row" spacing={2}>
+                      <TextField
                         sx={{ width: '70%' }}
                         size="small"
                         name="shipping"
                         label="Enter Shipping"
-                        onChange={(e) => setValue('shipping', e.target.value)}
+                        value={shippingNote}
+                        onChange={(e) => setShippingNote(e.target.value)}
                       />
-                      <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addShippingInstructionClicked}>
+                      <Button
+                        sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
+                        variant="contained"
+                        onClick={addShippingInstructionClicked}
+                      >
                         Add Shipping Instruction
                       </Button>
-                    </Box>
-                    <Box sx={{pt : "10px"}}>
+                    </Stack>
+                    <Box sx={{ pt: '10px' }}>
                       <Table size="small">
                         <TableHead>
                           <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" scope="row" align="left">
+                            <TableCell component="th" sx={{ width: '20%' }} align="center">
                               No
                             </TableCell>
-                            <TableCell component="th" scope="row" align="left">
+                            <TableCell component="th" sx={{ width: '80%' }} align="center">
                               Shipping Instruction
                             </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {ShippingNotes.map((row, index) => (
+                          {shippingNotes.gvShippingNotesDataSource.map((row, index) => (
                             <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              <TableCell component="th" scope="row" align="left">
-                                {index}
+                              <TableCell component="th" scope="row" align="center">
+                                {index + 1}
                               </TableCell>
-                              <TableCell component="th" scope="row" align="left">
+                              <TableCell component="th" scope="row" align="center">
                                 {row.shipping_notes}
                               </TableCell>
                             </TableRow>
@@ -567,6 +654,40 @@ export default function JobSubmittal() {
             </Grid>
           </FormProvider>
         </Container>
+        <Snackbar
+          open={success}
+          autoHideDuration={6000}
+          onClose={() => {
+            setSuccess(false);
+          }}
+        >
+          <Alert
+            onClose={() => {
+              setSuccess(false);
+            }}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            Submittal Information Saved!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={fail}
+          autoHideDuration={6000}
+          onClose={() => {
+            setFail(false);
+          }}
+        >
+          <Alert
+            onClose={() => {
+              setFail(false);
+            }}
+            severity="error"
+            sx={{ width: '100%' }}
+          >
+            Server Error!
+          </Alert>
+        </Snackbar>
       </RootStyle>
     </Page>
   );
