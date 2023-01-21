@@ -97,7 +97,8 @@ export default function JobDashboard() {
 
   useEffect(() => {
     dispatch(getJobsAndUnitsInfo({ jobId }));
-  }, [dispatch, jobId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const activeStep = unitList.length > 0 ? 2 : 1;
   // const isComplete = activeStep === STEPS.length;

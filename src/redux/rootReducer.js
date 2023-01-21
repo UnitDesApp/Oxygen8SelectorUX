@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import jobsReducer from './slices/jobsReducer';
 import jobDashboardReducer from './slices/jobDashboardReducer';
 import unitReducer from './slices/unitReducer';
+import submittalReducer from './slices/submittalReducer';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +18,8 @@ const rootPersistConfig = {
 const rootReducer = combineReducers({
   jobs: jobsReducer,
   jobDashboard: jobDashboardReducer,
-  unit: unitReducer
+  unit: unitReducer,
+  submittal: submittalReducer
 });
 
 export { rootPersistConfig, rootReducer };
