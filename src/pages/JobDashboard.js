@@ -107,6 +107,10 @@ export default function JobDashboard() {
     navigate(PATH_JOB.submittal(jobId));
   };
 
+  const onClickRequestQuote = () => {
+    navigate(PATH_JOB.quote(jobId), { state: unitList.length });    
+  }
+
   return (
     <Page title="Job: Dashboard">
       <RootStyle>
@@ -142,16 +146,24 @@ export default function JobDashboard() {
                   </Box>
                 </Grid>
                 <Grid item xs={12} md={6} sx={{ mb: 5, textAlign: { md: 'right', xs: 'left' } }}>
-                  <Box>
+                  <Stack direction="row" justifyContent="right" spacing={1}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Iconify icon={'material-symbols:request-quote'} />}
+                      disabled={unitList.length === 0}
+                      onClick={onClickRequestQuote}
+                    >
+                      Quote
+                    </Button>
                     <Button
                       variant="outlined"
                       startIcon={<Iconify icon={'ant-design:mail-outlined'} />}
                       disabled={unitList.length === 0}
                       onClick={onClickRequestSubmittal}
                     >
-                      Request submittal
+                      submittal
                     </Button>
-                  </Box>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12} sx={{ mb: 5, textAlign: 'center' }}>
                   <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>

@@ -5,6 +5,7 @@ import jobsReducer from './slices/jobsReducer';
 import jobDashboardReducer from './slices/jobDashboardReducer';
 import unitReducer from './slices/unitReducer';
 import submittalReducer from './slices/submittalReducer';
+import quoteReducer from './slices/quoteReducer';
 
 // ----------------------------------------------------------------------
 
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   jobs: jobsReducer,
   jobDashboard: jobDashboardReducer,
   unit: unitReducer,
-  submittal: submittalReducer
+  submittal: submittalReducer,
+  quote: quoteReducer,
 });
 
 export { rootPersistConfig, rootReducer };

@@ -31,7 +31,8 @@ export const PATH_JOB = {
   jobNew: `${ROOT_JOB}/new/`,
   dashboard: (id) => path(ROOT_JOB, `/dashboard/${id}`),
   jobEdit: (id) => path(ROOT_JOB, `/edit/${id}`),
-  submittal: (id) => path(ROOT_JOB, `/submittal/${id}`)
+  submittal: (id) => path(ROOT_JOB, `/submittal/${id}`),
+  quote: (id) => path(ROOT_JOB, `/quote/${id}`)
 };
 
 // ----------------------------------------------------------------------
