@@ -172,6 +172,7 @@ export default function JobQuote() {
   const {
     handleSubmit,
     reset,
+    getValues,
     formState: { isSubmitting },
   } = methods;
 
@@ -216,12 +217,13 @@ export default function JobQuote() {
   // export pdf of form data
   const downloadPDF = async () => {
     const data = {
+      ...getValues(),
       intJobID: jobId,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
 
-    const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
+    const response = await axios.post(`${serverUrl}/api/quote/exportPdf`, data, { responseType: 'blob' });
     console.log(response);
     // Get File Name
     let filename = '';
@@ -242,33 +244,7 @@ export default function JobQuote() {
 
   // export pdf of form data
   const downloadExcel = async () => {
-    const data = {
-      intJobID: jobId,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-
-    const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
-    if (response.data.type === 'application/json') {
-      setFail(true);
-      return;
-    }
-
-    // Get File Name
-    let filename = '';
-    const disposition = response.headers['content-disposition'];
-    if (disposition && disposition.indexOf('attachment') !== -1) {
-      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, '');
-      }
-    }
-
-    // Save File
-    saveAs(response.data, `${filename}.pdf`);
-
-    console.log('Successed');
+    // there is no api in backend... (:
   };
 
   // submmit function
