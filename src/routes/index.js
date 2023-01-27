@@ -75,6 +75,7 @@ export default function Router() {
             { path: 'job/dashboard/:jobId', element: <JobDashboard /> },
             { path: 'job/edit/:jobId', element: <JobEdit /> },
             { path: 'job/submittal/:jobId', element: <JobSubmittal />},
+            { path: 'job/quote/:jobId', element: <JobQuote />},
             { path: 'unit/view/:jobId/', element: <UnitView /> },
             { path: 'unit/add/:jobId/', element: <UnitAdd /> },
             { path: 'unit/configure/:jobId', element: <SetUnitInfo /> },
@@ -99,6 +100,7 @@ const Jobs = Loadable(lazy(() => import('../pages/Jobs')));
 const JobDashboard = Loadable(lazy(() => import('../pages/JobDashboard')));
 const JobEdit = Loadable(lazy(() => import('../pages/JobEdit')));
 const JobSubmittal = Loadable(lazy(() => import('../pages/JobSubmittal')));
+const JobQuote = Loadable(lazy(() => import('../pages/JobQuote')));
 // Unit
 const UnitView = Loadable(lazy(() => import('../pages/UnitView')));
 const SetUnitInfo = Loadable(lazy(() => import('../pages/SetUnitInfo')));
