@@ -14,10 +14,11 @@ const initialState = {
   isLoading: true,
   quoteFormInfo: {},
   quoteControlInfo: {},
-  gvPricingGeneral: [],
-  gvPricingUnits: [],
-  gvPricingMisc: [],
-  gvPricingShipping: [],
+  gvPricingGeneral: {},
+  gvPricingUnits: {},
+  gvPricingMisc: {},
+  gvPricingShipping: {},
+  gvPricingTotal: {},
   gvMisc: [],
   gvNotes: [],
 };
@@ -40,8 +41,9 @@ const QuoteSlice = createSlice({
       state.gvPricingUnits = action.payload.pricingUnits;
       state.gvPricingMisc = action.payload.pricingMisc;
       state.gvPricingShipping = action.payload.pricingShipping;
-      state.gvMisc = action.payload.gvNotes;
-      state.gvNotes = action.payload.gvMisc;
+      state.gvMisc = action.payload.gvMisc;
+      state.gvNotes = action.payload.gvNotes;
+      state.gvPricingTotal = pricingTotal;
 
       const isEdit = controlInfo.isSaved;
       state.quoteFormInfo = {
@@ -105,8 +107,33 @@ const QuoteSlice = createSlice({
         txbPriceFinalTotal: pricingTotal.txbPriceFinalTotal,
       }
     },
-    addNewShippingNote(state, action) {
-      state.shippingNotes = action.payload;
+    addNewMisc(state, action) {
+      state.gvMisc = action.payload.gvMisc;
+      state.gvPricingTotal = action.payload.pricingTotal;
+
+      state.quoteFormInfo = {
+        ...state.quoteFormInfo,
+        txbPriceAllUnits: action.payload.pricingTotal.txbPriceAllUnits,
+        txbPriceMisc: action.payload.pricingTotal.txbPriceMisc,
+        txbPriceShipping: action.payload.pricingTotal.txbPriceShipping,
+        txbPriceSubtotal: action.payload.pricingTotal.txbPriceSubtotal,
+        txbPriceDiscount: action.payload.pricingTotal.txbPriceDiscount,
+        txbPriceFinalTotal: action.payload.pricingTotal.txbPriceFinalTotal,
+      }
+    },
+    addNewNotes(state, action) {
+      state.gvNotes = action.payload.gvNotes;
+      state.gvPricingTotal = action.payload.pricingTotal;
+
+      state.quoteFormInfo = {
+        ...state.quoteFormInfo,
+        txbPriceAllUnits: action.payload.pricingTotal.txbPriceAllUnits,
+        txbPriceMisc: action.payload.pricingTotal.txbPriceMisc,
+        txbPriceShipping: action.payload.pricingTotal.txbPriceShipping,
+        txbPriceSubtotal: action.payload.pricingTotal.txbPriceSubtotal,
+        txbPriceDiscount: action.payload.pricingTotal.txbPriceDiscount,
+        txbPriceFinalTotal: action.payload.pricingTotal.txbPriceFinalTotal,
+      }
     }
   },
 });
@@ -135,19 +162,20 @@ export function saveQuoteInfo(data) {
   }
 }
 
-export function addNewNote(data) {
+
+export function addNewMisc(data) {
   return async () => {
-    const response = await axios.post(`${serverUrl}/api/Submittals/noteadd`, data);
+    const response = await axios.post(`${serverUrl}/api/quote/addMisc`, data);
     console.log(response.data);
-    dispatch(QuoteSlice.actions.addNewNote(response.data));
+    dispatch(QuoteSlice.actions.addNewMisc(response.data));
   }
 }
 
-export function addNewShippingNote(data) {
+export function addNewNotes(data) {
   return async () => {
-    const response = await axios.post(`${serverUrl}/api/Submittals/shippingnoteadd`, data);
+    const response = await axios.post(`${serverUrl}/api/quote/addNotes`, data);
     console.log(response.data);
-    dispatch(QuoteSlice.actions.addNewShippingNote(response.data));
+    dispatch(QuoteSlice.actions.addNewNotes(response.data));
   }
 }
 
