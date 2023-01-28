@@ -24,7 +24,7 @@ import {
   Button,
   Snackbar,
   Alert,
-  Typography
+  Typography,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
@@ -36,7 +36,7 @@ import { saveAs } from 'file-saver';
 import { PATH_JOB, PATH_JOBS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
-import { getQuoteInfo, saveQuoteInfo } from '../redux/slices/quoteReducer';
+import { getQuoteInfo, saveQuoteInfo, addNewMisc, addNewNotes } from '../redux/slices/quoteReducer';
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
@@ -82,18 +82,31 @@ const ProjectInfoTableHeader = [
   'PRICING',
 ];
 
+const DefaultMiscValues = {
+  txbMisc: '',
+  txbMiscQty: '1',
+  txbMiscPrice: '0.0',
+};
+
 export default function JobQuote() {
   const { jobId } = useParams();
   // const navigate = useNavigate();
   const { state } = useLocation();
   const dispatch = useDispatch();
-  const { isLoading, quoteFormInfo, quoteControlInfo } = useSelector(
-    (state) => state.quote
-  );
+  const {
+    isLoading,
+    quoteFormInfo,
+    quoteControlInfo,
+    gvPricingGeneral,
+    gvPricingUnits,
+    gvPricingTotal,
+    gvMisc,
+    gvNotes,
+  } = useSelector((state) => state.quote);
 
   // State
-  const [note, setNote] = useState('');
-  const [shippingNote, setShippingNote] = useState('');
+  const [objMisc, setMisc] = useState(DefaultMiscValues);
+  const [txbNotes, setNotes] = useState('');
   const [success, setSuccess] = useState(false);
   const [fail, setFail] = useState(false);
 
@@ -147,10 +160,8 @@ export default function JobQuote() {
       ddlShippingTypeVal: quoteFormInfo.ddlShippingTypeVal !== undefined ? quoteFormInfo.ddlShippingTypeVal : '',
       ddlDiscountTypeVal: quoteFormInfo.ddlDiscountTypeVal !== undefined ? quoteFormInfo.ddlDiscountTypeVal : '',
     }),
-    [ quoteFormInfo ]
+    [quoteFormInfo]
   );
-
-  console.log(defaultValues);
 
   // form setting using useForm
   const methods = useForm({
@@ -161,6 +172,7 @@ export default function JobQuote() {
   const {
     handleSubmit,
     reset,
+    getValues,
     formState: { isSubmitting },
   } = methods;
 
@@ -183,40 +195,35 @@ export default function JobQuote() {
   }, []);
 
   // event handler for addding note
-  const addNoteClicked = () => {
-    if (note === '') return;
+  const addMiscClicked = () => {
     const data = {
-      intUserID: localStorage.getItem('userId'),
-      intUAL: localStorage.getItem('UAL'),
+      ...objMisc,
       intJobID: jobId,
-      txbNote: note,
     };
-    // dispatch(addNewNote(data));
-    setNote('');
+    dispatch(addNewMisc(data));
+    setMisc(DefaultMiscValues);
   };
 
   // event handler for adding shipping note
-  const addShippingInstructionClicked = () => {
-    if (shippingNote === '') return;
+  const addNoteClicked = () => {
     const data = {
-      intUserID: localStorage.getItem('userId'),
-      intUAL: localStorage.getItem('UAL'),
       intJobID: jobId,
-      txbShippingFactorNote: shippingNote,
+      txbNotes,
     };
-    // dispatch(addNewShippingNote(data));
-    setShippingNote('');
+    dispatch(addNewNotes(data));
+    setNotes('');
   };
 
   // export pdf of form data
   const downloadPDF = async () => {
     const data = {
+      ...getValues(),
       intJobID: jobId,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
 
-    const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
+    const response = await axios.post(`${serverUrl}/api/quote/exportPdf`, data, { responseType: 'blob' });
     console.log(response);
     // Get File Name
     let filename = '';
@@ -236,34 +243,8 @@ export default function JobQuote() {
   };
 
   // export pdf of form data
-  const downloadEpicor = async () => {
-    const data = {
-      intJobID: jobId,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-
-    const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
-    if (response.data.type === "application/json") {
-      setFail(true);
-      return;
-    }
-
-    // Get File Name
-    let filename = '';
-    const disposition = response.headers['content-disposition'];
-    if (disposition && disposition.indexOf('attachment') !== -1) {
-      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, '');
-      }
-    }
-
-    // Save File
-    saveAs(response.data, `${filename}.pdf`);
-
-    console.log('Successed');
+  const downloadExcel = async () => {
+    // there is no api in backend... (:
   };
 
   // submmit function
@@ -276,7 +257,7 @@ export default function JobQuote() {
         intJobID: jobId,
       };
       const result = await dispatch(saveQuoteInfo(quoteData));
-      if (result === 'success'){
+      if (result === 'success') {
         setSuccess(true);
       } else {
         setFail(true);
@@ -298,11 +279,11 @@ export default function JobQuote() {
         <Container sx={{ mt: '20px' }}>
           <FormProvider methods={methods} onSubmit={handleSubmit(onQuoteSubmit)}>
             <HeaderBreadcrumbs
-              heading="Job Submittal"
+              heading="Job Quote"
               links={[
                 { name: 'My Jobs', href: PATH_JOBS.root },
                 { name: 'My Dashboard', href: PATH_JOB.dashboard(jobId) },
-                { name: 'Job Submittal' },
+                { name: 'Job Quote' },
               ]}
               action={
                 <Stack direction="row" spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
@@ -311,8 +292,8 @@ export default function JobQuote() {
                   <Button startIcon={<Iconify icon={'grommet-icons:document-pdf'} />} onClick={downloadPDF}>
                     Roport
                   </Button>
-                  <Button startIcon={<Iconify icon={'file-icons:microsoft-excel'} />} onClick={downloadEpicor}>
-                    Epicor Report
+                  <Button startIcon={<Iconify icon={'file-icons:microsoft-excel'} />} onClick={downloadExcel}>
+                    Report
                   </Button>
                   <LoadingButton
                     type="submit"
@@ -333,22 +314,22 @@ export default function JobQuote() {
                       <RHFTextField size="small" name="txbRevisionNo" label="Revision No" />
                       <RHFSelect size="small" name="ddlQuoteStageVal" label="Stage" placeholder="">
                         <option value="" />
-                        {
-                          quoteControlInfo.ddlQuoteStage.map((ele, index)=>
-                            <option key={index + ele.id} value={ele.id}>{ele.items}</option>
-                          )
-                        }
+                        {quoteControlInfo.ddlQuoteStage.map((ele, index) => (
+                          <option key={index + ele.id} value={ele.id}>
+                            {ele.items}
+                          </option>
+                        ))}
                         <option value="2">USA</option>
                       </RHFSelect>
                       <RHFTextField size="small" name="txbProjectName" label="Project Name" />
                       <RHFTextField size="small" name="txbQuoteNo" label="Quote No" />
                       <RHFSelect size="small" name="ddlFOB_PointVal" label="F.O.B. Point" placeholder="">
                         <option value="" />
-                        {
-                          quoteControlInfo.ddlFOB_Point.map((ele, index)=>
-                            <option key={index + ele.id} value={ele.id}>{ele.items}</option>
-                          )
-                        }
+                        {quoteControlInfo.ddlFOB_Point.map((ele, index) => (
+                          <option key={index + ele.id} value={ele.id}>
+                            {ele.items}
+                          </option>
+                        ))}
                       </RHFSelect>
                       <RHFTextField size="small" name="txbTerms" label="Terms" disabled />
                       <RHFTextField size="small" name="txbCreatedDate" label="Created Date" disabled />
@@ -365,11 +346,12 @@ export default function JobQuote() {
                     <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                       <RHFSelect size="small" name="ddlCountryVal" label="Country" placeholder="">
                         <option value="" />
-                        {
-                          quoteControlInfo.ddlCountry.map((ele, index)=>
-                            <option key={index + ele.id} value={ele.id}>{ele.items}</option>
-                          )
-                        }                      </RHFSelect>
+                        {quoteControlInfo.ddlCountry.map((ele, index) => (
+                          <option key={index + ele.id} value={ele.id}>
+                            {ele.items}
+                          </option>
+                        ))}{' '}
+                      </RHFSelect>
                       <RHFTextField size="small" name="txbCurrencyRate" label="Currency Rate" />
                       <Stack direction="row">
                         <RHFTextField size="small" name="txbShippingFactor" label="Shipping" />
@@ -407,177 +389,54 @@ export default function JobQuote() {
                 </Card>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{display: 'none'}}>
+            <Grid item xs={12} sx={{ display: 'none' }}>
               <Typography>-$0.00: Return to Selection page and re-run this unit selection to get price</Typography>
             </Grid>
-            <Grid item xs={12} sx={{display: 'none'}}>
+            <Grid item xs={12} sx={{ display: 'none' }}>
               <Typography>-$99999: Pricing error has occurred, contact applications@oxygen8.ca for a quote</Typography>
             </Grid>
-            {/* <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="All (defualt)" />
-                  <CardContent>
-                    <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbVoltageTable"
-                        label="Voltage Table"
-                        defaultChecked={getValues('ckbVoltageTable')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbVoltageTable');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbBACNetPointList"
-                        label="BACNet Points List"
-                        defaultChecked={getValues('ckbBACNetPointList')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbBACNetPointList');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbOJHMISpec"
-                        label="OJ HMI Spec"
-                        defaultChecked={getValues('ckbOJHMISpec')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbOJHMISpec');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbTerminalWiring"
-                        label="Terminal string wiring diagram"
-                        defaultChecked={getValues('ckbTerminalWiring')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbTerminalWiring');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbFireAlarm"
-                        label="Fire alarm"
-                        defaultChecked={getValues('ckbFireAlarm')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbFireAlarm');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbBackdraftDamper"
-                        label="Backdraft dampers"
-                        defaultChecked={getValues('ckbBackdraftDamper')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbBackdraftDamper');
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="SOO" />
-                  <CardContent>
-                    <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbBypassDefrost"
-                        label="Bpass for Defrost"
-                        defaultChecked={getValues('ckbBypassDefrost')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbBypassDefrost');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbConstantVolume"
-                        label="Constant Volume"
-                        defaultChecked={getValues('ckbConstantVolume')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbConstantVolume');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbHydronicPreheat"
-                        label="Hydronic pre-heat"
-                        defaultChecked={getValues('ckbHydronicPreheat')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbHydronicPreheat');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbHumidification"
-                        label="Humidification"
-                        defaultChecked={getValues('ckbHumidification')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbHumidification');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbTemControl"
-                        label="Temperature control"
-                        defaultChecked={getValues('ckbTemControl')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbTemControl');
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="Handling" />
-                  <CardContent>
-                    <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                      <RHFSelect size="small" name="ddlCoilHandling" label="Coil handling" placeholder="">
-                        <option value="" />
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                      </RHFSelect>{' '}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid> */}
-            {/* <Grid container spacing={3}>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="Project Information" />
                   <CardContent>
                     <TableContainer component={Paper} dense="true">
                       <Scrollbar>
                         <Table size="small">
                           <TableHead>
                             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              {ProjectInfoTableHeader.map((item, index) => (
-                                <TableCell key={index} component="th" scope="row" align="left">
-                                  {item}
-                                </TableCell>
-                              ))}
+                              <TableCell component="th" scope="row" align="left">
+                                NOTES
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                F.O.B. POINT
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                TERMS
+                              </TableCell>
                             </TableRow>
                           </TableHead>
-
                           <TableBody>
-                            {submittalDetailInfo.map((row, index) => (
-                              <Row row={row} key={index} />
+                            {gvPricingGeneral.gvPricingGeneralDataSource.map((item, i) => (
+                              <TableRow key={i} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell
+                                  dangerouslySetInnerHTML={{ __html: item.notes }}
+                                  component="th"
+                                  scope="row"
+                                  align="left"
+                                />
+                                <TableCell
+                                  dangerouslySetInnerHTML={{ __html: item.fob_point }}
+                                  component="th"
+                                  scope="row"
+                                  align="left"
+                                />
+                                <TableCell
+                                  dangerouslySetInnerHTML={{ __html: item.terms }}
+                                  component="th"
+                                  scope="row"
+                                  align="left"
+                                />
+                              </TableRow>
                             ))}
                           </TableBody>
                         </Table>
@@ -586,46 +445,214 @@ export default function JobQuote() {
                   </CardContent>
                 </Card>
               </Grid>
-            </Grid> */}
-            {/* <Grid container spacing={3}>
+            </Grid>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="Added Notes" />
+                  <CardContent>
+                    <TableContainer component={Paper} dense="true">
+                      <Scrollbar>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                              <TableCell component="th" scope="row" align="left">
+                                No.
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                TAG
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                QTY
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                PRODUCT CODE
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                MODEL NUMBER
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                DESCRIPTION
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                UNIT PRICE
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="left">
+                                AMOUNT
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {gvPricingUnits.gvPricingDataSource.map((item, i) => (
+                              <TableRow key={i} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row" align="left">
+                                  {i + 1}
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="left">
+                                  {item.tag}
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="left">
+                                  {item.qty}
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="left">
+                                  {item.unit_type}
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="left">
+                                  {item.unit_model}
+                                </TableCell>
+                                <TableCell
+                                  dangerouslySetInnerHTML={{ __html: item.description }}
+                                  component="th"
+                                  scope="row"
+                                  align="left"
+                                />
+                                <TableCell component="th" scope="row" align="left">
+                                  {item.unit_price}
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="left">
+                                  {item.unit_price}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </Scrollbar>
+                    </TableContainer>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Card sx={{ mb: 3 }}>
+                  <CardContent>
+                    {gvPricingTotal.gvAddInfoDataSource.map((item, i) => (
+                      <Typography key={i} sx={{ fontWeight: item.is_add_info_bold ? 600 : 300 }}>
+                        {item.add_info}
+                      </Typography>
+                    ))}
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Card sx={{ mb: 3 }}>
+                  <CardHeaderStyle title="Added Miscellaneous" />
                   <CardContent>
                     <Stack direction="row" spacing={2}>
                       <TextField
-                        sx={{ width: '70%' }}
+                        sx={{ width: '55%' }}
                         size="small"
-                        name="notes"
-                        label="Enter Notes"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
+                        name="txbMisc"
+                        label="Enter Miscellaneous"
+                        value={objMisc.txbMisc}
+                        onChange={(e) => setMisc({ ...objMisc, txbMisc: e.target.value })}
+                      />
+                      <TextField
+                        sx={{ width: '15%' }}
+                        size="small"
+                        name="txbQty"
+                        label="Enter QTY"
+                        value={objMisc.txbMiscQty}
+                        onChange={(e) => setMisc({ ...objMisc, txbMiscQty: e.target.value })}
+                      />
+                      <TextField
+                        sx={{ width: '15%' }}
+                        size="small"
+                        name="txbPrice"
+                        label="Enter Price"
+                        value={objMisc.txbMiscPrice}
+                        onChange={(e) => setMisc({ ...objMisc, txbMiscPrice: e.target.value })}
                       />
                       <Button
-                        sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
+                        sx={{ width: '15%', borderRadius: '5px', mt: '1px' }}
                         variant="contained"
-                        onClick={addNoteClicked}
+                        onClick={addMiscClicked}
                       >
-                        Add Note
+                        Add Miscellaneous
                       </Button>
                     </Stack>
                     <Box sx={{ pt: '10px' }}>
                       <Table size="small">
                         <TableHead>
                           <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" sx={{ width: '20%' }} scope="row" align="center">
+                            <TableCell component="th" sx={{ width: '10%' }} scope="row" align="center">
                               No
                             </TableCell>
-                            <TableCell component="th" sx={{ width: '80%' }} scope="row" align="center">
-                              Note
+                            <TableCell component="th" sx={{ width: '60%' }} scope="row" align="center">
+                              Miscellaneous
+                            </TableCell>
+                            <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
+                              Qty
+                            </TableCell>
+                            <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
+                              Price
                             </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {notes.gvNotesDataSource.map((row, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                          {gvMisc?.gvMiscDataSource.map((row) => (
+                            <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                               <TableCell component="th" scope="row" align="center">
-                                {index + 1}
+                                {row.misc_no}
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="center">
+                                {row.misc}
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="center">
+                                {row.qty}
+                              </TableCell>
+                              <TableCell component="th" scope="row" align="center">
+                                {row.price}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Card sx={{ mb: 3 }}>
+                  <CardHeaderStyle title="Added Note" />
+                  <CardContent>
+                    <Stack direction="row" spacing={2}>
+                      <TextField
+                        sx={{ width: '70%' }}
+                        size="small"
+                        name="txbNotes"
+                        label="Enter Note"
+                        value={txbNotes}
+                        onChange={(e) => setNotes(e.target.value)}
+                      />
+                      <Button
+                        sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
+                        variant="contained"
+                        onClick={addNoteClicked}
+                      >
+                        Add Notes
+                      </Button>
+                    </Stack>
+                    <Box sx={{ pt: '10px' }}>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                            <TableCell component="th" sx={{ width: '20%' }} align="center">
+                              No
+                            </TableCell>
+                            <TableCell component="th" sx={{ width: '80%' }} align="center">
+                              Notes
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {gvNotes?.gvNotesDataSource.map((row) => (
+                            <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                              <TableCell component="th" scope="row" align="center">
+                                {row.notes_no}
                               </TableCell>
                               <TableCell component="th" scope="row" align="center">
                                 {row.notes}
@@ -638,59 +665,7 @@ export default function JobQuote() {
                   </CardContent>
                 </Card>
               </Grid>
-            </Grid> */}
-            {/* <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="Added Shipping Instructions" />
-                  <CardContent>
-                    <Stack direction="row" spacing={2}>
-                      <TextField
-                        sx={{ width: '70%' }}
-                        size="small"
-                        name="shipping"
-                        label="Enter Shipping"
-                        value={shippingNote}
-                        onChange={(e) => setShippingNote(e.target.value)}
-                      />
-                      <Button
-                        sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
-                        variant="contained"
-                        onClick={addShippingInstructionClicked}
-                      >
-                        Add Shipping Instruction
-                      </Button>
-                    </Stack>
-                    <Box sx={{ pt: '10px' }}>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" sx={{ width: '20%' }} align="center">
-                              No
-                            </TableCell>
-                            <TableCell component="th" sx={{ width: '80%' }} align="center">
-                              Shipping Instruction
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {shippingNotes.gvShippingNotesDataSource.map((row, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              <TableCell component="th" scope="row" align="center">
-                                {index + 1}
-                              </TableCell>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.shipping_notes}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid> */}
+            </Grid>
           </FormProvider>
         </Container>
         <Snackbar
