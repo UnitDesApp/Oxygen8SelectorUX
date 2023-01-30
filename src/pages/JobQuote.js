@@ -389,12 +389,6 @@ export default function JobQuote() {
                 </Card>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{ display: 'none' }}>
-              <Typography>-$0.00: Return to Selection page and re-run this unit selection to get price</Typography>
-            </Grid>
-            <Grid item xs={12} sx={{ display: 'none' }}>
-              <Typography>-$99999: Pricing error has occurred, contact applications@oxygen8.ca for a quote</Typography>
-            </Grid>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card sx={{ mb: 3 }}>
@@ -446,6 +440,13 @@ export default function JobQuote() {
                 </Card>
               </Grid>
             </Grid>
+            <Grid item xs={12}>
+              {gvPricingUnits.gvPricingErrMsgDataSource.map((msg) => (
+                <Typography sx={{ color: 'red' }} key={msg.price_error_msg_no}>
+                  {msg.price_error_msg}
+                </Typography>
+              ))}
+            </Grid>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card sx={{ mb: 3 }}>
@@ -483,7 +484,16 @@ export default function JobQuote() {
                           </TableHead>
                           <TableBody>
                             {gvPricingUnits.gvPricingDataSource.map((item, i) => (
-                              <TableRow key={i} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                              <TableRow
+                                key={i}
+                                sx={{
+                                  '&:last-child td, &:last-child th': {
+                                    border: 0,
+                                    color: parseInt(item.price_error_msg, 10) === 2 ? 'red' : 'black',
+                                  },
+                                }}
+                              >
+                                {console.log(item.price_error_msg)}
                                 <TableCell component="th" scope="row" align="left">
                                   {i + 1}
                                 </TableCell>
