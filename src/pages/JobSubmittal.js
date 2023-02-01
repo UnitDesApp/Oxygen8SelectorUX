@@ -235,7 +235,7 @@ export default function JobSubmittal() {
     }
 
     // Save File
-    saveAs(response.data, `${filename}.pdf`);
+    saveAs(response.data, `${filename}`);
 
     console.log('Successed');
   };
@@ -265,8 +265,11 @@ export default function JobSubmittal() {
       }
     }
 
+
+    console.log(filename);
+
     // Save File
-    saveAs(response.data, `${filename}.pdf`);
+    saveAs(response.data, `${filename}`);
 
     console.log('Successed');
   };

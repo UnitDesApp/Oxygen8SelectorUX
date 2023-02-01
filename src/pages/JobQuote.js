@@ -4,7 +4,7 @@ import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
 // @mui
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import {
   Container,
   Box,
@@ -25,6 +25,7 @@ import {
   Snackbar,
   Alert,
   Typography,
+  IconButton,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
@@ -105,8 +106,6 @@ export default function JobQuote() {
   } = useSelector((state) => state.quote);
 
   // State
-  const [objMisc, setMisc] = useState(DefaultMiscValues);
-  const [txbNotes, setNotes] = useState('');
   const [success, setSuccess] = useState(false);
   const [fail, setFail] = useState(false);
 
@@ -195,23 +194,38 @@ export default function JobQuote() {
   }, []);
 
   // event handler for addding note
-  const addMiscClicked = () => {
+  const addMisc = (objMisc) => {
     const data = {
       ...objMisc,
       intJobID: jobId,
     };
     dispatch(addNewMisc(data));
-    setMisc(DefaultMiscValues);
   };
 
+  const updateMisc = (objMisc, miscNo) => {
+    console.log(objMisc, miscNo);
+  };
+
+  const deleteMisc = (miscNo) => {
+    console.log(miscNo);
+  };
+
+
   // event handler for adding shipping note
-  const addNoteClicked = () => {
+  const addNotes = (txbNotes) => {
     const data = {
       intJobID: jobId,
       txbNotes,
     };
     dispatch(addNewNotes(data));
-    setNotes('');
+  };
+
+  const updateNotes = (txbNotes, notesNo) => {
+    console.log(txbNotes, notesNo);
+  };
+
+  const deleteNotes = (noNotes) => {
+    console.log(noNotes);
   };
 
   // export pdf of form data
@@ -549,7 +563,8 @@ export default function JobQuote() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Miscellaneous" />
                   <CardContent>
-                    <Stack direction="row" spacing={2}>
+                    <MiscNotesEditTable tableData={gvMisc?.gvMiscDataSource} addRow={addMisc} updateRow={updateMisc} deleteRow={deleteMisc}/>
+                    {/* <Stack direction="row" spacing={2}>
                       <TextField
                         sx={{ width: '55%' }}
                         size="small"
@@ -619,7 +634,7 @@ export default function JobQuote() {
                           ))}
                         </TableBody>
                       </Table>
-                    </Box>
+                    </Box> */}
                   </CardContent>
                 </Card>
               </Grid>
@@ -629,7 +644,7 @@ export default function JobQuote() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Note" />
                   <CardContent>
-                    <Stack direction="row" spacing={2}>
+                    {/* <Stack direction="row" spacing={2}>
                       <TextField
                         sx={{ width: '70%' }}
                         size="small"
@@ -671,7 +686,13 @@ export default function JobQuote() {
                           ))}
                         </TableBody>
                       </Table>
-                    </Box>
+                    </Box> */}
+                    <NotesEditTable
+                      tableData={gvNotes?.gvNotesDataSource}
+                      addRow={addNotes}
+                      updateRow={updateNotes}
+                      deleteRow={deleteNotes}
+                    />
                   </CardContent>
                 </Card>
               </Grid>
@@ -717,48 +738,249 @@ export default function JobQuote() {
   );
 }
 
-Row.propTypes = {
-  row: PropTypes.object,
+NotesEditTable.propTypes = {
+  tableData: PropTypes.array,
+  addRow: PropTypes.func,
+  deleteRow: PropTypes.func,
+  updateRow: PropTypes.func,
 };
-function Row({ row }) {
+
+function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
+  const [txbNotes, setNotes] = useState('');
+  const [selectedID, setSelectedID] = useState(-1);
+  const theme = useTheme();
+
+  const addNoteClicked = () => {
+    if (selectedID > 0) {
+      updateRow(txbNotes, selectedID);
+    } else {
+      addRow(txbNotes);
+    }
+    setNotes('');
+    setSelectedID(-1);
+  };
+
+  const cancelEditClicked = () => {
+    setNotes('');
+    setSelectedID(-1);
+  };
+
+  const selectRowClicked = (txt, id) => {
+    setNotes(txt);
+    setSelectedID(id);
+  };
+
   return (
-    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell component="th" scope="row" align="left">
-        {row.qty}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.tag}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.item}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.model}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.voltage}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.controls_preference}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.installation}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.duct_connection}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.handing}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.part_desc}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.part_number}
-      </TableCell>
-      <TableCell component="th" scope="row" align="left">
-        {row.pricing}
-      </TableCell>
-    </TableRow>
+    <>
+      <Stack direction="row" spacing={2}>
+        <TextField
+          sx={{ width: '70%' }}
+          size="small"
+          name="txbNotes"
+          label="Enter Note"
+          value={txbNotes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+        {selectedID > 0 ? (
+          <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
+            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+              Update Notes
+            </Button>
+            <Button
+              sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
+              variant="contained"
+              onClick={cancelEditClicked}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        ) : (
+          <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+            Add Notes
+          </Button>
+        )}
+      </Stack>
+      <Box sx={{ pt: '10px' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell component="th" sx={{ width: '20%' }} align="center">
+                No
+              </TableCell>
+              <TableCell component="th" sx={{ width: '70%' }} align="center">
+                Notes
+              </TableCell>
+              <TableCell component="th" sx={{ width: '5%' }} align="center" />
+              <TableCell component="th" sx={{ width: '5%' }} align="center" />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableData.map((row) => (
+              <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell component="th" scope="row" align="center">
+                  {row.notes_no}
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                  {row.notes}
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                  <IconButton
+                    sx={{ color: theme.palette.success.main }}
+                    onClick={() => selectRowClicked(row.notes, row.notes_no)}
+                  >
+                    <Iconify icon={'material-symbols:edit-square-outline'} />
+                  </IconButton>
+                </TableCell>
+                <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.notes_no)}>
+                  <IconButton sx={{ color: theme.palette.warning.main }}>
+                    <Iconify icon={'ion:trash-outline'} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </>
+  );
+}
+
+MiscNotesEditTable.propTypes = {
+  tableData: PropTypes.array,
+  addRow: PropTypes.func,
+  deleteRow: PropTypes.func,
+  updateRow: PropTypes.func,
+};
+
+function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
+  const [objMisc, setMisc] = useState(DefaultMiscValues);
+  const [selectedID, setSelectedID] = useState(-1);
+  const theme = useTheme();
+
+  const addNoteClicked = () => {
+    if (selectedID > 0) {
+      updateRow(objMisc, selectedID);
+    } else {
+      addRow(objMisc);
+    }
+    setMisc(DefaultMiscValues);
+    setSelectedID(-1);
+  };
+
+  const cancelEditClicked = () => {
+    setMisc(DefaultMiscValues);
+    setSelectedID(-1);
+  };
+
+  const selectRowClicked = (row) => {
+    setMisc({
+      txbMisc: row.misc,
+      txbMiscQty: row.qty,
+      txbMiscPrice: row.price,
+    });
+    setSelectedID(row.misc_no);
+  };
+
+  return (
+    <>
+      <Stack direction="row" spacing={2}>
+        <TextField
+          sx={{ width: '55%' }}
+          size="small"
+          name="txbMisc"
+          label="Enter Miscellaneous"
+          value={objMisc.txbMisc}
+          onChange={(e) => setMisc({ ...objMisc, txbMisc: e.target.value })}
+        />
+        <TextField
+          sx={{ width: '15%' }}
+          size="small"
+          name="txbQty"
+          label="Enter QTY"
+          value={objMisc.txbMiscQty}
+          onChange={(e) => setMisc({ ...objMisc, txbMiscQty: e.target.value })}
+        />
+        <TextField
+          sx={{ width: '15%' }}
+          size="small"
+          name="txbPrice"
+          label="Enter Price"
+          value={objMisc.txbMiscPrice}
+          onChange={(e) => setMisc({ ...objMisc, txbMiscPrice: e.target.value })}
+        />
+
+        {selectedID > 0 ? (
+          <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
+            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+              Update Misc
+            </Button>
+            <Button
+              sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
+              variant="contained"
+              onClick={cancelEditClicked}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        ) : (
+          <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+            Add Misc
+          </Button>
+        )}
+      </Stack>
+      <Box sx={{ pt: '10px' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell component="th" sx={{ width: '10%' }} scope="row" align="center">
+                No
+              </TableCell>
+              <TableCell component="th" sx={{ width: '60%' }} scope="row" align="center">
+                Miscellaneous
+              </TableCell>
+              <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
+                Qty
+              </TableCell>
+              <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
+                Price
+              </TableCell>
+              <TableCell component="th" sx={{ width: '5%' }} align="center" />
+              <TableCell component="th" sx={{ width: '5%' }} align="center" />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableData.map((row) => (
+              <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell component="th" scope="row" align="center">
+                  {row.misc_no}
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                  {row.misc}
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                  {row.qty}
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                  {row.price}
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                  <IconButton
+                    sx={{ color: theme.palette.success.main }}
+                    onClick={() => selectRowClicked(row)}
+                  >
+                    <Iconify icon={'material-symbols:edit-square-outline'} />
+                  </IconButton>
+                </TableCell>
+                <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.misc_no)}>
+                  <IconButton sx={{ color: theme.palette.warning.main }}>
+                    <Iconify icon={'ion:trash-outline'} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </>
   );
 }
