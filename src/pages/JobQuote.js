@@ -37,7 +37,7 @@ import { saveAs } from 'file-saver';
 import { PATH_JOB, PATH_JOBS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
-import { getQuoteInfo, saveQuoteInfo, addNewMisc, addNewNotes } from '../redux/slices/quoteReducer';
+import * as quoteReducer from '../redux/slices/quoteReducer';
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
@@ -183,7 +183,7 @@ export default function JobQuote() {
   // // getting all form data from server
   useEffect(() => {
     dispatch(
-      getQuoteInfo({
+      quoteReducer.getQuoteInfo({
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
         intJobID: jobId,
@@ -193,39 +193,57 @@ export default function JobQuote() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // event handler for addding note
-  const addMisc = (objMisc) => {
+  // event handler for addding misc
+  const addMisc = async (objMisc) => {
     const data = {
       ...objMisc,
       intJobID: jobId,
     };
-    dispatch(addNewMisc(data));
+    await dispatch(quoteReducer.addNewMisc(data));
   };
 
-  const updateMisc = (objMisc, miscNo) => {
-    console.log(objMisc, miscNo);
+  const updateMisc = async (objMisc, miscNo) => {
+    const data = {
+      ...objMisc,
+      intJobID: jobId,
+      miscNo
+    };
+    await dispatch(quoteReducer.updateMisc(data));
   };
 
-  const deleteMisc = (miscNo) => {
-    console.log(miscNo);
+  const deleteMisc = async (miscNo) => {
+    const data = {
+      intJobID: jobId,
+      miscNo
+    };
+    await dispatch(quoteReducer.deleteMisc(data));
   };
 
 
-  // event handler for adding shipping note
-  const addNotes = (txbNotes) => {
+  // event handler for adding notes
+  const addNotes = async (txbNotes) => {
     const data = {
       intJobID: jobId,
       txbNotes,
     };
-    dispatch(addNewNotes(data));
+    await dispatch(quoteReducer.addNewNotes(data));
   };
 
-  const updateNotes = (txbNotes, notesNo) => {
-    console.log(txbNotes, notesNo);
+  const updateNotes = async (txbNotes, notesNo) => {
+    const data = {
+      intJobID: jobId,
+      txbNotes,
+      notesNo
+    };
+    await dispatch(quoteReducer.updateNotes(data));
   };
 
-  const deleteNotes = (noNotes) => {
-    console.log(noNotes);
+  const deleteNotes = async (notesNo) => {
+    const data = {
+      intJobID: jobId,
+      notesNo
+    };
+    await dispatch(quoteReducer.deleteNotes(data));
   };
 
   // export pdf of form data
@@ -270,7 +288,7 @@ export default function JobQuote() {
         intUAL: localStorage.getItem('UAL'),
         intJobID: jobId,
       };
-      const result = await dispatch(saveQuoteInfo(quoteData));
+      const result = await dispatch(quoteReducer.saveQuoteInfo(quoteData));
       if (result === 'success') {
         setSuccess(true);
       } else {
@@ -507,7 +525,6 @@ export default function JobQuote() {
                                   },
                                 }}
                               >
-                                {console.log(item.price_error_msg)}
                                 <TableCell component="th" scope="row" align="left">
                                   {i + 1}
                                 </TableCell>
@@ -563,78 +580,7 @@ export default function JobQuote() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Miscellaneous" />
                   <CardContent>
-                    <MiscNotesEditTable tableData={gvMisc?.gvMiscDataSource} addRow={addMisc} updateRow={updateMisc} deleteRow={deleteMisc}/>
-                    {/* <Stack direction="row" spacing={2}>
-                      <TextField
-                        sx={{ width: '55%' }}
-                        size="small"
-                        name="txbMisc"
-                        label="Enter Miscellaneous"
-                        value={objMisc.txbMisc}
-                        onChange={(e) => setMisc({ ...objMisc, txbMisc: e.target.value })}
-                      />
-                      <TextField
-                        sx={{ width: '15%' }}
-                        size="small"
-                        name="txbQty"
-                        label="Enter QTY"
-                        value={objMisc.txbMiscQty}
-                        onChange={(e) => setMisc({ ...objMisc, txbMiscQty: e.target.value })}
-                      />
-                      <TextField
-                        sx={{ width: '15%' }}
-                        size="small"
-                        name="txbPrice"
-                        label="Enter Price"
-                        value={objMisc.txbMiscPrice}
-                        onChange={(e) => setMisc({ ...objMisc, txbMiscPrice: e.target.value })}
-                      />
-                      <Button
-                        sx={{ width: '15%', borderRadius: '5px', mt: '1px' }}
-                        variant="contained"
-                        onClick={addMiscClicked}
-                      >
-                        Add Miscellaneous
-                      </Button>
-                    </Stack>
-                    <Box sx={{ pt: '10px' }}>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" sx={{ width: '10%' }} scope="row" align="center">
-                              No
-                            </TableCell>
-                            <TableCell component="th" sx={{ width: '60%' }} scope="row" align="center">
-                              Miscellaneous
-                            </TableCell>
-                            <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
-                              Qty
-                            </TableCell>
-                            <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
-                              Price
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {gvMisc?.gvMiscDataSource.map((row) => (
-                            <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.misc_no}
-                              </TableCell>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.misc}
-                              </TableCell>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.qty}
-                              </TableCell>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.price}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Box> */}
+                    <MiscNotesEditTable tableData={gvMisc.gvMiscDataSource} addRow={addMisc} updateRow={updateMisc} deleteRow={deleteMisc}/>
                   </CardContent>
                 </Card>
               </Grid>
@@ -644,51 +590,8 @@ export default function JobQuote() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Note" />
                   <CardContent>
-                    {/* <Stack direction="row" spacing={2}>
-                      <TextField
-                        sx={{ width: '70%' }}
-                        size="small"
-                        name="txbNotes"
-                        label="Enter Note"
-                        value={txbNotes}
-                        onChange={(e) => setNotes(e.target.value)}
-                      />
-                      <Button
-                        sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
-                        variant="contained"
-                        onClick={addNoteClicked}
-                      >
-                        Add Notes
-                      </Button>
-                    </Stack>
-                    <Box sx={{ pt: '10px' }}>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" sx={{ width: '20%' }} align="center">
-                              No
-                            </TableCell>
-                            <TableCell component="th" sx={{ width: '80%' }} align="center">
-                              Notes
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {gvNotes?.gvNotesDataSource.map((row) => (
-                            <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.notes_no}
-                              </TableCell>
-                              <TableCell component="th" scope="row" align="center">
-                                {row.notes}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Box> */}
                     <NotesEditTable
-                      tableData={gvNotes?.gvNotesDataSource}
+                      tableData={gvNotes.gvNotesDataSource}
                       addRow={addNotes}
                       updateRow={updateNotes}
                       deleteRow={deleteNotes}
@@ -750,12 +653,14 @@ function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
   const [selectedID, setSelectedID] = useState(-1);
   const theme = useTheme();
 
-  const addNoteClicked = () => {
-    if (selectedID > 0) {
-      updateRow(txbNotes, selectedID);
-    } else {
-      addRow(txbNotes);
-    }
+  const addNoteClicked = async () => {
+    await addRow(txbNotes);
+    setNotes('');
+    setSelectedID(-1);
+  };
+
+  const updateNoteClicked = async () => {
+    await updateRow(txbNotes, selectedID);
     setNotes('');
     setSelectedID(-1);
   };
@@ -783,7 +688,7 @@ function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
         />
         {selectedID > 0 ? (
           <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
-            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={updateNoteClicked}>
               Update Notes
             </Button>
             <Button
@@ -815,7 +720,7 @@ function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData.map((row) => (
+            {tableData !== undefined && tableData.map((row) => (
               <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row" align="center">
                   {row.notes_no}
@@ -857,12 +762,14 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
   const [selectedID, setSelectedID] = useState(-1);
   const theme = useTheme();
 
-  const addNoteClicked = () => {
-    if (selectedID > 0) {
-      updateRow(objMisc, selectedID);
-    } else {
-      addRow(objMisc);
-    }
+  const addMiscClicked = () => {
+    addRow(objMisc);
+    setMisc(DefaultMiscValues);
+    setSelectedID(-1);
+  };
+
+  const updateMiscClicked = () => {
+    updateRow(objMisc, selectedID);
     setMisc(DefaultMiscValues);
     setSelectedID(-1);
   };
@@ -876,7 +783,7 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
     setMisc({
       txbMisc: row.misc,
       txbMiscQty: row.qty,
-      txbMiscPrice: row.price,
+      txbMiscPrice: row.price.substring(1),
     });
     setSelectedID(row.misc_no);
   };
@@ -911,7 +818,7 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
 
         {selectedID > 0 ? (
           <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
-            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={updateMiscClicked}>
               Update Misc
             </Button>
             <Button
@@ -923,7 +830,7 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
             </Button>
           </Stack>
         ) : (
-          <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
+          <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addMiscClicked}>
             Add Misc
           </Button>
         )}
@@ -949,7 +856,7 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData.map((row) => (
+            {tableData !== undefined && tableData.map((row) => (
               <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row" align="center">
                   {row.misc_no}

@@ -107,9 +107,11 @@ const QuoteSlice = createSlice({
         txbPriceFinalTotal: pricingTotal.txbPriceFinalTotal,
       }
     },
-    addNewMisc(state, action) {
+    updatedMisc(state, action) {
       state.gvMisc = action.payload.gvMisc;
       state.gvPricingTotal = action.payload.pricingTotal;
+      state.gvPricingMisc = action.payload.pricingMisc;
+      state.gvPricingShipping = action.payload.pricingShipping;
 
       state.quoteFormInfo = {
         ...state.quoteFormInfo,
@@ -121,7 +123,7 @@ const QuoteSlice = createSlice({
         txbPriceFinalTotal: action.payload.pricingTotal.txbPriceFinalTotal,
       }
     },
-    addNewNotes(state, action) {
+    updatedNotes(state, action) {
       state.gvNotes = action.payload.gvNotes;
       state.gvPricingTotal = action.payload.pricingTotal;
 
@@ -167,7 +169,23 @@ export function addNewMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/addMisc`, data);
     console.log(response.data);
-    dispatch(QuoteSlice.actions.addNewMisc(response.data));
+    dispatch(QuoteSlice.actions.updatedMisc(response.data));
+  }
+}
+
+export function updateMisc(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/quote/updateMisc`, data);
+    console.log(response.data);
+    dispatch(QuoteSlice.actions.updatedMisc(response.data));
+  }
+}
+
+export function deleteMisc(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/quote/deleteMisc`, data);
+    console.log(response.data);
+    dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
 
@@ -175,7 +193,24 @@ export function addNewNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/addNotes`, data);
     console.log(response.data);
-    dispatch(QuoteSlice.actions.addNewNotes(response.data));
+    dispatch(QuoteSlice.actions.updatedNotes(response.data));
+  }
+}
+
+export function updateNotes(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/quote/updateNotes`, data);
+    console.log(response.data);
+    dispatch(QuoteSlice.actions.updatedNotes(response.data));
+  }
+}
+
+
+export function deleteNotes(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/quote/deleteNotes`, data);
+    console.log(response.data);
+    dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }
 
