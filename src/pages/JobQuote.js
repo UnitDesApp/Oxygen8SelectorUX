@@ -255,11 +255,12 @@ export default function JobQuote() {
       intUserID: localStorage.getItem('userId'),
     };
 
+    const response = await axios.post(`${serverUrl}/api/quote/exportPdf`, data, { responseType: 'blob' });
+
     if (response.data.success === false && response.data.success !== undefined) {
       setFail(true);
     }
     else {
-      const response = await axios.post(`${serverUrl}/api/quote/exportPdf`, data, { responseType: 'blob' });
       console.log(response);
       // Get File Name
       let filename = '';
