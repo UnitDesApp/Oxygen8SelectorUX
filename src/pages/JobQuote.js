@@ -256,26 +256,26 @@ export default function JobQuote() {
     };
 
     const response = await axios.post(`${serverUrl}/api/quote/exportPdf`, data, { responseType: 'blob' });
+    console.log(response);
 
-    if (response.data.success === false && response.data.success !== undefined) {
+    if (response.data.type === 'application/json') {
       setFail(true);
+      return;
     }
-    else {
-      console.log(response);
-      // Get File Name
-      let filename = '';
-      const disposition = response.headers['content-disposition'];
-      if (disposition && disposition.indexOf('attachment') !== -1) {
-        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-        const matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) {
-          filename = matches[1].replace(/['"]/g, '');
-        }
+
+    // Get File Name
+    let filename = '';
+    const disposition = response.headers['content-disposition'];
+    if (disposition && disposition.indexOf('attachment') !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, '');
       }
-  
-      // Save File
-      saveAs(response.data, `${filename}.pdf`);  
     }
+
+    // Save File
+    saveAs(response.data, `${filename}.pdf`);  
   };
 
   // export pdf of form data

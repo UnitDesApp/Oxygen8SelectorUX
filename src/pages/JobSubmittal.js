@@ -222,7 +222,12 @@ export default function JobSubmittal() {
     };
 
     const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
-    console.log(response);
+    console.log(response.data.type);
+    if (response.data.type === 'application/json') {
+      setFail(true);
+      return;
+    }
+
     // Get File Name
     let filename = '';
     const disposition = response.headers['content-disposition'];
@@ -249,7 +254,7 @@ export default function JobSubmittal() {
     };
 
     const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
-    if (response.data.type === "application/json") {
+    if (response.data.type === 'application/json') {
       setFail(true);
       return;
     }
