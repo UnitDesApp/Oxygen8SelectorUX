@@ -222,34 +222,8 @@ export default function JobSubmittal() {
     };
 
     const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
-    console.log(response);
-    // Get File Name
-    let filename = '';
-    const disposition = response.headers['content-disposition'];
-    if (disposition && disposition.indexOf('attachment') !== -1) {
-      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, '');
-      }
-    }
-
-    // Save File
-    saveAs(response.data, `${filename}.pdf`);
-
-    console.log('Successed');
-  };
-
-  // export pdf of form data
-  const downloadEpicor = async () => {
-    const data = {
-      intJobID: jobId,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-
-    const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
-    if (response.data.type === "application/json") {
+    console.log(response.data.type);
+    if (response.data.type === 'application/json') {
       setFail(true);
       return;
     }
@@ -266,7 +240,41 @@ export default function JobSubmittal() {
     }
 
     // Save File
-    saveAs(response.data, `${filename}.pdf`);
+    saveAs(response.data, `${filename}`);
+
+    console.log('Successed');
+  };
+
+  // export pdf of form data
+  const downloadEpicor = async () => {
+    const data = {
+      intJobID: jobId,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+
+    const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
+    if (response.data.type === 'application/json') {
+      setFail(true);
+      return;
+    }
+
+    // Get File Name
+    let filename = '';
+    const disposition = response.headers['content-disposition'];
+    if (disposition && disposition.indexOf('attachment') !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, '');
+      }
+    }
+
+
+    console.log(filename);
+
+    // Save File
+    saveAs(response.data, `${filename}`);
 
     console.log('Successed');
   };
