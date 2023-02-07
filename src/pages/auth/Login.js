@@ -73,7 +73,7 @@ export default function Login() {
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
-          <Logo sx={{height: '35px', width: '350px'}}/>
+          <Logo sx={{height: '30px', width: '300px'}}/>
         </HeaderStyle>
         <Container>
           <ContentStyle>
