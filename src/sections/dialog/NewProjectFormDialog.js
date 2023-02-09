@@ -17,21 +17,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // components
 import { FormProvider, RHFSelect, RHFTextField } from '../../components/hook-form';
 
-NewJobFormDialog.propTypes = {
-  newJobDialogOpen: PropTypes.bool,
-  handleNewJobDialogClose: PropTypes.func,
-  addNewJob: PropTypes.func,
+NewProjectFormDialog.propTypes = {
+  newProjectDialogOpen: PropTypes.bool,
+  handleNewProjectDialogClose: PropTypes.func,
+  addNewProject: PropTypes.func,
   initialInfo: PropTypes.object,
 };
 
-export default function NewJobFormDialog({ newJobDialogOpen, handleNewJobDialogClose, addNewJob, initialInfo }) {
+export default function NewProjectFormDialog({ newProjectDialogOpen, handleNewProjectDialogClose, addNewProject, initialInfo }) {
   const navigate = useNavigate();
   const { applications, companyInfo } = initialInfo;
   
   // console.log(initialInfo);
 
   const NewUserSchema = Yup.object().shape({
-    jobName: Yup.string().required('Please enter a job name'),
+    projectName: Yup.string().required('Please enter a project name'),
     application: Yup.string().required('Please enter an applicaiton type'),
     reference: Yup.string().required('Please enter an reference'),
     companyNameId: Yup.string().required('Please select company name'),
@@ -39,7 +39,7 @@ export default function NewJobFormDialog({ newJobDialogOpen, handleNewJobDialogC
   });
 
   const defaultValues = {
-    jobName: '',
+    projectName: '',
     application: '',
     reference: '',
     companyNameId: '',
@@ -65,7 +65,7 @@ export default function NewJobFormDialog({ newJobDialogOpen, handleNewJobDialogC
 
   const onSubmit = async (data) => {
     try {
-      addNewJob(data);
+      addNewProject(data);
       // navigate(PATH_MY_JOBS.dashboard, { state: data });
     } catch (error) {
       console.error(error);
@@ -73,13 +73,13 @@ export default function NewJobFormDialog({ newJobDialogOpen, handleNewJobDialogC
   };
 
   return (
-    <Dialog open={newJobDialogOpen} onClose={handleNewJobDialogClose}>
-      <DialogTitle>Create new job</DialogTitle>
+    <Dialog open={newProjectDialogOpen} onClose={handleNewProjectDialogClose}>
+      <DialogTitle>Create new project</DialogTitle>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <Card sx={{ p: 3 }}>
             <Box sx={{ minWidth: '500px', display: 'grid', rowGap: 3, columnGap: 2 }}>
-              <RHFTextField size="small" name="jobName" label="Job name" />
+              <RHFTextField size="small" name="projectName" label="Project name" />
 
               <RHFSelect size="small" name="application" label="Application" placeholder="Application">
                 <option value="" />
@@ -107,9 +107,9 @@ export default function NewJobFormDialog({ newJobDialogOpen, handleNewJobDialogC
           </Card>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleNewJobDialogClose}>Cancel</Button>
+          <Button onClick={handleNewProjectDialogClose}>Cancel</Button>
           <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-            Create new job
+            Create new project
           </LoadingButton>
         </DialogActions>
       </FormProvider>

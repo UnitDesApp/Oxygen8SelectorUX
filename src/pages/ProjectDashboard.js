@@ -19,15 +19,15 @@ import {
 } from '@mui/material';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { getJobsAndUnitsInfo } from '../redux/slices/jobDashboardReducer';
+import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
 // routes
-import { PATH_JOB, PATH_JOBS } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { JobInfo, UnitList } from '../sections/jobDashboard';
+import { ProjectInfo, UnitList } from '../sections/project-dashboard';
 import Loading from '../sections/Loading';
 
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 // , 'Make a selection', 'Submit drawing'
-const STEPS = ['Complete job info', 'Add units'];
+const STEPS = ['Complete project info', 'Add units'];
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   top: 10,
@@ -88,15 +88,17 @@ function StepIcon({ active, completed }) {
   );
 }
 
-export default function JobDashboard() {
+export default function ProjectDashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { jobId } = useParams();
+  const { projectId } = useParams();
 
-  const { jobInfo, unitList, isLoading } = useSelector((state) => state.jobDashboard);
+  const { projectInfo, unitList, isLoading } = useSelector((state) => state.projectDashboard);
+
+  console.log(projectInfo);
 
   useEffect(() => {
-    dispatch(getJobsAndUnitsInfo({ jobId }));
+    dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -104,23 +106,23 @@ export default function JobDashboard() {
   // const isComplete = activeStep === STEPS.length;
 
   const onClickRequestSubmittal = () => {
-    navigate(PATH_JOB.submittal(jobId));
+    navigate(PATH_PROJECT.submittal(projectId));
   };
 
   const onClickRequestQuote = () => {
-    navigate(PATH_JOB.quote(jobId), { state: unitList.length });    
+    navigate(PATH_PROJECT.quote(projectId), { state: unitList.length });    
   }
 
   return (
-    <Page title="Job: Dashboard">
+    <Page title="Project: Dashboard">
       <RootStyle>
         {isLoading ? (
           <Loading />
         ) : (
           <Container>
             <HeaderBreadcrumbs
-              heading={jobInfo.job_name}
-              links={[{ name: 'My jobs', href: PATH_JOBS.root }, { name: jobInfo.job_name }]}
+              heading={projectInfo.job_name}
+              links={[{ name: 'projects', href: PATH_PROJECTS.root }, { name: projectInfo.job_name }]}
               action={
                 <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
                   <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />}>
@@ -135,7 +137,7 @@ export default function JobDashboard() {
                   <Box>
                     <m.div>
                       <Typography color="primary" variant="h5" sx={{ mb: 1 }}>
-                        Job Status
+                        Project Status
                       </Typography>
                     </m.div>
                     <m.div>
@@ -188,7 +190,7 @@ export default function JobDashboard() {
             </Card>
             <Grid container spacing={3}>
               <Grid item xs={12} md={4}>
-                <JobInfo jobInfo={jobInfo} />
+                <ProjectInfo projectInfo={projectInfo} />
               </Grid>
               <Grid item xs={12} md={8}>
                 <UnitList />

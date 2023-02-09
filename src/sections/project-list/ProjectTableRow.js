@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, MenuItem, Divider } from '@mui/material';
+import { Checkbox, TableRow, TableCell, MenuItem, Divider, Stack, IconButton } from '@mui/material';
 // components
 import Label from '../../components/Label';
 import Iconify from '../../components/Iconify';
@@ -11,7 +11,7 @@ import { TableMoreMenu } from '../../components/table';
 
 // ----------------------------------------------------------------------
 
-UserTableRow.propTypes = {
+ProjectTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
   onEditRow: PropTypes.func,
@@ -19,8 +19,8 @@ UserTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const theme = useTheme();
+export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  // const theme = useTheme();
 
   const {
     job_name,
@@ -53,12 +53,23 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{job_name}</TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{reference_no}</TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{revision_no}</TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}><Label color='default' variant='outlined'>{status}</Label></TableCell>
 
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Customer_Name}</TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Created_User_Full_Name}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Created_User_Full_Name}</TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Revised_User_Full_Name}</TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{created_date}</TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{revised_date}</TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        <Stack direction="row" spacing={1}>
+          <IconButton aria-label="delete">
+            <Iconify icon='ic:outline-file-copy' />
+          </IconButton>
+          <IconButton aria-label="delete">
+            <Iconify icon='mdi:trash-outline' />
+          </IconButton>
+        </Stack>
+      </TableCell>
       {/* <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
@@ -78,7 +89,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
             <>
               <MenuItem sx={{ color: 'info.main' }} onClick={onEditRow}>
                 <Iconify icon={'akar-icons:eye'} />
-                View Job
+                View Project
               </MenuItem>
               <MenuItem sx={{ color: 'info.main' }}>
                 <Iconify icon={'codicon:copy'} />

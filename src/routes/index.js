@@ -68,18 +68,18 @@ export default function Router() {
           path: '/',
           element: <MainLayout />,
           children: [
-            { path: 'jobs', element: <Jobs /> },
+            { path: 'projects', element: <Projects /> },
             { path: 'account', element: <Account /> },
             { path: 'resources', element: <Resources /> },
-            { path: 'job/new/', element: <JobEdit /> },
-            { path: 'job/dashboard/:jobId', element: <JobDashboard /> },
-            { path: 'job/edit/:jobId', element: <JobEdit /> },
-            { path: 'job/submittal/:jobId', element: <JobSubmittal />},
-            { path: 'job/quote/:jobId', element: <JobQuote />},
-            { path: 'unit/view/:jobId/', element: <UnitView /> },
-            { path: 'unit/add/:jobId/', element: <UnitAdd /> },
-            { path: 'unit/configure/:jobId', element: <SetUnitInfo /> },
-            { path: 'unit/edit/:jobId/:unitId', element: <SetUnitInfo /> },
+            { path: 'project/new/', element: <ProjectEdit /> },
+            { path: 'project/dashboard/:projectId', element: <ProjectDashboard /> },
+            { path: 'project/edit/:projectId', element: <ProjectEdit /> },
+            { path: 'project/submittal/:projectId', element: <ProjectSubmittal />},
+            { path: 'project/quote/:projectId', element: <ProjectQuote />},
+            { path: 'unit/view/:projectId/', element: <UnitView /> },
+            { path: 'unit/add/:projectId/', element: <UnitAdd /> },
+            { path: 'unit/configure/:projectId', element: <SetUnitInfo /> },
+            { path: 'unit/edit/:projectId/:unitId', element: <SetUnitInfo /> },
           ],
         },
       ],
@@ -95,12 +95,12 @@ const ResetPassword = Loadable(lazy(() => import('../pages/auth/ResetPassword'))
 const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 // const NewPassword = Loadable(lazy(() => import('../pages/auth/NewPassword')));
 
-// Jobs
-const Jobs = Loadable(lazy(() => import('../pages/Jobs')));
-const JobDashboard = Loadable(lazy(() => import('../pages/JobDashboard')));
-const JobEdit = Loadable(lazy(() => import('../pages/JobEdit')));
-const JobSubmittal = Loadable(lazy(() => import('../pages/JobSubmittal')));
-const JobQuote = Loadable(lazy(() => import('../pages/JobQuote')));
+// Projects
+const Projects = Loadable(lazy(() => import('../pages/Projects')));
+const ProjectDashboard = Loadable(lazy(() => import('../pages/ProjectDashboard')));
+const ProjectEdit = Loadable(lazy(() => import('../pages/ProjectEdit')));
+const ProjectSubmittal = Loadable(lazy(() => import('../pages/ProjectSubmittal')));
+const ProjectQuote = Loadable(lazy(() => import('../pages/ProjectQuote')));
 // Unit
 const UnitView = Loadable(lazy(() => import('../pages/UnitView')));
 const SetUnitInfo = Loadable(lazy(() => import('../pages/SetUnitInfo')));

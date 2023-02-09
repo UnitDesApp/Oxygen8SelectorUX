@@ -17,7 +17,7 @@ import {
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUnits } from '../../redux/slices/jobDashboardReducer';
+import { deleteUnits } from '../../redux/slices/projectDashboardReducer';
 // hooks
 import useTabs from '../../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
@@ -47,9 +47,7 @@ const TABLE_HEAD = [
 
 export default function UnitList() {
   const { jobId } = useParams();
-  const { unitList } = useSelector((state) => state.jobDashboard);
-  const dispatch = useDispatch();
-
+  const { unitList } = useSelector((state) => state.projectDashboard);
   console.log(unitList);
 
   const {
@@ -58,12 +56,10 @@ export default function UnitList() {
     orderBy,
     rowsPerPage,
     setPage,
-    //
     selected,
     setSelected,
     onSelectRow,
     onSelectAllRows,
-    //
     onSort,
     onChangePage,
     onChangeRowsPerPage,

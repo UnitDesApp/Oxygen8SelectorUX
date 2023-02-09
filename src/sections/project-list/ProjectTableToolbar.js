@@ -9,6 +9,14 @@ import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
+ProjectTableToolbar.propTypes = {
+  filterName: PropTypes.string,
+  onFilterName: PropTypes.func,
+  onFilterRole: PropTypes.func,
+  optionsRole: PropTypes.arrayOf(PropTypes.string),
+  onOpneDialog: PropTypes.func,
+};
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -17,15 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-UserTableToolbar.propTypes = {
-  filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
-  onFilterRole: PropTypes.func,
-  optionsRole: PropTypes.arrayOf(PropTypes.string),
-  onAddNewUnit: PropTypes.func,
-};
-
-export default function UserTableToolbar({ filterName, onFilterName, onFilterRole, optionsRole, onAddNewUnit }) {
+export default function ProjectTableToolbar({ filterName, onFilterName, onFilterRole, optionsRole, onOpneDialog }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -43,7 +43,7 @@ export default function UserTableToolbar({ filterName, onFilterName, onFilterRol
       direction={{ xs: 'column', sm: 'row' }}
       sx={{ py: 2.5, px: 3 }}
     >
-      {/* <Item sx={{ width: { md: '20%', sm: '20%', xs: '100%' } }}>
+      <Item sx={{ width: { md: '20%', xs: '100%' } }}>
         <IconButton aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} onClick={handleClick}>
           <Iconify icon={'codicon:filter-filled'} /> Filter
         </IconButton>
@@ -79,14 +79,14 @@ export default function UserTableToolbar({ filterName, onFilterName, onFilterRol
             </MenuItem>
           ))}
         </Menu>
-      </Item> */}
-      <Item sx={{ width: { md: '70%', sm: '60%', xs: '100%' }}}>
+      </Item>
+      <Item sx={{ width: { md: '60%', xs: '100%' } }}>
         <TextField
           fullWidth
           size="small"
           value={filterName}
           onChange={(event) => onFilterName(event.target.value)}
-          placeholder="Search unit..."
+          placeholder="Search Jobs..."
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -96,9 +96,9 @@ export default function UserTableToolbar({ filterName, onFilterName, onFilterRol
           }}
         />
       </Item>
-      <Item sx={{ width: { md: '30%', sm: '50%', xs: '100%' } }}>
-        <Button variant="contained" onClick={onAddNewUnit} startIcon={<Iconify icon={'eva:plus-fill'} />}>
-          Add unit to job
+      <Item sx={{ width: { md: '20%', xs: '100%' } }}>
+        <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />} onClick={onOpneDialog}>
+          Create New Project
         </Button>
       </Item>
     </Stack>

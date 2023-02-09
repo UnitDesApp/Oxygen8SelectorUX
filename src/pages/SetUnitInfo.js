@@ -8,7 +8,7 @@ import { Container, Tab, Box, Tabs } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getInitUnitinfo } from '../redux/slices/unitReducer';
 // routes
-import { PATH_JOBS, PATH_JOB } from '../routes/paths';
+import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
 // hooks
 import useTabs from '../hooks/useTabs';
 import useSettings from '../hooks/useSettings';
@@ -17,7 +17,7 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { UnitEdit, Drawing, Selection } from '../sections/configureUnit';
+import { UnitEdit, Drawing, Selection } from '../sections/unit-edit';
 import Loading from '../sections/Loading';
 // ----------------------------------------------------------------------
 
@@ -110,8 +110,8 @@ export default function SetUnitInfo() {
           <HeaderBreadcrumbs
             heading={currentTab}
             links={[
-              { name: 'My Jobs', href: PATH_JOBS.root },
-              { name: 'Job Dashboard', href: PATH_JOB.dashboard(jobId) },
+              { name: 'Projects', href: PATH_PROJECTS.root },
+              { name: 'Dashboard', href: PATH_PROJECT.dashboard(jobId) },
               { name: currentTab },
             ]}
           />

@@ -34,7 +34,7 @@ import { useForm } from 'react-hook-form';
 // file-saver
 import { saveAs } from 'file-saver';
 // paths
-import { PATH_JOB, PATH_JOBS, PATH_UNIT } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
 import * as quoteReducer from '../redux/slices/quoteReducer';
@@ -90,7 +90,7 @@ const DefaultMiscValues = {
 };
 
 export default function JobQuote() {
-  const { jobId } = useParams();
+  const { projectId } = useParams();
   // const navigate = useNavigate();
   const { state } = useLocation();
   const dispatch = useDispatch();
@@ -186,7 +186,7 @@ export default function JobQuote() {
       quoteReducer.getQuoteInfo({
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
+        intJobID: projectId,
         intUnitNo: state,
       })
     );
@@ -197,7 +197,7 @@ export default function JobQuote() {
   const addMisc = async (objMisc) => {
     const data = {
       ...objMisc,
-      intJobID: jobId,
+      intJobID: projectId,
     };
     await dispatch(quoteReducer.addNewMisc(data));
   };
@@ -205,7 +205,7 @@ export default function JobQuote() {
   const updateMisc = async (objMisc, miscNo) => {
     const data = {
       ...objMisc,
-      intJobID: jobId,
+      intJobID: projectId,
       miscNo
     };
     await dispatch(quoteReducer.updateMisc(data));
@@ -213,7 +213,7 @@ export default function JobQuote() {
 
   const deleteMisc = async (miscNo) => {
     const data = {
-      intJobID: jobId,
+      intJobID: projectId,
       miscNo
     };
     await dispatch(quoteReducer.deleteMisc(data));
@@ -223,7 +223,7 @@ export default function JobQuote() {
   // event handler for adding notes
   const addNotes = async (txbNotes) => {
     const data = {
-      intJobID: jobId,
+      intJobID: projectId,
       txbNotes,
     };
     await dispatch(quoteReducer.addNewNotes(data));
@@ -231,7 +231,7 @@ export default function JobQuote() {
 
   const updateNotes = async (txbNotes, notesNo) => {
     const data = {
-      intJobID: jobId,
+      intJobID: projectId,
       txbNotes,
       notesNo
     };
@@ -240,7 +240,7 @@ export default function JobQuote() {
 
   const deleteNotes = async (notesNo) => {
     const data = {
-      intJobID: jobId,
+      intJobID: projectId,
       notesNo
     };
     await dispatch(quoteReducer.deleteNotes(data));
@@ -250,7 +250,7 @@ export default function JobQuote() {
   const downloadPDF = async () => {
     const data = {
       ...getValues(),
-      intJobID: jobId,
+      intJobID: projectId,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
@@ -290,7 +290,7 @@ export default function JobQuote() {
         ...data,
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
+        intJobID: projectId,
       };
       const result = await dispatch(quoteReducer.saveQuoteInfo(quoteData));
       if (result === 'success') {
@@ -310,21 +310,21 @@ export default function JobQuote() {
   return isLoading ? (
     <Loading />
   ) : (
-    <Page title="Job: Edit">
+    <Page title="Project: Edit">
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
           <FormProvider methods={methods} onSubmit={handleSubmit(onQuoteSubmit)}>
             <HeaderBreadcrumbs
-              heading="Job Quote"
+              heading="Project Quote"
               links={[
-                { name: 'My Jobs', href: PATH_JOBS.root },
-                { name: 'My Dashboard', href: PATH_JOB.dashboard(jobId) },
-                { name: 'Job Quote' },
+                { name: 'Projects', href: PATH_PROJECTS.root },
+                { name: 'Dashboard', href: PATH_PROJECT.dashboard(projectId) },
+                { name: 'Project Quote' },
               ]}
               action={
                 <Stack direction="row" spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                  <Button href={PATH_JOB.jobEdit(jobId)}>Edit Project</Button>
-                  <Button href={PATH_UNIT.view(jobId)}>Unit List</Button>
+                  <Button href={PATH_PROJECT.jobEdit(projectId)}>Edit Project</Button>
+                  <Button href={PATH_UNIT.view(projectId)}>Unit List</Button>
                   <Button startIcon={<Iconify icon={'grommet-icons:document-pdf'} />} onClick={downloadPDF}>
                     Roport
                   </Button>
@@ -344,7 +344,7 @@ export default function JobQuote() {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={4}>
                 <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="Job Info" />
+                  <CardHeaderStyle title="Project Info" />
                   <CardContent>
                     <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                       <RHFTextField size="small" name="txbRevisionNo" label="Revision No" />

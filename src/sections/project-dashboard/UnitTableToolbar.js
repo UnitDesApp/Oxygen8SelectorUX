@@ -98,7 +98,7 @@ export default function UserTableToolbar({ filterName, onFilterName, onFilterRol
       </Item>
       <Item sx={{ width: { md: '30%', sm: '50%', xs: '100%' } }}>
         <Button variant="contained" onClick={onAddNewUnit} startIcon={<Iconify icon={'eva:plus-fill'} />}>
-          Add unit to job
+          Add unit to project
         </Button>
       </Item>
     </Stack>

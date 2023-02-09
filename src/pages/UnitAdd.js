@@ -8,13 +8,13 @@ import { Box, Grid, Card, Step, Stepper, Container, StepLabel, StepConnector, Bu
 import { useSelector, useDispatch } from 'react-redux';
 import { getUnitTypeInfo } from '../redux/slices/unitReducer';
 // routes
-import { PATH_JOBS, PATH_JOB, PATH_UNIT } from '../routes/paths';
+import { PATH_PROJECTS, PATH_PROJECT, PATH_UNIT } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { SelectUnitType, SelectProductFamily } from '../sections/addNewUnit';
+import { SelectUnitType, SelectProductFamily } from '../sections/unit-add';
 import Loading from '../sections/Loading';
 // ----------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ const FooterStepStyle = styled(Card)(() => ({
 
 // ----------------------------------------------------------------------
 // , 'Make a selection', 'Submit drawing'
-const STEPS = ['Complete job info', 'Add units'];
+const STEPS = ['Complete project info', 'Add units'];
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   top: 10,
@@ -92,7 +92,7 @@ function StepIcon({ active, completed }) {
 }
 
 export default function AddNewUnit() {
-  const { jobId } = useParams();
+  const { projectId } = useParams();
   // eslint-disable-next-line no-unused-vars
   const [activeStep, setActiveStep] = useState(1);
   const [selectStep, setActiveSelectStep] = useState(0);
@@ -118,7 +118,7 @@ export default function AddNewUnit() {
 
   const onClickBackStep = () => {
     if (selectStep === 0) {
-      navigate(PATH_JOB.dashboard(jobId));
+      navigate(PATH_PROJECT.dashboard(projectId));
     }
     if (selectStep === 1) {
       setActiveSelectStep(0);
@@ -128,11 +128,11 @@ export default function AddNewUnit() {
 
   const onClickNextStep = () => {
     console.log(unitData);
-    navigate(PATH_UNIT.configure(jobId), { state: unitData });
+    navigate(PATH_UNIT.configure(projectId), { state: unitData });
   };
 
   useEffect(() => {
-    dispatch(getUnitTypeInfo({ jobId }));
+    dispatch(getUnitTypeInfo({ projectId }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,8 +146,8 @@ export default function AddNewUnit() {
             <HeaderBreadcrumbs
               heading="Add New Unit"
               links={[
-                { name: 'My jobs', href: PATH_JOBS.root },
-                // { name: 'Selected Job', href: PATH_MY_JOBS.dashboard },
+                { name: 'My projects', href: PATH_PROJECTS.root },
+                // { name: 'Selected Project', href: PATH_MY_JOBS.dashboard },
                 { name: 'Add New Unit' },
               ]}
               sx={{ paddingLeft: '24px', paddingTop: '24px' }}
@@ -168,7 +168,7 @@ export default function AddNewUnit() {
               <Grid item xs={2} textAlign="center">
                 <Button onClick={onClickBackStep} color="primary" type="button">
                   <Iconify icon={'akar-icons:arrow-left'} />
-                  {selectStep === 0 ? 'Back to job dashboard' : 'Back to Select Product Family'}
+                  {selectStep === 0 ? 'Back to project dashboard' : 'Back to Select Product Family'}
                 </Button>
               </Grid>
               <Grid item xs={8}>

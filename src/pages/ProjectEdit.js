@@ -10,10 +10,10 @@ import { LoadingButton } from '@mui/lab';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 // paths
-import { PATH_JOB, PATH_JOBS } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
-import { getJobsInfo, addNewJob, updateJob } from '../redux/slices/jobsReducer';
+import { getProjectsInfo, addNewProject, updateProject } from '../redux/slices/projectsReducer';
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
@@ -40,32 +40,32 @@ const RootStyle = styled('div')(({ theme }) => ({
 }));
 //------------------------------------------------
 
-export default function EditJobInfo() {
+export default function EditProjectInfo() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { jobId } = useParams();
+  const { projectId } = useParams();
   const { state } = useLocation();
-  const { jobList, jobInitInfo, isLoading } = useSelector((state) => state.jobs);
+  const { projectList, projectInitInfo, isLoading } = useSelector((state) => state.projects);
   const isNew = window.location.href.includes('new');
 
   useEffect(() => {
-    dispatch(getJobsInfo());
+    dispatch(getProjectsInfo());
   }, [dispatch]);
 
   const { baseOfDesign, UoM, country, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
-    jobInitInfo;
+  projectInitInfo;
 
-  const tempArray = jobList.filter((item) => item.id.toString() === jobId);
-  const jobInfo = tempArray[0];
+  const tempArray = projectList.filter((item) => item.id.toString() === projectId);
+  const projectInfo = tempArray[0];
 
   const [provStateInfo, setProvStateInfo] = useState([]);
   const [cityInfo, setCityInfo] = useState([]);
   const [companyNameId, setCompanyNameId] = useState(
-    state !== null ? state.companyNameId : !isLoading && jobInfo.company_name_id
+    state !== null ? state.companyNameId : !isLoading && projectInfo.company_name_id
   );
-  console.log(jobInfo);
-  const jobInfoSchema = Yup.object().shape({
-    jobName: Yup.string().required('Please enter a Job Name'),
+  console.log(projectInfo);
+  const projectInfoSchema = Yup.object().shape({
+    projectName: Yup.string().required('Please enter a Project Name'),
     basisOfDesign: Yup.string().required('Please enter a Basis Of Design'),
     referenceNo: Yup.string().required('Please select a Reference'),
     revision: Yup.string().required('Please enter a Revision'),
@@ -100,43 +100,43 @@ export default function EditJobInfo() {
     () =>
       !isLoading
         ? {
-            jobName: jobInfo ? jobInfo.job_name : state.jobName,
-            basisOfDesign: jobInfo ? jobInfo.basis_of_design_id : 1,
-            referenceNo: jobInfo ? jobInfo.reference_no : state.referenceNo,
-            revision: jobInfo ? jobInfo.revision_no : 0,
-            createdDate: jobInfo ? jobInfo.created_date : state.createdDate,
-            revisedDate: jobInfo ? jobInfo.revised_date : state.revisedDate,
-            companyName: jobInfo ? jobInfo.company_name : state.companyName,
-            companyNameId: jobInfo ? jobInfo.company_name_id : state.companyNameId,
-            contactName: jobInfo ? jobInfo.contact_name : '',
-            contactNameId: jobInfo ? jobInfo.contact_name_id : 0,
-            application: jobInfo ? jobInfo.application_id : state.applicationId,
-            uom: jobInfo ? jobInfo.uom_id : 1,
-            country: jobInfo ? jobInfo.country : '',
-            state: jobInfo ? jobInfo.prov_state : '',
-            city: jobInfo ? jobInfo.city_id : '',
-            ashareDesignConditions: jobInfo ? jobInfo.design_conditions_id : 1,
-            altitude: jobInfo ? jobInfo.altitude : 0,
-            summer_air_db: jobInfo ? jobInfo.summer_outdoor_air_db : 0,
-            summer_air_wb: jobInfo ? jobInfo.summer_outdoor_air_rh : 0,
-            summer_air_rh: jobInfo ? jobInfo.summer_outdoor_air_wb : 0,
-            winter_air_db: jobInfo ? jobInfo.winter_outdoor_air_db : 0,
-            winter_air_wb: jobInfo ? jobInfo.winter_outdoor_air_rh : 0,
-            winter_air_rh: jobInfo ? jobInfo.winter_outdoor_air_wb : 0,
-            summer_return_db: jobInfo ? jobInfo.summer_return_air_db : 75,
-            summer_return_wb: jobInfo ? jobInfo.summer_return_air_rh : 63,
-            summer_return_rh: jobInfo ? jobInfo.summer_return_air_wb : 51.17,
-            winter_return_db: jobInfo ? jobInfo.winter_return_air_db : 70,
-            winter_return_wb: jobInfo ? jobInfo.winter_return_air_rh : 52.9,
-            winter_return_rh: jobInfo ? jobInfo.winter_return_air_wb : 30,
-            testNewPrice: jobInfo && jobInfo.is_test_new_price === 1,
+            projectName: projectInfo ? projectInfo.project_name : state.projectName,
+            basisOfDesign: projectInfo ? projectInfo.basis_of_design_id : 1,
+            referenceNo: projectInfo ? projectInfo.reference_no : state.referenceNo,
+            revision: projectInfo ? projectInfo.revision_no : 0,
+            createdDate: projectInfo ? projectInfo.created_date : state.createdDate,
+            revisedDate: projectInfo ? projectInfo.revised_date : state.revisedDate,
+            companyName: projectInfo ? projectInfo.company_name : state.companyName,
+            companyNameId: projectInfo ? projectInfo.company_name_id : state.companyNameId,
+            contactName: projectInfo ? projectInfo.contact_name : '',
+            contactNameId: projectInfo ? projectInfo.contact_name_id : 0,
+            application: projectInfo ? projectInfo.application_id : state.applicationId,
+            uom: projectInfo ? projectInfo.uom_id : 1,
+            country: projectInfo ? projectInfo.country : '',
+            state: projectInfo ? projectInfo.prov_state : '',
+            city: projectInfo ? projectInfo.city_id : '',
+            ashareDesignConditions: projectInfo ? projectInfo.design_conditions_id : 1,
+            altitude: projectInfo ? projectInfo.altitude : 0,
+            summer_air_db: projectInfo ? projectInfo.summer_outdoor_air_db : 0,
+            summer_air_wb: projectInfo ? projectInfo.summer_outdoor_air_rh : 0,
+            summer_air_rh: projectInfo ? projectInfo.summer_outdoor_air_wb : 0,
+            winter_air_db: projectInfo ? projectInfo.winter_outdoor_air_db : 0,
+            winter_air_wb: projectInfo ? projectInfo.winter_outdoor_air_rh : 0,
+            winter_air_rh: projectInfo ? projectInfo.winter_outdoor_air_wb : 0,
+            summer_return_db: projectInfo ? projectInfo.summer_return_air_db : 75,
+            summer_return_wb: projectInfo ? projectInfo.summer_return_air_rh : 63,
+            summer_return_rh: projectInfo ? projectInfo.summer_return_air_wb : 51.17,
+            winter_return_db: projectInfo ? projectInfo.winter_return_air_db : 70,
+            winter_return_wb: projectInfo ? projectInfo.winter_return_air_rh : 52.9,
+            winter_return_rh: projectInfo ? projectInfo.winter_return_air_wb : 30,
+            testNewPrice: projectInfo && projectInfo.is_test_new_price === 1,
           }
         : {},
-    [jobInfo, state, isLoading]
+    [projectInfo, state, isLoading]
   );
 
   const methods = useForm({
-    resolver: yupResolver(jobInfoSchema),
+    resolver: yupResolver(projectInfoSchema),
     defaultValues,
   });
 
@@ -161,7 +161,7 @@ export default function EditJobInfo() {
   // get all ourdoor infomation from server
   const getAllOutdoorInfo = () => {
     axios
-      .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+      .post(`${serverUrl}/api/project/getoutdoorinfo`, {
         action: 'GET_ALL_DATA',
         country: getValues('country'),
         cityId: getValues('city'),
@@ -183,7 +183,7 @@ export default function EditJobInfo() {
   const get_RH_By_DBWB = (first, second, setValueId) => {
     if (first === '' || second === '') return;
     axios
-      .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+      .post(`${serverUrl}/api/project/getoutdoorinfo`, {
         action: 'GET_RH_BY_DB_WB',
         first,
         second,
@@ -198,7 +198,7 @@ export default function EditJobInfo() {
   const get_WB_By_DBRH = (first, second, setValueId) => {
     if (first === '' || second === '') return;
     axios
-      .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+      .post(`${serverUrl}/api/project/getoutdoorinfo`, {
         action: 'GET_WB_BY_DB_HR',
         first,
         second,
@@ -346,54 +346,54 @@ export default function EditJobInfo() {
   };
 
   // handle submit
-  const onJobInfoSubmit = async (data) => {
+  const onProjectInfoSubmit = async (data) => {
     try {
 
       if (isNew){
         const result = await dispatch(
-          addNewJob({
+          addNewProject({
             ...data,
-            jobId: -1,
+            projectId: -1,
             createdUserId: localStorage.getItem('userId'),
             revisedUserId: localStorage.getItem('userId'),
             applicationOther: '',
             testNewPrice: data.testNewPrice ? 1 : 0,
           })
         );
-        navigate(PATH_JOB.dashboard(result));  
+        navigate(PATH_PROJECT.dashboard(result));  
       } else {
         await dispatch(
-          updateJob({
+          updateProject({
             ...data,
-            jobId,
-            createdUserId: jobInfo.created_user_id,
+            projectId,
+            createdUserId: projectInfo.created_user_id,
             revisedUserId: localStorage.getItem('userId'),
             applicationOther: '',
             testNewPrice: data.testNewPrice ? 1 : 0,
           })
         )
-        navigate(PATH_JOB.dashboard(jobId));  
+        navigate(PATH_PROJECT.dashboard(projectId));  
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const newProjectNavigator = [{ name: 'My Jobs', href: PATH_JOBS.root }, { name: 'Add Project' }];
+  const newProjectNavigator = [{ name: 'Projects', href: PATH_PROJECTS.root }, { name: 'Add Project' }];
 
   const editProjectNavigator = [
-    { name: 'My Jobs', href: PATH_JOBS.root },
-    { name: 'My Dashboard', href: PATH_JOB.dashboard(jobId) },
+    { name: 'Projects', href: PATH_PROJECTS.root },
+    { name: 'Dashboard', href: PATH_PROJECT.dashboard(projectId) },
     { name: 'Edit Project Information' },
   ];
 
   return (
-    <Page title="Job: Edit">
+    <Page title="Project: Edit">
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onJobInfoSubmit)}>
+          <FormProvider methods={methods} onSubmit={handleSubmit(onProjectInfoSubmit)}>
             <HeaderBreadcrumbs
-              heading="Edit Job Info"
+              heading="Edit Project Info"
               links={isNew ? newProjectNavigator : editProjectNavigator}
               action={
                 <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
@@ -417,7 +417,7 @@ export default function EditJobInfo() {
                     <CardHeaderStyle title="PROJECT INFORMATION" />
                     <CardContent>
                       <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                        <RHFTextField size="small" name="jobName" label="Project Name" />
+                        <RHFTextField size="small" name="projectName" label="Project Name" />
                         <RHFSelect size="small" name="basisOfDesign" label="Basis of Design" placeholder="">
                           {baseOfDesign.map((info, index) => (
                             <option key={index} value={info.id}>

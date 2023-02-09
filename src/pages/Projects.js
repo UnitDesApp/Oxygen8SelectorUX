@@ -13,16 +13,17 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Alert,
 } from '@mui/material';
 
 // routes
-import { PATH_JOBS, PATH_JOB } from '../routes/paths';
+import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
 // hooks
 import useTabs from '../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../hooks/useTable';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
-import { getJobsInfo, deleteJob } from '../redux/slices/jobsReducer';
+import { getProjectsInfo, deleteProject } from '../redux/slices/projectsReducer';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -37,11 +38,10 @@ import {
 } from '../components/table';
 
 // sections
-import { JobsTableRow, JobsTableToolbar } from '../sections/jobsList';
-
-import NewJobFormDialog from '../sections/dialog/NewJobFormDialog';
-import ConfirmDialog from '../sections/dialog/ConfirmDialog';
+import { ProjectTableRow, ProjectTableToolbar } from '../sections/project-list';
+import { NewProjectFormDialog, ConfirmDialog } from '../sections/dialog';
 import Loading from '../sections/Loading';
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -53,24 +53,25 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const ROLE_OPTIONS = ['All', 'My Jobs', 'By Others'];
+const ROLE_OPTIONS = ['All', 'Projects', 'By Others'];
 
 const TABLE_HEAD = [
-  { id: 'job_name', label: 'Project Name', align: 'left' },
-  { id: 'reference_no', label: 'Reference no', align: 'left' },
-  { id: 'revision_no', label: 'Rev no', align: 'left' },
+  { id: 'project_name', label: 'Project Name', align: 'left' },
+  { id: 'reference_no', label: 'Ref no.', align: 'left' },
+  { id: 'revision_no', label: 'Rev no.', align: 'left' },
+  { id: 'status', label: 'status', align: 'left' },
   { id: 'Customer_Name', label: 'Rep', align: 'left' },
   { id: 'Created_User_Full_Name', label: 'Created By', align: 'left' },
   { id: 'Revised_User_Full_Name', label: 'Revisied By', align: 'left' },
   { id: 'created_date', label: 'Created Date', align: 'left' },
   { id: 'revised_date', label: 'Revised Date', align: 'left' },
-  // { id: 'status', label: 'Status', align: 'left' },
+  { id: '', label: 'Actions', align: 'left' },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function MyJobs() {
+export default function MyProjects() {
   const dispatch = useDispatch();
 
   const {
@@ -79,12 +80,10 @@ export default function MyJobs() {
     orderBy,
     rowsPerPage,
     setPage,
-    //
     selected,
     setSelected,
     onSelectRow,
     onSelectAllRows,
-    //
     onSort,
     onChangePage,
     onChangeRowsPerPage,
@@ -95,32 +94,32 @@ export default function MyJobs() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getJobsInfo());
+    dispatch(getProjectsInfo());
   }, [dispatch]);
 
-  const { jobList, isLoading, jobInitInfo } = useSelector((state) => state.jobs);
-  const tableData = jobList;
+  const { projectList, isLoading, projectInitInfo } = useSelector((state) => state.projects);
+  const tableData = projectList;
 
-  // console.log(jobInitInfo);
+  // console.log(projectInitInfo);
 
   const [filterName, setFilterName] = useState('');
 
   const [filterRole, setFilterRole] = useState('All');
 
-  const [newJobDialogOpen, setNewJobDialog] = React.useState(false);
+  const [newProjectDialogOpen, setNewProjectDialog] = useState(false);
 
-  const handleClickNewJobDialogOpen = () => {
-    setNewJobDialog(true);
+  const handleClickNewProjectDialogOpen = () => {
+    setNewProjectDialog(true);
   };
 
-  const handleNewJobDialogClose = () => {
-    setNewJobDialog(false);
+  const handleNewProjectDialogClose = () => {
+    setNewProjectDialog(false);
   };
 
   // Delete one row
-  const [isOneConfirmDialog, setOneConfirmDialogState] = React.useState(false);
-  const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = React.useState(false);
-  const [deleteRowID, setDeleteRowID] = React.useState(-1);
+  const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
+  const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
+  const [deleteRowID, setDeleteRowID] = useState(-1);
 
   const handleOneConfirmDialogOpen = (id) => {
     setDeleteRowID(id);
@@ -133,7 +132,7 @@ export default function MyJobs() {
   };
 
   const handleDeleteRow = () => {
-    dispatch(deleteJob({ action: "DELETE_ONE", jobId: deleteRowID }));
+    dispatch(deleteProject({ action: 'DELETE_ONE', jobId: deleteRowID }));
     setSelected([]);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
@@ -159,33 +158,33 @@ export default function MyJobs() {
   };
 
   const handleDeleteRows = () => {
-    dispatch(deleteJob({ action: "DELETE_MULTIPUL", jobIdData: selected }));
+    dispatch(deleteProject({ action: 'DELETE_MULTIPUL', projectIdData: selected }));
     setSelected([]);
     setMultiConfirmDialogState(false);
   };
 
-  const handleEditRow = (jobid) => {
-    navigate(PATH_JOB.dashboard(jobid));
+  const handleEditRow = (projectid) => {
+    navigate(PATH_PROJECT.dashboard(projectid));
   };
 
-  const handleAddNewJob = (data) => {
+  const handleAddNewProject = (data) => {
     console.log(data);
 
-    const jobInfo = {
-      jobName: data.jobName,
+    const projectInfo = {
+      projectName: data.projectName,
       referenceNo: data.reference,
       revNo: 1,
       applicationId: data.application,
       companyName: data.companyName,
       companyNameId: data.companyNameId,
-      rep: localStorage.getItem("customerId"),
-      createdBy: localStorage.getItem("userId"),
-      revisiedBy: localStorage.getItem("userId"),
-      createdDate: jobInitInfo.createdDate,
-      revisedDate: jobInitInfo.revisedDate
-    }
+      rep: localStorage.getItem('customerId'),
+      createdBy: localStorage.getItem('userId'),
+      revisiedBy: localStorage.getItem('userId'),
+      createdDate: projectInitInfo.createdDate,
+      revisedDate: projectInitInfo.revisedDate,
+    };
 
-    navigate(PATH_JOB.jobNew, { state : jobInfo })
+    navigate(PATH_PROJECT.projectNew, { state: projectInfo });
   };
 
   const dataFiltered = applySortFilter({
@@ -203,19 +202,25 @@ export default function MyJobs() {
     (!dataFiltered.length && !!filterRole) ||
     (!dataFiltered.length && !!filterStatus);
 
-  return isLoading? <Loading /> : (
-    <Page title="Jobs">
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <Page title="Projects">
       <RootStyle>
         <Container>
-          <HeaderBreadcrumbs heading="My Jobs" links={[{ name: 'Job Lists', href: PATH_JOBS.root }]} />
+          <Alert sx={{ width: '100%' }} severity="info">
+            <b>Pricing module is now availble</b> - select Quote after making a selection to review and generate a PDF.
+            All values shown are Net prices.
+          </Alert>
 
+          <HeaderBreadcrumbs heading="Projects" links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]} />
           <Card>
-            <JobsTableToolbar
+            <ProjectTableToolbar
               filterName={filterName}
               filterRole={filterRole}
               onFilterName={handleFilterName}
               onFilterRole={handleFilterRole}
-              onOpneDialog={handleClickNewJobDialogOpen}
+              onOpneDialog={handleClickNewProjectDialogOpen}
               optionsRole={ROLE_OPTIONS}
             />
 
@@ -259,7 +264,7 @@ export default function MyJobs() {
                   />
                   <TableBody>
                     {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                      <JobsTableRow
+                      <ProjectTableRow
                         key={index}
                         row={row}
                         selected={selected.includes(row.id)}
@@ -289,11 +294,11 @@ export default function MyJobs() {
             </Box>
           </Card>
         </Container>
-        <NewJobFormDialog
-          newJobDialogOpen={newJobDialogOpen}
-          handleNewJobDialogClose={handleNewJobDialogClose}
-          addNewJob={handleAddNewJob}
-          initialInfo={jobInitInfo}
+        <NewProjectFormDialog
+          newProjectDialogOpen={newProjectDialogOpen}
+          handleNewProjectDialogClose={handleNewProjectDialogClose}
+          addNewProject={handleAddNewProject}
+          initialInfo={projectInitInfo}
         />
         <ConfirmDialog
           isOpen={isOneConfirmDialog}
@@ -328,7 +333,7 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.job_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.project_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.reference_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.revision_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.Customer_Name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
@@ -343,10 +348,10 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   }
 
   if (filterRole !== 'All') {
-    if(filterRole === "My Jobs"){
-      tableData = tableData.filter((item) => item.created_user_id.toString() === localStorage.getItem("userId"));
+    if (filterRole === 'Projects') {
+      tableData = tableData.filter((item) => item.created_user_id.toString() === localStorage.getItem('userId'));
     } else {
-      tableData = tableData.filter((item) => item.created_user_id.toString() !== localStorage.getItem("userId"));
+      tableData = tableData.filter((item) => item.created_user_id.toString() !== localStorage.getItem('userId'));
     }
   }
 
