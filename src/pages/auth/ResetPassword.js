@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// @mui
-import { styled } from '@mui/material/styles';
-import { Container, Card } from '@mui/material';
 // jwt
 import jwtDecode from 'jwt-decode';
 // components
 import Page from '../../components/Page';
-import Logo from '../../components/Logo';
-// hooks
-import useResponsive from '../../hooks/useResponsive';
+import AuthLayout from './AuthLayout';
 // sections
 import { Message } from '../../sections/auth/message';
 import { NewPassword } from '../../sections/auth/new-password';
@@ -20,64 +15,11 @@ import axios from '../../utils/axios';
 import { serverUrl } from '../../config';
 // Path
 import { PATH_AUTH } from '../../routes/paths';
-// ----------------------------------------------------------------------
-
-
-const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('md')]: {
-    display: 'flex',
-  },
-}));
-
-const HeaderStyle = styled('header')(({ theme }) => ({
-  top: 0,
-  zIndex: 9,
-  lineHeight: 0,
-  width: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(3),
-  position: 'absolute',
-  justifyContent: 'center',
-  [theme.breakpoints.up('md')]: {
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    padding: theme.spacing(3, 5, 0, 7),
-  },
-}));
-
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: '50%',
-  minWidth: '50%',
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  borderRadius: '0',
-  backgroundImage: 'url("/assets/illustrations/illustration_login.png")',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
-}));
-
-const ContentStyle = styled('div')(({ theme }) => ({
-  width: '50%',
-  minWidth: 370,
-  margin: 'auto',
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  padding: theme.spacing(12, 0),
-}));
-
 
 // ----------------------------------------------------------------------
 export default function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate(); 
-
-  const smUp = useResponsive('up', 'sm');
-  const mdUp = useResponsive('up', 'md');
 
   const [error, setError] = useState('');
   const [currentTokenState, setCurrentTokenState] = useState(false);
@@ -125,19 +67,9 @@ export default function ResetPassword() {
     <h1>Checking token...</h1>
   ) : (
     <Page title="Reset Password">
-      <RootStyle>
-        <HeaderStyle>
-          <Logo sx={{height: '30px', width: '300px'}}/>
-        </HeaderStyle>
-        <Container>
-          <ContentStyle>
-            {renderTag}
-          </ContentStyle>
-        </Container>
-        {mdUp && (
-          <SectionStyle />
-        )}
-      </RootStyle>
+      <AuthLayout>
+        {renderTag}
+      </AuthLayout>
     </Page>
   );
 }
