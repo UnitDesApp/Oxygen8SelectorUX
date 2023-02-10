@@ -1,22 +1,22 @@
-import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Button, AppBar, Toolbar, Container, Stack } from '@mui/material';
+import { AppBar, Toolbar, Container, Stack, Typography } from '@mui/material';
 // hooks
 import useOffSetTop from '../../hooks/useOffSetTop';
 import useResponsive from '../../hooks/useResponsive';
+import useAuth from '../../hooks/useAuth';
 // utils
 import cssStyles from '../../utils/cssStyles';
 // config
 import { HEADER } from '../../config';
 // components
 import Logo from '../../components/Logo';
-import Label from '../../components/Label';
 import AccountPopover from './AccountPopover';
 //
 import MenuDesktop from './MenuDesktop';
 import MenuMobile from './MenuMobile';
 import navConfig from './MenuConfig';
+import MyAvatar from '../../components/MyAvatar';
 
 // ----------------------------------------------------------------------
 
@@ -49,6 +49,7 @@ const ToolbarShadowStyle = styled('div')(({ theme }) => ({
 
 export default function MainHeader() {
   const isOffset = useOffSetTop(HEADER.MAIN_DESKTOP_HEIGHT);
+  const { user } = useAuth();
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'md');
@@ -76,7 +77,11 @@ export default function MainHeader() {
 
           {isDesktop && <MenuDesktop isOffset={isOffset} navConfig={navConfig} />}
 
-          <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+          <Stack direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+            <MyAvatar />
+            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }} >
+              {localStorage.getItem("username")}
+            </Typography>
             <AccountPopover />
           </Stack>
 

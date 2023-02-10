@@ -68,7 +68,7 @@ Label.propTypes = {
   children: PropTypes.node,
   startIcon: PropTypes.node,
   endIcon: PropTypes.node,
-  color: PropTypes.oneOf(['default', 'primary', 'secondary', 'info', 'success', 'warning', 'error']),
+  color: PropTypes.oneOf(['default', 'primary', 'secondary', 'info', 'success', 'warning', 'error', 'quoted', 'released', 'closed']),
   variant: PropTypes.oneOf(['filled', 'outlined', 'ghost']),
   sx: PropTypes.object,
 };

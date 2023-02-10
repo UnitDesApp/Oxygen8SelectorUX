@@ -11,6 +11,8 @@ import { TableMoreMenu } from '../../components/table';
 
 // ----------------------------------------------------------------------
 
+const statusArr = ['draft', 'closed', 'released', 'quoted'];
+
 ProjectTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
@@ -31,8 +33,9 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
     Revised_User_Full_Name,
     created_date,
     revised_date,
-    status,
   } = row;
+
+  const status = statusArr[Math.floor(Math.random() * 10) % 4];
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -50,36 +53,45 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{job_name}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{reference_no}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{revision_no}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}><Label color='default' variant='outlined'>{status}</Label></TableCell>
-
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Customer_Name}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Created_User_Full_Name}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{Revised_User_Full_Name}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{created_date}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{revised_date}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {job_name}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {reference_no}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {revision_no}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        <Label color={status === 'draft' ? 'default' : status} sx={{ borderRadius: '15px' }} variant="filled">
+          {status}
+        </Label>
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {Customer_Name}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {Created_User_Full_Name}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {Revised_User_Full_Name}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {created_date}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+        {revised_date}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }}>
         <Stack direction="row" spacing={1}>
           <IconButton aria-label="delete">
-            <Iconify icon='ic:outline-file-copy' />
+            <Iconify icon="ic:outline-file-copy" />
           </IconButton>
-          <IconButton aria-label="delete">
-            <Iconify icon='mdi:trash-outline' />
+          <IconButton aria-label="delete" onClick={onDeleteRow}>
+            <Iconify icon="mdi:trash-outline" />
           </IconButton>
         </Stack>
       </TableCell>
-      {/* <TableCell align="left">
-        <Label
-          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(status === 'pending' && 'info') || 'success'}
-          sx={{ textTransform: 'capitalize' }}
-        >
-          {status}
-        </Label>
-      </TableCell> */}
-
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}
@@ -90,21 +102,6 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
               <MenuItem sx={{ color: 'info.main' }} onClick={onEditRow}>
                 <Iconify icon={'akar-icons:eye'} />
                 View Project
-              </MenuItem>
-              <MenuItem sx={{ color: 'info.main' }}>
-                <Iconify icon={'codicon:copy'} />
-                Duplicate
-              </MenuItem>
-              <Divider />
-              <MenuItem
-                onClick={() => {
-                  onDeleteRow();
-                  handleCloseMenu();
-                }}
-                sx={{ color: 'error.main' }}
-              >
-                <Iconify icon={'eva:trash-2-outline'} />
-                Delete
               </MenuItem>
             </>
           }

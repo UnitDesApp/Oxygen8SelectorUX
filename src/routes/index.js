@@ -39,6 +39,7 @@ export default function Router() {
           ),
         },
         { path: 'reset-password', element: <ResetPassword /> },
+        { path: 'register', element: <Register /> },
         { path: 'reset-password/:token', element: <ResetPassword /> },
         { path: 'verify', element: <VerifyCode /> },
       ],
@@ -90,7 +91,7 @@ export default function Router() {
 
 // AUTHENTICATION
 const Login = Loadable(lazy(() => import('../pages/auth/Login')));
-// const Register = Loadable(lazy(() => import('../pages/auth/Register')));
+const Register = Loadable(lazy(() => import('../pages/auth/Register')));
 const ResetPassword = Loadable(lazy(() => import('../pages/auth/ResetPassword')));
 const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 // const NewPassword = Loadable(lazy(() => import('../pages/auth/NewPassword')));

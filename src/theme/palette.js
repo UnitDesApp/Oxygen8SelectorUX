@@ -71,6 +71,18 @@ const GREY = {
   500_80: alpha('#919EAB', 0.8),
 };
 
+const LABLELIGHTBLUE = {
+  main: '#97caeb',
+}
+
+const LABLEDARKBLUE = {
+  main: '#1f4464'
+}
+
+const LABELGRAY = {
+  main: '#515254'
+}
+
 const GRADIENTS = {
   primary: createGradient(PRIMARY.light, PRIMARY.main),
   info: createGradient(INFO.light, INFO.main),
@@ -99,6 +111,9 @@ const COMMON = {
   gradients: GRADIENTS,
   chart: CHART_COLORS,
   divider: GREY[500_24],
+  quoted: { ...LABLELIGHTBLUE, contrastText: GREY[800] },
+  released: { ...LABLEDARKBLUE, contrastText: '#fff' },
+  closed: { ...LABELGRAY, contrastText: '#fff' },
   action: {
     hover: GREY[500_8],
     selected: GREY[500_16],

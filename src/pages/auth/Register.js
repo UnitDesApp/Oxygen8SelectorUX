@@ -1,6 +1,6 @@
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
-import { Box, Link, Typography} from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 // routes
 import { PATH_AUTH } from '../../routes/paths';
 // components
@@ -16,10 +16,12 @@ export default function Register() {
       <AuthLayout>
         <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" textAlign="center" gutterBottom>
               Get started absolutely free.
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>Free forever. No credit card needed.</Typography>
+            <Typography sx={{ color: 'text.secondary' }} textAlign="center">
+              Free forever. No credit card needed.
+            </Typography>
           </Box>
         </Box>
         <RegisterForm />
@@ -28,8 +30,8 @@ export default function Register() {
           By registering, I agree to OXYGEN8&nbsp;
           <Link underline="always" color="text.primary" href="#">
             Terms of Service
-          </Link>
-          {''}and{''}
+          </Link>{' '}
+          and{' '}
           <Link underline="always" color="text.primary" href="#">
             Privacy Policy
           </Link>

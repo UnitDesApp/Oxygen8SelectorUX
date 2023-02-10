@@ -56,17 +56,17 @@ const RootStyle = styled('div')(({ theme }) => ({
 const ROLE_OPTIONS = ['All', 'Projects', 'By Others'];
 
 const TABLE_HEAD = [
-  { id: 'project_name', label: 'Project Name', align: 'left' },
-  { id: 'reference_no', label: 'Ref no.', align: 'left' },
-  { id: 'revision_no', label: 'Rev no.', align: 'left' },
-  { id: 'status', label: 'status', align: 'left' },
-  { id: 'Customer_Name', label: 'Rep', align: 'left' },
-  { id: 'Created_User_Full_Name', label: 'Created By', align: 'left' },
-  { id: 'Revised_User_Full_Name', label: 'Revisied By', align: 'left' },
-  { id: 'created_date', label: 'Created Date', align: 'left' },
-  { id: 'revised_date', label: 'Revised Date', align: 'left' },
-  { id: '', label: 'Actions', align: 'left' },
-  { id: '' },
+  { id: 'job_name', label: 'Project Name', align: 'left', width: 200 },
+  { id: 'reference_no', label: 'Ref no.', align: 'left', width: 80 },
+  { id: 'revision_no', label: 'Rev no.', align: 'left', width: 80 },
+  { id: 'status', label: 'status', align: 'left', width: 80 },
+  { id: 'Customer_Name', label: 'Rep', align: 'left', width: 120 },
+  { id: 'Created_User_Full_Name', label: 'Created By', align: 'left', width: 100 },
+  { id: 'Revised_User_Full_Name', label: 'Revisied By', align: 'left', width: 100 },
+  { id: 'created_date', label: 'Date created', align: 'left', width: 140 },
+  { id: 'revised_date', label: 'Date revised', align: 'left', width: 140 },
+  { id: '', label: 'Actions', align: 'center', width: 30 },
+  { id: '', width: 10 },
 ];
 
 // ----------------------------------------------------------------------
@@ -95,7 +95,8 @@ export default function MyProjects() {
 
   useEffect(() => {
     dispatch(getProjectsInfo());
-  }, [dispatch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { projectList, isLoading, projectInitInfo } = useSelector((state) => state.projects);
   const tableData = projectList;
@@ -208,12 +209,12 @@ export default function MyProjects() {
     <Page title="Projects">
       <RootStyle>
         <Container>
-          <Alert sx={{ width: '100%' }} severity="info">
+          <Alert sx={{ width: '100%', mt: 3 }} severity="info">
             <b>Pricing module is now availble</b> - select Quote after making a selection to review and generate a PDF.
             All values shown are Net prices.
           </Alert>
 
-          <HeaderBreadcrumbs heading="Projects" links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]} />
+          <HeaderBreadcrumbs heading="Projects" links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]} sx={{ mt: 5}} />
           <Card>
             <ProjectTableToolbar
               filterName={filterName}
@@ -265,7 +266,7 @@ export default function MyProjects() {
                   <TableBody>
                     {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                       <ProjectTableRow
-                        key={index}
+                        key={`${row.index}-${index}` }
                         row={row}
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
