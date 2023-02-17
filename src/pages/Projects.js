@@ -165,7 +165,7 @@ export default function MyProjects() {
   };
 
   const handleEditRow = (projectid) => {
-    navigate(PATH_PROJECT.dashboard(projectid));
+    navigate(PATH_PROJECT.project(projectid, 'unitlist'));
   };
 
   const handleAddNewProject = (data) => {
@@ -266,7 +266,7 @@ export default function MyProjects() {
                   <TableBody>
                     {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                       <ProjectTableRow
-                        key={`${row.index}-${index}` }
+                        key={row.id}
                         row={row}
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}

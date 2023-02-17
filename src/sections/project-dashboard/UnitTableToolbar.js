@@ -1,7 +1,18 @@
 import * as React from 'react';
 
 import PropTypes from 'prop-types';
-import { Stack, IconButton, InputAdornment, TextField, Menu, MenuItem, Button, Paper, Divider } from '@mui/material';
+import {
+  Stack,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Menu,
+  MenuItem,
+  Button,
+  Paper,
+  Divider,
+  Typography,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // components
@@ -18,6 +29,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 UserTableToolbar.propTypes = {
+  unitCount: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
   onFilterRole: PropTypes.func,
@@ -25,7 +37,14 @@ UserTableToolbar.propTypes = {
   onAddNewUnit: PropTypes.func,
 };
 
-export default function UserTableToolbar({ filterName, onFilterName, onFilterRole, optionsRole, onAddNewUnit }) {
+export default function UserTableToolbar({
+  filterName,
+  onFilterName,
+  onFilterRole,
+  optionsRole,
+  onAddNewUnit,
+  unitCount,
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -43,44 +62,58 @@ export default function UserTableToolbar({ filterName, onFilterName, onFilterRol
       direction={{ xs: 'column', sm: 'row' }}
       sx={{ py: 2.5, px: 3 }}
     >
-      {/* <Item sx={{ width: { md: '20%', sm: '20%', xs: '100%' } }}>
-        <IconButton aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} onClick={handleClick}>
-          <Iconify icon={'codicon:filter-filled'} /> Filter
-        </IconButton>
-        <Menu
-          id="role"
-          MenuListProps={{
-            'aria-labelledby': 'role',
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={() => handleClose('All')}
-          PaperProps={{
-            style: {
-              maxHeight: '300px',
-              width: '20ch',
-            },
-          }}
-        >
-          {optionsRole.map((option) => (
-            <MenuItem
-              key={option}
-              value={option}
-              sx={{
-                mx: 1,
-                my: 0.5,
-                borderRadius: 0.75,
-                typography: 'body2',
-                textTransform: 'capitalize',
-              }}
-              onClick={(event) => handleClose(event.target.attributes.value.value)}
-            >
-              {option}
-            </MenuItem>
-          ))}
-        </Menu>
-      </Item> */}
-      <Item sx={{ width: { md: '70%', sm: '60%', xs: '100%' }}}>
+      <Item sx={{ width: { md: '20%', sm: '20%', xs: '100%' } }}>
+        <Typography>All units ({unitCount})</Typography>
+      </Item>
+      <Item sx={{ width: { md: '50%', sm: '50%', xs: '100%' } }} >
+        <Stack direction="row" spacing={3} >
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'codicon:filter-filled'} />} onClick={handleClick}>
+             Filter
+          </Button>
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'ic:outline-sort'} />} onClick={handleClick}>
+             Sort
+          </Button>
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'ic:outline-file-copy'} />} onClick={handleClick}>
+            Duplicate
+          </Button>
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'mdi:delete'} />} onClick={handleClick}>
+            Delete
+          </Button>
+          <Menu
+            id="role"
+            MenuListProps={{
+              'aria-labelledby': 'role',
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={() => handleClose('All')}
+            PaperProps={{
+              style: {
+                maxHeight: '300px',
+                width: '20ch',
+              },
+            }}
+          >
+            {optionsRole.map((option) => (
+              <MenuItem
+                key={option}
+                value={option}
+                sx={{
+                  mx: 1,
+                  my: 0.5,
+                  borderRadius: 0.75,
+                  typography: 'body2',
+                  textTransform: 'capitalize',
+                }}
+                onClick={(event) => handleClose(event.target.attributes.value.value)}
+              >
+                {option}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Stack>
+      </Item>
+      <Item sx={{ width: { md: '30%', sm: '30%', xs: '100%' } }}>
         <TextField
           fullWidth
           size="small"
@@ -95,11 +128,6 @@ export default function UserTableToolbar({ filterName, onFilterName, onFilterRol
             ),
           }}
         />
-      </Item>
-      <Item sx={{ width: { md: '30%', sm: '50%', xs: '100%' } }}>
-        <Button variant="contained" onClick={onAddNewUnit} startIcon={<Iconify icon={'eva:plus-fill'} />}>
-          Add unit to project
-        </Button>
       </Item>
     </Stack>
   );

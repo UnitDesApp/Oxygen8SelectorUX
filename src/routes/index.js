@@ -70,6 +70,7 @@ export default function Router() {
           element: <MainLayout />,
           children: [
             { path: 'projects', element: <Projects /> },
+            { path: 'project/:projectId/:pageId', element: <Project /> },
             { path: 'account', element: <Account /> },
             { path: 'resources', element: <Resources /> },
             { path: 'project/new/', element: <ProjectEdit /> },
@@ -98,6 +99,7 @@ const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 
 // Projects
 const Projects = Loadable(lazy(() => import('../pages/Projects')));
+const Project = Loadable(lazy(() => import('../pages/Project')));
 const ProjectDashboard = Loadable(lazy(() => import('../pages/ProjectDashboard')));
 const ProjectEdit = Loadable(lazy(() => import('../pages/ProjectEdit')));
 const ProjectSubmittal = Loadable(lazy(() => import('../pages/ProjectSubmittal')));

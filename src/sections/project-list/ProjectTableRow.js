@@ -53,33 +53,33 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {job_name}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {reference_no}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {revision_no}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         <Label color={status === 'draft' ? 'default' : status} sx={{ borderRadius: '15px' }} variant="filled">
           {status}
         </Label>
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {Customer_Name}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {Created_User_Full_Name}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {Revised_User_Full_Name}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {created_date}
       </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }}>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {revised_date}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }}>

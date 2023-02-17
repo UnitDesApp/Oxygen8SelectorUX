@@ -62,7 +62,7 @@ export default function ProjectTableToolbar({ filterName, onFilterName, onFilter
             },
           }}
         >
-          {optionsRole.map((option) => (
+          {optionsRole.map((option, key) => (
             <MenuItem
               key={option}
               value={option}

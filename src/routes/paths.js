@@ -29,6 +29,7 @@ const ROOT_PROJECT = '/project';
 export const PATH_PROJECT = {
   root: ROOT_PROJECT,
   projectNew: `${ROOT_PROJECT}/new/`,
+  project: (id, page) => path(ROOT_PROJECT, `/${id}/${page}`),
   dashboard: (id) => path(ROOT_PROJECT, `/dashboard/${id}`),
   projectEdit: (id) => path(ROOT_PROJECT, `/edit/${id}`),
   submittal: (id) => path(ROOT_PROJECT, `/submittal/${id}`),
