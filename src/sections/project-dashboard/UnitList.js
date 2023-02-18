@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import { paramCase } from 'change-case';
 import { useState } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // @mui
 import {
   Box,
@@ -17,7 +17,7 @@ import {
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUnits } from '../../redux/slices/jobDashboardReducer';
+import { deleteUnits } from '../../redux/slices/projectDashboardReducer';
 // hooks
 import useTabs from '../../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
@@ -46,8 +46,8 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function UnitList() {
-  const { jobId } = useParams();
-  const { unitList } = useSelector((state) => state.jobDashboard);
+  const { projectId } = useParams();
+  const { unitList } = useSelector((state) => state.projectDashboard);
   const dispatch = useDispatch();
 
   console.log(unitList);
@@ -95,7 +95,7 @@ export default function UnitList() {
   };
 
   const handleDeleteRow = async () => {
-    const data = await deleteUnits({ action: 'DELETE_ONE', jobId, unitId: deleteRowID });
+    const data = await deleteUnits({ action: 'DELETE_ONE', projectId, unitId: deleteRowID });
     setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
@@ -120,18 +120,18 @@ export default function UnitList() {
   };
 
   const handleDeleteRows = async () => {
-    const data = await deleteUnits({ action: 'DELETE_MULTI', jobId, unitIds: selected });
+    const data = await deleteUnits({ action: 'DELETE_MULTI', projectId, unitIds: selected });
     setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);
   };
 
   const handleEditRow = (row) => {
-    navigate(PATH_UNIT.edit(jobId, row.unit_no), { state: {...row, intUnitTypeID: row.unit_no, intProductTypeID: row.product_type_id} });
+    navigate(PATH_UNIT.edit(projectId, row.unit_no), { state: {...row, intUnitTypeID: row.unit_no, intProductTypeID: row.product_type_id} });
   };
 
   const handleClickNewUnit = () => {
-    navigate(PATH_UNIT.add(jobId));
+    navigate(PATH_UNIT.add(projectId));
   };
 
   const dataFiltered = applySortFilter({

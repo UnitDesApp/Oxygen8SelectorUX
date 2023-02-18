@@ -12,50 +12,50 @@ import { serverUrl } from '../../config';
 
 const initialState = {
   isLoading: true,
-  jobList: [],
+  projectList: [],
   unitList: [],
-  jobInitInfo: {},
+  projectInitInfo: {},
 };
 
-const JobsSlice = createSlice({
-  name: 'jobs',
+const ProjectsSlice = createSlice({
+  name: 'projects',
   initialState,
   reducers: {
     startLoading(state) {
       state.isLoading = true;
     },
-    setJobInfo(state, action) {
+    setProjectInfo(state, action) {
       state.isLoading = false;
-      state.jobList = action.payload.jobList;
-      state.jobInitInfo = action.payload.jobInitInfo;
+      state.projectList = action.payload.jobList;
+      state.projectInitInfo = action.payload.jobInitInfo;
     },
-    setJobInitInfo(state, action) {
+    setProjectInitInfo(state, action) {
       state.isLoading = false;
-      state.jobInitInfo = action.payload;
+      state.projectInitInfo = action.payload;
     },
-    addNewJob(state, action) {
-      state.jobList.push(action.payload);
+    addNewProject(state, action) {
+      state.projectList.push(action.payload);
     },
-    setJobsAndUnitsInfo(state, action) {
+    setProjectsAndUnitsInfo(state, action) {
       state.isLoading = false;
-      state.jobList = action.payload.jobList;
+      state.projectList = action.payload.jobList;
       state.unitList = action.payload.unitList;
     },
-    updateJob(state, action) {
-      state.jobList = action.payload;
+    updateProject(state, action) {
+      state.projectList = action.payload;
     },
-    deleteJob(state, action) {
-      const { jobData } = action.payload;
-      state.jobList = jobData;
-      state.unitList = state.unitList.filter((item) => jobData.find((element) => element.jobId === item.jobId));
+    deleteProject(state, action) {
+      const { projectData } = action.payload;
+      state.projectList = projectData;
+      state.unitList = state.unitList.filter((item) => projectData.find((element) => element.jobId === item.jobId));
     },
     updateUnit(state, action) {
       const { jobId, unitId, data } = action.payload;
-      const selectedJobIdx = state.unitList.findIndex((item) => item.jobId.toString() === jobId);
-      const selectedUnitIdx = state.unitList[selectedJobIdx].data.findIndex(
+      const selectedProjectIdx = state.unitList.findIndex((item) => item.jobId.toString() === jobId);
+      const selectedUnitIdx = state.unitList[selectedProjectIdx].data.findIndex(
         (item) => item.unitId.toString() === unitId
       );
-      state.unitList[selectedJobIdx].data[selectedUnitIdx] = data;
+      state.unitList[selectedProjectIdx].data[selectedUnitIdx] = data;
     },
     addUnitInfo(state, action) {
       const { jobId, data } = action.payload;
@@ -70,69 +70,69 @@ const JobsSlice = createSlice({
   },
 });
 
-export const { getUnitInfoByJobId } = JobsSlice.actions;
+export const { getUnitInfoByProjectId } = ProjectsSlice.actions;
 
 // Reducer
-export default JobsSlice.reducer;
+export default ProjectsSlice.reducer;
 
 // ----------------------------------------------------------------------
 
-export function getJobsInfo() {
+export function getProjectsInfo() {
   return async () => {
-    dispatch(JobsSlice.actions.startLoading());
+    dispatch(ProjectsSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/jobs/get`);
     console.log(response.data);
-    dispatch(JobsSlice.actions.setJobInfo(response.data));
+    dispatch(ProjectsSlice.actions.setProjectInfo(response.data));
   };
 };
 
-export function getJobsInitInfo() {
+export function getProjectsInitInfo() {
   return async () => {
-    dispatch(JobsSlice.actions.startLoading());
+    dispatch(ProjectsSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/job/get`);
-    dispatch(JobsSlice.actions.setJobInitInfo(response.data));
+    dispatch(ProjectsSlice.actions.setProjectInitInfo(response.data));
   };
 };
 
-export function addNewJob(data) {
+export function addNewProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/add`, data);
-    dispatch(JobsSlice.actions.addNewJob(response.data[0]));
+    dispatch(ProjectsSlice.actions.addNewProject(response.data[0]));
     return response.data[0].id;
   };
 }
 
-export function updateJob(data) {
+export function updateProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/update`, data);
-    dispatch(JobsSlice.actions.updateJob(response.data));
+    dispatch(ProjectsSlice.actions.updateProject(response.data));
   };
 }
 
-export function deleteJob(data) {
+export function deleteProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/delete`, data);
-    dispatch(JobsSlice.actions.updateJob(response.data));
+    dispatch(ProjectsSlice.actions.updateProject(response.data));
   };
 }
 
-export function getJobsAndUnitsInfo(data) {
+export function getProjectsAndUnitsInfo(data) {
   return async () => {
-    dispatch(JobsSlice.actions.startLoading());
+    dispatch(ProjectsSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/job/getwithunit`, data);
-    dispatch(JobsSlice.actions.setJobsAndUnitsInfo(response.data));
+    dispatch(ProjectsSlice.actions.setProjectsAndUnitsInfo(response.data));
   };
 }
 
 export function addNewUnit(data) {
-  dispatch(JobsSlice.actions.addUnitInfo(data));
+  dispatch(ProjectsSlice.actions.addUnitInfo(data));
 }
 
 export function updateUnit(data) {
-  dispatch(JobsSlice.actions.updateUnit(data));
+  dispatch(ProjectsSlice.actions.updateUnit(data));
 }
 
 export function deleteUnit(data) {
-  dispatch(JobsSlice.actions.deleteUnit(data));
+  dispatch(ProjectsSlice.actions.deleteUnit(data));
 }
 // ----------------------------------------------------------------------

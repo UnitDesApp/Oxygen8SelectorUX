@@ -10,20 +10,20 @@ import { serverUrl } from '../../config';
 
 const initialState = {
   isLoading: true,
-  jobInfo: {},
+  projectInfo: {},
   unitList: [],
 };
 
-const JobDashboardSlice = createSlice({
-  name: 'jobDashboard',
+const ProjectDashboardSlice = createSlice({
+  name: 'projectDashboard',
   initialState,
   reducers: {
     startLoading(state) {
       state.isLoading = true;
     },
-    setJobAndUnitInfo(state, action) {
+    setProjectAndUnitInfo(state, action) {
       state.isLoading = false;
-      state.jobInfo = action.payload.jobInfo[0];
+      state.projectInfo = action.payload.jobInfo[0];
       state.unitList = action.payload.unitList;
     },
     setUnitInfo(state, action){
@@ -32,24 +32,24 @@ const JobDashboardSlice = createSlice({
   },
 });
 
-export const { setJobAndUnitInfo } = JobDashboardSlice.actions;
+export const { setProjectAndUnitInfo } = ProjectDashboardSlice.actions;
 
 // Reducer
-export default JobDashboardSlice.reducer;
+export default ProjectDashboardSlice.reducer;
 
 // ----------------------------------------------------------------------
 
-export function getJobsAndUnitsInfo(data) {
+export function getProjectsAndUnitsInfo(data) {
   return async () => {
-    dispatch(JobDashboardSlice.actions.startLoading());
+    dispatch(ProjectDashboardSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/job/getwithunit`, data);
-    dispatch(setJobAndUnitInfo(response.data));
+    dispatch(setProjectAndUnitInfo(response.data));
   };
 }
 
 export const deleteUnits = async (data) => {
   const response = await axios.post(`${serverUrl}/api/units/Delete`, data);
-  dispatch(JobDashboardSlice.actions.setUnitInfo(response.data));
+  dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
   return response.data;
 }
 

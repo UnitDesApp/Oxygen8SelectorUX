@@ -52,12 +52,12 @@ export default function TableHeadCustom({
           </TableCell>
         )}
 
-        {headLabel.map((headCell) => (
+        {headLabel.map((headCell, key) => (
           <TableCell
-            key={headCell.id}
+            key={key}
             align={headCell.align || 'left'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ width: headCell.width, minWidth: headCell.minWidth }}
+            sx={{ width: headCell.width, minWidth: headCell.width }}
           >
             {onSort ? (
               <TableSortLabel

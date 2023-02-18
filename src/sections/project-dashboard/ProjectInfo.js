@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Card, Stack, Button, CardHeader, Typography, CardContent, Divider } from '@mui/material';
-import { PATH_JOB } from '../../routes/paths';
+import { PATH_PROJECT } from '../../routes/paths';
 
 // components
 import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
-const LabelInfoJob = {
-  job_name: 'Job Name',
+const LabelInfoProject = {
+  project_name: 'Project Name',
   reference_no: 'Reference No',
   Customer_Name: 'Customer Name',
   User_Full_Name: 'User Name',
@@ -47,15 +47,15 @@ const CardHeaderStyle = styled(CardHeader)(() => ({
   borderBottom: '1px solid #b9b9b9',
 }));
 
-JobInfo.propTypes = {
-  jobInfo: PropTypes.object,
+ProjectInfo.propTypes = {
+  projectInfo: PropTypes.object,
 };
 
-export default function JobInfo({ jobInfo }) {
+export default function ProjectInfo({ projectInfo }) {
   const navigate = useNavigate();
 
-  const handleEditJobInfo = () => {
-    navigate(PATH_JOB.jobEdit(jobInfo.id));
+  const handleEditProjectInfo = () => {
+    navigate(PATH_PROJECT.projectEdit(projectInfo.id));
   };
 
   return (
@@ -63,7 +63,7 @@ export default function JobInfo({ jobInfo }) {
       <CardHeaderStyle
         title="JOB INFO"
         action={
-          <Button size="small" startIcon={<Iconify icon={'eva:edit-fill'} />} onClick={() => handleEditJobInfo()}>
+          <Button size="small" startIcon={<Iconify icon={'eva:edit-fill'} />} onClick={() => handleEditProjectInfo()}>
             Edit
           </Button>
         }
@@ -71,12 +71,12 @@ export default function JobInfo({ jobInfo }) {
 
       <CardContent>
         <Stack spacing={2}>
-          {Object.entries(LabelInfoJob).map(([key, value], index) => (
+          {Object.entries(LabelInfoProject).map(([key, value], index) => (
             <Stack key={index} direction="row" justifyContent="space-between">
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 {value}
               </Typography>
-              <Typography variant="caption">{jobInfo[key]}</Typography>
+              <Typography variant="caption">{projectInfo[key]}</Typography>
             </Stack>
           ))}
         </Stack>
@@ -89,7 +89,7 @@ export default function JobInfo({ jobInfo }) {
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 {value}
               </Typography>
-              <Typography variant="caption">{jobInfo[key]}</Typography>
+              <Typography variant="caption">{projectInfo[key]}</Typography>
             </Stack>
           ))}
         </Stack>
@@ -102,7 +102,7 @@ export default function JobInfo({ jobInfo }) {
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 {value}
               </Typography>
-              <Typography variant="caption">{jobInfo[key]}</Typography>
+              <Typography variant="caption">{projectInfo[key]}</Typography>
             </Stack>
           ))}
         </Stack>

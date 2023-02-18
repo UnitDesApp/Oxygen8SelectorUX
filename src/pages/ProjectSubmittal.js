@@ -32,7 +32,7 @@ import { useForm } from 'react-hook-form';
 // file-saver
 import { saveAs } from 'file-saver';
 // paths
-import { PATH_JOB, PATH_JOBS, PATH_UNIT } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
 import { addNewNote, addNewShippingNote, getSubmittalInfo, saveSubmittalInfo } from '../redux/slices/submittalReducer';
@@ -82,7 +82,7 @@ const ProjectInfoTableHeader = [
 ];
 
 export default function JobSubmittal() {
-  const { jobId } = useParams();
+  const { projectId } = useParams();
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, submittalInfo, submittalDetailInfo, notes, shippingNotes } = useSelector(
@@ -181,7 +181,7 @@ export default function JobSubmittal() {
       getSubmittalInfo({
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
+        intJobID: projectId,
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -193,7 +193,7 @@ export default function JobSubmittal() {
     const data = {
       intUserID: localStorage.getItem('userId'),
       intUAL: localStorage.getItem('UAL'),
-      intJobID: jobId,
+      intJobID: projectId,
       txbNote: note,
     };
     dispatch(addNewNote(data));
@@ -206,7 +206,7 @@ export default function JobSubmittal() {
     const data = {
       intUserID: localStorage.getItem('userId'),
       intUAL: localStorage.getItem('UAL'),
-      intJobID: jobId,
+      intJobID: projectId,
       txbShippingNote: shippingNote,
     };
     dispatch(addNewShippingNote(data));
@@ -216,7 +216,7 @@ export default function JobSubmittal() {
   // export pdf of form data
   const downloadPDF = async () => {
     const data = {
-      intJobID: jobId,
+      intJobID: projectId,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
@@ -248,7 +248,7 @@ export default function JobSubmittal() {
   // export pdf of form data
   const downloadEpicor = async () => {
     const data = {
-      intJobID: jobId,
+      intJobID: projectId,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
@@ -286,7 +286,7 @@ export default function JobSubmittal() {
         ...data,
         intUserID: localStorage.getItem('userId'),
         intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
+        intJobID: projectId,
       };
       await dispatch(saveSubmittalInfo(requestData));
       setSuccess(true);
@@ -302,21 +302,21 @@ export default function JobSubmittal() {
   return isLoading ? (
     <Loading />
   ) : (
-    <Page title="Job: Edit">
+    <Page title="Project: Edit">
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
           <FormProvider methods={methods} onSubmit={handleSubmit(onJobInfoSubmit)}>
             <HeaderBreadcrumbs
-              heading="Job Submittal"
+              heading="Project Submittal"
               links={[
-                { name: 'My Jobs', href: PATH_JOBS.root },
-                { name: 'My Dashboard', href: PATH_JOB.dashboard(jobId) },
-                { name: 'Job Submittal' },
+                { name: 'Projects', href: PATH_PROJECTS.root },
+                { name: 'Dashboard', href: PATH_PROJECT.dashboard(projectId) },
+                { name: 'Project Submittal' },
               ]}
               action={
                 <Stack direction="row" spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                  <Button href={PATH_JOB.jobEdit(jobId)}>Edit Project</Button>
-                  <Button href={PATH_UNIT.view(jobId)}>Unit List</Button>
+                  <Button href={PATH_PROJECT.jobEdit(projectId)}>Edit Project</Button>
+                  <Button href={PATH_UNIT.view(projectId)}>Unit List</Button>
                   <Button startIcon={<Iconify icon={'grommet-icons:document-pdf'} />} onClick={downloadPDF}>
                     Roport
                   </Button>

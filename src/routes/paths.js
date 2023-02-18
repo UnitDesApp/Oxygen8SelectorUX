@@ -20,28 +20,29 @@ export const PATH_AUTH = {
 };
 
 // ----------------------------------------------------------------------
-const ROOT_JOBS = '/jobs';
-export const PATH_JOBS = {
-  root: ROOT_JOBS,
+const ROOT_PROJECTS = '/projects';
+export const PATH_PROJECTS = {
+  root: ROOT_PROJECTS,
 }
 
-const ROOT_JOB = '/job';
-export const PATH_JOB = {
-  root: ROOT_JOB,
-  jobNew: `${ROOT_JOB}/new/`,
-  dashboard: (id) => path(ROOT_JOB, `/dashboard/${id}`),
-  jobEdit: (id) => path(ROOT_JOB, `/edit/${id}`),
-  submittal: (id) => path(ROOT_JOB, `/submittal/${id}`),
-  quote: (id) => path(ROOT_JOB, `/quote/${id}`)
+const ROOT_PROJECT = '/project';
+export const PATH_PROJECT = {
+  root: ROOT_PROJECT,
+  projectNew: `${ROOT_PROJECT}/new/`,
+  project: (id, page) => path(ROOT_PROJECT, `/${id}/${page}`),
+  dashboard: (id) => path(ROOT_PROJECT, `/dashboard/${id}`),
+  projectEdit: (id) => path(ROOT_PROJECT, `/edit/${id}`),
+  submittal: (id) => path(ROOT_PROJECT, `/submittal/${id}`),
+  quote: (id) => path(ROOT_PROJECT, `/quote/${id}`)
 };
 
 // ----------------------------------------------------------------------
 const ROOTS_UNIT = '/unit';
 export const PATH_UNIT = {
-  view: (jobid) => path(ROOTS_UNIT, `/view/${jobid}`),
-  add: (jobid) => path(ROOTS_UNIT, `/add/${jobid}`),
-  configure: (jobid) => path(ROOTS_UNIT, `/configure/${jobid}`),
-  edit: (jobid, unitid) => path(ROOTS_UNIT, `/edit/${jobid}/${unitid}`),
+  view: (projectId) => path(ROOTS_UNIT, `/view/${projectId}`),
+  add: (projectId) => path(ROOTS_UNIT, `/add/${projectId}`),
+  configure: (projectId) => path(ROOTS_UNIT, `/configure/${projectId}`),
+  edit: (projectId, unitid) => path(ROOTS_UNIT, `/edit/${projectId}/${unitid}`),
 };
 
 export const PATH_PAGE = {

@@ -10,8 +10,8 @@ import { PATH_AUTH } from '../../routes/paths';
 import useAuth from '../../hooks/useAuth';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 // components
-import MyAvatar from '../../components/MyAvatar';
 import MenuPopover from '../../components/MenuPopover';
+import Iconify from '../../components/Iconify';
 import { IconButtonAnimate } from '../../components/animate';
 
 // ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <MyAvatar />
+        <Iconify icon='ic:baseline-arrow-drop-down' />
       </IconButtonAnimate>
 
       <MenuPopover
@@ -85,7 +85,7 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
+        <Box sx={{ my: 3, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
             {localStorage.getItem("username")}
           </Typography>
