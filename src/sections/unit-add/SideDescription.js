@@ -1,29 +1,24 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Typography, IconButton, Button, Drawer, Divider, Link } from '@mui/material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Drawer,
+  Divider,
+  Stack,
+  Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 // components
 import Iconify from '../../components/Iconify';
 // ----------------------------------------------------------------------
-
-const BoxStyle = styled(Button)(() => ({
-  borderRadius: '50%',
-  border: '1px solid #a3a3a3',
-  width: 300,
-  height: 300,
-  margin: 'auto',
-}));
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: 'flex-start',
-}));
-
-const ImageBorderStyle = styled(Box)(({ theme }) => ({
+const ImageBorderStyle = styled(Box)(() => ({
+  width: '100%',
   borderRadius: '10px',
   border: '1px solid #484848',
 }));
@@ -32,77 +27,71 @@ const ImageBorderStyle = styled(Box)(({ theme }) => ({
 SideDescription.propTypes = {
   open: PropTypes.bool,
   handleDrawerClose: PropTypes.func,
-  drawerInfo: PropTypes.any,
+  productInfomation: PropTypes.any,
 };
-export default function SideDescription({ open, handleDrawerClose, drawerInfo }) {
-  const { image, description } = drawerInfo;
+export default function SideDescription({ open, handleDrawerClose, productInfomation }) {
+  const { title, image, description } = productInfomation;
   return (
-    <Drawer
-      sx={{
-        width: '500px',
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: '500px',
-        },
-      }}
-      variant="persistent"
-      anchor="right"
-      open={open}
-    >
-      <Box sx={{ padding: 3 }}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+    <Drawer anchor="right" open={open} onClose={handleDrawerClose}>
+      <Box sx={{ padding: 3, width: '300px', paddingBottom: '120px', paddingTop: '100px' }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography color="primary.main" variant="h6">About {title}</Typography>
+          <IconButton onClick={handleDrawerClose} sx={{ width: '40px', mb: 1 }}>
             <Iconify icon={'iconoir:cancel'} />
           </IconButton>
-        </DrawerHeader>
+        </Stack>
         <Box
           sx={{
             display: 'grid',
             rowGap: 3,
             columnGap: 2,
             gridTemplateColumns: 'repeat(1, 1fr)',
+            mb: 2,
           }}
         >
           <ImageBorderStyle>
             <img src={image} alt={description} width="100%" />
           </ImageBorderStyle>
           <Box>
-            <Typography variant="body2" component="body2">
+            <Typography variant="body2">
               {description}
             </Typography>
-          </Box>
-          <Box>
-            <Typography variant="body2" component="body2">
-              {description}
-            </Typography>
-          </Box>
-          <Divider />
-          <Box
-            sx={{
-              display: 'grid',
-              rowGap: 2,
-              columnGap: 1,
-              gridTemplateColumns: 'repeat(1, 1fr)',
-            }}
-          >
-            <Typography color="primary" variant="h6" textAlign={'left'}>
-              LEARN MORE
-            </Typography>
-
-            <Link component="button" variant="body2" textAlign={'left'} color="black">
-              <Iconify icon={'bxs:download'} />
-              View product brocure
-            </Link>
-            <Link component="button" variant="body2" textAlign={'left'} color="black">
-              <Iconify icon={'bxs:download'} />
-              View product brocure
-            </Link>
-            <Link component="button" variant="body2" textAlign={'left'} color="black">
-              <Iconify icon={'bxs:download'} />
-              View product brocure
-            </Link>
           </Box>
         </Box>
+        <Divider />
+        <Stack sx={{ mt: 2 }}>
+          <Typography color="primary.main">LEARN MORE</Typography>
+          <List>
+            <Link component="button" variant="body2" color="">
+              <ListItem>
+                <ListItemIcon>
+                  <Iconify icon="ic:baseline-download" />
+                </ListItemIcon>
+                <ListItemText primary="View product brocure" />
+              </ListItem>
+            </Link>
+            <Link component="button" variant="body2" color="">
+              <ListItem>
+                <ListItemIcon>
+                  <Iconify icon="ic:baseline-download" />
+                </ListItemIcon>
+                <ListItemText primary="View product brocure" />
+              </ListItem>
+            </Link>
+            <Link component="button" variant="body2" color="">
+              <ListItem>
+                <ListItemIcon>
+                  <Iconify icon="ic:baseline-download" />
+                </ListItemIcon>
+                <ListItemText primary="View product brocure" />
+              </ListItem>
+            </Link>
+          </List>
+          <Stack direction="row" justifyContent="center" alignItems="center" sx={{ cursor: 'pointer' }}>
+            <Typography color="primary.main">View more resources</Typography>
+            <Iconify color="primary.main" icon="ic:baseline-keyboard-arrow-right" width="24px" height="24px" />
+          </Stack>
+        </Stack>
       </Box>
     </Drawer>
   );

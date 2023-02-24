@@ -15,15 +15,14 @@ const BoxStyle = styled(Button)(() => ({
 }));
 
 // ----------------------------------------------------------------------
-UnitItem.propTypes = {
-  info: PropTypes.object,
+ApplicationItem.propTypes = {
+  label: PropTypes.string,
   onSelectItem: PropTypes.func,
   id: PropTypes.number,
   active: PropTypes.bool,
 };
-export default function UnitItem({ info, onSelectItem, id, active }) {
-  const { items } = info;
 
+export default function ApplicationItem({ label, onSelectItem, id, active }) {
   return (
     <Box textAlign={'center'}>
       <BoxStyle
@@ -33,11 +32,11 @@ export default function UnitItem({ info, onSelectItem, id, active }) {
           borderColor: active ? 'primary.main' : '#a3a3a3',
         }}
       >
-        <img src="/assets/Images/img_nova_2.png" width="100%" height="100%" alt={items} />
+        <img src="/assets/Images/img_nova_2.png" width="100%" height="100%" alt={label} />
       </BoxStyle>
-      <Box sx={{ textAlign: 'center', fontSize: '14px' }}>
+      <Box sx={{ textAlign: 'center', fontSize: '14px' }} mb={1}>
         <Typography variant="p">
-          {items}{' '}
+          {label}
           <span>
             <IconButton aria-label="info" sx={{ padding: '5px', pt: 0 }}>
               <Iconify icon={'ant-design:exclamation-circle-outlined'} />

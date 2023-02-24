@@ -3,16 +3,15 @@ import React, { useEffect } from 'react';
 import { capitalCase } from 'change-case';
 import { useParams, useNavigate } from 'react-router-dom';
 // @mui
-import { m } from 'framer-motion';
 import { styled } from '@mui/material/styles';
-import { Box, Grid, Container, StepConnector, Tab, Tabs, Button, Stack, LinearProgress } from '@mui/material';
+import { Box, Container, Tab, Tabs, Button, Stack, LinearProgress } from '@mui/material';
 // hooks
 import useTabs from '../hooks/useTabs';
 import useSettings from '../hooks/useSettings';
 import { useSelector, useDispatch } from '../redux/store';
 import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
 // routes
-import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -66,7 +65,6 @@ export default function Project() {
   const { projectId, pageId } = useParams();
 
   const { projectInfo, isLoading } = useSelector((state) => state.projectDashboard);
-  const { themeStretch } = useSettings();
 
   console.log(projectInfo);
 
@@ -80,6 +78,10 @@ export default function Project() {
   const onChangeTabHandle = (e, newId) => {
     navigate(PATH_PROJECT.project(projectId, newId));
     onChangeTab(e, newId);
+  }
+
+  const onClickAddNewUnit = () => {
+    navigate(PATH_UNIT.add(projectId));
   }
 
   const ACCOUNT_TABS = [
@@ -136,7 +138,7 @@ export default function Project() {
                   <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />}>
                     Export report
                   </Button>
-                  <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />}>
+                  <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />} onClick={onClickAddNewUnit}>
                     Add new unit
                   </Button>
                 </Stack>
