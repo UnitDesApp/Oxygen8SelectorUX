@@ -9,79 +9,110 @@ import { LoadingButton } from '@mui/lab';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+// redux
+import { addNewProject } from '../../redux/slices/projectsReducer';
+import { useDispatch } from '../../redux/store';
 // components
 import { FormProvider, RHFSelect, RHFTextField } from '../../components/hook-form';
 
 NewProjectFormDialog.propTypes = {
   newProjectDialogOpen: PropTypes.bool,
+  setOpenSuccess: PropTypes.func,
+  setOpenFail: PropTypes.func,
   handleNewProjectDialogClose: PropTypes.func,
-  addNewProject: PropTypes.func,
   initialInfo: PropTypes.object,
 };
 
 export default function NewProjectFormDialog({
   newProjectDialogOpen,
   handleNewProjectDialogClose,
-  addNewProject,
+  setOpenSuccess,
+  setOpenFail,
   initialInfo,
 }) {
   // const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [step, setStep] = useState(0);
-  const { applications } = initialInfo;
+  const [provStateInfo, setProvStateInfo] = useState([]);
+  const [cityInfo, setCityInfo] = useState([]);
+  const [companyNameId, setCompanyNameId] = useState(-1);
 
-  // console.log(initialInfo);
+  const {
+    baseOfDesign,
+    UoM,
+    country,
+    applications,
+    designCondition,
+    companyInfo,
+    weatherData,
+    provState,
+    usersInfo,
+    createdDate,
+    revisedDate,
+  } = initialInfo;
+
+  console.log(initialInfo);
 
   const NewUserSchema = Yup.object().shape({
-    projectName: Yup.string().required('Please enter a project name.'),
-    application: Yup.string().required('Please select an applicaiton type.'),
-    basisOfDesign: Yup.string().required('Please select an basis of design.'),
-    projectId: Yup.string().required('Please enter a project ID.'),
-    repName: Yup.string().required('Please enter a rep name.'),
-    companyName: Yup.string().required('Please enter company name.'),
-    country: Yup.string().required('Please select a country.'),
-    city: Yup.string().required('Please select a city.'),
-    province: Yup.string().required('Please select a province.'),
-    desingCondition: Yup.string().required('Please select an ASHRAE Design Condition.'),
-    Altitude: Yup.string().required('Please select an Altitude(ft)'),
-    outsideAirWinDry: Yup.string().required('This field is required.'),
-    outsideAirWinWet: Yup.string().required('This field is required.'),
-    outsideAirWinRelative: Yup.string().required('This field is required.'),
-    outsideAirSumDry: Yup.string().required('This field is required.'),
-    outsideAirSumWet: Yup.string().required('This field is required.'),
-    outsideAirSumRelative: Yup.string().required('This field is required.'),
-    insideAirWinDry: Yup.string().required('This field is required.'),
-    insideAirWinWet: Yup.string().required('This field is required.'),
-    insideAirWinRelative: Yup.string().required('This field is required.'),
-    insideAirSumDry: Yup.string().required('This field is required.'),
-    insideAirSumWet: Yup.string().required('This field is required.'),
-    insideAirSumRelative: Yup.string().required('This field is required.'),
+    jobName: Yup.string().required('Please enter a Project Name'),
+    basisOfDesign: Yup.string().required('Please enter a Basis Of Design'),
+    referenceNo: Yup.string().required('Please select a Reference'),
+    revision: Yup.number().required('Please enter a Revision'),
+    companyName: Yup.string(),
+    companyNameId: Yup.string().required('Please enter a Company Name'),
+    contactName: Yup.string(),
+    contactNameId: Yup.number(),
+    application: Yup.string().required('Please enter a Application'),
+    uom: Yup.string().required('Please select a UoM'),
+    country: Yup.string().required('Please select a County'),
+    state: Yup.string().required('Please select a Province / State'),
+    city: Yup.string().required('Please select a City'),
+    ashareDesignConditions: Yup.string().required('Please enter a ASHARE Design Conditions'),
+    alltitude: Yup.number(),
+    summer_air_db: Yup.number(),
+    summer_air_wb: Yup.number(),
+    summer_air_rh: Yup.number(),
+    winter_air_db: Yup.number(),
+    winter_air_wb: Yup.number(),
+    winter_air_rh: Yup.number(),
+    summer_return_db: Yup.number(),
+    summer_return_wb: Yup.number(),
+    summer_return_rh: Yup.number(),
+    winter_return_db: Yup.number(),
+    winter_return_wb: Yup.number(),
+    winter_return_rh: Yup.number(),
+    testNewPrice: Yup.number(),
   });
 
   const defaultValues = {
-    projectName: '',
-    application: '',
+    jobName: '',
     basisOfDesign: '',
-    projectId: '',
-    repName: '',
+    referenceNo: '',
+    revision: 0,
     companyName: '',
+    companyNameId: 0,
+    contactName: '',
+    contactNameId: 0,
+    application: '',
+    uom: '',
     country: '',
+    state: '',
     city: '',
-    province: '',
-    desingCondition: '',
-    Altitude: '',
-    outsideAirWinDry: '',
-    outsideAirWinWet: '',
-    outsideAirWinRelative: '',
-    outsideAirSumDry: '',
-    outsideAirSumWet: '',
-    outsideAirSumRelative: '',
-    insideAirWinDry: '',
-    insideAirWinWet: '',
-    insideAirWinRelative: '',
-    insideAirSumDry: '',
-    insideAirSumWet: '',
-    insideAirSumRelative: '',
+    ashareDesignConditions: '',
+    alltitude: 0,
+    summer_air_db: 0,
+    summer_air_wb: 0,
+    summer_air_rh: 0,
+    winter_air_db: 0,
+    winter_air_wb: 0,
+    winter_air_rh: 0,
+    summer_return_db: 75,
+    summer_return_wb: 63,
+    summer_return_rh: 51.17,
+    winter_return_db: 70,
+    winter_return_wb: 52.9,
+    winter_return_rh: 30,
+    testNewPrice: 0,
   };
 
   const methods = useForm({
@@ -90,23 +121,68 @@ export default function NewProjectFormDialog({
   });
 
   const {
-    // setValue,
+    setValue,
     getValues,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  // const handleOnchangeCompanyName = (e) => {
-  //   setValue('companyNameId', e.target.value);
-  //   setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
-  // };
+  const handleOnChangeCountry = (e) => {
+    let { value } = e.target;
+    setValue('country', value);
+    if (value === 'CA') {
+      value = 'CAN';
+    }
+    const newProvState = provState.filter((ele) => ele.country === value);
+    setProvStateInfo(newProvState);
+    setCityInfo([]);
+  };
+
+  const handleOnChangeProvState = (e) => {
+    const { value } = e.target;
+    let country = getValues('country');
+    if (country === 'CA') {
+      country = 'CAN';
+    }
+    console.log(value, country);
+    setValue('state', value);
+    const newCity = weatherData.filter((ele) => ele.prov_state === value && ele.country === country);
+    setCityInfo(newCity);
+  };
+
+  // onChange handle for company Name
+  const handleChangeCompanyName = (e) => {
+    setValue('companyNameId', e.target.value);
+    setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
+    setCompanyNameId(e.target.value);
+  };
+
+  const handleChangeContactName = (e) => {
+    setValue('contactNameId', e.target.value);
+    setValue('contactName', e.nativeEvent.target[e.target.selectedIndex].text);
+  };
 
   const onSubmit = async (data) => {
     try {
-      addNewProject(data);
-      // navigate(PATH_MY_JOBS.dashboard, { state: data });
+      console.log(data);
+      await dispatch(
+        addNewProject({
+          ...data,
+          jobId: -1,
+          createdUserId: localStorage.getItem('userId'),
+          revisedUserId: localStorage.getItem('userId'),
+          createdDate,
+          revisedDate,
+          applicationOther: '',
+          testNewPrice: data.testNewPrice ? 1 : 0,
+        })
+      );
+
+      setOpenSuccess();
+      handleNewProjectDialogClose();
     } catch (error) {
       console.error(error);
+      setOpenFail()
     }
   };
 
@@ -122,11 +198,11 @@ export default function NewProjectFormDialog({
 
   const onContinueBtnClicked = () => {
     handleSubmit(() => {})();
-    if (getValues('projectName') === '') return;
-    if (getValues('application') === '') return;
+    if (getValues('jobName') === '') return;
     if (getValues('basisOfDesign') === '') return;
-    if (getValues('projectID') === '') return;
-    if (getValues('repName') === '') return;
+    if (getValues('referenceNo') === '') return;
+    if (getValues('createdDate') === '') return;
+    if (getValues('revisedDate') === '') return;
     if (getValues('companyName') === '') return;
     setStep(1);
   };
@@ -139,8 +215,53 @@ export default function NewProjectFormDialog({
           {!step ? (
             <Card sx={{ p: 3 }}>
               <Box sx={{ minWidth: '500px', display: 'grid', rowGap: 3, columnGap: 2 }}>
-                <RHFTextField size="small" name="projectName" label="Project name" />
-
+                <RHFTextField size="small" name="jobName" label="Project name" />
+                <RHFSelect size="small" name="basisOfDesign" label="Basis Of Design" placeholder="Basis of design">
+                  <option value="" />
+                  {baseOfDesign !== undefined &&
+                    baseOfDesign.map((option) => (
+                      <option key={`${option.id}basisOfDesign`} value={option.id}>
+                        {option.items}
+                      </option>
+                    ))}
+                </RHFSelect>
+                <RHFTextField size="small" name="referenceNo" label="Reference No" />
+                <RHFTextField size="small" type="number" name="revision" label="Revision No" />
+                <RHFSelect
+                  size="small"
+                  name="companyNameId"
+                  label="Company Name"
+                  placeholder=""
+                  onChange={handleChangeCompanyName}
+                >
+                  <option value="" />
+                  {companyInfo.map(
+                    (info, index) =>
+                      info.id.toString() === localStorage.getItem('customerId') && (
+                        <option key={index} value={info.id}>
+                          {info.name}
+                        </option>
+                      )
+                  )}
+                </RHFSelect>
+                <RHFSelect
+                  size="small"
+                  name="contactNameId"
+                  label="Contact Name"
+                  placeholder=""
+                  onChange={handleChangeContactName}
+                >
+                  <option value="" />
+                  {usersInfo.map(
+                    (info, index) =>
+                      info.id.toString() !== localStorage.getItem('userId') &&
+                      info.customer_id.toString() === companyNameId && (
+                        <option key={index} value={info.id}>
+                          {`${info.first_name} ${info.last_name}`}
+                        </option>
+                      )
+                  )}
+                </RHFSelect>
                 <RHFSelect size="small" name="application" label="Application" placeholder="Application">
                   <option value="" />
                   {applications !== undefined &&
@@ -150,18 +271,14 @@ export default function NewProjectFormDialog({
                       </option>
                     ))}
                 </RHFSelect>
-                <RHFSelect size="small" name="basisOfDesign" label="Basis Of Design" placeholder="Basis of design">
+                <RHFSelect size="small" name="uom" label="UoM" placeholder="">
                   <option value="" />
-                  {applications !== undefined &&
-                    applications.map((option) => (
-                      <option key={`${option.id}basisOfDesign`} value={option.id}>
-                        {option.items}
-                      </option>
-                    ))}
+                  {UoM.map((info, index) => (
+                    <option key={index} value={info.id}>
+                      {info.items}
+                    </option>
+                  ))}
                 </RHFSelect>
-                <RHFTextField size="small" name="projectId" label="Project ID" />
-                <RHFTextField size="small" name="repName" label="Rep name" />
-                <RHFTextField size="small" name="companyName" label="Company Name" />
               </Box>
             </Card>
           ) : (
@@ -171,37 +288,44 @@ export default function NewProjectFormDialog({
                   <Typography variant="subtitle1">LOCATION</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFSelect size="small" name="country" label="Country" placeholder="Please select country">
+                  <RHFSelect
+                    size="small"
+                    name="country"
+                    label="Country"
+                    placeholder="Please select country"
+                    onChange={handleOnChangeCountry}
+                  >
                     <option value="" />
-                    {applications !== undefined &&
-                      applications.map((option) => (
-                        <option key={`${option.id}basisOfDesign`} value={option.id}>
+                    {country !== undefined &&
+                      country.map((option) => (
+                        <option key={`${option.id}`} value={option.value}>
                           {option.items}
+                        </option>
+                      ))}
+                  </RHFSelect>
+
+                  <RHFSelect
+                    size="small"
+                    name="state"
+                    label="Province/state"
+                    placeholder="Please select province/state"
+                    onChange={handleOnChangeProvState}
+                  >
+                    <option value="" />
+                    {provStateInfo !== undefined &&
+                      provStateInfo.map((option) => (
+                        <option key={`${option.id}`} value={option.prov_state}>
+                          {option.station}
                         </option>
                       ))}
                   </RHFSelect>
 
                   <RHFSelect size="small" name="city" label="City" placeholder="Please select city">
                     <option value="" />
-                    {applications !== undefined &&
-                      applications.map((option) => (
-                        <option key={`${option.id}basisOfDesign`} value={option.id}>
-                          {option.items}
-                        </option>
-                      ))}
-                  </RHFSelect>
-
-                  <RHFSelect
-                    size="small"
-                    name="province"
-                    label="Province/state"
-                    placeholder="Please select province/state"
-                  >
-                    <option value="" />
-                    {applications !== undefined &&
-                      applications.map((option) => (
-                        <option key={`${option.id}basisOfDesign`} value={option.id}>
-                          {option.items}
+                    {cityInfo !== undefined &&
+                      cityInfo.map((option) => (
+                        <option key={`${option.id}`} value={option.id}>
+                          {option.station}
                         </option>
                       ))}
                   </RHFSelect>
@@ -210,49 +334,49 @@ export default function NewProjectFormDialog({
                 <Stack direction="row" spacing={2}>
                   <RHFSelect
                     size="small"
-                    name="ashraeDesignConditions"
+                    name="ashareDesignConditions"
                     label="ASHRAE Design Conditions"
                     placeholder="Please select an share design conditions"
                   >
                     <option value="" />
-                    {applications !== undefined &&
-                      applications.map((option) => (
-                        <option key={`${option.id}basisOfDesign`} value={option.id}>
+                    {designCondition !== undefined &&
+                      designCondition.map((option) => (
+                        <option key={`${option.id}`} value={option.id}>
                           {option.items}
                         </option>
                       ))}
                   </RHFSelect>
-                  <RHFTextField size="small" name="altitude" label="Altitude(ft)" />
+                  <RHFTextField type="number" size="small" name="altitude" label="Altitude(ft)" />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <Typography variant="subtitle1">OUTSIDE AIR</Typography>
+                  <Typography variant="subtitle1">OUTDOOR AIR DESIGN CONDITIONS</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField size="small" name="outsideAirWinDry" label="Winter dry bulb temperature (F)" />
-                  <RHFTextField size="small" name="outsideAirSumDry" label="Summer dry bulb temperature (F)" />
+                  <RHFTextField type="number" size="small" name="winter_air_db" label="Winter Outdoor Air DB (F)" />
+                  <RHFTextField type="number" size="small" name="summer_air_db" label="Summer Outdoor Air DB (F)" />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField size="small" name="outsideAirWinwet" label="Winter wet blub temperature (F)" />
-                  <RHFTextField size="small" name="outsideAirSumWet" label="Summer wet bulb temperature (F)" />
+                  <RHFTextField type="number" size="small" name="winter_air_wb" label="Winter Outdoor Air WB (F)" />
+                  <RHFTextField type="number" size="small" name="summer_air_wb" label="Summer Outdoor Air WB (F)" />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField size="small" name="outsideAirWinRelative" label="Winter relative humidity (%)" />
-                  <RHFTextField size="small" name="outsideAirSumRelative" label="Summer relative humidity (%)" />
+                  <RHFTextField type="number" size="small" name="winter_air_rh" label="Winter Outdoor Air RH (%)" />
+                  <RHFTextField type="number" size="small" name="summer_air_rh" label="Summer Outdoor Air RH (%)" />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <Typography variant="subtitle1">Inside Air</Typography>
+                  <Typography variant="subtitle1">RETURN AIR DESIGN CONDITIONS</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField size="small" name="insideAirWinDry" label="Winter dry bulb temperature (F)" />
-                  <RHFTextField size="small" name="insideAirSumDry" label="Summer dry bulb temperature (F)" />
+                  <RHFTextField type="number" size="small" name="winter_return_db" label="Winter Return Air DB (F)" />
+                  <RHFTextField type="number" size="small" name="summer_return_db" label="Summer Return Air DB (F)" />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField size="small" name="insideAirWinwet" label="Winter wet blub temperature (F)" />
-                  <RHFTextField size="small" name="insideAirSumWet" label="Summer wet bulb temperature (F)" />
+                  <RHFTextField type="number" size="small" name="winter_return_wb" label="Winter Return Air WB (F)" />
+                  <RHFTextField type="number" size="small" name="summer_return_wb" label="Summer Return Air WB (F)" />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField size="small" name="insideAirWinRelative" label="Winter relative humidity (%)" />
-                  <RHFTextField size="small" name="insideAirSumRelative" label="Summer relative humidity (%)" />
+                  <RHFTextField type="number" size="small" name="winter_return_rh" label="Winter Return Air RH (%)" />
+                  <RHFTextField type="number" size="small" name="summer_return_rh" label="Summer Return Air RH (%)" />
                 </Stack>
               </Box>
             </Card>
@@ -263,7 +387,13 @@ export default function NewProjectFormDialog({
           <LoadingButton
             type={!step ? 'button' : 'submit'}
             variant="contained"
-            onClick={!step ? onContinueBtnClicked : () => {}}
+            onClick={
+              step === 0
+                ? onContinueBtnClicked
+                : () => {
+                    console.log(getValues());
+                  }
+            }
             loading={isSubmitting}
           >
             {!step ? 'Continue' : 'Create project'}

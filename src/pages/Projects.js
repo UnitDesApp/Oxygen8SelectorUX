@@ -14,6 +14,7 @@ import {
   TableContainer,
   TablePagination,
   Alert,
+  Snackbar,
 } from '@mui/material';
 
 // routes
@@ -95,11 +96,27 @@ export default function MyProjects() {
 
   useEffect(() => {
     dispatch(getProjectsInfo());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { projectList, isLoading, projectInitInfo } = useSelector((state) => state.projects);
   const tableData = projectList;
+
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const handleCloseSuccess = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSuccess(false);
+  };
+
+  const [openFail, setOpenFail] = useState(false);
+  const handleCloseFail = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFail(false);
+  };
 
   // console.log(projectInitInfo);
 
@@ -147,6 +164,7 @@ export default function MyProjects() {
     setMultiConfirmDialogState(false);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
   const handleFilterName = (filterName) => {
@@ -168,26 +186,6 @@ export default function MyProjects() {
     navigate(PATH_PROJECT.project(projectid, 'unitlist'));
   };
 
-  const handleAddNewProject = (data) => {
-    console.log(data);
-
-    const projectInfo = {
-      projectName: data.projectName,
-      referenceNo: data.reference,
-      revNo: 1,
-      applicationId: data.application,
-      companyName: data.companyName,
-      companyNameId: data.companyNameId,
-      rep: localStorage.getItem('customerId'),
-      createdBy: localStorage.getItem('userId'),
-      revisiedBy: localStorage.getItem('userId'),
-      createdDate: projectInitInfo.createdDate,
-      revisedDate: projectInitInfo.revisedDate,
-    };
-
-    navigate(PATH_PROJECT.projectNew, { state: projectInfo });
-  };
-
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
@@ -199,7 +197,7 @@ export default function MyProjects() {
   const denseHeight = dense ? 52 : 72;
 
   const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
+    (!dataFiltered.length && !!filterName) || 
     (!dataFiltered.length && !!filterRole) ||
     (!dataFiltered.length && !!filterStatus);
 
@@ -214,7 +212,11 @@ export default function MyProjects() {
             All values shown are Net prices.
           </Alert>
 
-          <HeaderBreadcrumbs heading="Projects" links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]} sx={{ mt: 5}} />
+          <HeaderBreadcrumbs
+            heading="Projects"
+            links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]}
+            sx={{ mt: 5 }}
+          />
           <Card>
             <ProjectTableToolbar
               filterName={filterName}
@@ -264,7 +266,7 @@ export default function MyProjects() {
                     }
                   />
                   <TableBody>
-                    {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                    {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                       <ProjectTableRow
                         key={row.id}
                         row={row}
@@ -295,10 +297,21 @@ export default function MyProjects() {
             </Box>
           </Card>
         </Container>
+        <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
+          <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+            New project added success!
+          </Alert>
+        </Snackbar>
+        <Snackbar open={openFail} autoHideDuration={3000} onClose={handleCloseFail}>
+          <Alert onClose={handleCloseFail} severity="error" sx={{ width: '100%' }}>
+            Server Error!
+          </Alert>
+        </Snackbar>
         <NewProjectFormDialog
           newProjectDialogOpen={newProjectDialogOpen}
           handleNewProjectDialogClose={handleNewProjectDialogClose}
-          addNewProject={handleAddNewProject}
+          setOpenSuccess={() => setOpenSuccess(true)}
+          setOpenFail={()=> setOpenFail(true)}
           initialInfo={projectInitInfo}
         />
         <ConfirmDialog
@@ -334,11 +347,11 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.project_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.job_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.reference_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.revision_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.Customer_Name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.Created_User_Full_Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.User_Full_Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.created_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.revised_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );

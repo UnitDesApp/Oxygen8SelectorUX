@@ -33,24 +33,24 @@ export default function Quote() {
         </Typography>
         <ToggleButtonGroup color="primary" value={alignment} exclusive onChange={handleChange} aria-label="Platform">
           <ToggleButton value="stage1">
-            <Button startIcon={alignment === 'stage1' && <Iconify icon="material-symbols:check-circle-outline" />}>
+            <Stack direction="row" spacing={2} justifyContent="center" alignContent="center">
+              {alignment === 'stage1' && (
+                <Iconify icon="material-symbols:check-circle-outline" sx={{ marginTop: '5px' }} />
+              )}
               Stage
-            </Button>
+            </Stack>
           </ToggleButton>
           <ToggleButton value="stage2">
-            <Button startIcon={alignment === 'stage2' && <Iconify icon="material-symbols:check-circle-outline" />}>
-              Stage
-            </Button>
+            {alignment === 'stage2' && <Iconify icon="material-symbols:check-circle-outline" />}
+            Stage
           </ToggleButton>
           <ToggleButton value="stage3">
-            <Button startIcon={alignment === 'stage3' && <Iconify icon="material-symbols:check-circle-outline" />}>
-              Stage
-            </Button>
+            {alignment === 'stage3' && <Iconify icon="material-symbols:check-circle-outline" />}
+            Stage
           </ToggleButton>
           <ToggleButton value="stage4">
-            <Button startIcon={alignment === 'stage4' && <Iconify icon="material-symbols:check-circle-outline" />}>
-              Stage
-            </Button>
+            {alignment === 'stage4' && <Iconify icon="material-symbols:check-circle-outline" />}
+            Stage
           </ToggleButton>
         </ToggleButtonGroup>
         <Button color="primary" variant="contained" endIcon={<Iconify icon="ooui:arrow-next-ltr" />}>

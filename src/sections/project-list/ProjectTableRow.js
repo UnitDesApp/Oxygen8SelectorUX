@@ -2,8 +2,8 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
-import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, MenuItem, Divider, Stack, IconButton } from '@mui/material';
+// import { useTheme } from '@mui/material/styles';
+import { Checkbox, TableRow, TableCell, MenuItem, Stack, IconButton } from '@mui/material';
 // components
 import Label from '../../components/Label';
 import Iconify from '../../components/Iconify';
@@ -29,8 +29,8 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
     reference_no,
     revision_no,
     Customer_Name,
-    Created_User_Full_Name,
-    Revised_User_Full_Name,
+    User_Full_Name,
+    // Revised_User_Full_Name,
     created_date,
     revised_date,
   } = row;
@@ -71,10 +71,10 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
         {Customer_Name}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {Created_User_Full_Name}
+        {User_Full_Name}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {Revised_User_Full_Name}
+        {User_Full_Name}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {created_date}
