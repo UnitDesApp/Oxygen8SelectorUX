@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Container, Tab, Tabs, Button, Stack, LinearProgress } from '@mui/material';
 // hooks
 import useTabs from '../hooks/useTabs';
-import useSettings from '../hooks/useSettings';
+// import useSettings from '../hooks/useSettings';
 import { useSelector, useDispatch } from '../redux/store';
 import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
 // routes
@@ -66,8 +66,6 @@ export default function Project() {
 
   const { projectInfo, isLoading } = useSelector((state) => state.projectDashboard);
 
-  console.log(projectInfo);
-
   useEffect(() => {
     dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,11 +76,11 @@ export default function Project() {
   const onChangeTabHandle = (e, newId) => {
     navigate(PATH_PROJECT.project(projectId, newId));
     onChangeTab(e, newId);
-  }
+  };
 
   const onClickAddNewUnit = () => {
     navigate(PATH_UNIT.add(projectId));
-  }
+  };
 
   const ACCOUNT_TABS = [
     {
@@ -95,7 +93,7 @@ export default function Project() {
       value: 'project_detail',
       title: 'Project detail',
       // icon: <Iconify icon={'ic:round-receipt'} width={20} height={20} />,
-      component: <ProjectDetail />,
+      component: <ProjectDetail projectInfo={projectInfo} />,
     },
     {
       value: 'quote',
@@ -138,7 +136,11 @@ export default function Project() {
                   <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />}>
                     Export report
                   </Button>
-                  <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />} onClick={onClickAddNewUnit}>
+                  <Button
+                    variant="contained"
+                    startIcon={<Iconify icon={'eva:plus-fill'} />}
+                    onClick={onClickAddNewUnit}
+                  >
                     Add new unit
                   </Button>
                 </Stack>

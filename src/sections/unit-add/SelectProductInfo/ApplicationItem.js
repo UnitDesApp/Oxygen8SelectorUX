@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 // components
-import Iconify from '../../components/Iconify';
+import Iconify from '../../../components/Iconify';
 // ----------------------------------------------------------------------
 
 const BoxStyle = styled(Button)(() => ({

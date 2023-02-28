@@ -1,6 +1,11 @@
 import * as Yup from 'yup';
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import {
+  // useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // @mui
 import { styled } from '@mui/material/styles';
@@ -8,23 +13,25 @@ import {
   Container,
   Box,
   Grid,
-  CardHeader,
   Typography,
   LinearProgress,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Stack,
+  Snackbar,
+  Alert,
 } from '@mui/material';
-// import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from '@mui/lab';
 // hooks
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 // paths
-import { PATH_PROJECT, PATH_PROJECTS } from '../../routes/paths';
+// import { PATH_PROJECT } from '../../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { getProjectsInfo, addNewProject, updateProject } from '../../redux/slices/projectsReducer';
+import { getProjectsInfo, updateProject } from '../../redux/slices/projectsReducer';
+import { updateProjectInfo } from '../../redux/slices/projectDashboardReducer';
 // components
 import Page from '../../components/Page';
 import { FormProvider, RHFTextField, RHFSelect } from '../../components/hook-form';
@@ -45,13 +52,16 @@ const RootStyle = styled('div')(({ theme }) => ({
 }));
 //------------------------------------------------
 
-export default function ProjectDetail() {
-  const navigate = useNavigate();
+ProjectDetail.propTypes = {
+  projectInfo: PropTypes.object,
+};
+
+export default function ProjectDetail({ projectInfo }) {
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const { state } = useLocation();
-  const { projectList, projectInitInfo, isLoading } = useSelector((state) => state.projects);
-  const isNew = window.location.href.includes('new');
+  const { projectInitInfo, isLoading } = useSelector((state) => state.projects);
 
   useEffect(() => {
     dispatch(getProjectsInfo());
@@ -60,18 +70,32 @@ export default function ProjectDetail() {
   const { baseOfDesign, UoM, country, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
     projectInitInfo;
 
-  const tempArray = projectList.filter((item) => item.id.toString() === projectId);
-  const projectInfo = tempArray[0];
-
-  const [expanded, setExpanded] = React.useState('panel1');
+  const [expanded, setExpanded] = React.useState({ panel1: true, panel2: false });
   const [provStateInfo, setProvStateInfo] = useState([]);
   const [cityInfo, setCityInfo] = useState([]);
   const [companyNameId, setCompanyNameId] = useState(
     state !== null ? state.companyNameId : !isLoading && projectInfo.company_name_id
   );
-  console.log(projectInfo);
+
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const handleCloseSuccess = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSuccess(false);
+  };
+
+  const [openFail, setOpenFail] = useState(false);
+  const handleCloseFail = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFail(false);
+  };
+
+  console.log(projectInfo, projectInitInfo, isLoading);
   const projectInfoSchema = Yup.object().shape({
-    projectName: Yup.string().required('Please enter a Project Name'),
+    jobName: Yup.string().required('Please enter a Project Name'),
     basisOfDesign: Yup.string().required('Please enter a Basis Of Design'),
     referenceNo: Yup.string().required('Please select a Reference'),
     revision: Yup.string().required('Please enter a Revision'),
@@ -86,7 +110,7 @@ export default function ProjectDetail() {
     country: Yup.string().required('Please select a County'),
     state: Yup.string().required('Please select a Province / State'),
     city: Yup.string().required('Please select a City'),
-    ashareDesignConditions: Yup.string().required('Please enter a ASHARE Design Conditions'),
+    ashareDesignConditions: Yup.string().required('Please enter an ASHARE Design Conditions'),
     alltitude: Yup.string(),
     summer_air_db: Yup.string(),
     summer_air_wb: Yup.string(),
@@ -100,45 +124,43 @@ export default function ProjectDetail() {
     winter_return_db: Yup.string(),
     winter_return_wb: Yup.string(),
     winter_return_rh: Yup.string(),
-    testNewPrice: Yup.bool(),
+    testNewPrice: Yup.number(),
   });
+
   const defaultValues = useMemo(
-    () =>
-      !isLoading
-        ? {
-            projectName: projectInfo ? projectInfo.project_name : state.projectName,
-            basisOfDesign: projectInfo ? projectInfo.basis_of_design_id : 1,
-            referenceNo: projectInfo ? projectInfo.reference_no : state.referenceNo,
-            revision: projectInfo ? projectInfo.revision_no : 0,
-            createdDate: projectInfo ? projectInfo.created_date : state.createdDate,
-            revisedDate: projectInfo ? projectInfo.revised_date : state.revisedDate,
-            companyName: projectInfo ? projectInfo.company_name : state.companyName,
-            companyNameId: projectInfo ? projectInfo.company_name_id : state.companyNameId,
-            contactName: projectInfo ? projectInfo.contact_name : '',
-            contactNameId: projectInfo ? projectInfo.contact_name_id : 0,
-            application: projectInfo ? projectInfo.application_id : state.applicationId,
-            uom: projectInfo ? projectInfo.uom_id : 1,
-            country: projectInfo ? projectInfo.country : '',
-            state: projectInfo ? projectInfo.prov_state : '',
-            city: projectInfo ? projectInfo.city_id : '',
-            ashareDesignConditions: projectInfo ? projectInfo.design_conditions_id : 1,
-            altitude: projectInfo ? projectInfo.altitude : 0,
-            summer_air_db: projectInfo ? projectInfo.summer_outdoor_air_db : 0,
-            summer_air_wb: projectInfo ? projectInfo.summer_outdoor_air_rh : 0,
-            summer_air_rh: projectInfo ? projectInfo.summer_outdoor_air_wb : 0,
-            winter_air_db: projectInfo ? projectInfo.winter_outdoor_air_db : 0,
-            winter_air_wb: projectInfo ? projectInfo.winter_outdoor_air_rh : 0,
-            winter_air_rh: projectInfo ? projectInfo.winter_outdoor_air_wb : 0,
-            summer_return_db: projectInfo ? projectInfo.summer_return_air_db : 75,
-            summer_return_wb: projectInfo ? projectInfo.summer_return_air_rh : 63,
-            summer_return_rh: projectInfo ? projectInfo.summer_return_air_wb : 51.17,
-            winter_return_db: projectInfo ? projectInfo.winter_return_air_db : 70,
-            winter_return_wb: projectInfo ? projectInfo.winter_return_air_rh : 52.9,
-            winter_return_rh: projectInfo ? projectInfo.winter_return_air_wb : 30,
-            testNewPrice: projectInfo && projectInfo.is_test_new_price === 1,
-          }
-        : {},
-    [projectInfo, state, isLoading]
+    () => ({
+      jobName: !isLoading ? projectInfo.job_name : '',
+      basisOfDesign: !isLoading ? projectInfo.basis_of_design_id : '',
+      referenceNo: !isLoading ? projectInfo.reference_no : '',
+      revision: !isLoading ? projectInfo.revision_no : '',
+      createdDate: !isLoading ? projectInfo.created_date : '',
+      revisedDate: !isLoading ? projectInfo.revised_date : '',
+      companyName: !isLoading ? projectInfo.company_name : '',
+      companyNameId: !isLoading ? projectInfo.company_name_id : '',
+      contactName: !isLoading ? projectInfo.contact_name : '',
+      contactNameId: !isLoading ? projectInfo.contact_name_id : '',
+      application: !isLoading ? projectInfo.application_id : '',
+      uom: !isLoading ? projectInfo.uom_id : '',
+      country: !isLoading ? projectInfo.country : '',
+      state: !isLoading ? projectInfo.prov_state : '',
+      city: !isLoading ? projectInfo.city_id : '',
+      ashareDesignConditions: !isLoading ? projectInfo.design_conditions_id : 0,
+      altitude: !isLoading ? projectInfo.altitude : '',
+      summer_air_db: !isLoading ? projectInfo.summer_outdoor_air_db : '',
+      summer_air_wb: !isLoading ? projectInfo.summer_outdoor_air_rh : '',
+      summer_air_rh: !isLoading ? projectInfo.summer_outdoor_air_wb : '',
+      winter_air_db: !isLoading ? projectInfo.winter_outdoor_air_db : '',
+      winter_air_wb: !isLoading ? projectInfo.winter_outdoor_air_rh : '',
+      winter_air_rh: !isLoading ? projectInfo.winter_outdoor_air_wb : '',
+      summer_return_db: !isLoading ? projectInfo.summer_return_air_db : '',
+      summer_return_wb: !isLoading ? projectInfo.summer_return_air_rh : '',
+      summer_return_rh: !isLoading ? projectInfo.summer_return_air_wb : '',
+      winter_return_db: !isLoading ? projectInfo.winter_return_air_db : '',
+      winter_return_wb: !isLoading ? projectInfo.winter_return_air_rh : '',
+      winter_return_rh: !isLoading ? projectInfo.winter_return_air_wb : '',
+      testNewPrice: projectInfo && !isLoading ? projectInfo.is_test_new_price : 0,
+    }),
+    [projectInfo, isLoading]
   );
 
   const methods = useForm({
@@ -146,23 +168,28 @@ export default function ProjectDetail() {
     defaultValues,
   });
 
+  const {
+    setValue,
+    getValues,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
   useEffect(() => {
-    if (provState && weatherData) {
-      const provStateInfoTemp = provState.filter((item) => item.country === country[0].value);
+    if (!isLoading) {
+      const provStateInfoTemp = provState.filter((item) => item.country === defaultValues.country);
       const cityInfoTemp = weatherData.filter(
-        (item) => item.country === country[0].value && item.prov_state === provStateInfoTemp[0].prov_state
+        (item) => item.country === defaultValues.country && item.prov_state === defaultValues.state
       );
       setProvStateInfo(provStateInfoTemp);
       setCityInfo(cityInfoTemp);
     }
-  }, [country, provState, weatherData]);
+  }, [country, provState, weatherData, defaultValues, isLoading]);
 
-  const {
-    setValue,
-    getValues,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   // get all ourdoor infomation from server
   const getAllOutdoorInfo = () => {
@@ -185,35 +212,35 @@ export default function ProjectDetail() {
       });
   };
 
-  // get HR value from server
-  const get_RH_By_DBWB = (first, second, setValueId) => {
-    if (first === '' || second === '') return;
-    axios
-      .post(`${serverUrl}/api/project/getoutdoorinfo`, {
-        action: 'GET_RH_BY_DB_WB',
-        first,
-        second,
-        altitude: getValues('altitude'),
-      })
-      .then((response) => {
-        setValue(setValueId, response.data);
-      });
-  };
+  // // get HR value from server
+  // const get_RH_By_DBWB = (first, second, setValueId) => {
+  //   if (first === '' || second === '') return;
+  //   axios
+  //     .post(`${serverUrl}/api/project/getoutdoorinfo`, {
+  //       action: 'GET_RH_BY_DB_WB',
+  //       first,
+  //       second,
+  //       altitude: getValues('altitude'),
+  //     })
+  //     .then((response) => {
+  //       setValue(setValueId, response.data);
+  //     });
+  // };
 
-  // get WB value from server
-  const get_WB_By_DBRH = (first, second, setValueId) => {
-    if (first === '' || second === '') return;
-    axios
-      .post(`${serverUrl}/api/project/getoutdoorinfo`, {
-        action: 'GET_WB_BY_DB_HR',
-        first,
-        second,
-        altitude: getValues('altitude'),
-      })
-      .then((response) => {
-        setValue(setValueId, response.data);
-      });
-  };
+  // // get WB value from server
+  // const get_WB_By_DBRH = (first, second, setValueId) => {
+  //   if (first === '' || second === '') return;
+  //   axios
+  //     .post(`${serverUrl}/api/project/getoutdoorinfo`, {
+  //       action: 'GET_WB_BY_DB_HR',
+  //       first,
+  //       second,
+  //       altitude: getValues('altitude'),
+  //     })
+  //     .then((response) => {
+  //       setValue(setValueId, response.data);
+  //     });
+  // };
 
   // onChange handle for company Name
   const handleChangeCompanyName = (e) => {
@@ -243,7 +270,7 @@ export default function ProjectDetail() {
       setCityInfo(cityInfoTemp);
       setValue('city', cityInfoTemp[0].id);
 
-      getAllOutdoorInfo();
+      // getAllOutdoorInfo();
     } catch (e) {
       console.log(e);
     }
@@ -260,7 +287,7 @@ export default function ProjectDetail() {
       setCityInfo(cityInfoTemp);
       setValue('city', cityInfoTemp[0].id);
 
-      getAllOutdoorInfo();
+      // getAllOutdoorInfo();
     } catch (e) {
       console.log(e);
     }
@@ -269,7 +296,7 @@ export default function ProjectDetail() {
   // onChange handle for city
   const handleChangeCity = (e) => {
     setValue('city', e.target.value);
-    getAllOutdoorInfo();
+    // getAllOutdoorInfo();
   };
 
   // Onchange handle for design condition
@@ -278,108 +305,90 @@ export default function ProjectDetail() {
     getAllOutdoorInfo();
   };
 
-  // Onchange handle for Text New Price Check box
-  const handleChangeTestNewPrice = (e) => {
-    setValue('testNewPrice', e.target.checked);
-  };
-
   // Summer Outdoor Air DB
   const handleChangeSummerOutdoorAirDBChanged = (e) => {
     setValue('summer_air_db', e.target.value);
-    get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
+    // get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
   };
   // Summer Outdoor Air WB
   const handleChangeSummerOutdoorAirWBChanged = (e) => {
     setValue('summer_air_wb', e.target.value);
-    get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
+    // get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
   };
   // Summer Outdoor Air RH
   const handleChangeSummerOutdoorAirRHChanged = (e) => {
     setValue('summer_air_rh', e.target.value);
-    get_WB_By_DBRH(getValues('summer_air_db'), getValues('summer_air_rh'), 'summer_air_wb');
+    // get_WB_By_DBRH(getValues('summer_air_db'), getValues('summer_air_rh'), 'summer_air_wb');
   };
 
   // Winter Outdoor Air DB
   const handleChangeWinterOutdoorAirDBChanged = (e) => {
     setValue('winter_air_db', e.target.value);
-    get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
+    // get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
   };
 
   // Winter Outdoor Air WB
   const handleChangeWinterOutdoorAirWBChanged = (e) => {
     setValue('winter_air_wb', e.target.value);
-    get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
+    // get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
   };
 
   // Winter Outdoor Air RH
   const handleChangeWinterOutdoorAirRHChanged = (e) => {
     setValue('winter_air_rh', e.target.value);
-    get_WB_By_DBRH(getValues('winter_air_db'), getValues('winter_air_rh'), 'winter_air_wb');
+    // get_WB_By_DBRH(getValues('winter_air_db'), getValues('winter_air_rh'), 'winter_air_wb');
   };
 
   // Summer Return Air DB
   const handleChangeSummerReturnAirDBChanged = (e) => {
     setValue('summer_return_db', e.target.value);
-    get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
+    // get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
   };
   // Summer Return Air WB
   const handleChangeSummerReturnAirWBChanged = (e) => {
     setValue('summer_return_wb', e.target.value);
-    get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
+    // get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
   };
   // Summer Return Air RH
   const handleChangeSummerReturnAirRHChanged = (e) => {
     setValue('summer_return_rh', e.target.value);
-    get_WB_By_DBRH(getValues('summer_return_db'), getValues('summer_return_rh'), 'summer_return_wb');
+    // get_WB_By_DBRH(getValues('summer_return_db'), getValues('summer_return_rh'), 'summer_return_wb');
   };
 
   // Winter Return Air DB
   const handleChangeWinterReturnAirDBChanged = (e) => {
     setValue('winter_return_db', e.target.value);
-    get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
+    // get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
   };
 
   // Winter Return Air WB
   const handleChangeWinterReturnAirWBChanged = (e) => {
     setValue('winter_return_wb', e.target.value);
-    get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
+    // get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
   };
 
   // Winter Return Air RH
   const handleChangeWinterReturnAirRHChanged = (e) => {
     setValue('winter_return_rh', e.target.value);
-    get_WB_By_DBRH(getValues('winter_return_db'), getValues('winter_return_rh'), 'winter_return_wb');
+    // get_WB_By_DBRH(getValues('winter_return_db'), getValues('winter_return_rh'), 'winter_return_wb');
   };
 
   // handle submit
   const onProjectInfoSubmit = async (data) => {
     try {
-      if (isNew) {
-        const result = await dispatch(
-          addNewProject({
-            ...data,
-            projectId: -1,
-            createdUserId: localStorage.getItem('userId'),
-            revisedUserId: localStorage.getItem('userId'),
-            applicationOther: '',
-            testNewPrice: data.testNewPrice ? 1 : 0,
-          })
-        );
-        navigate(PATH_PROJECT.dashboard(result));
-      } else {
-        await dispatch(
-          updateProject({
-            ...data,
-            projectId,
-            createdUserId: projectInfo.created_user_id,
-            revisedUserId: localStorage.getItem('userId'),
-            applicationOther: '',
-            testNewPrice: data.testNewPrice ? 1 : 0,
-          })
-        );
-        navigate(PATH_PROJECT.dashboard(projectId));
-      }
+      const newData = await dispatch(
+        updateProject({
+          ...data,
+          jobId: projectId,
+          createdUserId: projectInfo.created_user_id,
+          revisedUserId: localStorage.getItem('userId'),
+          applicationOther: '',
+        })
+      );
+      await dispatch(updateProjectInfo(newData));
+      setOpenSuccess(true);
     } catch (error) {
+      setOpenFail(true);
       console.error(error);
     }
   };
@@ -393,7 +402,10 @@ export default function ProjectDetail() {
               <LinearProgress color="info" />
             ) : (
               <Stack spacing={2}>
-                <Accordion expanded={expanded === 'panel1'} onChange={() => setExpanded('panel1')}>
+                <Accordion
+                  expanded={expanded.panel1}
+                  onChange={() => setExpanded({ ...expanded, panel1: !expanded.panel1 })}
+                >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}
                     aria-controls="panel1a-content"
@@ -405,7 +417,7 @@ export default function ProjectDetail() {
                     <Grid container spacing={5}>
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFTextField size="small" name="projectName" label="Project Name" />
+                          <RHFTextField size="small" name="jobName" label="Project Name" />
                           <RHFSelect size="small" name="application" label="Applicaton" placeholder="">
                             {applications.map((info, index) => (
                               <option key={index} value={info.id}>
@@ -419,6 +431,23 @@ export default function ProjectDetail() {
                                 {info.items}
                               </option>
                             ))}
+                          </RHFSelect>
+                          <RHFSelect
+                            size="small"
+                            name="companyNameId"
+                            label="Company Name"
+                            placeholder=""
+                            onChange={handleChangeCompanyName}
+                          >
+                            <option value="" />
+                            {companyInfo.map(
+                              (info, index) =>
+                                info.id.toString() === localStorage.getItem('customerId') && (
+                                  <option key={index} value={info.id}>
+                                    {info.name}
+                                  </option>
+                                )
+                            )}
                           </RHFSelect>
                           <RHFSelect
                             size="small"
@@ -438,14 +467,19 @@ export default function ProjectDetail() {
                                 )
                             )}
                           </RHFSelect>
-                          <RHFTextField size="small" name="projectNo" label="Project no" />
-                          <RHFTextField size="small" name="revisedNo" label="Revised no" />
                         </Box>
                       </Grid>
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFTextField size="small" name="companyName" label="Company Name" />
-                          <RHFTextField size="small" name="repName" label="Rep Name" />
+                          <RHFSelect size="small" name="uom" label="UoM" placeholder="">
+                            <option value="" />
+                            {UoM.map((info, index) => (
+                              <option key={index} value={info.id}>
+                                {info.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                          <RHFTextField size="small" name="referenceNo" label="Reference no" />
                           <RHFTextField size="small" name="revision" label="Revision no" />
                           <RHFTextField size="small" name="createdDate" label="Date Created" />
                           <RHFTextField size="small" name="revisedDate" label="Date Revised" />
@@ -502,12 +536,16 @@ export default function ProjectDetail() {
                               </option>
                             ))}
                           </RHFSelect>
+                          <RHFTextField size="small" name="altitude" label="Altitude" />
                         </Box>
                       </Grid>
                     </Grid>
                   </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={() => setExpanded('panel2')}>
+                <Accordion
+                  expanded={expanded.panel2}
+                  onChange={() => setExpanded({ ...expanded, panel2: !expanded.panel2 })}
+                >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}
                     aria-controls="panel1a-content"
@@ -519,7 +557,6 @@ export default function ProjectDetail() {
                     <Grid container spacing={5}>
                       <Grid item xs={6} md={6}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFTextField size="small" name="altitude" label="Altitude" />
                           <RHFTextField
                             size="small"
                             name="summer_air_db"
@@ -601,10 +638,33 @@ export default function ProjectDetail() {
                     </Grid>
                   </AccordionDetails>
                 </Accordion>
+                <Stack sx={{ mb: '20px!important' }} direction="row" justifyContent="flex-end">
+                  <Box sx={{ width: '150px' }}>
+                    <LoadingButton
+                      type="submit"
+                      variant="contained"
+                      onClick={() => console.log(getValues())}
+                      loading={isSubmitting}
+                      sx={{ width: '150px' }}
+                    >
+                      Save
+                    </LoadingButton>
+                  </Box>
+                </Stack>
               </Stack>
             )}
           </FormProvider>
         </Container>
+        <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
+          <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+            New project update success!
+          </Alert>
+        </Snackbar>
+        <Snackbar open={openFail} autoHideDuration={3000} onClose={handleCloseFail}>
+          <Alert onClose={handleCloseFail} severity="error" sx={{ width: '100%' }}>
+            Server Error!
+          </Alert>
+        </Snackbar>
       </RootStyle>
     </Page>
   );

@@ -15,7 +15,7 @@ import {
   ListItemText,
 } from '@mui/material';
 // components
-import Iconify from '../../components/Iconify';
+import Iconify from '../../../components/Iconify';
 // ----------------------------------------------------------------------
 const ImageBorderStyle = styled(Box)(() => ({
   width: '100%',
