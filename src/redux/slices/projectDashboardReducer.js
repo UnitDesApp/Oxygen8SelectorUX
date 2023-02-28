@@ -26,6 +26,9 @@ const ProjectDashboardSlice = createSlice({
       state.projectInfo = action.payload.jobInfo[0];
       state.unitList = action.payload.unitList;
     },
+    updateProjectInfo(state, action) {
+      state.projectInfo = action.payload;
+    },
     setUnitInfo(state, action){
       state.unitList = action.payload;
     }
@@ -44,6 +47,13 @@ export function getProjectsAndUnitsInfo(data) {
     dispatch(ProjectDashboardSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/job/getwithunit`, data);
     dispatch(setProjectAndUnitInfo(response.data));
+  };
+}
+
+
+export function updateProjectInfo(data) {
+  return async () => {
+    dispatch(ProjectDashboardSlice.actions.updateProjectInfo(data));
   };
 }
 

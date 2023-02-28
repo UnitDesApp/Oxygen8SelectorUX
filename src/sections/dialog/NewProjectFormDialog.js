@@ -216,7 +216,7 @@ export default function NewProjectFormDialog({
             <Card sx={{ p: 3 }}>
               <Box sx={{ minWidth: '500px', display: 'grid', rowGap: 3, columnGap: 2 }}>
                 <RHFTextField size="small" name="jobName" label="Project name" />
-                <RHFSelect size="small" name="basisOfDesign" label="Basis Of Design" placeholder="Basis of design">
+                <RHFSelect size="small" name="basisOfDesign" label="Basis Of design" placeholder="Basis of design">
                   <option value="" />
                   {baseOfDesign !== undefined &&
                     baseOfDesign.map((option) => (
@@ -225,12 +225,12 @@ export default function NewProjectFormDialog({
                       </option>
                     ))}
                 </RHFSelect>
-                <RHFTextField size="small" name="referenceNo" label="Reference No" />
-                <RHFTextField size="small" type="number" name="revision" label="Revision No" />
+                <RHFTextField size="small" name="referenceNo" label="Reference no" />
+                <RHFTextField size="small" type="number" name="revision" label="Revision no" />
                 <RHFSelect
                   size="small"
                   name="companyNameId"
-                  label="Company Name"
+                  label="Company name"
                   placeholder=""
                   onChange={handleChangeCompanyName}
                 >
@@ -247,7 +247,7 @@ export default function NewProjectFormDialog({
                 <RHFSelect
                   size="small"
                   name="contactNameId"
-                  label="Contact Name"
+                  label="Contact name"
                   placeholder=""
                   onChange={handleChangeContactName}
                 >

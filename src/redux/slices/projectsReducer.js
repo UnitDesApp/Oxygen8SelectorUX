@@ -15,6 +15,7 @@ const initialState = {
   projectList: [],
   unitList: [],
   projectInitInfo: {},
+  projectInfo: {},
 };
 
 const ProjectsSlice = createSlice({
@@ -105,7 +106,8 @@ export function addNewProject(data) {
 export function updateProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/update`, data);
-    dispatch(ProjectsSlice.actions.updateProject(response.data));
+    await dispatch(ProjectsSlice.actions.updateProject(response.data.projectList));
+    return response.data.jobInfo[0];
   };
 }
 

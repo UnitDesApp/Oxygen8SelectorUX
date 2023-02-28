@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 import { Container, CardContent, Card, Box } from '@mui/material';
 
 // components
-import ProductTypeItem from './ProductTypeItem';
+import ApplicationItem from './ApplicationItem';
+
+const applications = [
+  // { id: 1, items: 'Residential' },
+  { id: 1, items: 'Comercial' },
+];
 
 // ----------------------------------------------------------------------
-const productType = ['Nova', 'Ventum', 'Terra', 'Ventum Lite'];
-
-ProductType.propTypes = {
-  // productType: PropTypes.array,
+SelectApplication.propTypes = {
+  // productTypes: PropTypes.array,
   onSelectItem: PropTypes.func,
 };
 
-export default function ProductType(props) {
+export default function SelectApplication(props) {
   const {
-    // productType,
+    // productTypes,
     onSelectItem,
   } = props;
 
@@ -29,19 +32,18 @@ export default function ProductType(props) {
               rowGap: 3,
               columnGap: 2,
               paddingTop: 5,
+              alignItems: 'center',
               gridTemplateColumns: {
-                xs: 'repeat(1, 1fr)',
-                sm: `repeat(4, 1fr)`,
+                xs: `repeat(${applications.length}, 1fr)`,
               },
             }}
           >
-            {productType.map((item, index) => (
-              <ProductTypeItem
-                key={index}
-                label={item}
-                id={index}
+            {applications.map((ele) => (
+              <ApplicationItem
+                key={ele.id}
+                label={ele.items}
                 onSelectItem={() => {
-                  onSelectItem(item, index);
+                  onSelectItem(ele.items, ele.id);
                 }}
               />
             ))}

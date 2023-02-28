@@ -134,12 +134,12 @@ const UnitSlice = createSlice({
         orientationInfo: data.orientationInfo,
         downshotInfo: data.downshotInfo,
         unitModelInfo: data.unitModelInfo,
-        damperAndActuatorInfo: data.damperAndActuatorInfo,
         elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
         preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
         bypassInfo: data.bypassInfo,
         supplyAirOpeningInfo: data.supplyAirOpeningInfo,
       };
+      state.isLoading = false;
     },
     ddlOrientationChanged(state, actions) {
       const data = actions.payload;
@@ -149,6 +149,7 @@ const UnitSlice = createSlice({
         bypassInfo: data.bypassInfo,
         supplyAirOpeningInfo: data.others.supplyAirOpeningInfo,
       };
+      
     },
     txbSummerSupplyAirCFMChanged(state, actions) {
       const data = actions.payload;

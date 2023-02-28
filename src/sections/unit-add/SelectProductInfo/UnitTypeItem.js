@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import { Box, Typography, IconButton, Button, Divider, Stack } from '@mui/material';
 // components
-import Iconify from '../../components/Iconify';
+import Iconify from '../../../components/Iconify';
 // ----------------------------------------------------------------------
 
 const BoxStyle = styled(Button)(() => ({
@@ -15,13 +15,13 @@ const BoxStyle = styled(Button)(() => ({
 }));
 
 // ----------------------------------------------------------------------
-ProductTypeItem.propTypes = {
+UnitTypeItem.propTypes = {
   label: PropTypes.string,
   onSelectItem: PropTypes.func,
   id: PropTypes.number || PropTypes.string,
   active: PropTypes.bool,
 };
-export default function ProductTypeItem({ label, onSelectItem, id, active }) {
+export default function UnitTypeItem({ label, onSelectItem, id, active }) {
   return (
     <Box textAlign={'center'}>
       <BoxStyle
