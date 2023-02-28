@@ -1,22 +1,22 @@
-import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Button, AppBar, Toolbar, Container, Stack } from '@mui/material';
+import { AppBar, Toolbar, Container, Stack, Typography } from '@mui/material';
 // hooks
 import useOffSetTop from '../../hooks/useOffSetTop';
 import useResponsive from '../../hooks/useResponsive';
+// import useAuth from '../../hooks/useAuth';
 // utils
 import cssStyles from '../../utils/cssStyles';
 // config
 import { HEADER } from '../../config';
 // components
 import Logo from '../../components/Logo';
-import Label from '../../components/Label';
 import AccountPopover from './AccountPopover';
 //
 import MenuDesktop from './MenuDesktop';
 import MenuMobile from './MenuMobile';
 import navConfig from './MenuConfig';
+import MyAvatar from '../../components/MyAvatar';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     height: HEADER.MAIN_DESKTOP_HEIGHT,
   },
-  borderBottom: "1px solid #cbc9c9",
+  borderBottom: '1px solid #cbc9c9',
 }));
 
 const ToolbarShadowStyle = styled('div')(({ theme }) => ({
@@ -42,19 +42,20 @@ const ToolbarShadowStyle = styled('div')(({ theme }) => ({
   borderRadius: '50%',
   position: 'absolute',
   width: `calc(100% - 48px)`,
-  boxShadow: theme.customShadows.z8
+  boxShadow: theme.customShadows.z8,
 }));
 
 // ----------------------------------------------------------------------
 
 export default function MainHeader() {
   const isOffset = useOffSetTop(HEADER.MAIN_DESKTOP_HEIGHT);
+  // const { user } = useAuth();
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'md');
 
   return (
-    <AppBar sx={{ boxShadow: 0, bgcolor: 'transparent', zIndex: 5000, background: '#ffff' }}>
+    <AppBar sx={{ boxShadow: 0, zIndex: 3000, bgcolor: 'transparent', background: '#ffff' }}>
       <ToolbarStyle
         disableGutters
         sx={{
@@ -71,15 +72,17 @@ export default function MainHeader() {
             justifyContent: 'space-between',
           }}
         >
-          <Logo sx={{width: {xs:"138px", md: "300px"}, height:  {xs:"30px", md: "40px"}}}/>
-
+          <Logo sx={{ width: { xs: '138px', md: '300px' }, height: { xs: '30px', md: '40px' } }} />
 
           {isDesktop && <MenuDesktop isOffset={isOffset} navConfig={navConfig} />}
 
-          <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+          <Stack direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+            <MyAvatar />
+            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+              {localStorage.getItem('username')}
+            </Typography>
             <AccountPopover />
           </Stack>
-
 
           {!isDesktop && <MenuMobile isOffset={isOffset} navConfig={navConfig} />}
         </Container>

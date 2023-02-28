@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
 // slices
-import jobsReducer from './slices/jobsReducer';
-import jobDashboardReducer from './slices/jobDashboardReducer';
+import projectsReducer from './slices/projectsReducer';
+import projectDashboardReducer from './slices/projectDashboardReducer';
 import unitReducer from './slices/unitReducer';
+import submittalReducer from './slices/submittalReducer';
+import quoteReducer from './slices/quoteReducer';
 
 // ----------------------------------------------------------------------
 
@@ -15,9 +17,11 @@ const rootPersistConfig = {
 };
 
 const rootReducer = combineReducers({
-  jobs: jobsReducer,
-  jobDashboard: jobDashboardReducer,
-  unit: unitReducer
+  projects: projectsReducer,
+  projectDashboard: projectDashboardReducer,
+  unit: unitReducer,
+  submittal: submittalReducer,
+  quote: quoteReducer,
 });
 
 export { rootPersistConfig, rootReducer };

@@ -1,19 +1,22 @@
-import { capitalCase } from 'change-case';
-import { useLocation, useParams } from 'react-router';
+// react
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Tab, Box, Tabs } from '@mui/material';
+import { Container } from '@mui/material';
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
 // routes
-import { PATH_JOBS, PATH_JOB, PATH_UNIT } from '../routes/paths';
+import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
 // hooks
-import useTabs from '../hooks/useTabs';
 import useSettings from '../hooks/useSettings';
 // components
 import Page from '../components/Page';
-import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { UnitList } from '../sections/unitView';
+import { UnitList } from '../sections/unit-list';
+import Loading from '../sections/Loading';
 
 // ----------------------------------------------------------------------
 
@@ -28,21 +31,31 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 export default function ViewUnitInfo() {
   const { themeStretch } = useSettings();
-  const { jobId } = useParams();
+  const dispatch = useDispatch();
+  const { projectId } = useParams();
 
-  return (
+  const { isLoading } = useSelector((state) => state.projectDashboard);
+
+  useEffect(() => {
+    dispatch(getProjectsAndUnitsInfo({ projectId }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return isLoading ? (
+    <Loading />
+  ) : (
     <Page title="Unit: View">
       <RootStyle>
         <Container maxWidth={themeStretch ? false : 'lg'}>
           <HeaderBreadcrumbs
-            heading={"Unit View"}
+            heading={'Unit View'}
             links={[
-              { name: 'My Jobs', href: PATH_JOBS.root },
-              { name: 'Job Dashboard', href: PATH_JOB.dashboard(jobId) },
-              { name: 'Unit Info'},
+              { name: 'Projects', href: PATH_PROJECTS.root },
+              { name: 'Dashboard', href: PATH_PROJECT.dashboard(projectId) },
+              { name: 'Unit Info' },
             ]}
           />
-            <UnitList />
+          <UnitList />
         </Container>
       </RootStyle>
     </Page>

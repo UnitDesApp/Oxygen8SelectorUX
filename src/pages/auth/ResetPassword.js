@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// @mui
-import { Container } from '@mui/material';
 // jwt
 import jwtDecode from 'jwt-decode';
 // components
 import Page from '../../components/Page';
+import AuthLayout from './AuthLayout';
 // sections
 import { Message } from '../../sections/auth/message';
 import { NewPassword } from '../../sections/auth/new-password';
@@ -16,8 +15,8 @@ import axios from '../../utils/axios';
 import { serverUrl } from '../../config';
 // Path
 import { PATH_AUTH } from '../../routes/paths';
-// ----------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
 export default function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate(); 
@@ -68,7 +67,9 @@ export default function ResetPassword() {
     <h1>Checking token...</h1>
   ) : (
     <Page title="Reset Password">
-      <Container>{renderTag}</Container>
+      <AuthLayout>
+        {renderTag}
+      </AuthLayout>
     </Page>
   );
 }

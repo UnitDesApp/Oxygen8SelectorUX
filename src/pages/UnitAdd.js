@@ -1,21 +1,18 @@
-import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+// import PropTypes from 'prop-types';
 // @mui
-import { styled } from '@mui/material/styles';
-import { Box, Grid, Card, Step, Stepper, Container, StepLabel, StepConnector, Button } from '@mui/material';
-// redux
-import { useSelector, useDispatch } from 'react-redux';
-import { getUnitTypeInfo } from '../redux/slices/unitReducer';
+import { styled, useTheme } from '@mui/material/styles';
+import { Grid, Card, Divider, Container, Paper, Button, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_JOBS, PATH_JOB, PATH_UNIT } from '../routes/paths';
+import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
-import { SelectUnitType, SelectProductFamily } from '../sections/addNewUnit';
-import Loading from '../sections/Loading';
+import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -29,181 +26,159 @@ const FooterStepStyle = styled(Card)(() => ({
   borderRadius: 0,
   background: '#fff',
   paddingTop: '20px',
-  position: 'absolute',
   padding: '30px',
   zIndex: 1250,
   width: '100%',
   bottom: 0,
+  position: 'fixed',
+}));
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
 }));
 
 // ----------------------------------------------------------------------
-// , 'Make a selection', 'Submit drawing'
-const STEPS = ['Complete job info', 'Add units'];
 
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  top: 10,
-  left: 'calc(-50% + 20px)',
-  right: 'calc(50% + 20px)',
-  '& .MuiStepConnector-line': {
-    borderTopWidth: 2,
-    borderColor: theme.palette.divider,
-  },
-  '&.Mui-active, &.Mui-completed': {
-    '& .MuiStepConnector-line': {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-}));
-
-StepIcon.propTypes = {
-  active: PropTypes.bool,
-  completed: PropTypes.bool,
+const DEFAULT_UNIT_DATA = {
+  intProductTypeID: -1,
+  txbProductType: '',
+  intApplicationTypeID: -1,
+  txbApplicationType: '',
 };
 
-function StepIcon({ active, completed }) {
-  let icon;
-  let color;
-  if (active) {
-    icon = 'ant-design:exclamation-circle-outlined';
-    color = 'primary.main';
-  } else if (completed) {
-    icon = 'akar-icons:circle-check';
-    color = 'primary.main';
-  } else {
-    icon = 'ant-design:close-circle-outlined';
-    color = 'darkred';
-  }
+const STEP_PAGE_NAME = ['Select product type', 'Info', 'Selection'];
 
-  return (
-    <Box
-      sx={{
-        zIndex: 9,
-        width: 24,
-        height: 24,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: active ? 'primary.main' : 'text.disabled',
-      }}
-    >
-      <Iconify icon={icon} sx={{ zIndex: 1, width: 20, height: 20, color }} />
-    </Box>
-  );
-}
+// ----------------------------------------------------------------------
+
+AddNewUnit.prototype = {};
 
 export default function AddNewUnit() {
-  const { jobId } = useParams();
+  const { projectId } = useParams();
   // eslint-disable-next-line no-unused-vars
-  const [activeStep, setActiveStep] = useState(1);
-  const [selectStep, setActiveSelectStep] = useState(0);
-  const [unitData, setUnitData] = useState();
-  const [productTypeId, setProductTypeId] = useState(0);
-  const { productTypeDataTbl, unitTypeDataTbl, productTypeUnitTypeLinkDataTbl, isLoading } = useSelector((state) => state.unit);
-
-  console.log(productTypeDataTbl, unitTypeDataTbl);
+  const theme = useTheme();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isAddedNewUnit, setIsAddedNewUnit] = useState(false);
+  const [unitTypeData, setUnitTypeData] = useState(DEFAULT_UNIT_DATA);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   // const isComplete = activeStep === STEPS.length;
 
-  const onSelectProductFamilyItem = (value) => {
-    setProductTypeId(value);
-    setUnitData({ ...unitData, intProductTypeID: value });
-    setActiveSelectStep(1);
+  const onSelectAppliaionItem = (value, txb) => {
+    setUnitTypeData({ ...unitTypeData, intApplicationTypeID: value, txbApplicationType: txb });
   };
 
-  const onSelectProductModelItem = (value) => {
-    setUnitData({ ...unitData, intUnitTypeID: value });
+  const onSelectProductTypeItem = (value, txb) => {
+    setUnitTypeData({ ...unitTypeData, intProductTypeID: value, txbProductType: txb });
   };
 
-  const onClickBackStep = () => {
-    if (selectStep === 0) {
-      navigate(PATH_JOB.dashboard(jobId));
-    }
-    if (selectStep === 1) {
-      setActiveSelectStep(0);
-      setUnitData({ ...unitData, intUnitTypeID: undefined });
-    }
+  const onSelectUnitTypeItem = (value, txb) => {
+    setUnitTypeData({ ...unitTypeData, intUnitTypeID: value, txbUnitType: txb });
   };
 
   const onClickNextStep = () => {
-    console.log(unitData);
-    navigate(PATH_UNIT.configure(jobId), { state: unitData });
+    if (currentStep < 2) setCurrentStep(currentStep + 1);
+    else if (currentStep === 2) navigate(PATH_PROJECT.project({ id: projectId, page: 'unitlist' }));
   };
 
-  useEffect(() => {
-    dispatch(getUnitTypeInfo({ jobId }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const validateContinue = () => {
+    if (currentStep === 0) {
+      console.log(unitTypeData);
+      if (unitTypeData.intProductTypeID !== -1 && unitTypeData.intUnitTypeID !== -1) return false;
+      return true;
+    }
+
+    if (currentStep === 1 && isAddedNewUnit) return false;
+
+    return true;
+  };
 
   return (
     <Page title="Unit: Add">
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <RootStyle>
-          <Container>
-            <HeaderBreadcrumbs
-              heading="Add New Unit"
-              links={[
-                { name: 'My jobs', href: PATH_JOBS.root },
-                // { name: 'Selected Job', href: PATH_MY_JOBS.dashboard },
-                { name: 'Add New Unit' },
-              ]}
-              sx={{ paddingLeft: '24px', paddingTop: '24px' }}
-            />
+      <RootStyle>
+        <Container>
+          <HeaderBreadcrumbs
+            heading={`Add New: ${STEP_PAGE_NAME[currentStep]}`}
+            links={[
+              { name: 'My projects', href: PATH_PROJECTS.root },
+              // { name: 'Selected Project', href: PATH_MY_JOBS.dashboard },
+              { name: 'Add New Unit' },
+            ]}
+            sx={{ paddingLeft: '24px', paddingTop: '24px' }}
+            action={
+              <>
+                {currentStep === 1 && (
+                  <Button variant="text" startIcon={<Iconify icon="ic:outline-edit" />}>
+                    Edit project details
+                  </Button>
+                )}
+                {currentStep === 2 && (
+                  <Stack direction="row" spacing={5}>
+                    <Button variant="text" startIcon={<Iconify icon="mdi:download-outline" />}>
+                      Export Revit file
+                    </Button>
+                    <Button variant="text" startIcon={<Iconify icon="mdi:download-outline" />}>
+                      Export selection
+                    </Button>
+                  </Stack>
+                )}
+              </>
+            }
+          />
 
-            {selectStep === 0 ? (
-              <SelectProductFamily ProductFamilyData={productTypeDataTbl} onSelectItem={onSelectProductFamilyItem} />
-            ) : (
-              <SelectUnitType
-                unitTypeData={{ unitTypeDataTbl, productTypeUnitTypeLinkDataTbl }}
-                currentProductTypeId={productTypeId}
-                onSelectItem={onSelectProductModelItem}
-              />
-            )}
-          </Container>
-          <FooterStepStyle>
-            <Grid container>
-              <Grid item xs={2} textAlign="center">
-                <Button onClick={onClickBackStep} color="primary" type="button">
-                  <Iconify icon={'akar-icons:arrow-left'} />
-                  {selectStep === 0 ? 'Back to job dashboard' : 'Back to Select Product Family'}
-                </Button>
-              </Grid>
-              <Grid item xs={8}>
-                <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
-                  {STEPS.map((label) => (
-                    <Step key={label}>
-                      <StepLabel
-                        StepIconComponent={StepIcon}
-                        sx={{
-                          '& .MuiStepLabel-label': {
-                            typography: 'subtitle2',
-                            color: 'text.disabled',
-                          },
-                        }}
-                      >
-                        {label}
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-              </Grid>
-              <Grid item xs={2} textAlign="center">
-                <Button
-                  color="primary"
-                  onClick={onClickNextStep}
-                  disabled={selectStep === 0 || unitData.intProductTypeID === undefined || unitData.intUnitTypeID === undefined}
-                >
-                  Next Step
-                  <Iconify icon={'akar-icons:arrow-right'} />
-                </Button>
-              </Grid>
+          {currentStep === 0 && (
+            <SelectProductInfo
+              onSelectAppliaionItem={onSelectAppliaionItem}
+              onSelectProductTypeItem={onSelectProductTypeItem}
+              onSelectUnitTypeItem={onSelectUnitTypeItem}
+            />
+          )}
+          {currentStep === 1 && (
+            <UnitInfo
+              unitTypeData={unitTypeData}
+              intProductTypeID={unitTypeData.intProductTypeID}
+              isAddedNewUnit={isAddedNewUnit}
+              setIsAddedNewUnit={() => setIsAddedNewUnit(true)}
+            />
+          )}
+          {currentStep === 2 && <Selection />}
+        </Container>
+        <FooterStepStyle>
+          <Grid container>
+            <Grid item xs={8}>
+              <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} spacing={2}>
+                <Item sx={{ color: currentStep === 0 && theme.palette.primary.main }} onClick={() => setCurrentStep(0)}>
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <Iconify icon="ph:number-circle-one-fill" width="25px" height="25px" />
+                    <Typography variant="body1">Select product type</Typography>
+                  </Stack>
+                </Item>
+                <Item sx={{ color: currentStep === 1 && theme.palette.primary.main }} onClick={() => setCurrentStep(1)}>
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <Iconify icon="ph:number-circle-two-fill" width="25px" height="25px" />
+                    <Typography variant="body1">Add unit info</Typography>
+                  </Stack>
+                </Item>
+                <Item sx={{ color: currentStep === 2 && theme.palette.primary.main }} onClick={() => setCurrentStep(2)}>
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
+                    <Typography variant="body1">Make a selection</Typography>
+                  </Stack>
+                </Item>
+              </Stack>
             </Grid>
-          </FooterStepStyle>
-        </RootStyle>
-      )}
+            <Grid item xs={4} textAlign="center" alignContent="right">
+              <Button variant="contained" color="primary" onClick={onClickNextStep} disabled={validateContinue()}>
+                {currentStep !== 2 ? 'Continue' : 'Done'}
+                <Iconify icon={currentStep !== 2 ? 'akar-icons:arrow-right' : 'icons8:cancel-2'} />
+              </Button>
+            </Grid>
+          </Grid>
+        </FooterStepStyle>
+      </RootStyle>
     </Page>
   );
 }

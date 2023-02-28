@@ -72,7 +72,7 @@ export default function NewPassword({ email }) {
   const onSubmit = async (data) => {
     try {
       if (data.newPassword !== data.confirmPassword) {
-        setError('afterSubmit', { ...errors, message: "Passwords do not match!" });
+        setError('afterSubmit', { ...errors, message: 'Passwords do not match!' });
       } else {
         await axios.post(`${serverUrl}/api/user/newpassword`, {
           ...data,
@@ -91,12 +91,15 @@ export default function NewPassword({ email }) {
 
   return (
     <ContentStyle sx={{ textAlign: 'center' }}>
-      <LogoOnlyLayout />
       <Typography variant="h3" paragraph>
-        Please enter your New Password!
+        Set a new password
+      </Typography>
+
+      <Typography sx={{ color: 'text.secondary', mb: 3 }}>
+        Your new password must be different to previously used password.
       </Typography>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
           <RHFTextField
@@ -127,13 +130,12 @@ export default function NewPassword({ email }) {
               ),
             }}
           />
+          <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+            Set New Password
+          </LoadingButton>
         </Stack>
-
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" sx={{ mt: 1 }} loading={isSubmitting}>
-          Set New Password
-        </LoadingButton>
       </FormProvider>
-      <Button fullWidth size="large" component={RouterLink} to={PATH_AUTH.resetPassword} sx={{ mt: 1 }}>
+      <Button fullWidth size="large" component={RouterLink} to={PATH_AUTH.resetPassword} sx={{ mt: 3 }}>
         Back
       </Button>
     </ContentStyle>
