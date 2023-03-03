@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
+// file-saver
+import { saveAs } from 'file-saver';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import { Grid, Card, Divider, Container, Paper, Button, Stack, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 // routes
-import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
+import { PATH_PROJECT } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
 import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
+// utils
+import axios from '../utils/axios';
+// config
+import { serverUrl } from '../config';
 
 // ----------------------------------------------------------------------
 
@@ -63,6 +70,8 @@ export default function AddNewUnit() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isAddedNewUnit, setIsAddedNewUnit] = useState(false);
   const [unitTypeData, setUnitTypeData] = useState(DEFAULT_UNIT_DATA);
+  const [intUnitNo, setIntUnitNo] = useState(0);
+  const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
 
   const navigate = useNavigate();
   // const isComplete = activeStep === STEPS.length;
@@ -81,7 +90,7 @@ export default function AddNewUnit() {
 
   const onClickNextStep = () => {
     if (currentStep < 2) setCurrentStep(currentStep + 1);
-    else if (currentStep === 2) navigate(PATH_PROJECT.project({ id: projectId, page: 'unitlist' }));
+    else if (currentStep === 2) navigate(PATH_PROJECT.project(projectId, 'unitlist'));
   };
 
   const validateContinue = () => {
@@ -92,8 +101,38 @@ export default function AddNewUnit() {
     }
 
     if (currentStep === 1 && isAddedNewUnit) return false;
+    if (currentStep === 2 && intUnitNo !== 0) return false;
 
     return true;
+  };
+
+  const downloadPDF = async () => {
+    const data = {
+      intProjectID: projectId,
+      intUnitNo,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+    setIsSelectionDownloading(true);
+
+    await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
+      console.log(response);
+      // Get File Name
+      let filename = '';
+      const disposition = response.headers['content-disposition'];
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      // Save File
+      saveAs(response.data, `${filename}.pdf`);
+    });
+
+    setIsSelectionDownloading(false);
   };
 
   return (
@@ -103,7 +142,7 @@ export default function AddNewUnit() {
           <HeaderBreadcrumbs
             heading={`Add New: ${STEP_PAGE_NAME[currentStep]}`}
             links={[
-              { name: 'My projects', href: PATH_PROJECTS.root },
+              { name: 'My project', href: PATH_PROJECT.project(projectId, 'unitlist') },
               // { name: 'Selected Project', href: PATH_MY_JOBS.dashboard },
               { name: 'Add New Unit' },
             ]}
@@ -117,12 +156,14 @@ export default function AddNewUnit() {
                 )}
                 {currentStep === 2 && (
                   <Stack direction="row" spacing={5}>
-                    <Button variant="text" startIcon={<Iconify icon="mdi:download-outline" />}>
-                      Export Revit file
-                    </Button>
-                    <Button variant="text" startIcon={<Iconify icon="mdi:download-outline" />}>
+                    <LoadingButton
+                      loading={isSelectionDownloading}
+                      variant="text"
+                      onClick={downloadPDF}
+                      startIcon={<Iconify icon="mdi:download-outline" />}
+                    >
                       Export selection
-                    </Button>
+                    </LoadingButton>
                   </Stack>
                 )}
               </>
@@ -141,10 +182,13 @@ export default function AddNewUnit() {
               unitTypeData={unitTypeData}
               intProductTypeID={unitTypeData.intProductTypeID}
               isAddedNewUnit={isAddedNewUnit}
-              setIsAddedNewUnit={() => setIsAddedNewUnit(true)}
+              setIsAddedNewUnit={(no) => {
+                setIntUnitNo(no);
+                setIsAddedNewUnit(true);
+              }}
             />
           )}
-          {currentStep === 2 && <Selection />}
+          {currentStep === 2 && <Selection unitTypeData={unitTypeData} intUnitNo={intUnitNo} />}
         </Container>
         <FooterStepStyle>
           <Grid container>

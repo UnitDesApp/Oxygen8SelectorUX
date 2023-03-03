@@ -148,7 +148,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     heatingFluidDesignCondInfo,
     outdoorAirFilterInfo,
     returnAirFilterInfo,
-    setpointsInfo,
+    // setpointsInfo,
     heatingSetpointInfo,
     coolingSetpointInfo,
     customInputsInfo,
@@ -355,7 +355,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   } = methods;
 
   useEffect(() => {
-    reset(defaultValues);
+    // reset(defaultValues);
   }, [reset, defaultValues]);
 
   const getDisplay = (key) => ({ display: key ? 'block' : 'none' });
@@ -390,9 +390,9 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       console.log('--------------------- Submit Data----------------------');
       console.log(data);
 
-      await dispatch(unitReducer.saveUnitInfo(getAllFormData()));
+      const intUnitNo = await dispatch(unitReducer.saveUnitInfo(getAllFormData()));
       setOpenSuccess(true);
-      setIsAddedNewUnit();
+      setIsAddedNewUnit(intUnitNo);
     } catch (e) {
       console.log(e);
       setOpenError(true);
@@ -1040,9 +1040,11 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                       </Stack>
                       <Stack
                         spacing={1}
-                        sx={{ ...getDisplay(preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) }}
+                        sx={{
+                          ...getDisplay(preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible),
+                        }}
                       >
-                      <RHFSelect
+                        <RHFSelect
                           size="small"
                           name="ddlPreheatElecHeaterInstallationId"
                           label="Preheat Elec. Heater Installation"
@@ -1058,7 +1060,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             )
                           )}
                         </RHFSelect>
-                        </Stack>
+                      </Stack>
 
                       <Stack
                         spacing={1}
@@ -1097,30 +1099,36 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           }}
                         />
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divPreheatHWC_Visible), mb: 3 }}>
-                      <RHFControlCheckbox
-                      size="small"
-                      name="ckbPreheatHWC_UseCap"
-                      label="Preheat HWC Use Capacity"
-                      sx={getDisplay(customInputsInfo.divPreheatHWC_UseCapVisible)}
-                      checked={ckbFlowRateAndCap.ckbPreheatHWC_UseCap}
-                      onChange={() => {
-                        setCkbFlowRateAndCap({
-                          ...ckbFlowRateAndCap,
-                          ckbPreheatHWC_UseCap: !ckbFlowRateAndCap.ckbPreheatHWC_UseCap,
-                        });
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbPreheatHWC_Cap"
-                      label="Preheat HWC Capacity (MBH)"
-                      sx={getDisplay(customInputsInfo.divPreheatHWC_UseCapVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbPreheatHWC_Cap');
-                      }}
-                    />
-                     <RHFControlCheckbox
+                      <Stack
+                        spacing={1}
+                        sx={{
+                          ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divPreheatHWC_Visible),
+                          mb: 3,
+                        }}
+                      >
+                        <RHFControlCheckbox
+                          size="small"
+                          name="ckbPreheatHWC_UseCap"
+                          label="Preheat HWC Use Capacity"
+                          sx={getDisplay(customInputsInfo.divPreheatHWC_UseCapVisible)}
+                          checked={ckbFlowRateAndCap.ckbPreheatHWC_UseCap}
+                          onChange={() => {
+                            setCkbFlowRateAndCap({
+                              ...ckbFlowRateAndCap,
+                              ckbPreheatHWC_UseCap: !ckbFlowRateAndCap.ckbPreheatHWC_UseCap,
+                            });
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbPreheatHWC_Cap"
+                          label="Preheat HWC Capacity (MBH)"
+                          sx={getDisplay(customInputsInfo.divPreheatHWC_UseCapVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbPreheatHWC_Cap');
+                          }}
+                        />
+                        <RHFControlCheckbox
                           size="small"
                           name="ckbPreheatHWC_UseFlowRate"
                           label="Preheat HWC Use Flow Rate"
@@ -1200,25 +1208,25 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           ))}
                         </RHFSelect>
                         <RHFTextField
-                      size="small"
-                      name="txbSummerCoolingSetpointDB"
-                      label="Cooling LAT Setpoint DB (F):"
-                      autoComplete="off"
-                      sx={getDisplay(coolingSetpointInfo.divCoolingSetpointVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbSummerCoolingSetpointDB');
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbSummerCoolingSetpointWB"
-                      label="Cooling LAT Setpoint WB (F):"
-                      autoComplete="off"
-                      sx={getDisplay(coolingSetpointInfo.divCoolingSetpointVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbSummerCoolingSetpointWB');
-                      }}
-                    />
+                          size="small"
+                          name="txbSummerCoolingSetpointDB"
+                          label="Cooling LAT Setpoint DB (F):"
+                          autoComplete="off"
+                          sx={getDisplay(coolingSetpointInfo.divCoolingSetpointVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbSummerCoolingSetpointDB');
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbSummerCoolingSetpointWB"
+                          label="Cooling LAT Setpoint WB (F):"
+                          autoComplete="off"
+                          sx={getDisplay(coolingSetpointInfo.divCoolingSetpointVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbSummerCoolingSetpointWB');
+                          }}
+                        />
                         <RHFControlCheckbox
                           size="small"
                           name="ckbHeatPumpVal"
@@ -1235,7 +1243,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           checked={!!ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
-                                                <RHFSelect
+                        <RHFSelect
                           size="small"
                           name="ddlCoolingCoilHandingId"
                           label="Cooling Coil Handing"
@@ -1317,7 +1325,10 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                         />
                       </Stack>
 
-                      <Stack spacing={1} sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divCoolingCWC_Visible) }}>
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divCoolingCWC_Visible) }}
+                      >
                         <RHFControlCheckbox
                           size="small"
                           name="ckbCoolingCWC_UseCap"
@@ -1406,15 +1417,15 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           ))}
                         </RHFSelect>
                         <RHFTextField
-                      size="small"
-                      name="txbWinterHeatingSetpointDB"
-                      label="Heating LAT Setpoint DB (F):"
-                      autoComplete="off"
-                      sx={getDisplay(heatingSetpointInfo.divHeatingSetpointVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbWinterHeatingSetpointDB');
-                      }}
-                    />
+                          size="small"
+                          name="txbWinterHeatingSetpointDB"
+                          label="Heating LAT Setpoint DB (F):"
+                          autoComplete="off"
+                          sx={getDisplay(heatingSetpointInfo.divHeatingSetpointVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbWinterHeatingSetpointDB');
+                          }}
+                        />
                         <RHFSelect
                           size="small"
                           name="ddlHeatingCoilHandingId"
@@ -1429,10 +1440,12 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             </option>
                           ))}
                         </RHFSelect>
-
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible) }} >
-                      <RHFSelect
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible) }}
+                      >
+                        <RHFSelect
                           size="small"
                           name="ddlHeatElecHeaterInstallationId"
                           label="Heating Elec. Heater Installation"
@@ -1446,10 +1459,12 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             </option>
                           ))}
                         </RHFSelect>
-                        </Stack>
+                      </Stack>
 
-
-                      <Stack spacing={1} sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }} >
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}
+                      >
                         <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                           <option value="" />
                           {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
@@ -1484,58 +1499,60 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                         />
                       </Stack>
 
-                      <Stack spacing={1} sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divHeatingHWC_Visible) }}>
-                      <RHFControlCheckbox
-                      size="small"
-                      name="ckbHeatingHWC_UseCap"
-                      label="Heating HWC Use Capacity"
-                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseCapVisible)}
-                      checked={ckbFlowRateAndCap.ckbHeatingHWC_UseCap}
-                      onChange={() => {
-                        setCkbFlowRateAndCap({
-                          ...ckbFlowRateAndCap,
-                          ckbHeatingHWC_UseCap: !ckbFlowRateAndCap.ckbHeatingHWC_UseCap,
-                        });
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbHeatingHWC_Cap"
-                      label="Heating HWC Capacity (MBH)"
-                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseCapVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbHeatingHWC_Cap');
-                      }}
-                    />
-                    <RHFControlCheckbox
-                      size="small"
-                      name="ckbHeatingHWC_UseFlowRate"
-                      label="Heating HWC Use Flow Rate"
-                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseFlowRateVisible)}
-                      checked={ckbFlowRateAndCap.ckbHeatingHWC_UseFlowRate}
-                      onChange={() => {
-                        setCkbFlowRateAndCap({
-                          ...ckbFlowRateAndCap,
-                          ckbHeatingHWC_UseFlowRate: !ckbFlowRateAndCap.ckbHeatingHWC_UseFlowRate,
-                        });
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbHeatingHWC_FlowRate"
-                      label="Heating HWC Flow Rate (GPM)"
-                      sx={getDisplay(customInputsInfo.divHeatingHWC_UseFlowRateVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbHeatingHWC_FlowRate');
-                      }}
-                    />
- 
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divHeatingHWC_Visible) }}
+                      >
+                        <RHFControlCheckbox
+                          size="small"
+                          name="ckbHeatingHWC_UseCap"
+                          label="Heating HWC Use Capacity"
+                          sx={getDisplay(customInputsInfo.divHeatingHWC_UseCapVisible)}
+                          checked={ckbFlowRateAndCap.ckbHeatingHWC_UseCap}
+                          onChange={() => {
+                            setCkbFlowRateAndCap({
+                              ...ckbFlowRateAndCap,
+                              ckbHeatingHWC_UseCap: !ckbFlowRateAndCap.ckbHeatingHWC_UseCap,
+                            });
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbHeatingHWC_Cap"
+                          label="Heating HWC Capacity (MBH)"
+                          sx={getDisplay(customInputsInfo.divHeatingHWC_UseCapVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbHeatingHWC_Cap');
+                          }}
+                        />
+                        <RHFControlCheckbox
+                          size="small"
+                          name="ckbHeatingHWC_UseFlowRate"
+                          label="Heating HWC Use Flow Rate"
+                          sx={getDisplay(customInputsInfo.divHeatingHWC_UseFlowRateVisible)}
+                          checked={ckbFlowRateAndCap.ckbHeatingHWC_UseFlowRate}
+                          onChange={() => {
+                            setCkbFlowRateAndCap({
+                              ...ckbFlowRateAndCap,
+                              ckbHeatingHWC_UseFlowRate: !ckbFlowRateAndCap.ckbHeatingHWC_UseFlowRate,
+                            });
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbHeatingHWC_FlowRate"
+                          label="Heating HWC Flow Rate (GPM)"
+                          sx={getDisplay(customInputsInfo.divHeatingHWC_UseFlowRateVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbHeatingHWC_FlowRate');
+                          }}
+                        />
                       </Stack>
                     </Box>
                   </AccordionDetails>
                 </Accordion>
                 <Accordion
-                  sx={getDisplay(reheatInfo.divReheatCompVisible)}
+                  sx={getDisplay(reheatInfo.divReheatCompVisible || ckbDehumidificationVal)}
                   expanded={expanded.panel4}
                   onChange={() => setExpanded({ ...expanded, panel4: !expanded.panel4 })}
                 >
@@ -1565,7 +1582,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           name="ddlReheatCompId"
                           label="Reheat"
                           placeholder=""
-                          sx={getDisplay(reheatInfo.divReheatCompVisible)}
+                          sx={getDisplay(reheatInfo.divReheatCompVisible || ckbDehumidificationVal)}
                           onChange={ddlReheatCompChanged}
                         >
                           <option value="" />
@@ -1575,22 +1592,22 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             </option>
                           ))}
                         </RHFSelect>
-                    <RHFTextField
-                      size="small"
-                      name="txbSummerReheatSetpointDB"
-                      label="Dehum. Reheat Setpoint DB (F):"
-                      autoComplete="off"
-                      sx={getDisplay(reheatSetpointInfo.divReheatSetpointVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbSummerReheatSetpointDB');
-                      }}
-                    />
+                        <RHFTextField
+                          size="small"
+                          name="txbSummerReheatSetpointDB"
+                          label="Dehum. Reheat Setpoint DB (F):"
+                          autoComplete="off"
+                          sx={getDisplay(reheatSetpointInfo.divReheatSetpointVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbSummerReheatSetpointDB');
+                          }}
+                        />
                         <RHFControlCheckbox
                           size="small"
                           name="ckbDehumidificationVal"
                           label="Dehumidification"
                           sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
-                          checked={!!dehumidificationInfo.ckbDehumidificationChecked}
+                          checked={!!ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
                       </Stack>
@@ -1631,53 +1648,55 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           }}
                         />
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divReheatHWC_Visible) }}>
-                      <RHFControlCheckbox
-                      size="small"
-                      name="ckbReheatHWC_UseCap"
-                      label="Reheat HWC Use Capacity"
-                      sx={getDisplay(customInputsInfo.divReheatHWC_UseCapVisible)}
-                      checked={ckbFlowRateAndCap.ckbReheatHWC_UseCap}
-                      onChange={() => {
-                        setCkbFlowRateAndCap({
-                          ...ckbFlowRateAndCap,
-                          ckbReheatHWC_UseCap: !ckbFlowRateAndCap.ckbReheatHWC_UseCap,
-                        });
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbReheatHWC_Cap"
-                      label="Reheat HWC Capacity (MBH)"
-                      sx={getDisplay(customInputsInfo.divReheatHWC_UseCapVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbReheatHWC_Cap');
-                      }}
-                    />
-                    <RHFControlCheckbox
-                      size="small"
-                      name="ckbReheatHWC_UseFlowRate"
-                      label="Reheat HWC Use Flow Rate"
-                      sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
-                      checked={ckbFlowRateAndCap.ckbReheatHWC_UseFlowRate}
-                      onChange={() => {
-                        setCkbFlowRateAndCap({
-                          ...ckbFlowRateAndCap,
-                          ckbReheatHWC_UseFlowRate: !ckbFlowRateAndCap.ckbReheatHWC_UseFlowRate,
-                        });
-                      }}
-                    />
-                    <RHFTextField
-                      size="small"
-                      name="txbReheatHWC_FlowRate"
-                      label="Reheat HWC Flow Rate (GPM)"
-                      sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
-                      onChange={(e) => {
-                        setValueWithCheck(e, 'txbReheatHWC_FlowRate');
-                      }}
-                    />
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(ualInfo.divCustomVisible && customInputsInfo.divReheatHWC_Visible) }}
+                      >
+                        <RHFControlCheckbox
+                          size="small"
+                          name="ckbReheatHWC_UseCap"
+                          label="Reheat HWC Use Capacity"
+                          sx={getDisplay(customInputsInfo.divReheatHWC_UseCapVisible)}
+                          checked={ckbFlowRateAndCap.ckbReheatHWC_UseCap}
+                          onChange={() => {
+                            setCkbFlowRateAndCap({
+                              ...ckbFlowRateAndCap,
+                              ckbReheatHWC_UseCap: !ckbFlowRateAndCap.ckbReheatHWC_UseCap,
+                            });
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbReheatHWC_Cap"
+                          label="Reheat HWC Capacity (MBH)"
+                          sx={getDisplay(customInputsInfo.divReheatHWC_UseCapVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbReheatHWC_Cap');
+                          }}
+                        />
+                        <RHFControlCheckbox
+                          size="small"
+                          name="ckbReheatHWC_UseFlowRate"
+                          label="Reheat HWC Use Flow Rate"
+                          sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
+                          checked={ckbFlowRateAndCap.ckbReheatHWC_UseFlowRate}
+                          onChange={() => {
+                            setCkbFlowRateAndCap({
+                              ...ckbFlowRateAndCap,
+                              ckbReheatHWC_UseFlowRate: !ckbFlowRateAndCap.ckbReheatHWC_UseFlowRate,
+                            });
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbReheatHWC_FlowRate"
+                          label="Reheat HWC Flow Rate (GPM)"
+                          sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbReheatHWC_FlowRate');
+                          }}
+                        />
                       </Stack>
-
                     </Box>
                   </AccordionDetails>
                 </Accordion>

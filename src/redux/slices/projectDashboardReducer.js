@@ -53,7 +53,7 @@ export function getProjectsAndUnitsInfo(data) {
 
 export function updateProjectInfo(data) {
   return async () => {
-    dispatch(ProjectDashboardSlice.actions.updateProjectInfo(data));
+    await dispatch(ProjectDashboardSlice.actions.updateProjectInfo(data));
   };
 }
 

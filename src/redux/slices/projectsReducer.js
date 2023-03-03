@@ -107,7 +107,7 @@ export function updateProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/update`, data);
     await dispatch(ProjectsSlice.actions.updateProject(response.data.projectList));
-    return response.data.jobInfo[0];
+    return response.data.projectInfo[0];
   };
 }
 
