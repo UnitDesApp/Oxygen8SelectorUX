@@ -1232,7 +1232,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           name="ckbHeatPumpVal"
                           label="Heat Pump"
                           sx={getDisplay(heatPumpInfo.divHeatPumpVisible)}
-                          checked={!!heatPumpInfo.ckbHeatPumpVal}
+                          checked={ckbHeatPumpVal}
                           onChange={ckbHeatPumpChanged}
                         />
                         <RHFControlCheckbox
@@ -1240,7 +1240,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           name="ckbDehumidificationVal"
                           label="Dehumidification"
                           sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
-                          checked={!!ckbDehumidificationVal}
+                          checked={ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
                         <RHFSelect
