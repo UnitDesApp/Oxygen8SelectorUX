@@ -775,6 +775,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     }
   };
 
+  const isAvailable = (value) => !!value && value.length > 0;
+
   return (
     <Page title="Project: Edit">
       <RootStyle>
@@ -815,20 +817,21 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             //   setValueWithCheck(e, 'txbQty');
                             // }}
                           />
-                          <RHFSelect
-                            size="small"
-                            name="ddlLocationId"
-                            label="Location"
-                            placeholder=""
-                            onChange={ddlLocationChanged}
-                          >
-                            <option value="" />
-                            {locationInfo.ddlLocationDataTbl.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
+                          {isAvailable(locationInfo.ddlLocationDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlLocationId"
+                              label="Location"
+                              placeholder=""
+                              onChange={ddlLocationChanged}
+                            >
+                              {locationInfo.ddlLocationDataTbl.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
                           <RHFControlCheckbox
                             size="small"
                             name="ckbDownshotVal"
@@ -837,36 +840,38 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             checked={ckbDownshotVal}
                             onChange={() => setCkbDownshotVal(!ckbDownshotVal)}
                           />
-                          <RHFSelect
-                            size="small"
-                            name="ddlOrientationId"
-                            label="Orientation"
-                            placeholder=""
-                            onChange={ddlOrientationChanged}
-                          >
-                            <option value="" />
-                            {orientationInfo.ddlOrientationDataTbl.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}..
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlControlsPreferenceId"
-                            label="Control Preference"
-                            placeholder=""
-                            onChange={(e) => {
-                              setValue('ddlControlsPreferenceId', parseInt(e.target.value, 10));
-                            }}
-                          >
-                            <option value="" />
-                            {controlsPreferenceInfo.ddlControlsPreferenceDataTbl?.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
+                          {isAvailable(orientationInfo.ddlOrientationDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlOrientationId"
+                              label="Orientation"
+                              placeholder=""
+                              onChange={ddlOrientationChanged}
+                            >
+                              {orientationInfo.ddlOrientationDataTbl.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(controlsPreferenceInfo.ddlControlsPreferenceDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlControlsPreferenceId"
+                              label="Control Preference"
+                              placeholder=""
+                              onChange={(e) => {
+                                setValue('ddlControlsPreferenceId', parseInt(e.target.value, 10));
+                              }}
+                            >
+                              {controlsPreferenceInfo.ddlControlsPreferenceDataTbl?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
                         </Box>
                       </Grid>
                       <Grid item xs={4} md={4}>
@@ -921,32 +926,34 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             checked={ckbBypassVal}
                             onChange={() => setCkbBypassVal(!ckbBypassVal)}
                           />
-                          <RHFSelect
-                            size="small"
-                            name="ddlUnitModelId"
-                            label="Unit Model"
-                            onChange={ddlUnitModelChanged}
-                          >
-                            <option value="" />
-                            {unitModelInfo.ddlUnitModelDataTbl?.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlUnitVoltageId"
-                            label="Unit Voltage"
-                            onChange={ddlUnitVoltageChanged}
-                          >
-                            <option value="" />
-                            {unitVoltageInfo.ddlUnitVoltageDataTbl?.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
+                          {isAvailable(unitModelInfo.ddlUnitModelDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlUnitModelId"
+                              label="Unit Model"
+                              onChange={ddlUnitModelChanged}
+                            >
+                              {unitModelInfo.ddlUnitModelDataTbl?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(unitVoltageInfo.ddlUnitVoltageDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlUnitVoltageId"
+                              label="Unit Voltage"
+                              onChange={ddlUnitVoltageChanged}
+                            >
+                              {unitVoltageInfo.ddlUnitVoltageDataTbl?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
                           <RHFControlCheckbox
                             size="small"
                             name="ckbVoltageSPPVal"
@@ -955,31 +962,35 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             checked={ckbVoltageSPPVal}
                             onChange={() => setCkbVoltageSPPVal(!ckbVoltageSPPVal)}
                           />
-                          <RHFSelect
-                            size="small"
-                            name="ddlOA_FilterModelId"
-                            label="QA Filter"
-                            onChange={(e) => setValue('ddlOA_FilterModelId', parseInt(e.target.value, 10))}
-                          >
-                            {outdoorAirFilterInfo.ddlOA_FilterModelDataTbl?.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlRA_FilterModelId"
-                            label="RA Filter"
-                            sx={getDisplay(returnAirFilterInfo.divRA_FilterModelVisible)}
-                            onChange={(e) => setValue('ddlRA_FilterModelId', parseInt(e.target.value, 10))}
-                          >
-                            {returnAirFilterInfo.ddlRA_FilterModelDataTbl?.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
+                          {isAvailable(outdoorAirFilterInfo.ddlOA_FilterModelDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlOA_FilterModelId"
+                              label="QA Filter"
+                              onChange={(e) => setValue('ddlOA_FilterModelId', parseInt(e.target.value, 10))}
+                            >
+                              {outdoorAirFilterInfo.ddlOA_FilterModelDataTbl?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(returnAirFilterInfo.ddlRA_FilterModelDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlRA_FilterModelId"
+                              label="RA Filter"
+                              sx={getDisplay(returnAirFilterInfo.divRA_FilterModelVisible)}
+                              onChange={(e) => setValue('ddlRA_FilterModelId', parseInt(e.target.value, 10))}
+                            >
+                              {returnAirFilterInfo.ddlRA_FilterModelDataTbl?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
                         </Box>
                       </Grid>
                     </Grid>
@@ -1010,33 +1021,35 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                       }}
                     >
                       <Stack spacing={1}>
-                        <RHFSelect
-                          size="small"
-                          name="ddlPreheatCompId"
-                          label="Preheat"
-                          sx={getDisplay(componentInfo.divPreheatCompVisible)}
-                          onChange={ddlPreheatCompChanged}
-                        >
-                          <option value="" />
-                          {componentInfo.ddlPreheatCompDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
-                        <RHFSelect
-                          size="small"
-                          name="ddlPreheatCoilHandingId"
-                          label="Preheat Coil Handing"
-                          sx={getDisplay(preheatCoilHandingInfo.divPreheatCoilHandingVisible)}
-                        >
-                          <option value="" />
-                          {preheatCoilHandingInfo.ddlPreheatCoilHandingDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(componentInfo.ddlPreheatCompDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlPreheatCompId"
+                            label="Preheat"
+                            sx={getDisplay(componentInfo.divPreheatCompVisible)}
+                            onChange={ddlPreheatCompChanged}
+                          >
+                            {componentInfo.ddlPreheatCompDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        {isAvailable(preheatCoilHandingInfo.ddlPreheatCoilHandingDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlPreheatCoilHandingId"
+                            label="Preheat Coil Handing"
+                            sx={getDisplay(preheatCoilHandingInfo.divPreheatCoilHandingVisible)}
+                          >
+                            {preheatCoilHandingInfo.ddlPreheatCoilHandingDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                       </Stack>
                       <Stack
                         spacing={1}
@@ -1044,44 +1057,49 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           ...getDisplay(preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible),
                         }}
                       >
-                        <RHFSelect
-                          size="small"
-                          name="ddlPreheatElecHeaterInstallationId"
-                          label="Preheat Elec. Heater Installation"
-                          onChange={(e) => setValue('ddlPreheatElecHeaterInstallationId', parseInt(e.target.value, 10))}
-                          placeholder=""
-                        >
-                          <option value="" />
-                          {preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationDataTbl?.map(
-                            (item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.items}
-                              </option>
-                            )
-                          )}
-                        </RHFSelect>
+                        {isAvailable(preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlPreheatElecHeaterInstallationId"
+                            label="Preheat Elec. Heater Installation"
+                            onChange={(e) =>
+                              setValue('ddlPreheatElecHeaterInstallationId', parseInt(e.target.value, 10))
+                            }
+                            placeholder=""
+                          >
+                            {preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationDataTbl?.map(
+                              (item, index) => (
+                                <option key={index} value={item.id}>
+                                  {item.items}
+                                </option>
+                              )
+                            )}
+                          </RHFSelect>
+                        )}
                       </Stack>
 
                       <Stack
                         spacing={1}
-                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}
+                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) }}
                       >
-                        <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
-                          <option value="" />
-                          {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
-                        <RHFSelect size="small" name="ddlHeatingFluidConcentrationId" label="Heating Fluid %">
-                          <option value="" />
-                          {heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
+                          <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
+                            {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl) && (
+                          <RHFSelect size="small" name="ddlHeatingFluidConcentrationId" label="Heating Fluid %">
+                            {heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFTextField
                           size="small"
                           name="txbHeatingFluidEntTemp"
@@ -1193,20 +1211,21 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                       }}
                     >
                       <Stack spacing={1}>
-                        <RHFSelect
-                          size="small"
-                          name="ddlCoolingCompId"
-                          label="Cooling"
-                          sx={getDisplay(componentInfo.divCoolingCompVisible)}
-                          onChange={ddlCoolingCompChanged}
-                        >
-                          <option value="" />
-                          {componentInfo.ddlCoolingCompDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(componentInfo.ddlCoolingCompDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlCoolingCompId"
+                            label="Cooling"
+                            sx={getDisplay(componentInfo.divCoolingCompVisible)}
+                            onChange={ddlCoolingCompChanged}
+                          >
+                            {componentInfo.ddlCoolingCompDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFTextField
                           size="small"
                           name="txbSummerCoolingSetpointDB"
@@ -1243,20 +1262,21 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           checked={ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
-                        <RHFSelect
-                          size="small"
-                          name="ddlCoolingCoilHandingId"
-                          label="Cooling Coil Handing"
-                          sx={getDisplay(coolingCoilHandingInfo.divCoolingCoilHandingVisible)}
-                          onChange={(e) => setValue('ddlCoolingCoilHandingId', parseInt(e.target.value, 10))}
-                        >
-                          <option value="" />
-                          {coolingCoilHandingInfo.ddlCoolingCoilHandingDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(coolingCoilHandingInfo.ddlCoolingCoilHandingDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlCoolingCoilHandingId"
+                            label="Cooling Coil Handing"
+                            sx={getDisplay(coolingCoilHandingInfo.divCoolingCoilHandingVisible)}
+                            onChange={(e) => setValue('ddlCoolingCoilHandingId', parseInt(e.target.value, 10))}
+                          >
+                            {coolingCoilHandingInfo.ddlCoolingCoilHandingDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                       </Stack>
                       <Stack
                         spacing={1}
@@ -1291,22 +1311,24 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                         spacing={1}
                         sx={{ ...getDisplay(coolingFluidDesignCondInfo.divCoolingFluidDesignCondVisible) }}
                       >
-                        <RHFSelect size="small" name="ddlCoolingFluidTypeId" label="Cooling Fluid Type">
-                          <option value="" />
-                          {coolingFluidDesignCondInfo.ddlCoolingFluidTypeDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
-                        <RHFSelect size="small" name="ddlCoolingFluidConcentrationId" label="Cooling Fluid %">
-                          <option value="" />
-                          {coolingFluidDesignCondInfo.ddlCoolingFluidConcentrationDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(coolingFluidDesignCondInfo.ddlCoolingFluidTypeDataTbl) && (
+                          <RHFSelect size="small" name="ddlCoolingFluidTypeId" label="Cooling Fluid Type">
+                            {coolingFluidDesignCondInfo.ddlCoolingFluidTypeDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        {isAvailable(coolingFluidDesignCondInfo.ddlCoolingFluidConcentrationDataTbl) && (
+                          <RHFSelect size="small" name="ddlCoolingFluidConcentrationId" label="Cooling Fluid %">
+                            {coolingFluidDesignCondInfo.ddlCoolingFluidConcentrationDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFTextField
                           size="small"
                           name="txbCoolingFluidEntTemp"
@@ -1402,20 +1424,21 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                       }}
                     >
                       <Stack spacing={1}>
-                        <RHFSelect
-                          size="small"
-                          name="ddlHeatingCompId"
-                          label="Heating"
-                          sx={getDisplay(componentInfo.divHeatingCompVisible)}
-                          onChange={ddlHeatingCompChanged}
-                        >
-                          <option value="" />
-                          {componentInfo.ddlHeatingCompDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(componentInfo.ddlHeatingCompDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlHeatingCompId"
+                            label="Heating"
+                            sx={getDisplay(componentInfo.divHeatingCompVisible)}
+                            onChange={ddlHeatingCompChanged}
+                          >
+                            {componentInfo.ddlHeatingCompDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFTextField
                           size="small"
                           name="txbWinterHeatingSetpointDB"
@@ -1426,61 +1449,65 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             setValueWithCheck(e, 'txbWinterHeatingSetpointDB');
                           }}
                         />
-                        <RHFSelect
-                          size="small"
-                          name="ddlHeatingCoilHandingId"
-                          label="Heating Coil Handing"
-                          sx={getDisplay(heatingCoilHandingInfo.divHeatingCoilHandingVisible)}
-                          onChange={(e) => setValue('ddlHeatingCoilHandingId', parseInt(e.target.value, 10))}
-                        >
-                          <option value="" />
-                          {heatingCoilHandingInfo.ddlHeatingCoilHandingDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(heatingCoilHandingInfo.ddlHeatingCoilHandingDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlHeatingCoilHandingId"
+                            label="Heating Coil Handing"
+                            sx={getDisplay(heatingCoilHandingInfo.divHeatingCoilHandingVisible)}
+                            onChange={(e) => setValue('ddlHeatingCoilHandingId', parseInt(e.target.value, 10))}
+                          >
+                            {heatingCoilHandingInfo.ddlHeatingCoilHandingDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                       </Stack>
                       <Stack
                         spacing={1}
                         sx={{ ...getDisplay(heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible) }}
                       >
-                        <RHFSelect
-                          size="small"
-                          name="ddlHeatElecHeaterInstallationId"
-                          label="Heating Elec. Heater Installation"
-                          onChange={(e) => setValue('ddlHeatElecHeaterInstallationId', parseInt(e.target.value, 10))}
-                          placeholder=""
-                        >
-                          <option value="" />
-                          {heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlHeatElecHeaterInstallationId"
+                            label="Heating Elec. Heater Installation"
+                            onChange={(e) => setValue('ddlHeatElecHeaterInstallationId', parseInt(e.target.value, 10))}
+                            placeholder=""
+                          >
+                            {heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                       </Stack>
 
                       <Stack
                         spacing={1}
                         sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}
                       >
-                        <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
-                          <option value="" />
-                          {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}``
-                            </option>
-                          ))}
-                        </RHFSelect>
-                        <RHFSelect size="small" name="ddlHeatingFluidConcentrationId" label="Heating Fluid %">
-                          <option value="" />
-                          {heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
+                          <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
+                            {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}``
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl) && (
+                          <RHFSelect size="small" name="ddlHeatingFluidConcentrationId" label="Heating Fluid %">
+                            {heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFTextField
                           size="small"
                           name="txbHeatingFluidEntTemp"
@@ -1577,21 +1604,22 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                       }}
                     >
                       <Stack spacing={1}>
-                        <RHFSelect
-                          size="small"
-                          name="ddlReheatCompId"
-                          label="Reheat"
-                          placeholder=""
-                          sx={getDisplay(reheatInfo.divReheatCompVisible || ckbDehumidificationVal)}
-                          onChange={ddlReheatCompChanged}
-                        >
-                          <option value="" />
-                          {reheatInfo?.ddlReheatCompDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(reheatInfo.ddlReheatCompDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlReheatCompId"
+                            label="Reheat"
+                            placeholder=""
+                            sx={getDisplay(reheatInfo.divReheatCompVisible || ckbDehumidificationVal)}
+                            onChange={ddlReheatCompChanged}
+                          >
+                            {reheatInfo?.ddlReheatCompDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFTextField
                           size="small"
                           name="txbSummerReheatSetpointDB"
@@ -1725,38 +1753,40 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                       }}
                     >
                       <Stack spacing={1}>
-                        <RHFSelect
-                          size="small"
-                          name="ddlDamperAndActuatorId"
-                          label="Dampers & Actuator"
-                          sx={getDisplay(damperAndActuatorInfo.divDamperAndActuatorVisible)}
-                          onChange={(e) => {
-                            setValue('ddlDamperAndActuatorId', parseInt(e.target.value, 10));
-                          }}
-                          placeholder=""
-                        >
-                          <option value="" />
-                          {damperAndActuatorInfo.ddlDamperAndActuatorDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
-                        <RHFSelect
-                          size="small"
-                          name="ddlElecHeaterVoltageId"
-                          label="Elec. Heater Voltage"
-                          placeholder=""
-                          sx={getDisplay(elecHeaterVoltageInfo.divElecHeaterVoltageVisible)}
-                          onChange={ddlElecHeaterVoltageChanged}
-                        >
-                          <option value="" />
-                          {elecHeaterVoltageInfo.ddlElecHeaterVoltageDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(damperAndActuatorInfo.ddlDamperAndActuatorDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlDamperAndActuatorId"
+                            label="Dampers & Actuator"
+                            sx={getDisplay(damperAndActuatorInfo.divDamperAndActuatorVisible)}
+                            onChange={(e) => {
+                              setValue('ddlDamperAndActuatorId', parseInt(e.target.value, 10));
+                            }}
+                            placeholder=""
+                          >
+                            {damperAndActuatorInfo.ddlDamperAndActuatorDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        {isAvailable(elecHeaterVoltageInfo.ddlElecHeaterVoltageDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlElecHeaterVoltageId"
+                            label="Elec. Heater Voltage"
+                            placeholder=""
+                            sx={getDisplay(elecHeaterVoltageInfo.divElecHeaterVoltageVisible)}
+                            onChange={ddlElecHeaterVoltageChanged}
+                          >
+                            {elecHeaterVoltageInfo.ddlElecHeaterVoltageDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                         <RHFCheckbox
                           size="small"
                           name="ckbValveAndActuatorVal"
@@ -1775,19 +1805,20 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                         />
                       </Stack>
                       <Stack spacing={1}>
-                        <RHFSelect
-                          size="small"
-                          name="ddlValveTypeId"
-                          sx={getDisplay(valveTypeInfo.divValveTypeVisible)}
-                          label="Valve Type"
-                        >
-                          <option value="" />
-                          {valveTypeInfo.ddlValveTypeDataTbl?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
-                        </RHFSelect>
+                        {isAvailable(valveTypeInfo.ddlValveTypeDataTbl) && (
+                          <RHFSelect
+                            size="small"
+                            name="ddlValveTypeId"
+                            sx={getDisplay(valveTypeInfo.divValveTypeVisible)}
+                            label="Valve Type"
+                          >
+                            {valveTypeInfo.ddlValveTypeDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
                       </Stack>
                     </Box>
                   </AccordionDetails>
@@ -1809,74 +1840,84 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                     <Grid container spacing={5}>
                       <Grid item xs={4} md={4}>
                         <Stack spacing={3}>
-                          <RHFSelect
-                            size="small"
-                            name="ddlHandingId"
-                            label="Handing"
-                            placeholder=""
-                            value={getValues('ddlHandingId')}
-                            onChange={ddlHandingChanged}
-                          >
-                            {handingInfo.ddlHandingDataTbl.map((data, index) => (
-                              <option key={index} value={data.id}>
-                                {data.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlSupplyAirOpeningId"
-                            label="Supply Air Opening"
-                            placeholder=""
-                            onChange={ddlSupplyAirOpeningChanged}
-                          >
-                            {supplyAirOpeningInfo.ddlSupplyAirOpeningDataTbl.map((data, index) => (
-                              <option key={index} value={data.id}>
-                                {data.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlExhaustAirOpeningId"
-                            label="Exhaust Air Opening"
-                            sx={getDisplay(remainingOpeningsInfo.ddlExhaustAirOpeningVisible)}
-                            placeholder=""
-                            onChange={ddlExhaustAirOpeningChanged}
-                          >
-                            {remainingOpeningsInfo.ddlExhaustAirOpeningDataTbl.map((data, index) => (
-                              <option key={index} value={data.id}>
-                                {data.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlOutdoorAirOpeningId"
-                            label="Outdoor Air Opening"
-                            placeholder=""
-                            onChange={ddlOutdoorAirOpeningChanged}
-                          >
-                            {remainingOpeningsInfo.ddlOutdoorAirOpeningDataTbl.map((data, index) => (
-                              <option key={index} value={data.id}>
-                                {data.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
-                          <RHFSelect
-                            size="small"
-                            name="ddlReturnAirOpeningId"
-                            label="Return Air Opening"
-                            sx={getDisplay(remainingOpeningsInfo.ddlReturnAirOpeningVisible)}
-                            placeholder=""
-                            onChange={ddlReturnAirOpeningChanged}
-                          >
-                            {remainingOpeningsInfo.ddlReturnAirOpeningDataTbl.map((data, index) => (
-                              <option key={index} value={data.id}>
-                                {data.items}
-                              </option>
-                            ))}
-                          </RHFSelect>
+                          {isAvailable(handingInfo.ddlHandingDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlHandingId"
+                              label="Handing"
+                              placeholder=""
+                              value={getValues('ddlHandingId')}
+                              onChange={ddlHandingChanged}
+                            >
+                              {handingInfo.ddlHandingDataTbl.map((data, index) => (
+                                <option key={index} value={data.id}>
+                                  {data.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(supplyAirOpeningInfo.ddlSupplyAirOpeningDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlSupplyAirOpeningId"
+                              label="Supply Air Opening"
+                              placeholder=""
+                              onChange={ddlSupplyAirOpeningChanged}
+                            >
+                              {supplyAirOpeningInfo.ddlSupplyAirOpeningDataTbl.map((data, index) => (
+                                <option key={index} value={data.id}>
+                                  {data.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(remainingOpeningsInfo.ddlExhaustAirOpeningDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlExhaustAirOpeningId"
+                              label="Exhaust Air Opening"
+                              sx={getDisplay(remainingOpeningsInfo.ddlExhaustAirOpeningVisible)}
+                              placeholder=""
+                              onChange={ddlExhaustAirOpeningChanged}
+                            >
+                              {remainingOpeningsInfo.ddlExhaustAirOpeningDataTbl.map((data, index) => (
+                                <option key={index} value={data.id}>
+                                  {data.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(remainingOpeningsInfo.ddlOutdoorAirOpeningDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlOutdoorAirOpeningId"
+                              label="Outdoor Air Opening"
+                              placeholder=""
+                              onChange={ddlOutdoorAirOpeningChanged}
+                            >
+                              {remainingOpeningsInfo.ddlOutdoorAirOpeningDataTbl.map((data, index) => (
+                                <option key={index} value={data.id}>
+                                  {data.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
+                          {isAvailable(remainingOpeningsInfo.ddlReturnAirOpeningDataTbl) && (
+                            <RHFSelect
+                              size="small"
+                              name="ddlReturnAirOpeningId"
+                              label="Return Air Opening"
+                              sx={getDisplay(remainingOpeningsInfo.ddlReturnAirOpeningVisible)}
+                              placeholder=""
+                              onChange={ddlReturnAirOpeningChanged}
+                            >
+                              {remainingOpeningsInfo.ddlReturnAirOpeningDataTbl.map((data, index) => (
+                                <option key={index} value={data.id}>
+                                  {data.items}
+                                </option>
+                              ))}
+                            </RHFSelect>
+                          )}
                         </Stack>{' '}
                       </Grid>
                       <Grid item xs={8} md={8}>
