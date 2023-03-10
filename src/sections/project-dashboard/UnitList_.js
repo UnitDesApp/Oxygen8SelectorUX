@@ -127,7 +127,7 @@ export default function UnitList() {
   };
 
   const handleEditRow = (row) => {
-    navigate(PATH_UNIT.edit(projectId, row.unit_no), { state: {...row, intUnitTypeID: row.unit_no, intProductTypeID: row.product_type_id} });
+    navigate(PATH_UNIT.edit(projectId, row.unit_no), { state: {...row, intProductTypeID: row.product_type_id} });
   };
 
   const handleClickNewUnit = () => {

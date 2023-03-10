@@ -16,6 +16,7 @@ import {
   Grid,
   Box,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 
 import { useExport } from '../../hooks/useExport';
 
@@ -39,31 +40,37 @@ export default function ReportDialog({ isOpen, onClose, projectInfo }) {
     revit_files: false,
     quote: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { exportSelection, exportSchedule, exportRevit, exportQuote } = useExport();
 
   const onChangeMethods = (label, value) => {
     setMethods({ ...methods, [label]: !value });
   };
 
-  const onClickExports = () => {
+  const onClickExports = async () => {
+    setIsLoading(true);
     if (methods.selection) {
-      exportSelection(projectInfo);
+      await exportSelection(projectInfo);
     }
 
     if (methods.schedule) {
-      exportSchedule(projectInfo);
+      await exportSchedule(projectInfo);
     }
 
     if (methods.revit_files) {
-      exportRevit(projectInfo);
+      await exportRevit(projectInfo);
     }
 
     if (methods.quote) {
-      exportQuote(projectInfo);
+      await exportQuote(projectInfo);
     }
+    setIsLoading(false);
   };
 
-  console.log(isOpen);
+  const onCloseDialog = () => {
+    setIsLoading(false);
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
@@ -94,14 +101,14 @@ export default function ReportDialog({ isOpen, onClose, projectInfo }) {
         <DialogActions>
           <Grid container sx={{ width: '100%' }} spacing={3}>
             <Grid item xs={6}>
-              <Button fullWidth variant="outlined" onClick={onClose}>
+              <Button fullWidth variant="outlined" onClick={onCloseDialog}>
                 Cancel
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button fullWidth onClick={onClickExports} variant="contained" autoFocus>
+              <LoadingButton loading={isLoading} fullWidth onClick={onClickExports} variant="contained" autoFocus>
                 Export
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         </DialogActions>

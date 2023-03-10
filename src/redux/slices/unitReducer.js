@@ -37,52 +37,7 @@ const UnitSlice = createSlice({
     },
     setInitInfo(state, actions) {
       const { controlInfo, unitInfo } = actions.payload;
-      state.controlInfo = {
-        ualInfo: controlInfo.ualInfo,
-        locationInfo: controlInfo.locationInfo,
-        downshotInfo: controlInfo.downshotInfo,
-        orientationInfo: controlInfo.orientationInfo,
-        controlsPreferenceInfo: controlInfo.controlsPreferenceInfo,
-        unitTypeInfo: controlInfo.unitTypeInfo,
-        unitModelInfo: controlInfo.unitModelInfo,
-        unitVoltageInfo: controlInfo.unitVoltageInfo,
-        unitVoltageSPPInfo: controlInfo.unitVoltageSPPInfo,
-        bypassInfo: controlInfo.bypassInfo,
-        summerSupplyAirCFMInfo: controlInfo.summerSupplyAirCFMInfo,
-        summerReturnAirCFMInfo: controlInfo.summerReturnAirCFMInfo,
-        supplyAirESPInfo: controlInfo.supplyAirESPInfo,
-        returnAirESPInfo: controlInfo.returnAirESPInfo,
-        outdoorAirFilterInfo: controlInfo.outdoorAirFilterInfo,
-        returnAirFilterInfo: controlInfo.returnAirFilterInfo,
-        preheatRequiredInfo: controlInfo.preheatRequiredInfo,
-        componentInfo: controlInfo.componentInfo,
-        heatPumpInfo: controlInfo.heatPumpInfo,
-        dehumidificationInfo :controlInfo.dehumidificationInfo,
-        reheatInfo :controlInfo.reheatInfo,
-        damperAndActuatorInfo :controlInfo.damperAndActuatorInfo,
-        elecHeaterVoltageInfo : controlInfo.elecHeaterVoltageInfo,
-        preheatElecHeaterInstallationInfo :  controlInfo.preheatElecHeaterInstallationInfo,
-        heatElecHeaterInstallationInfo: controlInfo.heatElecHeaterInstallationInfo,
-        valveAndActuatorInfo : controlInfo.valveAndActuatorInfo,
-        drainPanInfo : controlInfo.drainPanInfo,
-        setpointsInfo :controlInfo.setpointsInfo,
-        preheatSetpointInfo :controlInfo.preheatSetpointInfo,
-        coolingSetpointInfo :controlInfo.coolingSetpointInfo,
-        heatingSetpointInfo : controlInfo.heatingSetpointInfo,
-        reheatSetpointInfo:  controlInfo.reheatSetpointInfo,
-        customInputsInfo: controlInfo.customInputsInfo, 
-        coolingFluidDesignCondInfo:  controlInfo.coolingFluidDesignCondInfo,
-        heatingFluidDesignCondInfo : controlInfo.heatingFluidDesignCondInfo,
-        dxCoilRefrigDesignCondInfo:  controlInfo.dxCoilRefrigDesignCondInfo,
-        condCoilRefrigDesignCondInfo: controlInfo.condCoilRefrigDesignCondInfo,
-        handingInfo: controlInfo.handingInfo,
-        preheatCoilHandingInfo: controlInfo.preheatCoilHandingInfo,
-        coolingCoilHandingInfo: controlInfo.coolingCoilHandingInfo,
-        heatingCoilHandingInfo: controlInfo.heatingCoilHandingInfo,
-        valveTypeInfo: controlInfo.valveTypeInfo,
-        supplyAirOpeningInfo:  controlInfo.supplyAirOpeningInfo,
-        remainingOpeningsInfo:  controlInfo.remainingOpeningsInfo,
-      };
+      state.controlInfo = controlInfo;
       state.unitInfo = {
         ...unitInfo,
         ddlHandingId: unitInfo.isLayout && unitInfo.ddlHandingId !== 0 ? unitInfo.ddlHandingId : 1,
@@ -91,7 +46,7 @@ const UnitSlice = createSlice({
         ddlSupplyAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlSupplyAirOpeningText !== '' ? unitInfo.ddlSupplyAirOpeningText : '1',
         ddlExhaustAirOpeningId:
-          unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningId!== 0 ? unitInfo.ddlExhaustAirOpeningId : 1,
+          unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningId !== 0 ? unitInfo.ddlExhaustAirOpeningId : 1,
         ddlExhaustAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlExhaustAirOpeningText !== '' ? unitInfo.ddlExhaustAirOpeningText : '2',
         ddlOutdoorAirOpeningId:
@@ -99,29 +54,9 @@ const UnitSlice = createSlice({
         ddlOutdoorAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlOutdoorAirOpeningText !== '' ? unitInfo.ddlOutdoorAirOpeningText : '4',
         ddlReturnAirOpeningId:
-          unitInfo.isLayout && unitInfo.ddlReturnAirOpeningId !== 0 ? unitInfo.ddlReturnAirOpeningId: 1,
+          unitInfo.isLayout && unitInfo.ddlReturnAirOpeningId !== 0 ? unitInfo.ddlReturnAirOpeningId : 1,
         ddlReturnAirOpeningText:
           unitInfo.isLayout && unitInfo.ddlReturnAirOpeningText !== '' ? unitInfo.ddlReturnAirOpeningText : '3',
-        ddlSupplyAirOpeningDataTbl: unitInfo.ddlSupplyAirOpeningDataTbl,
-        ddlOutdoorAirOpeningDataTbl: unitInfo.ddlOutdoorAirOpeningDataTbl,
-        ddlExhaustAirOpeningDataTbl: unitInfo.ddlExhaustAirOpeningDataTbl,
-        ddlReturnAirOpeningDataTbl: unitInfo.ddlReturnAirOpeningDataTbl,
-      };
-      state.layoutInfo = {
-        // ddlHandingDataTbl: controlInfo.ddlHandingDataTbl,
-        // ddlHandingId: controlInfo.ddlHandingDataTbl[0].id,
-        // ddlSupplyAirOpeningDataTbl: controlInfo.ddlSupplyAirOpeningDataTbl,
-        // ddlSupplyAirOpeningText: controlInfo.ddlSupplyAirOpeningText,
-        // ddlSupplyAirOpeningId: controlInfo.ddlSupplyAirOpeningId,
-        // ddlExhaustAirOpeningDataTbl: controlInfo.ddlExhaustAirOpeningDataTbl,
-        // ddlExhaustAirOpeningText: controlInfo.ddlExhaustAirOpeningText,
-        // ddlExhaustAirOpeningId: controlInfo.ddlExhaustAirOpeningId,
-        // ddlOutdoorAirOpeningDataTbl: controlInfo.ddlOutdoorAirOpeningDataTbl,
-        // ddlOutdoorAirOpeningText: controlInfo.ddlOutdoorAirOpeningText,
-        // ddlOutdoorAirOpeningId: controlInfo.ddlOutdoorAirOpeningId,
-        // ddlReturnAirOpeningDataTbl: controlInfo.ddlReturnAirOpeningDataTbl,
-        // ddlReturnAirOpeningText: controlInfo.ddlReturnAirOpeningText,
-        // ddlReturnAirOpeningId: controlInfo.ddlReturnAirOpeningId,
       };
       state.isLoading = false;
     },
@@ -147,7 +82,6 @@ const UnitSlice = createSlice({
         bypassInfo: data.bypassInfo,
         supplyAirOpeningInfo: data.others.supplyAirOpeningInfo,
       };
-      
     },
     txbSummerSupplyAirCFMChanged(state, actions) {
       const data = actions.payload;
@@ -205,19 +139,24 @@ const UnitSlice = createSlice({
         customInputsInfo: data.customInputsInfo,
         heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
       };
+
+      state.unitInfo = {
+        ...state.unitInfo,
+        ...data.unitInfo,
+      };
     },
     ddlCoolingCompChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
         ...state.controlInfo,
         heatPumpInfo: data.heatPumpInfo,
-        dehumidificationInfo:  data.dehumidificationInfo,
+        dehumidificationInfo: data.dehumidificationInfo,
         reheatInfo: data.reheatInfo,
         heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
         valveAndActuatorInfo: data.valveAndActuatorInfo,
         coolingCoilHandingInfo: data.coolingCoilHandingInfo,
         valveTypeInfo: data.valveTypeInfo,
-//        setpointsInfo: data.setpointsInfo,
+        //        setpointsInfo: data.setpointsInfo,
         coolingSetpointInfo: data.coolingSetpointInfo,
         heatingSetpointInfo: data.heatingSetpointInfo,
         reheatSetpointInfo: data.reheatSetpointInfo,
@@ -227,7 +166,6 @@ const UnitSlice = createSlice({
         condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
         supplyAirOpeningInfo: data.supplyAirOpeningInfo,
         remainingOpeningsInfo: data.remainingOpeningsInfo,
-
       };
     },
     ddlHeatingCompChanged(state, actions) {
@@ -345,9 +283,7 @@ const UnitSlice = createSlice({
       state.viewSelectionInfo = {
         pricingDetail: data.pricingOutput?.pricingDataTbl,
         pricingVisible: data.pricingOutput?.visible,
-        unitDetails: data.unitDetailsOutput?.unitDetails_1DataTbl.concat(
-          data.unitDetailsOutput?.unitDetails_2DataTbl
-        ),
+        unitDetails: data.unitDetailsOutput?.unitDetails_1DataTbl.concat(data.unitDetailsOutput?.unitDetails_2DataTbl),
         unitDetailsVisible: data.unitDetailsOutput.visible,
         electricalRequirements: {
           unitData: data.elecReqOutput?.unitDataTbl,
@@ -363,24 +299,15 @@ const UnitSlice = createSlice({
         },
         preheatElecHeater: {
           Visible: data?.preheatElecHeaterOutput?.visible,
-          Data: data?.preheatElecHeaterOutput?.featuresDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Data: data?.preheatElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         preheatHWC: {
           Visible: data?.preheatHWC_Output?.visible,
           Data: data?.preheatHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.preheatHWC_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Entering: data?.preheatHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.preheatHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
           ValveActuatorVisible: data?.preheatHWC_Output?.valveActuatorVisible,
-          ValveActuator: data?.preheatHWC_Output?.valveActuatorDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          ValveActuator: data?.preheatHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         heatExchCORE: {
           performanceVisible: data?.fixedPlateCORE_Output?.visible,
@@ -444,10 +371,7 @@ const UnitSlice = createSlice({
         coolingCWC: {
           Visible: data?.coolingCWC_Output?.visible,
           Data: data?.coolingCWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.coolingCWC_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Entering: data?.coolingCWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.coolingCWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
           ValveActuatorVisible: data?.coolingCWC_Output?.valveActuatorVisible,
           ValveActuator: data?.coolingCWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
@@ -455,52 +379,25 @@ const UnitSlice = createSlice({
         coolingDXC: {
           Visible: data?.coolingDXC_Output?.visible,
           Data: data?.coolingDXC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.coolingDXC_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          Leaving: data?.coolingDXC_Output?.leavingDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          PerfOutputs: data?.coolingDXC_Output?.performanceDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          EKEXV_Kit: data?.coolingDXC_Output?.ekexvKitDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Entering: data?.coolingDXC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          Leaving: data?.coolingDXC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          PerfOutputs: data?.coolingDXC_Output?.performanceDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          EKEXV_Kit: data?.coolingDXC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         heatingCondCoil: {
           Visible: data?.heatingCondCoilOutput?.visible,
-          Data: data?.heatingCondCoilOutput?.featuresDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          Entering: data?.heatingCondCoilOutput?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          Leaving: data?.heatingCondCoilOutput?.leavingDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Data: data?.heatingCondCoilOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          Entering: data?.heatingCondCoilOutput?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          Leaving: data?.heatingCondCoilOutput?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         heatingElecHeater: {
           Visible: data?.heatingElecHeaterOutput?.visible,
-          Data: data?.heatingElecHeaterOutput?.featuresDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Data: data?.heatingElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         heatingHWC: {
           Visible: data?.heatingHWC_Output?.visible,
           Data: data?.heatingHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.heatingHWC_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Entering: data?.heatingHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.heatingHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
           ValveActuatorVisible: data?.heatingHWC_Output?.valveActuatorVisible,
           ValveActuator: data?.heatingHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
@@ -520,22 +417,10 @@ const UnitSlice = createSlice({
         reheatHGRC: {
           Visible: data?.reheatHGRC_Output?.visible,
           Data: data?.reheatHGRC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.reheatHGRC_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          Leaving: data?.reheatHGRC_Output?.leavingDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          PerfOutputs: data?.reheatHGRC_Output?.performanceDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
-          EKEXV_Kit: data?.reheatHGRC_Output?.ekexvKitDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue,
-          ]),
+          Entering: data?.reheatHGRC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          Leaving: data?.reheatHGRC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          PerfOutputs: data?.reheatHGRC_Output?.performanceDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          EKEXV_Kit: data?.reheatHGRC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         supplyFan: {
           Visible: data?.supplyFanOutput?.visible,
@@ -605,6 +490,19 @@ const UnitSlice = createSlice({
         supplyAirOpeningInfo: data.supplyAirOpeningInfo,
         remainingOpeningsInfo: data.remainingOpeningsInfo,
       };
+
+      state.unitInfo = {
+        ...state.unitInfo,
+        ddlHandingId: parseInt(data.ddlHandingID, 10),
+        ddlSupplyAirOpeningText: data.supplyAirOpeningInfo.ddlSupplyAirOpeningText,
+        ddlSupplyAirOpeningId: parseInt(data.supplyAirOpeningInfo.ddlSupplyAirOpeningId, 10),
+        ddlExhaustAirOpeningText: data.remainingOpeningsInfo.ddlExhaustAirOpeningText,
+        ddlExhaustAirOpeningId: parseInt(data.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10),
+        ddlOutdoorAirOpeningText: data.remainingOpeningsInfo.ddlOutdoorAirOpeningText,
+        ddlOutdoorAirOpeningId: parseInt(data.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10),
+        ddlReturnAirOpeningText: data.remainingOpeningsInfo.ddlReturnAirOpeningText,
+        ddlReturnAirOpeningId: parseInt(data.remainingOpeningsInfo.ddlReturnAirOpeningId, 10),
+      };
     },
     ddlSupplyAirOpeningChanged(state, action) {
       const data = action.payload;
@@ -637,6 +535,7 @@ export function getInitUnitinfo(data) {
     const response = await axios.post(`${serverUrl}/api/units/getunitinfo`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.setInitInfo(response.data));
+    return response.data;
   };
 }
 
@@ -804,7 +703,7 @@ export function ddlPreheatCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlPreheatCompChanged`, data);
     console.log(response.data);
-    dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, ddlPreheatCompId: data.ddlPreheatCompId }));
+    dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, unitInfo: data }));
     return response.data;
   };
 }
@@ -836,7 +735,6 @@ export function ckbDehumidificationChanged(data) {
   };
 }
 
-
 export function ddlHeatingCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
@@ -846,7 +744,6 @@ export function ddlHeatingCompChanged(data) {
   };
 }
 
-
 export function ddlReheatCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
@@ -855,7 +752,6 @@ export function ddlReheatCompChanged(data) {
     return response.data;
   };
 }
-
 
 export function getViewSelectionInfo(data) {
   return async () => {
