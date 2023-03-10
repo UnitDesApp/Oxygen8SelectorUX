@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { capitalCase } from 'change-case';
 import { useParams, useNavigate } from 'react-router-dom';
 // @mui
@@ -18,6 +18,7 @@ import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
 import { UnitList, ProjectDetail, Quote, SubmittalInternal, Status, Notes } from '../sections/project-dashboard';
+import { ReportDialog } from '../sections/dialog';
 
 // ----------------------------------------------------------------------
 
@@ -63,8 +64,16 @@ export default function Project() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projectId, pageId } = useParams();
-
   const { projectInfo, isLoading } = useSelector((state) => state.projectDashboard);
+  const [openRPDialog, setOpenRPDialog] = useState(false);
+
+  const openDialog = () => {
+    setOpenRPDialog(true);
+  };
+
+  const closeDialog = () => {
+    setOpenRPDialog(false);
+  };
 
   useEffect(() => {
     dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
@@ -133,7 +142,7 @@ export default function Project() {
               links={[{ name: 'projects', href: PATH_PROJECTS.root }, { name: projectInfo.job_name }]}
               action={
                 <Stack spacing={2} direction="row" alignItems="flex-end" sx={{ mt: 3 }}>
-                  <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />}>
+                  <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
                     Export report
                   </Button>
                   <Button
@@ -164,6 +173,7 @@ export default function Project() {
               const isMatched = tab.value === currentTab;
               return isMatched && <Box key={tab.value}>{tab.component}</Box>;
             })}
+            <ReportDialog isOpen={openRPDialog} onClose={closeDialog} projectInfo={projectInfo} />
           </Container>
         )}
       </RootStyle>
