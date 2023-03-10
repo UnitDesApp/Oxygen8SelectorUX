@@ -76,12 +76,11 @@ export default function Router() {
             { path: 'project/new/', element: <ProjectEdit /> },
             { path: 'project/dashboard/:projectId', element: <ProjectDashboard /> },
             { path: 'project/edit/:projectId', element: <ProjectEdit /> },
-            { path: 'project/submittal/:projectId', element: <ProjectSubmittal />},
-            { path: 'project/quote/:projectId', element: <ProjectQuote />},
+            { path: 'project/submittal/:projectId', element: <ProjectSubmittal /> },
+            { path: 'project/quote/:projectId', element: <ProjectQuote /> },
             { path: 'unit/view/:projectId/', element: <UnitView /> },
             { path: 'unit/add/:projectId/', element: <UnitAdd /> },
-            { path: 'unit/configure/:projectId', element: <SetUnitInfo /> },
-            { path: 'unit/edit/:projectId/:unitId', element: <SetUnitInfo /> },
+            { path: 'unit/edit/:projectId/:unitId', element: <UnitEdit /> },
           ],
         },
       ],
@@ -106,8 +105,8 @@ const ProjectSubmittal = Loadable(lazy(() => import('../pages/ProjectSubmittal')
 const ProjectQuote = Loadable(lazy(() => import('../pages/ProjectQuote')));
 // Unit
 const UnitView = Loadable(lazy(() => import('../pages/UnitView')));
-const SetUnitInfo = Loadable(lazy(() => import('../pages/SetUnitInfo')));
 const UnitAdd = Loadable(lazy(() => import('../pages/UnitAdd')));
+const UnitEdit = Loadable(lazy(() => import('../pages/UnitEdit')));
 // MyAccount
 const Account = Loadable(lazy(() => import('../pages/Account')));
 

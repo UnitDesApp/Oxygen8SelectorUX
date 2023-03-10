@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 // import axios from '../../utils/axios';
-// FileSaveer
-import { saveAs } from 'file-saver';
 // store
 import { dispatch } from '../store';
 // utils
@@ -706,7 +704,7 @@ export function txbExhaustAirESPChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ExhaustAirESPChanged`, data);
     console.log(response.data);
-    dispatch(UnitSlice.actions.txbSupplyAirESPChanged(response.data));
+    dispatch(UnitSlice.actions.txbExhaustAirESPChanged(response.data));
     return response.data;
   };
 }

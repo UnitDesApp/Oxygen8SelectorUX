@@ -99,7 +99,7 @@ export default function ProjectDashboard() {
 
   useEffect(() => {
     dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const activeStep = unitList.length > 0 ? 2 : 1;
@@ -110,8 +110,8 @@ export default function ProjectDashboard() {
   };
 
   const onClickRequestQuote = () => {
-    navigate(PATH_PROJECT.quote(projectId), { state: unitList.length });    
-  }
+    navigate(PATH_PROJECT.quote(projectId), { state: unitList.length });
+  };
 
   return (
     <Page title="Project: Dashboard">
@@ -123,13 +123,6 @@ export default function ProjectDashboard() {
             <HeaderBreadcrumbs
               heading={projectInfo.job_name}
               links={[{ name: 'projects', href: PATH_PROJECTS.root }, { name: projectInfo.job_name }]}
-              action={
-                <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                  <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />}>
-                    Export report
-                  </Button>
-                </Stack>
-              }
             />
             <Card sx={{ padding: '50px', pb: '10px', pt: '20px', mb: 1 }}>
               <Grid container justifyContent={unitList.length > 0 ? 'center' : 'flex-start'}>

@@ -194,19 +194,28 @@ export default function AddNewUnit() {
           <Grid container>
             <Grid item xs={8}>
               <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} spacing={2}>
-                <Item sx={{ color: currentStep === 0 && theme.palette.primary.main }} onClick={() => setCurrentStep(0)}>
+                <Item
+                  sx={{ color: currentStep === 0 && theme.palette.primary.main, cursor: 'pointer' }}
+                  onClick={() => setCurrentStep(0)}
+                >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-one-fill" width="25px" height="25px" />
                     <Typography variant="body1">Select product type</Typography>
                   </Stack>
                 </Item>
-                <Item sx={{ color: currentStep === 1 && theme.palette.primary.main }} onClick={() => setCurrentStep(1)}>
+                <Item
+                  sx={{ color: currentStep === 1 && theme.palette.primary.main, cursor: 'pointer' }}
+                  onClick={() => setCurrentStep(1)}
+                >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-two-fill" width="25px" height="25px" />
                     <Typography variant="body1">Add unit info</Typography>
                   </Stack>
                 </Item>
-                <Item sx={{ color: currentStep === 2 && theme.palette.primary.main }} onClick={() => setCurrentStep(2)}>
+                <Item
+                  sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}
+                  onClick={() => setCurrentStep(2)}
+                >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
                     <Typography variant="body1">Make a selection</Typography>

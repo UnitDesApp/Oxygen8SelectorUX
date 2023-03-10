@@ -1,45 +1,53 @@
-import * as React from 'react';
-
-import { useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 // file-saver
-import { saveAs } from 'file-saver';
-
+// import { saveAs } from 'file-saver';
 // PropTypes
 import { PropTypes } from 'prop-types';
 
 // @mui
 import { styled } from '@mui/material/styles';
-
 import {
-  Box,
-  Paper,
   Container,
+  Box,
+  Grid,
+  Typography,
+  LinearProgress,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Stack,
+  Paper,
   TableContainer,
   Table,
   TableBody,
   TableRow,
   TableCell,
-  Stack,
-  Typography,
 } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
-
+// import { LoadingButton } from '@mui/lab';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
 import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
+
 // components
-import Image from '../../components/Image';
+import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
-import GraphChart from './GraphChart';
+import Image from '../../components/Image';
 // utils
-import axios from '../../utils/axios';
+// import axios from '../../utils/axios';
 // config
-import { serverUrl } from '../../config';
-// sections
-import Loading from '../Loading';
-// ----------------------------------------------------------------------
+// import { serverUrl } from '../../config';
+// theme
+
+//------------------------------------------------
+
+const RootStyle = styled('div')(({ theme }) => ({
+  paddingTop: theme.spacing(3),
+  marginBottom: '200px!important',
+  [theme.breakpoints.up('md')]: {
+    paddingTop: theme.spacing(3),
+  },
+}));
 
 const CustomGroupBoxBorder = styled(Box)(() => ({
   display: 'inline-flex',
@@ -52,7 +60,6 @@ const CustomGroupBoxBorder = styled(Box)(() => ({
   width: '100%',
   border: '1px solid black',
   borderRadius: '8px',
-  zIndex: '-999999',
 }));
 
 const CustomGroupBoxTitle = styled(Typography)(() => ({
@@ -95,25 +102,59 @@ function CustomGroupBox({ title, children, bordersx, titlesx }) {
   );
 }
 
-export default function Selection() {
-  const { jobId, unitId } = useParams();
+//------------------------------------------------
+Selection.propTypes = {
+  unitTypeData: PropTypes.object,
+  intUnitNo: PropTypes.number,
+};
+
+export default function Selection({ unitTypeData, intUnitNo }) {
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { state } = useLocation();
+  const { projectId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [expanded, setExpanded] = React.useState({
+    panel1: true,
+    panel2: true,
+    panel3: true,
+    panel4: true,
+    panel5: true,
+    panel6: true,
+    panel7: true,
+    panel8: true,
+    panel9: true,
+    panel10: true,
+    panel11: true,
+    panel12: true,
+    panel13: true,
+    panel14: true,
+    panel15: true,
+    panel16: true,
+    panel17: true,
+    panel18: true,
+    panel19: true,
+    panel20: true,
+  });
 
   const { viewSelectionInfo } = useSelector((state) => state.unit);
 
   useEffect(() => {
-    dispatch(
-      getViewSelectionInfo({
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: jobId,
-        intProductTypeID: state.intProductTypeID,
-        intUnitTypeID: state.intUnitTypeID,
-        intUnitNo: unitId === undefined ? -1 : unitId,
-        // ddlPreheatElecHeaterInstallation: preheatElectricHeater.ddlPreheatElecHeaterInstallationValue,
-      })
-    );
+    const getSelectionData = async () => {
+      await dispatch(
+        getViewSelectionInfo({
+          intUserID: localStorage.getItem('userId'),
+          intUAL: localStorage.getItem('UAL'),
+          intProjectID: projectId,
+          intProductTypeID: unitTypeData.intProductTypeID,
+          intUnitTypeID: unitTypeData.intUnitTypeID,
+          intUnitNo,
+        })
+      );
+      setIsLoading(false);
+    };
+
+    getSelectionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -124,32 +165,20 @@ export default function Selection() {
     unitDetailsVisible,
     electricalRequirements,
     preheatElecHeater,
-    // preheatElecHeaterVisible,
     preheatHWC,
-    // preheatHWCVisible,
     heatExchCORE,
     heatExchRECUTECH,
     heatExchPOLYBLOC,
     coolingCWC,
-    // coolingCWCVisible,
     coolingDXC,
-    // coolingDXCVisible,
     heatingCondCoil,
-    // heatingCondCoilVisible,
     heatingElecHeater,
-    // heatingElecHeaterVisible,
     heatingHWC,
-    // heatingHWCVisible,
     reheatElecHeater,
-    // reheatElecHeaterVisible,
     reheatHWC,
-    // reheatHWCVisible,
     reheatHGRC,
-    // reheatHGRCVisible,
     supplyFan,
-    // supplyFanVisible,
     exhaustFan,
-    // exhaustFanVisible,
     soundData,
   } = viewSelectionInfo;
   // console.log(electricalRequirements);
@@ -635,16 +664,6 @@ export default function Selection() {
             visible: soundData.Visible,
             subGroups: [
               {
-                // data: soundData.Data.map((item) => [item.cLabel, item.cValue_1,
-                //                                                   item.cValue_2,
-                //                                                   item.cValue_3,
-                //                                                   item.cValue_4,
-                //                                                   item.cValue_5,
-                //                                                   item.cValue_6,
-                //                                                   item.cValue_7,
-                //                                                   item.cValue_8,
-                //                                                   item.cValue_9,
-                //                                                   item.cValue_10]),
                 data: soundData?.Data,
               },
             ],
@@ -655,145 +674,136 @@ export default function Selection() {
   console.log(viewSelectionInfo);
   console.log(SelectionInfo);
 
-  const downloadPDF = async () => {
-    const data = {
-      intJobID: jobId,
-      intUnitNo: unitId,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-
-    await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
-      console.log(response);
-      // Get File Name
-      let filename = '';
-      const disposition = response.headers['content-disposition'];
-      if (disposition && disposition.indexOf('attachment') !== -1) {
-        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-        const matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) {
-          filename = matches[1].replace(/['"]/g, '');
-        }
-      }
-
-      // Save File
-      saveAs(response.data, `${filename}.pdf`);
-    });
-
-    console.log('Successed');
-  };
-
-  return JSON.stringify(viewSelectionInfo) === '{}' ? (
-    <Loading />
-  ) : (
-    <Container>
-      <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, mb: 3 }}>
-        <LoadingButton
-          variant="contained"
-          endIcon={<Iconify icon={'carbon:generate-pdf'} width="20px" height="20px" />}
-          onClick={downloadPDF}
-        >
-          Download
-        </LoadingButton>
-      </Stack>
-      <Stack spacing={5} sx={{ mt: 2 }}>
-        {SelectionInfo.map((item, index) => (
-          <CustomGroupBox
-            title={item.groupName}
-            key={item.groupName + index}
-            bordersx={{ display: item.visible !== true ? 'none' : 'block' }}
-            titlesx={{ fontSize: '25px', transform: 'translate(40px, -12px) scale(0.75)' }}
-          >
-            <Stack
-              direction={item.direction}
-              alignItems="stretch"
-              justifyContent="left"
-              spacing={3}
-              sx={{ ...item.style }}
-            >
-              {item.subGroups.map((element, index) =>
-                Array.isArray(element) ? (
-                  <Box>
-                    {element.map((ele, index) => (
-                      <CustomGroupBox
-                        title={ele.title}
-                        key={ele.title + index}
-                        bordersx={{
-                          display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
-                          width: 'auto',
-                          m: '20px 30px!important',
-                          padding: '20px',
-                        }}
-                        titlesx={{
-                          fontSize: '18px',
-                          transform: 'translate(25px, -10px) scale(0.75)',
-                        }}
-                      >
-                        <TableContainer component={Paper}>
-                          <Table size="small">
-                            <TableBody>
-                              {ele.data &&
-                                ele.data.map((row, index) => (
-                                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    {row.map((item, index) => (
-                                      <TableCell key={item + index} component="th" scope="row" align="left">
-                                        {item}
-                                      </TableCell>
-                                    ))}
-                                  </TableRow>
-                                ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </CustomGroupBox>
-                    ))}
-                  </Box>
-                ) : (
-                  <CustomGroupBox
-                    title={element.title}
-                    key={element.title + index}
-                    bordersx={{
-                      display:
-                        element.title === 'Graph' ||
-                        (element.data !== undefined && element.data.length > 0 ? 'block' : 'none'),
-                      width: 'auto',
-                      m: '20px 30px!important',
-                      padding: '20px',
-                    }}
-                    titlesx={{
-                      fontSize: '18px',
-                      transform: 'translate(25px, -10px) scale(0.75)',
-                    }}
+  return (
+    <Page title="Project: Edit">
+      <RootStyle>
+        <Container>
+          {isLoading ? (
+            <LinearProgress color="info" />
+          ) : (
+            <Stack spacing={5} sx={{ mt: 2 }}>
+              {SelectionInfo.map((item, index) => (
+                <Accordion
+                  key={index}
+                  expanded={expanded[`panel${index}`]}
+                  sx={{ display: item.visible !== true ? 'none' : 'block' }}
+                  onChange={() => setExpanded({ ...expanded, [`panel${index}`]: !expanded[`panel${index}`] })}
+                >
+                  <AccordionSummary
+                    expandIcon={<Iconify icon="il:arrow-down" />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
-                    {element.title === 'Graph' && (
-                      <Image src={state.intProductTypeID === 3 ? `/${element.data}` : element.data} height="100%" />
-                    )}
-
-                    {element.title !== 'Graph' && (
-                      <TableContainer component={Paper}>
-                        <Table size="small">
-                          <TableBody>
-                            {element.data &&
-                              element.data.map((row, index) => (
-                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                  {row.map((item, index) => (
-                                    <TableCell key={index} component="th" scope="row" align="left">
-                                      {item}
-                                    </TableCell>
-                                  ))}
-                                </TableRow>
+                    <Typography color="primary.main" variant="h6">
+                      {item.groupName}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid item xs={6}>
+                      <Stack
+                        direction={item.direction}
+                        alignItems="stretch"
+                        justifyContent="left"
+                        spacing={3}
+                        sx={{ ...item.style }}
+                      >
+                        {item.subGroups.map((element, index) =>
+                          Array.isArray(element) ? (
+                            <Box key={index}>
+                              {element.map((ele, index) => (
+                                <CustomGroupBox
+                                  title={ele.title}
+                                  key={ele.title + index}
+                                  bordersx={{
+                                    display: ele.data !== undefined && ele.data.length > 0 ? 'block' : 'none',
+                                    width: 'auto',
+                                    m: '20px 30px!important',
+                                    padding: '20px',
+                                  }}
+                                  titlesx={{
+                                    fontSize: '18px',
+                                    transform: 'translate(25px, -10px) scale(0.75)',
+                                  }}
+                                >
+                                  <TableContainer component={Paper}>
+                                    <Table size="small">
+                                      <TableBody>
+                                        {ele.data &&
+                                          ele.data.map((row, index) => (
+                                            <TableRow
+                                              key={index}
+                                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                              {row.map((item, index) => (
+                                                <TableCell key={item + index} component="th" scope="row" align="left">
+                                                  {item}
+                                                </TableCell>
+                                              ))}
+                                            </TableRow>
+                                          ))}
+                                      </TableBody>
+                                    </Table>
+                                  </TableContainer>
+                                </CustomGroupBox>
                               ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    )}
-                  </CustomGroupBox>
-                )
-              )}
+                            </Box>
+                          ) : (
+                            <CustomGroupBox
+                              title={element.title}
+                              key={element.title + index}
+                              bordersx={{
+                                display:
+                                  element.title === 'Graph' ||
+                                  (element.data !== undefined && element.data.length > 0 ? 'block' : 'none'),
+                                width: 'auto',
+                                m: '20px 30px!important',
+                                padding: '20px',
+                              }}
+                              titlesx={{
+                                fontSize: '18px',
+                                transform: 'translate(25px, -10px) scale(0.75)',
+                              }}
+                            >
+                              {element.title === 'Graph' && (
+                                <Image
+                                  src={unitTypeData.intProductTypeID === 3 ? `/${element.data}` : element.data}
+                                  height="100%"
+                                />
+                              )}
+
+                              {element.title !== 'Graph' && (
+                                <TableContainer component={Paper}>
+                                  <Table size="small">
+                                    <TableBody>
+                                      {element.data &&
+                                        element.data.map((row, index) => (
+                                          <TableRow
+                                            key={index}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                          >
+                                            {row.map((item, index) => (
+                                              <TableCell key={index} component="th" scope="row" align="left">
+                                                {item}
+                                              </TableCell>
+                                            ))}
+                                          </TableRow>
+                                        ))}
+                                    </TableBody>
+                                  </Table>
+                                </TableContainer>
+                              )}
+                            </CustomGroupBox>
+                          )
+                        )}
+                      </Stack>
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
             </Stack>
-          </CustomGroupBox>
-        ))}
-      </Stack>
-    </Container>
+          )}
+        </Container>
+      </RootStyle>
+    </Page>
   );
 }

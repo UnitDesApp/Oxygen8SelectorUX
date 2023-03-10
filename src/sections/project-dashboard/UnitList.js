@@ -48,7 +48,7 @@ const TABLE_HEAD = [
 export default function UnitList() {
   const { projectId } = useParams();
   const { unitList } = useSelector((state) => state.projectDashboard);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   console.log(unitList);
 
@@ -128,7 +128,7 @@ export default function UnitList() {
 
   const handleEditRow = (row) => {
     navigate(PATH_UNIT.edit(projectId, row.unit_no), {
-      state: { ...row, intUnitTypeID: row.unit_no, intProductTypeID: row.product_type_id },
+      state: { ...row, intUnitTypeID: row.unit_nbr, intProductTypeID: row.product_type_id },
     });
   };
 
