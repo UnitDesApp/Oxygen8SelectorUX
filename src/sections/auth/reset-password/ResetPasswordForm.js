@@ -10,28 +10,25 @@ import sign from 'jwt-encode';
 import { styled } from '@mui/material/styles';
 import { Stack, Alert, Typography, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// Layout
-import LogoOnlyLayout from '../../../layouts/LogoOnlyLayout';
 
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
-// components
+// hooks
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+// components
+import Iconify from '../../../components/Iconify';
 // utils
 import axios from '../../../utils/axios';
 // config
 import { serverUrl } from '../../../config';
 // ----------------------------------------------------------------------
 
-
-const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
+const ContentStyle = styled('div')(() => ({
+  width: '100%',
   margin: 'auto',
-  minHeight: '100vh',
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
-  padding: theme.spacing(12, 0),
 }));
 
 // ----------------------------------------------------------------------
@@ -79,29 +76,30 @@ export default function ResetPasswordForm() {
 
   return (
     <ContentStyle sx={{ textAlign: 'center' }}>
-      <LogoOnlyLayout />
       <Typography variant="h3" paragraph>
-        Forgot your password?
+        Forgot password?
       </Typography>
 
-      <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-        Please enter the email address associated with your account and We will email you a link to reset your password.
-      </Typography>
+      <Typography sx={{ color: 'text.secondary', mb: 3 }}>No worries, we'll send you reset instructions.</Typography>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-
           <RHFTextField name="email" label="Email address" />
-
           <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
             Send Request
           </LoadingButton>
         </Stack>
       </FormProvider>
-      <Button fullWidth size="large" component={RouterLink} to={PATH_AUTH.login} sx={{ mt: 1 }}>
-          Back
+      <Button
+        fullWidth
+        size="large"
+        component={RouterLink}
+        to={PATH_AUTH.login}
+        sx={{ mt: 3 }}
+        startIcon={<Iconify icon="ic:twotone-arrow-back" />}
+      >
+        Back to log in
       </Button>
-
     </ContentStyle>
   );
 }

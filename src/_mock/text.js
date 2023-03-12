@@ -11,7 +11,7 @@ export const title = [
   'Event On A Budget: 7 Tips From The Great Depression',
   'Knowing These 7 Secrets Will Make Your Event Look Amazing',
   'Master The Art Of Event With These 7 Tips',
-  'My Life, My Job, My Career: How 7 Simple Event Helped Me Succeed',
+  'My Life, My Project, My Career: How 7 Simple Event Helped Me Succeed',
   'Take Advantage Of Event - Read These 7 Tips',
   'The Next 7 Things You Should Do For Event Success',
   'The Time Is Running Out! Think About These 7 Ways To Change Your Event',

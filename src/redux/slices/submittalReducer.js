@@ -19,7 +19,7 @@ const initialState = {
 };
 
 const SubmittalSlice = createSlice({
-  name: 'jobs',
+  name: 'projects',
   initialState,
   reducers: {
     startLoading(state) {
