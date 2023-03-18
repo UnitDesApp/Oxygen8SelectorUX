@@ -17,12 +17,10 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  TextField,
   Button,
   Snackbar,
   Alert,
   Typography,
-  IconButton,
   ToggleButtonGroup,
   ToggleButton,
   LinearProgress,
@@ -39,14 +37,10 @@ import * as quoteReducer from '../../redux/slices/quoteReducer';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import { FormProvider, RHFTextField, RHFSelect } from '../../components/hook-form';
+import QuoteMiscDataTable from './QuoteMiscDataTable';
+import QuoteNoteDataTable from './QuoteNoteDataTable';
 
 // ----------------------------------------------------------------------
-const DefaultMiscValues = {
-  txbMisc: '',
-  txbMiscQty: '1',
-  txbMiscPrice: '0.0',
-};
-
 const CustomGroupBoxBorder = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   flexDirection: 'column',
@@ -65,7 +59,6 @@ const CustomGroupBoxTitle = styled(Typography)(() => ({
   fontSize: '25px',
   fontFamily: '"Public Sans", sans-serif',
   fontWeight: 400,
-  // color: 'rgb(145, 158, 171)',
   display: 'block',
   transformOrigin: 'left top',
   whiteSpace: 'nowrap',
@@ -102,10 +95,6 @@ function CustomGroupBox({ title, children, bordersx, titlesx }) {
 }
 
 // ----------------------------------------------------------------------
-// Quote.propTypes = {
-
-// };
-
 export default function Quote() {
   const theme = useTheme();
   const { projectId } = useParams();
@@ -566,7 +555,7 @@ export default function Quote() {
                 </Grid>
                 <Grid item xs={12}>
                   <CustomGroupBox title="Added Miscellaneous">
-                    <MiscNotesEditTable
+                    <QuoteMiscDataTable
                       tableData={gvMisc.gvMiscDataSource}
                       addRow={addMisc}
                       updateRow={updateMisc}
@@ -576,7 +565,7 @@ export default function Quote() {
                 </Grid>
                 <Grid item xs={12}>
                   <CustomGroupBox title="Added Note">
-                    <NotesEditTable
+                    <QuoteNoteDataTable
                       tableData={gvNotes.gvNotesDataSource}
                       addRow={addNotes}
                       updateRow={updateNotes}
@@ -636,267 +625,5 @@ export default function Quote() {
         </>
       )}
     </Box>
-  );
-}
-
-NotesEditTable.propTypes = {
-  tableData: PropTypes.array,
-  addRow: PropTypes.func,
-  deleteRow: PropTypes.func,
-  updateRow: PropTypes.func,
-};
-
-function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
-  const [txbNotes, setNotes] = useState('');
-  const [selectedID, setSelectedID] = useState(-1);
-  const theme = useTheme();
-
-  const addNoteClicked = async () => {
-    if (txbNotes) {
-      await addRow(txbNotes);
-      setNotes('');
-      setSelectedID(-1);
-    }
-  };
-
-  const updateNoteClicked = async () => {
-    await updateRow(txbNotes, selectedID);
-    setNotes('');
-    setSelectedID(-1);
-  };
-
-  const cancelEditClicked = () => {
-    setNotes('');
-    setSelectedID(-1);
-  };
-
-  const selectRowClicked = (txt, id) => {
-    setNotes(txt);
-    setSelectedID(id);
-  };
-
-  return (
-    <>
-      <Stack direction="row" spacing={2}>
-        <TextField
-          sx={{ width: '70%' }}
-          size="small"
-          name="txbNotes"
-          label="Enter Note"
-          value={txbNotes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
-        {selectedID > 0 ? (
-          <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
-            <Button
-              sx={{ width: '50%', borderRadius: '5px', mt: '1px' }}
-              variant="contained"
-              onClick={updateNoteClicked}
-            >
-              Update Notes
-            </Button>
-            <Button
-              sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
-              variant="contained"
-              onClick={cancelEditClicked}
-            >
-              Cancel
-            </Button>
-          </Stack>
-        ) : (
-          <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addNoteClicked}>
-            Add Notes
-          </Button>
-        )}
-      </Stack>
-      <Box sx={{ pt: '10px' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell component="th" sx={{ width: '20%' }} align="center">
-                No
-              </TableCell>
-              <TableCell component="th" sx={{ width: '70%' }} align="center">
-                Notes
-              </TableCell>
-              <TableCell component="th" sx={{ width: '5%' }} align="center" />
-              <TableCell component="th" sx={{ width: '5%' }} align="center" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tableData !== undefined &&
-              tableData.map((row) => (
-                <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell component="th" scope="row" align="center">
-                    {row.notes_no}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    {row.notes}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    <IconButton
-                      sx={{ color: theme.palette.success.main }}
-                      onClick={() => selectRowClicked(row.notes, row.notes_no)}
-                    >
-                      <Iconify icon={'material-symbols:edit-square-outline'} />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.notes_no)}>
-                    <IconButton sx={{ color: theme.palette.warning.main }}>
-                      <Iconify icon={'ion:trash-outline'} />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </Box>
-    </>
-  );
-}
-
-MiscNotesEditTable.propTypes = {
-  tableData: PropTypes.array,
-  addRow: PropTypes.func,
-  deleteRow: PropTypes.func,
-  updateRow: PropTypes.func,
-};
-
-function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
-  const [objMisc, setMisc] = useState(DefaultMiscValues);
-  const [selectedID, setSelectedID] = useState(-1);
-  const theme = useTheme();
-
-  const addMiscClicked = () => {
-    if (objMisc.txbMisc) {
-      addRow(objMisc);
-      setMisc(DefaultMiscValues);
-      setSelectedID(-1);
-    }
-  };
-
-  const updateMiscClicked = () => {
-    updateRow(objMisc, selectedID);
-    setMisc(DefaultMiscValues);
-    setSelectedID(-1);
-  };
-
-  const cancelEditClicked = () => {
-    setMisc(DefaultMiscValues);
-    setSelectedID(-1);
-  };
-
-  const selectRowClicked = (row) => {
-    setMisc({
-      txbMisc: row.misc,
-      txbMiscQty: row.qty,
-      txbMiscPrice: row.price.substring(1),
-    });
-    setSelectedID(row.misc_no);
-  };
-
-  return (
-    <>
-      <Stack direction="row" spacing={2}>
-        <TextField
-          sx={{ width: '55%' }}
-          size="small"
-          name="txbMisc"
-          label="Enter Miscellaneous"
-          value={objMisc.txbMisc}
-          onChange={(e) => setMisc({ ...objMisc, txbMisc: e.target.value })}
-        />
-        <TextField
-          sx={{ width: '15%' }}
-          size="small"
-          name="txbQty"
-          label="Enter QTY"
-          value={objMisc.txbMiscQty}
-          onChange={(e) => setMisc({ ...objMisc, txbMiscQty: e.target.value })}
-        />
-        <TextField
-          sx={{ width: '15%' }}
-          size="small"
-          name="txbPrice"
-          label="Enter Price"
-          value={objMisc.txbMiscPrice}
-          onChange={(e) => setMisc({ ...objMisc, txbMiscPrice: e.target.value })}
-        />
-
-        {selectedID > 0 ? (
-          <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
-            <Button
-              sx={{ width: '50%', borderRadius: '5px', mt: '1px' }}
-              variant="contained"
-              onClick={updateMiscClicked}
-            >
-              Update Misc
-            </Button>
-            <Button
-              sx={{ width: '30%', borderRadius: '5px', mt: '1px' }}
-              variant="contained"
-              onClick={cancelEditClicked}
-            >
-              Cancel
-            </Button>
-          </Stack>
-        ) : (
-          <Button sx={{ width: '30%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={addMiscClicked}>
-            Add Misc
-          </Button>
-        )}
-      </Stack>
-      <Box sx={{ pt: '10px' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell component="th" sx={{ width: '10%' }} scope="row" align="center">
-                No
-              </TableCell>
-              <TableCell component="th" sx={{ width: '60%' }} scope="row" align="center">
-                Miscellaneous
-              </TableCell>
-              <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
-                Qty
-              </TableCell>
-              <TableCell component="th" sx={{ width: '15%' }} scope="row" align="center">
-                Price
-              </TableCell>
-              <TableCell component="th" sx={{ width: '5%' }} align="center" />
-              <TableCell component="th" sx={{ width: '5%' }} align="center" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tableData !== undefined &&
-              tableData.map((row) => (
-                <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell component="th" scope="row" align="center">
-                    {row.misc_no}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    {row.misc}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    {row.qty}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    {row.price}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    <IconButton sx={{ color: theme.palette.success.main }} onClick={() => selectRowClicked(row)}>
-                      <Iconify icon={'material-symbols:edit-square-outline'} />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.misc_no)}>
-                    <IconButton sx={{ color: theme.palette.warning.main }}>
-                      <Iconify icon={'ion:trash-outline'} />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </Box>
-    </>
   );
 }

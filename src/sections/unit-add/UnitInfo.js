@@ -355,8 +355,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   } = methods;
 
   useEffect(() => {
-    // reset(defaultValues);
-  }, [reset, defaultValues]);
+    if (!isLoading) reset(defaultValues);
+  }, [reset, defaultValues, isLoading]);
 
   const getDisplay = (key) => ({ display: key ? 'block' : 'none' });
 
@@ -410,7 +410,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
   };
 
-  // const txbSummerSupplyAirCFMChanged = async () => { 
+  // const txbSummerSupplyAirCFMChanged = async () => {
   //   setValue('ddlOrientationId', result.ddlOrientationId);
   //   setValue('ddlUnitModelId', result.ddlUnitModelId);
   //   setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
