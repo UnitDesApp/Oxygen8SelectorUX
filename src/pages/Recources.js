@@ -1,14 +1,16 @@
+import React, { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Card, CardHeader, CardContent, Grid, List, ListItem, IconButton, Link } from '@mui/material';
+import { Box, Button, Container, Divider } from '@mui/material';
 
 // components
 import Page from '../components/Page';
-import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+import Iconify from '../components/Iconify';
 
-// hooks
-import useTabs from '../hooks/useTabs';
+// sections
+import { ResourceTable, ResourceHeader } from '../sections/resources';
+
 // ----------------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -18,134 +20,206 @@ const RootStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
-  padding: '15px 30px',
-  color: 'white',
-  background: theme.palette.primary.main,
-}));
-
 // ----------------------------------------------------------------------
 
-const groups = [
+const resources = [
   {
-    commercial: {
-      name: 'Literature & Brochures Commercial',
-      items: [
-        {
-          title: 'Flexible Connections',
-          href: '/assets/Layouts/layout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-        {
-          title: 'Flexible Connections',
-          href: '/assets/Layouts/layout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-        {
-          title: 'Flexible Connections',
-          href: '/assets/Layouts/layout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-        {
-          title: 'Flexible Connections',
-          href: '/assets/Layouts/layout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-        {
-          title: 'Flexible Connections',
-          href: '/assets/Layouts/layout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-        {
-          title: 'Flexible Connections',
-          href: '/assets/Layouts/layout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-      ],
-    },
-    residential: {
-      name: 'Literature & Brochures Commercial',
-      items: [
-        {
-          title: 'Flexible Connections',
-          href: '/public/assets/Layoutslayout_nova_in_h_lh.png',
-          icon: 'fluent:document-pdf-20-regular',
-          state: 1,
-        },
-      ],
-    },
+    title: 'NOVA',
+    id: 'nova',
+    items: [
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+    ],
+  },
+  {
+    title: 'TERRA',
+    id: 'terra',
+    items: [
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+    ],
+  },
+  {
+    title: 'VENTUM',
+    id: 'ventum',
+    items: [
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+    ],
+  },
+  {
+    title: 'VENTUM LITE',
+    id: 'ventum_lite',
+    items: [
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+      {
+        fileName: 'Flexible Connections',
+        fileType: 'PDF',
+        date: 'Jan 10, 2022',
+        href: '/assets/Layouts/layout_nova_in_h_lh.png',
+      },
+    ],
   },
 ];
 
 export default function Resources() {
-  const { currentTab, onChangeTab } = useTabs('general');
+  const [currentTab, onChangeTab] = useState('all');
   return (
     <Page title="Resources">
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
-          <HeaderBreadcrumbs heading="Resources" links={[{ name: 'Resources' }]} />
-          {groups.map((group, index) => (
-            <Grid key={index} container spacing={1} sx={{ mt: 2, display: 'flex' }}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ height: '100%' }}>
-                  <CardHeaderStyle title={group.commercial.name} />
-                  <CardContent>
-                    <List dense>
-                      {group.commercial.items.map((item, index) => (
-                        <ListItem
-                          key={index}
-                          secondaryAction={
-                            <IconButton edge="end" aria-label="delete">
-                              <Iconify icon={item.icon} />
-                            </IconButton>
-                          }
-                        >
-                          <Link
-                            component="a"
-                            href={item.href}
-                            sx={{
-                              fontWeight: item.state ? '1000' : '300',
-                              cursor: item.state ? 'pointor' : 'not-allowed',
-                            }}
-                            download
-                          >
-                            {item.title}
-                          </Link>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ height: '100%' }}>
-                  <CardHeaderStyle title={group.residential.name} />
-                  <CardContent>
-                    <List dense>
-                      {group.residential.items.map((item, index) => (
-                        <ListItem
-                          key={index}
-                          secondaryAction={
-                            <IconButton edge="end" aria-label="delete">
-                              <Iconify icon={item.icon} />
-                            </IconButton>
-                          }
-                        >
-                          <Link href="#">{item.title}</Link>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-          ))}
+          <HeaderBreadcrumbs
+            heading="Resources"
+            links={[{ name: '', href: '' }]}
+            action={
+              <Button variant="contained" startIcon={<Iconify icon="ic:outline-plus" />}>
+                Oxygen8 sales team contact sheet
+              </Button>
+            }
+          />
+          <ResourceHeader curValue={currentTab} updateCurValue={onChangeTab} />
+          <Divider sx={{ my: 3 }} />
+          <Box
+            sx={{ display: 'grid', gridTemplateColumns: currentTab === 'all' ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)' }}
+          >
+            {resources.map(
+              (res) =>
+                (res.id === currentTab || currentTab === 'all') && (
+                  <ResourceTable key={res.id} objResources={res.items} title={res.title} sx={{ width: '100%' }} />
+                )
+            )}
+          </Box>
         </Container>
       </RootStyle>
     </Page>

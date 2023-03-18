@@ -374,18 +374,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   // handle submit
   const onSubmit = async () => {
     try {
-      const data = {
-        ...getAllFormData(),
-        ddlHandingId: layoutInfo.ddlHandingId,
-        ddlSupplyAirOpeningId: layoutInfo.ddlSupplyAirOpeningId,
-        ddlSupplyAirOpeningText: layoutInfo.ddlSupplyAirOpeningText,
-        ddlExhaustAirOpeningId: layoutInfo.ddlExhaustAirOpeningId,
-        ddlExhaustAirOpeningText: layoutInfo.ddlExhaustAirOpeningText,
-        ddlOutdoorAirOpeningId: layoutInfo.ddlOutdoorAirOpeningId,
-        ddlOutdoorAirOpeningText: layoutInfo.ddlOutdoorAirOpeningText,
-        ddlReturnAirOpeningId: layoutInfo.ddlReturnAirOpeningId,
-        ddlReturnAirOpeningText: layoutInfo.ddlReturnAirOpeningText,
-      };
+      const data = getAllFormData();
 
       console.log('--------------------- Submit Data----------------------');
       console.log(data);
@@ -421,31 +410,30 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
   };
 
-  const txbSummerSupplyAirCFMChanged = async () => {
-    const result = await dispatch(unitReducer.txbSummerSupplyAirCFMChanged(getAllFormData()));
-    setValue('ddlOrientationId', result.ddlOrientationId);
-    setValue('ddlUnitModelId', result.ddlUnitModelId);
-    setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-    setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
-    setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
-    setValue('txbSummerSupplyAirCFM', result.txbSummerSupplyAirCFM);
-    setValue('txbSummerReturnAirCFM', result.txbSummerReturnAirCFM);
-  };
+  // const txbSummerSupplyAirCFMChanged = async () => { 
+  //   setValue('ddlOrientationId', result.ddlOrientationId);
+  //   setValue('ddlUnitModelId', result.ddlUnitModelId);
+  //   setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
+  //   setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
+  //   setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
+  //   setValue('txbSummerSupplyAirCFM', result.txbSummerSupplyAirCFM);
+  //   setValue('txbSummerReturnAirCFM', result.txbSummerReturnAirCFM);
+  // };
 
-  const txbSummerReturnAirCFMChanged = async () => {
-    const result = await dispatch(unitReducer.txbSummerReturnAirCFMChanged(getAllFormData()));
-    setValue('txbSummerReturnAirCFM', result);
-  };
+  // const txbSummerReturnAirCFMChanged = async () => {
+  //   const result = await dispatch(unitReducer.txbSummerReturnAirCFMChanged(getAllFormData()));
+  //   setValue('txbSummerReturnAirCFM', result.summerReturnAirCFMInfo.summerReturnAirCFM);
+  // };
 
-  const txbSupplyAirESPChanged = async () => {
-    const result = await dispatch(unitReducer.txbSupplyAirESPChanged(getAllFormData()));
-    setValue('txbSupplyAirESP', result);
-  };
+  // const txbSupplyAirESPChanged = async () => {
+  //   const result = await dispatch(unitReducer.txbSupplyAirESPChanged(getAllFormData()));
+  //   setValue('txbSupplyAirESP', result);
+  // };
 
-  const txbExhaustAirESPChanged = async () => {
-    const result = await dispatch(unitReducer.txbExhaustAirESPChanged(getAllFormData()));
-    setValue('txbExhaustAirESP', result);
-  };
+  // const txbExhaustAirESPChanged = async () => {
+  //   const result = await dispatch(unitReducer.txbExhaustAirESPChanged(getAllFormData()));
+  //   setValue('txbExhaustAirESP', result);
+  // };
 
   const ddlUnitModelChanged = async (e) => {
     setValue('ddlUnitModelId', parseInt(e.target.value, 10));
@@ -880,7 +868,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             size="small"
                             name="txbSummerSupplyAirCFM"
                             label="Supply Air (CFM)"
-                            onBlur={txbSummerSupplyAirCFMChanged}
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSummerSupplyAirCFM');
                             }}
@@ -890,7 +877,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             name="txbSummerReturnAirCFM"
                             label="Exhaust Air (CFM)"
                             sx={getDisplay(!isUnitTypeAHU())}
-                            onBlur={txbSummerReturnAirCFMChanged}
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSummerReturnAirCFM');
                             }}
@@ -899,7 +885,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             size="small"
                             name="txbSupplyAirESP"
                             label="Supply Air ESP (inH2O)"
-                            onBlur={txbSupplyAirESPChanged}
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSupplyAirESP');
                             }}
@@ -909,7 +894,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             name="txbExhaustAirESP"
                             label="Supply Air ESP(inH2O)"
                             sx={getDisplay(!isUnitTypeAHU())}
-                            onBlur={txbExhaustAirESPChanged}
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbExhaustAirESP');
                             }}
@@ -1078,10 +1062,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                         )}
                       </Stack>
 
-                      <Stack
-                        spacing={1}
-                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) }}
-                      >
+                      <Stack spacing={1} sx={{ ...getDisplay(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (

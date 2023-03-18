@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import * as Yup from 'yup';
-import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // @mui
@@ -43,7 +43,7 @@ import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar';
-import { FormProvider, RHFTextField, RHFSelect, RHFCheckbox } from '../components/hook-form';
+import { FormProvider, RHFTextField, RHFSelect } from '../components/hook-form';
 // utils
 import axios from '../utils/axios';
 // config
@@ -68,20 +68,20 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 //------------------------------------------------
 
-const ProjectInfoTableHeader = [
-  'QTY',
-  'TAG',
-  'ITEM',
-  'MODEL',
-  'VOLTAGE',
-  'CONTROLS PREFERENCE',
-  'INSTALLATION',
-  'DUCT CONNECTION',
-  'HANDING',
-  'PART DESC',
-  'PART NUMBER',
-  'PRICING',
-];
+// const ProjectInfoTableHeader = [
+//   'QTY',
+//   'TAG',
+//   'ITEM',
+//   'MODEL',
+//   'VOLTAGE',
+//   'CONTROLS PREFERENCE',
+//   'INSTALLATION',
+//   'DUCT CONNECTION',
+//   'HANDING',
+//   'PART DESC',
+//   'PART NUMBER',
+//   'PRICING',
+// ];
 
 const DefaultMiscValues = {
   txbMisc: '',
@@ -206,7 +206,7 @@ export default function JobQuote() {
     const data = {
       ...objMisc,
       intJobID: projectId,
-      miscNo
+      miscNo,
     };
     await dispatch(quoteReducer.updateMisc(data));
   };
@@ -214,11 +214,10 @@ export default function JobQuote() {
   const deleteMisc = async (miscNo) => {
     const data = {
       intJobID: projectId,
-      miscNo
+      miscNo,
     };
     await dispatch(quoteReducer.deleteMisc(data));
   };
-
 
   // event handler for adding notes
   const addNotes = async (txbNotes) => {
@@ -233,7 +232,7 @@ export default function JobQuote() {
     const data = {
       intJobID: projectId,
       txbNotes,
-      notesNo
+      notesNo,
     };
     await dispatch(quoteReducer.updateNotes(data));
   };
@@ -241,7 +240,7 @@ export default function JobQuote() {
   const deleteNotes = async (notesNo) => {
     const data = {
       intJobID: projectId,
-      notesNo
+      notesNo,
     };
     await dispatch(quoteReducer.deleteNotes(data));
   };
@@ -275,7 +274,7 @@ export default function JobQuote() {
     }
 
     // Save File
-    saveAs(response.data, `${filename}.pdf`);  
+    saveAs(response.data, `${filename}.pdf`);
   };
 
   // export pdf of form data
@@ -584,7 +583,12 @@ export default function JobQuote() {
                 <Card sx={{ mb: 3 }}>
                   <CardHeaderStyle title="Added Miscellaneous" />
                   <CardContent>
-                    <MiscNotesEditTable tableData={gvMisc.gvMiscDataSource} addRow={addMisc} updateRow={updateMisc} deleteRow={deleteMisc}/>
+                    <MiscNotesEditTable
+                      tableData={gvMisc.gvMiscDataSource}
+                      addRow={addMisc}
+                      updateRow={updateMisc}
+                      deleteRow={deleteMisc}
+                    />
                   </CardContent>
                 </Card>
               </Grid>
@@ -692,7 +696,11 @@ function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
         />
         {selectedID > 0 ? (
           <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
-            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={updateNoteClicked}>
+            <Button
+              sx={{ width: '50%', borderRadius: '5px', mt: '1px' }}
+              variant="contained"
+              onClick={updateNoteClicked}
+            >
               Update Notes
             </Button>
             <Button
@@ -724,29 +732,30 @@ function NotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData !== undefined && tableData.map((row) => (
-              <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row" align="center">
-                  {row.notes_no}
-                </TableCell>
-                <TableCell component="th" scope="row" align="center">
-                  {row.notes}
-                </TableCell>
-                <TableCell component="th" scope="row" align="center">
-                  <IconButton
-                    sx={{ color: theme.palette.success.main }}
-                    onClick={() => selectRowClicked(row.notes, row.notes_no)}
-                  >
-                    <Iconify icon={'material-symbols:edit-square-outline'} />
-                  </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.notes_no)}>
-                  <IconButton sx={{ color: theme.palette.warning.main }}>
-                    <Iconify icon={'ion:trash-outline'} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {tableData !== undefined &&
+              tableData.map((row) => (
+                <TableRow key={row.notes_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.notes_no}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.notes}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    <IconButton
+                      sx={{ color: theme.palette.success.main }}
+                      onClick={() => selectRowClicked(row.notes, row.notes_no)}
+                    >
+                      <Iconify icon={'material-symbols:edit-square-outline'} />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.notes_no)}>
+                    <IconButton sx={{ color: theme.palette.warning.main }}>
+                      <Iconify icon={'ion:trash-outline'} />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Box>
@@ -822,7 +831,11 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
 
         {selectedID > 0 ? (
           <Stack direction="row" spacing={1} sx={{ width: '30%' }}>
-            <Button sx={{ width: '50%', borderRadius: '5px', mt: '1px' }} variant="contained" onClick={updateMiscClicked}>
+            <Button
+              sx={{ width: '50%', borderRadius: '5px', mt: '1px' }}
+              variant="contained"
+              onClick={updateMiscClicked}
+            >
               Update Misc
             </Button>
             <Button
@@ -860,35 +873,33 @@ function MiscNotesEditTable({ tableData, addRow, deleteRow, updateRow }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData !== undefined && tableData.map((row) => (
-              <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row" align="center">
-                  {row.misc_no}
-                </TableCell>
-                <TableCell component="th" scope="row" align="center">
-                  {row.misc}
-                </TableCell>
-                <TableCell component="th" scope="row" align="center">
-                  {row.qty}
-                </TableCell>
-                <TableCell component="th" scope="row" align="center">
-                  {row.price}
-                </TableCell>
-                <TableCell component="th" scope="row" align="center">
-                  <IconButton
-                    sx={{ color: theme.palette.success.main }}
-                    onClick={() => selectRowClicked(row)}
-                  >
-                    <Iconify icon={'material-symbols:edit-square-outline'} />
-                  </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.misc_no)}>
-                  <IconButton sx={{ color: theme.palette.warning.main }}>
-                    <Iconify icon={'ion:trash-outline'} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {tableData !== undefined &&
+              tableData.map((row) => (
+                <TableRow key={row.misc_no} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.misc_no}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.misc}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.qty}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.price}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    <IconButton sx={{ color: theme.palette.success.main }} onClick={() => selectRowClicked(row)}>
+                      <Iconify icon={'material-symbols:edit-square-outline'} />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center" onClick={() => deleteRow(row.misc_no)}>
+                    <IconButton sx={{ color: theme.palette.warning.main }}>
+                      <Iconify icon={'ion:trash-outline'} />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Box>

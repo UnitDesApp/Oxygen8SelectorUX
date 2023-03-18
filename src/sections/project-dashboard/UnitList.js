@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 
 // redux
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, /* useDispatch */ } from 'react-redux';
 import { deleteUnits } from '../../redux/slices/projectDashboardReducer';
 // hooks
 import useTabs from '../../hooks/useTabs';
@@ -109,7 +109,7 @@ export default function UnitList() {
     setMultiConfirmDialogState(false);
   };
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
+  const { currentTab: filterStatus, /* onChangeTab: onChangeFilterStatus */ } = useTabs('All');
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
