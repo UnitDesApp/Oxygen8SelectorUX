@@ -356,7 +356,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
 
   useEffect(() => {
     if (!isLoading) reset(defaultValues);
-  }, [reset, defaultValues, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   const getDisplay = (key) => ({ display: key ? 'block' : 'none' });
 
