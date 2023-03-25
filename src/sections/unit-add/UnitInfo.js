@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -73,7 +73,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const { controlInfo, unitInfo, layoutInfo } = useSelector((state) => state.unit);
-
+  const isResetCalled = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -231,17 +231,14 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       ddlHeatingCompId: componentInfo?.ddlHeatingCompId,
       txbOA_FilterPD: 0.5,
       txbRA_FilterPD: 0.5,
-      ckbHeatPumpVal: heatPumpInfo?.ckbHeatPumpVal,
-      ckbDehumidificationVal: dehumidificationInfo?.ckbDehumidificationChecked,
       ddlReheatCompId: reheatInfo?.ddlReheatCompId,
       ddlDamperAndActuatorId: damperAndActuatorInfo?.ddlDamperAndActuatorId,
       ddlElecHeaterVoltageId: elecHeaterVoltageInfo?.ddlElecHeaterVoltageId,
-      ddlPreheatElecHeaterInstallationId: isLoading
-        ? 0
-        : preheatElecHeaterInstallationInfo?.ddlPreheatElecHeaterInstallationId,
+      ddlPreheatElecHeaterInstallationId:
+        isLoading || !preheatElecHeaterInstallationInfo?.ddlPreheatElecHeaterInstallationId
+          ? 0
+          : preheatElecHeaterInstallationInfo?.ddlPreheatElecHeaterInstallationId,
       ddlHeatElecHeaterInstallationId: heatElecHeaterInstallationInfo?.ddlHeatElecHeaterInstallationId,
-      ckbValveAndActuatorVal: valveAndActuatorInfo?.ckbValveAndActuatorVal,
-      ckbDrainPanVal: drainPanInfo?.ckbDrainPanVal,
       ddlPreheatCoilHandingId: preheatCoilHandingInfo?.ddlPreheatCoilHandingId,
       ddlCoolingCoilHandingId: coolingCoilHandingInfo?.ddlCoolingCoilHandingId,
       ddlHeatingCoilHandingId: heatingCoilHandingInfo?.ddlHeatingCoilHandingId,
@@ -294,12 +291,9 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       coolingFluidDesignCondInfo?.ddlCoolingFluidConcentrationId,
       coolingFluidDesignCondInfo?.ddlCoolingFluidTypeId,
       damperAndActuatorInfo?.ddlDamperAndActuatorId,
-      dehumidificationInfo?.ckbDehumidificationChecked,
-      drainPanInfo?.ckbDrainPanVal,
       elecHeaterVoltageInfo?.ddlElecHeaterVoltageId,
       handingInfo?.ddlHandingId,
       heatElecHeaterInstallationInfo?.ddlHeatElecHeaterInstallationId,
-      heatPumpInfo?.ckbHeatPumpVal,
       heatingCoilHandingInfo?.ddlHeatingCoilHandingId,
       heatingFluidDesignCondInfo?.ddlHeatingFluidConcentrationId,
       heatingFluidDesignCondInfo?.ddlHeatingFluidTypeId,
@@ -334,7 +328,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       unitInfo?.txbWinterReturnAirWBText,
       unitModelInfo?.ddlUnitModelId,
       unitVoltageInfo?.ddlUnitVoltageId,
-      valveAndActuatorInfo?.ckbValveAndActuatorVal,
       valveTypeInfo?.ddlValveTypeId,
     ]
   );
@@ -355,9 +348,11 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   } = methods;
 
   useEffect(() => {
-    if (!isLoading) reset(defaultValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+    if (!isLoading && !isResetCalled.current) {
+      reset(defaultValues);
+      isResetCalled.current = true;
+    }
+  }, [isLoading, reset, defaultValues]);
 
   const getDisplay = (key) => ({ display: key ? 'block' : 'none' });
 
@@ -370,6 +365,14 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     ddlUnitTypeId: unitTypeData.intUnitTypeID,
     intUAL: localStorage.getItem('UAL'),
     intUserID: localStorage.getItem('userId'),
+    ckbBypassVal,
+    ckbDrainPanVal,
+    ckbVoltageSPPVal,
+    ckbDehumidificationVal,
+    ckbValveAndActuatorVal,
+    ckbHeatPumpVal,
+    ckbDownshotVal,
+    ...ckbFlowRateAndCap,
   });
 
   // handle submit

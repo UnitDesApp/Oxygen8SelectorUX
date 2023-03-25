@@ -546,7 +546,7 @@ export default function Quote() {
                 </Grid>
                 <Grid item xs={12}>
                   <CustomGroupBox>
-                    {gvPricingTotal.gvAddInfoDataSource.map((item, i) => (
+                    {gvPricingTotal?.gvAddInfoDataSource?.map((item, i) => (
                       <Typography key={i} sx={{ fontWeight: item.is_add_info_bold ? 600 : 300 }}>
                         {item.add_info}
                       </Typography>

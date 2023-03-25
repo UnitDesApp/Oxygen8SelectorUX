@@ -175,7 +175,7 @@ export default function Project() {
               const isMatched = tab.value === currentTab;
               return isMatched && <Box key={tab.value}>{tab.component}</Box>;
             })}
-            <ReportDialog isOpen={openRPDialog} onClose={closeDialog} projectInfo={{ projectId, unitNo: 1 }} />
+            <ReportDialog isOpen={openRPDialog} onClose={closeDialog} intProjectID={projectId} intProjectNO={1} />
           </Container>
         )}
       </RootStyle>

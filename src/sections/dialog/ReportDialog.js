@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -17,11 +17,12 @@ import {
   Box,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
+import { useDispatch, useSelector } from '../../redux/store';
 import { useExport } from '../../hooks/useExport';
+import { getAbleToDownload } from '../../redux/slices/projectDashboardReducer';
 
 const EXPORT_METHODS = [
-  { label: 'Selection', id: 'selection' },
+  { label: 'Submittal', id: 'submittal' },
   { label: 'Schedule', id: 'schedule' },
   { label: 'Revit files', id: 'revit_files' },
   { label: 'Quote', id: 'quote' },
@@ -30,18 +31,21 @@ const EXPORT_METHODS = [
 ReportDialog.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
-  projectInfo: PropTypes.object,
+  intProjectID: PropTypes.string,
+  intUnitNo: PropTypes.number,
 };
 
-export default function ReportDialog({ isOpen, onClose, projectInfo }) {
+export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo }) {
+  const dispatch = useDispatch();
   const [methods, setMethods] = useState({
-    selection: false,
+    submittal: false,
     schedule: false,
     revit_files: false,
     quote: false,
   });
+
   const [isLoading, setIsLoading] = useState(false);
-  const { exportSelection, exportSchedule, exportRevit, exportQuote } = useExport();
+  const { ExportSubmittal, ExportSubmittalEpicor, ExportQuote, ExportRevit, ExportSchedule } = useExport();
 
   const onChangeMethods = (label, value) => {
     setMethods({ ...methods, [label]: !value });
@@ -49,20 +53,21 @@ export default function ReportDialog({ isOpen, onClose, projectInfo }) {
 
   const onClickExports = async () => {
     setIsLoading(true);
-    if (methods.selection) {
-      await exportSelection(projectInfo);
+    if (methods.submittal) {
+      await ExportSubmittal(intProjectID);
+      await ExportSubmittalEpicor();
     }
 
     if (methods.schedule) {
-      await exportSchedule(projectInfo);
+      await ExportSchedule(intProjectID);
     }
 
     if (methods.revit_files) {
-      await exportRevit(projectInfo);
+      await ExportRevit(intProjectID);
     }
 
     if (methods.quote) {
-      await exportQuote(projectInfo);
+      // await ExportQuote(intProjectID);
     }
     setIsLoading(false);
   };

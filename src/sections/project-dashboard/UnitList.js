@@ -254,18 +254,18 @@ export default function UnitList() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
-  const stabilizedThis = tableData.map((el, index) => [el, index]);
+  const stabilizedThis = tableData?.map((el, index) => [el, index]);
 
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
-  tableData = stabilizedThis.map((el) => el[0]);
+  tableData = stabilizedThis?.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter(
+    tableData = tableData?.filter(
       (item) =>
         item.tag.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.qty.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
