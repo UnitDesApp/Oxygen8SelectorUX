@@ -1615,14 +1615,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             setValueWithCheck(e, 'txbSummerReheatSetpointDB');
                           }}
                         />
-                        <RHFControlCheckbox
-                          size="small"
-                          name="ckbDehumidificationVal"
-                          label="Dehumidification"
-                          sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
-                          checked={!!ckbDehumidificationVal}
-                          onChange={ckbDehumidificationChanged}
-                        />
                       </Stack>
                       <Stack
                         spacing={1}
