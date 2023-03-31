@@ -59,7 +59,8 @@ export const PATH_PAGE = {
   components: '/components',
 };
 
-export const ACCOUNT_PAGE = {
+export const PATH_ACCOUNT = {
   myAccount: '/my-account',
-  user: (UserID) => path(ROOTS_UNIT, `/user/${UserID}`),
+  user: '/my-account/user',
+  customer: '/my-account/customer',
 };

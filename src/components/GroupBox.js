@@ -4,10 +4,7 @@ import { PropTypes } from 'prop-types';
 
 // @mui
 import { styled } from '@mui/material/styles';
-import {
-  Box,
-  Typography,
-} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 //------------------------------------------------
 
@@ -28,7 +25,7 @@ const CustomGroupBoxTitle = styled(Typography)(() => ({
   lineHeight: '1.4375em',
   fontSize: '25px',
   fontFamily: '"Public Sans", sans-serif',
-  fontWeight: 400,
+  fontWeight: 600,
   display: 'block',
   transformOrigin: 'left top',
   whiteSpace: 'nowrap',

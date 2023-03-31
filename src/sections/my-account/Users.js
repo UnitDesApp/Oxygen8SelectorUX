@@ -1,11 +1,14 @@
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router';
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
 
 // hooks
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
+
+// roots
+import { PATH_ACCOUNT } from '../../routes/paths';
 
 // components
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
@@ -33,6 +36,8 @@ const TABLE_HEAD = [
 // ------------------------------------------------------------------------
 
 export default function Users() {
+  const navigate = useNavigate();
+
   const userlist = [1, 2, 3, 4, 5, 6].map((id) => ({
     id,
     user_name: 'jdoe123',
@@ -114,6 +119,7 @@ export default function Users() {
 
   const handleEditRow = (row) => {
     console.log(row);
+    navigate(PATH_ACCOUNT.user, { ...row });
   };
 
   const filteredData = applySortFilter({

@@ -35,7 +35,6 @@ export default function MyAccount() {
   const [successDlgOpen, setSuccessDlgOpen] = useState(false);
   const [failDlgOpen, setFailDlgOpen] = useState(false);
   const [successText, setSuccessText] = useState('');
-  const [failText, setFailText] = useState('');
 
   const onCloseUserDlg = () => {
     setAddUserDlgOpen(false);
@@ -75,6 +74,7 @@ export default function MyAccount() {
       component: <Customers />,
     },
   ];
+  
   return (
     <Page title="User: Account Settings">
       <RootStyle>
@@ -89,7 +89,7 @@ export default function MyAccount() {
                   variant="outlined"
                   startIcon={<Iconify icon="mdi:plus" />}
                   onClick={() => {
-                    setAddUserDlgOpen(true);
+                    setAddCustomerDlgOpen(true);
                   }}
                 >
                   Add new customer
@@ -99,7 +99,7 @@ export default function MyAccount() {
                   variant="contained"
                   startIcon={<Iconify icon="mdi:user" />}
                   onClick={() => {
-                    setAddCustomerDlgOpen(true);
+                    setAddUserDlgOpen(true);
                   }}
                 >
                   Add new user
@@ -141,13 +141,13 @@ export default function MyAccount() {
           open={addUserDlgOpen}
           onClose={onCloseUserDlg}
           onSuccess={onSuccessAddUser}
-          onFail={() => setFailText(true)}
+          onFail={() => setFailDlgOpen(true)}
         />
         <NewCustomerDialog
           open={addCustomerDlgOpen}
           onClose={onCloseCustomerDlg}
           onSuccess={onSuccessAddCustomer}
-          onFail={() => setFailText(true)}
+          onFail={() => setFailDlgOpen(true)}
         />
       </RootStyle>
     </Page>

@@ -73,6 +73,8 @@ export default function Router() {
             { path: 'project/:projectId/:pageId', element: <Project /> },
             { path: 'account', element: <Account /> },
             { path: 'my-account', element: <MyAccount /> },
+            { path: 'my-account/user', element: <UserEdit /> },
+            { path: 'my-account/customer', element: <CustomerEdit /> },
             { path: 'resources', element: <Resources /> },
             { path: 'project/new/', element: <ProjectEdit /> },
             { path: 'project/dashboard/:projectId', element: <ProjectDashboard /> },
@@ -111,6 +113,8 @@ const UnitEdit = Loadable(lazy(() => import('../pages/UnitEdit')));
 // MyAccount
 const Account = Loadable(lazy(() => import('../pages/Account')));
 const MyAccount = Loadable(lazy(() => import('../pages/MyAccount')));
+const UserEdit = Loadable(lazy(() => import('../pages/my-account/UserEdit')));
+const CustomerEdit = Loadable(lazy(() => import('../pages/my-account/CustomerEdit')));
 
 // Resource
 const Resources = Loadable(lazy(() => import('../pages/Recources')));
