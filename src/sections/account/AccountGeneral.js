@@ -10,8 +10,9 @@ import { LoadingButton } from '@mui/lab';
 // hooks
 // import useAuth from '../../../hooks/useAuth';
 // components
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
-
+import { FormProvider, RHFTextField } from '../../components/hook-form';
+import GroupBox from '../../components/GroupBox';
+import AccountChangePassword from './AccountChangePassword';
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
@@ -41,7 +42,6 @@ export default function AccountGeneral() {
   });
 
   const {
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -55,50 +55,39 @@ export default function AccountGeneral() {
     }
   };
 
-  // const handleDrop = useCallback(
-  //   (acceptedFiles) => {
-  //     const file = acceptedFiles[0];
-
-  //     if (file) {
-  //       setValue(
-  //         'photoURL',
-  //         Object.assign(file, {
-  //           preview: URL.createObjectURL(file),
-  //         })
-  //       );
-  //     }
-  //   },
-  //   [setValue]
-  // );
-
   return (
-    <Card sx={{ p: 3, ml: 'auto', mr: 'auto', maxWidth: '400px' }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={12}>
+    <Grid container spacing={3} sx={{ mb: 3 }}>
+      <Grid item xs={7} md={7}>
+        <GroupBox title="Profile">
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Box
               sx={{
+                mt: 3,
+                p: 2,
                 display: 'grid',
                 rowGap: 3,
                 columnGap: 2,
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(1, 1fr)' },
               }}
             >
-              <RHFTextField name="username" label="Username" disabled/>
-              <RHFTextField name="firstName" label="First Name" disabled/>
-              <RHFTextField name="lastName" label="Last Name" disabled/>
-              <RHFTextField name="eMail" label="E-Mail" disabled/>
-              <RHFTextField name="repName" label="Rep.Name" disabled/>
+              <RHFTextField name="username" label="Username" />
+              <RHFTextField name="firstName" label="First Name" />
+              <RHFTextField name="lastName" label="Last Name" />
+              <RHFTextField name="eMail" label="E-Mail" />
+              <RHFTextField name="repName" label="Rep.Name" />
             </Box>
 
-            {/* <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
+            <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                 Save Changes
               </LoadingButton>
-            </Stack> */}
+            </Stack>
           </FormProvider>
-        </Grid>
+        </GroupBox>
       </Grid>
-    </Card>
+      <Grid item xs={5} md={5}>
+        <AccountChangePassword />
+      </Grid>
+    </Grid>
   );
 }

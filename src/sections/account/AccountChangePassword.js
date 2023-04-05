@@ -7,9 +7,12 @@ import { useForm } from 'react-hook-form';
 import { Stack, Card, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import axios from '../../../utils/axios';
-import { serverUrl } from '../../../config';
+import { FormProvider, RHFTextField } from '../../components/hook-form';
+import GroupBox from '../../components/GroupBox';
+// axios
+import axios from '../../utils/axios';
+// config
+import { serverUrl } from '../../config';
 
 // ----------------------------------------------------------------------
 
@@ -59,9 +62,9 @@ export default function AccountChangePassword() {
   };
 
   return (
-    <Card sx={{ p: 3, mr: 'auto', ml: 'auto', maxWidth: '400px' }}>
+    <GroupBox title="Change Password">
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3} alignItems="flex-end">
+        <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, p: 2 }}>
           {!!errors.afterSubmit && (
             <Alert sx={{ width: '100%' }} severity="error">
               {errors.afterSubmit.message}
@@ -80,10 +83,10 @@ export default function AccountChangePassword() {
           <RHFTextField name="confirmNewPassword" type="password" label="Confirm New Password" />
 
           <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-            Save Changes
+            Update Password
           </LoadingButton>
         </Stack>
       </FormProvider>
-    </Card>
+    </GroupBox>
   );
 }

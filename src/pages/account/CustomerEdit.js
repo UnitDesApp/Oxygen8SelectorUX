@@ -4,7 +4,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 // mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Grid, Container, Button, Snackbar, Alert, Divider } from '@mui/material';
+import {
+  Stack,
+  Container,
+  Button,
+  Snackbar,
+  Alert,
+  Box,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // form
 import { useForm } from 'react-hook-form';
@@ -18,7 +29,7 @@ import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import GroupBox from '../../components/GroupBox';
 import Iconify from '../../components/Iconify';
-import { NewUserDialog, NewCustomerDialog } from '../../sections/my-account';
+import { NewUserDialog, NewCustomerDialog, Users } from '../../sections/account';
 
 // ------------------------------------------------------------------------
 
@@ -88,6 +99,7 @@ export default function UserEdit() {
   const [successDlgOpen, setSuccessDlgOpen] = useState(false);
   const [failDlgOpen, setFailDlgOpen] = useState(false);
   const [successText, setSuccessText] = useState('');
+  const [expanded, setExpanded] = useState({ panel1: true, panel2: true });
 
   const onCloseUserDlg = () => {
     setAddUserDlgOpen(false);
@@ -123,8 +135,8 @@ export default function UserEdit() {
             <HeaderBreadcrumbs
               heading="Project Submittal"
               links={[
-                { name: 'My account', href: PATH_ACCOUNT.myAccount },
-                { name: 'Users', href: PATH_ACCOUNT.users },
+                { name: 'My account', href: PATH_ACCOUNT.account },
+                { name: 'Customers', href: PATH_ACCOUNT.customers },
                 { name: '' },
               ]}
               action={
@@ -152,71 +164,67 @@ export default function UserEdit() {
                 </Stack>
               }
             />
-
-            <Grid container spacing={2}>
-              <Grid item xs={7}>
-                <GroupBox title="USE INFO" bordersx={{ borderColor: 'gray' }}>
-                  <Stack spacing={2} p={2}>
-                    <Stack direction="row" justifyContent="space-around" spacing={1}>
-                      <RHFTextField size="small" name="firstname" label="First Name" />
-                      <RHFTextField size="small" name="lastname" label="Last Name" />
-                    </Stack>
-                    <RHFTextField size="small" name="email" label="Email" />
-                    <RHFTextField size="small" name="username" label="User Name" />
-                    <Divider />
-                    <Stack direction="row" justifyContent="space-around" spacing={1}>
-                      <RHFSelect size="small" name="customerType" label="Customer type" placeholder="">
-                        <option value="Internal" />
-                        <option value="External" />
-                      </RHFSelect>
-                      <RHFSelect size="small" name="customerName" label="Customer name" placeholder="">
-                        <option value="N/A" />
-                        <option value="John" />
-                        <option value="James" />
-                        <option value="Joey" />
-                      </RHFSelect>
-                    </Stack>
-                    <Stack direction="row" justifyContent="space-around" spacing={1}>
-                      <RHFSelect size="small" name="access" label="Access" placeholder="">
-                        <option value="Yes" />
-                        <option value="No" />
-                      </RHFSelect>
-                      <RHFSelect size="small" name="accessLevel" label="Access level" placeholder="">
-                        <option value="Internal User" />
-                        <option value="External User" />
-                      </RHFSelect>
-                      <RHFSelect size="small" name="accessPricing" label="Access pricing" placeholder="">
-                        <option value="No" />
-                        <option value="Yes" />
-                      </RHFSelect>
-                    </Stack>
+            <Stack spacing={2}>
+              <Accordion
+                expanded={expanded.panel1}
+                onChange={() => setExpanded({ ...expanded, panel1: !expanded.panel1 })}
+              >
+                <AccordionSummary
+                  expandIcon={<Iconify icon="il:arrow-down" />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography color="primary.main" variant="h6">
+                    CUSTOMER INFO
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                    <RHFTextField size="small" name="customerID" label="Customer ID" />
+                    <RHFSelect size="small" name="customerType" label="Customer type" placeholder="">
+                      <option value="Internal" />
+                      <option value="External" />
+                    </RHFSelect>
+                    <RHFTextField size="small" name="companyName" label="Company name" />
+                    <RHFSelect size="small" name="customerName" label="Customer name" placeholder="">
+                      <option value="N/A" />
+                      <option value="John" />
+                      <option value="James" />
+                      <option value="Joey" />
+                    </RHFSelect>
+                    <RHFTextField size="small" name="contactName" label="Contact name" />
                     <RHFSelect size="small" name="fobPoint" label="FOB point" placeholder="">
                       <option value="Vancouver" />
                       <option value="Harvard" />
                     </RHFSelect>
-                    <RHFTextField size="small" name="createDate" label="Created Date" />
-                  </Stack>
-                </GroupBox>
-              </Grid>
-              <Grid item xs={5}>
-                <GroupBox title="UPDATE PASSWORD" bordersx={{ borderColor: 'gray' }}>
-                  <Stack spacing={2} p={2}>
-                    <RHFTextField size="small" type="password" name="password" label="Password" />
-                    <RHFTextField size="small" type="password" name="confirm_password" label="Confirm Password" />
-                    <Stack direction="row" justifyContent="flex-end">
-                      <LoadingButton
-                        loading={isSubmitting}
-                        variant="contained"
-                        color="primary"
-                        onClick={() => console.log(getValues())}
-                      >
-                        Update
-                      </LoadingButton>
-                    </Stack>
-                  </Stack>
-                </GroupBox>
-              </Grid>
-            </Grid>
+                    <RHFSelect size="small" name="country" label="Country" placeholder="">
+                      <option value="CAN" />
+                      <option value="USA" />
+                    </RHFSelect>
+                    <RHFTextField size="small" name="createdDate" label="Create date" />
+                    <RHFTextField size="small" name="address" label="Address" />
+                    <RHFTextField size="small" name="shippingFactor" label="Shipping factor(%)" />
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded.panel2}
+                onChange={() => setExpanded({ ...expanded, panel2: !expanded.panel2 })}
+              >
+                <AccordionSummary
+                  expandIcon={<Iconify icon="il:arrow-down" />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography color="primary.main" variant="h6">
+                    USER LIST
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Users toolbar={false} checkbox={false} />
+                </AccordionDetails>
+              </Accordion>
+            </Stack>
           </FormProvider>
         </Container>
         <Snackbar open={successDlgOpen} autoHideDuration={3000} onClose={onCloseSuccessDlgOpen}>

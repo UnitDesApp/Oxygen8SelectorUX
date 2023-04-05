@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
@@ -6,6 +7,9 @@ import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconBu
 // hooks
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
+
+// root
+import { PATH_ACCOUNT } from '../../routes/paths';
 
 // components
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
@@ -29,6 +33,7 @@ const TABLE_HEAD = [
 // ------------------------------------------------------------------------
 
 export default function Customers() {
+  const navigate = useNavigate();
   const customerlist = [1, 2, 3, 4, 5, 6].map((id) => ({
     id,
     customer: 'ABC',
@@ -106,6 +111,7 @@ export default function Customers() {
 
   const handleEditRow = (row) => {
     console.log(row);
+    navigate(PATH_ACCOUNT.editcustomer, { ...row });
   };
 
   const filteredData = applySortFilter({

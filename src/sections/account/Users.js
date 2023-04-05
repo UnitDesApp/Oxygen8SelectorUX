@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import PropTypes from 'prop-types';
+
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
 
@@ -35,7 +37,12 @@ const TABLE_HEAD = [
 
 // ------------------------------------------------------------------------
 
-export default function Users() {
+Users.propTypes = {
+  toolbar: PropTypes.bool,
+  checkbox: PropTypes.bool,
+};
+
+export default function Users({ toolbar = true, checkbox = true }) {
   const navigate = useNavigate();
 
   const userlist = [1, 2, 3, 4, 5, 6].map((id) => ({
@@ -119,7 +126,7 @@ export default function Users() {
 
   const handleEditRow = (row) => {
     console.log(row);
-    navigate(PATH_ACCOUNT.user, { ...row });
+    navigate(PATH_ACCOUNT.edituser, { ...row });
   };
 
   const filteredData = applySortFilter({
@@ -139,7 +146,9 @@ export default function Users() {
 
   return (
     <Box>
-      <UserTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} />
+      {toolbar && (
+        <UserTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} />
+      )}
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
           {selected.length > 0 && (
@@ -158,6 +167,7 @@ export default function Users() {
               rowCount={tableData.length}
               numSelected={selected.length}
               onSort={onSort}
+              isCheckbox={checkbox}
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
@@ -179,6 +189,7 @@ export default function Users() {
                   key={index}
                   row={row}
                   selected={selected.includes(row.id)}
+                  isCheckbox={checkbox}
                   onSelectRow={() => onSelectRow(row.id)}
                   onDeleteRow={() => handleOneConfirmDialogOpen(row.id)}
                   onEditRow={() => handleEditRow(row)}

@@ -19,19 +19,22 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 UserTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
+  isCheckbox: PropTypes.bool,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onDeleteRow: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function UserTableRow({ row, selected, isCheckbox = true, onEditRow, onSelectRow, onDeleteRow }) {
   const { user_name, first_name, last_name, email, customer, access, access_level, access_pricing, created_date } = row;
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>
-      <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell>
+      {isCheckbox && (
+        <TableCell padding="checkbox">
+          <Checkbox checked={selected} onClick={onSelectRow} />
+        </TableCell>
+      )}
 
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {user_name}

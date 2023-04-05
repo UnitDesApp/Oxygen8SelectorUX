@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import { capitalCase } from 'change-case';
 
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Box, Tab, Tabs, Button, Stack, Snackbar, Alert } from '@mui/material';
+import { Container, Box, Tab, Tabs } from '@mui/material';
 
 // components
 import Page from '../components/Page';
@@ -13,9 +12,7 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // hooks
 import useTabs from '../hooks/useTabs';
 
-// components
-import { Users, Customers, NewUserDialog, NewCustomerDialog } from '../sections/my-account';
-
+import { AccountGeneral, AccountChangePassword } from '../sections/account';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -28,85 +25,25 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function MyAccount() {
-  const { currentTab, onChangeTab } = useTabs('users');
-
-  const [addUserDlgOpen, setAddUserDlgOpen] = useState(false);
-  const [addCustomerDlgOpen, setAddCustomerDlgOpen] = useState(false);
-  const [successDlgOpen, setSuccessDlgOpen] = useState(false);
-  const [failDlgOpen, setFailDlgOpen] = useState(false);
-  const [successText, setSuccessText] = useState('');
-
-  const onCloseUserDlg = () => {
-    setAddUserDlgOpen(false);
-  };
-
-  const onCloseCustomerDlg = () => {
-    setAddCustomerDlgOpen(false);
-  };
-
-  const onCloseSuccessDlgOpen = () => {
-    setSuccessDlgOpen(false);
-  };
-
-  const onCloseFailDlgOpen = () => {
-    setFailDlgOpen(false);
-  };
-
-  const onSuccessAddUser = () => {
-    setSuccessText('New user has been added');
-    setSuccessDlgOpen(true);
-  };
-
-  const onSuccessAddCustomer = () => {
-    setSuccessText('New customer has been added');
-    setSuccessDlgOpen(true);
-  };
+  const { currentTab, onChangeTab } = useTabs('general');
 
   const ACCOUNT_TABS = [
     {
-      value: 'users',
+      value: 'general',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <Users />,
+      component: <AccountGeneral />,
     },
     {
-      value: 'customers',
-      icon: <Iconify icon={'typcn:group'} width={20} height={20} />,
-      component: <Customers />,
+      value: 'change_password',
+      icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
+      component: <AccountChangePassword />,
     },
   ];
-  
   return (
     <Page title="User: Account Settings">
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
-          <HeaderBreadcrumbs
-            heading="My Account"
-            links={[{ name: 'Edit Account' }]}
-            action={
-              <Stack direction="row" justifyContent="center" spacing={1}>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  startIcon={<Iconify icon="mdi:plus" />}
-                  onClick={() => {
-                    setAddCustomerDlgOpen(true);
-                  }}
-                >
-                  Add new customer
-                </Button>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  startIcon={<Iconify icon="mdi:user" />}
-                  onClick={() => {
-                    setAddUserDlgOpen(true);
-                  }}
-                >
-                  Add new user
-                </Button>
-              </Stack>
-            }
-          />
+          <HeaderBreadcrumbs heading="My Account" links={[{ name: 'Edit Account' }]} />
 
           <Tabs
             allowScrollButtonsMobile
@@ -127,28 +64,6 @@ export default function MyAccount() {
             return isMatched && <Box key={tab.value}>{tab.component}</Box>;
           })}
         </Container>
-        <Snackbar open={successDlgOpen} autoHideDuration={3000} onClose={onCloseSuccessDlgOpen}>
-          <Alert onClose={onCloseSuccessDlgOpen} severity="success" sx={{ width: '100%' }}>
-            {successText}
-          </Alert>
-        </Snackbar>
-        <Snackbar open={failDlgOpen} autoHideDuration={3000} onClose={onCloseFailDlgOpen}>
-          <Alert onClose={onCloseFailDlgOpen} severity="success" sx={{ width: '100%' }}>
-            Server error!
-          </Alert>
-        </Snackbar>
-        <NewUserDialog
-          open={addUserDlgOpen}
-          onClose={onCloseUserDlg}
-          onSuccess={onSuccessAddUser}
-          onFail={() => setFailDlgOpen(true)}
-        />
-        <NewCustomerDialog
-          open={addCustomerDlgOpen}
-          onClose={onCloseCustomerDlg}
-          onSuccess={onSuccessAddCustomer}
-          onFail={() => setFailDlgOpen(true)}
-        />
       </RootStyle>
     </Page>
   );

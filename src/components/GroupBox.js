@@ -17,7 +17,7 @@ const CustomGroupBoxBorder = styled(Box)(() => ({
   margin: '0',
   verticalAlign: 'top',
   width: '100%',
-  border: '1px solid black',
+  border: '1px solid gray',
   borderRadius: '8px',
 }));
 

@@ -60,7 +60,9 @@ export const PATH_PAGE = {
 };
 
 export const PATH_ACCOUNT = {
-  myAccount: '/my-account',
-  user: '/my-account/user',
-  customer: '/my-account/customer',
+  account: '/account',
+  users: '/account/users',
+  customers: '/account/customers',
+  edituser: '/account/edit/user',
+  editcustomer: '/account/edit/customer',
 };
