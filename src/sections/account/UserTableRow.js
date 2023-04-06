@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Checkbox, TableRow, TableCell, Stack, IconButton } from '@mui/material';
@@ -26,7 +25,7 @@ UserTableRow.propTypes = {
 };
 
 export default function UserTableRow({ row, selected, isCheckbox = true, onEditRow, onSelectRow, onDeleteRow }) {
-  const { user_name, first_name, last_name, email, customer, access, access_level, access_pricing, created_date } = row;
+  const { username, first_name, last_name, email, customer, access, access_level, access_pricing, created_date } = row;
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>
@@ -37,7 +36,7 @@ export default function UserTableRow({ row, selected, isCheckbox = true, onEditR
       )}
 
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {user_name}
+        {username}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {first_name}

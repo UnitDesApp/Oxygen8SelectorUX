@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-// utils
-// import axios from '../../utils/axios';
 // store
 import { dispatch } from '../store';
 // utils

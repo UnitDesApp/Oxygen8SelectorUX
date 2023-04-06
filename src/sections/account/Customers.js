@@ -8,6 +8,9 @@ import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconBu
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
 
+// redux
+import { useSelector } from '../../redux/store';
+
 // root
 import { PATH_ACCOUNT } from '../../routes/paths';
 
@@ -22,10 +25,10 @@ import Scrollbar from '../../components/Scrollbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'customer', label: 'Customer', align: 'left' },
-  { id: 'access', label: 'Access', align: 'left' },
-  { id: 'access_level', label: 'Access Level', align: 'left' },
-  { id: 'access_pricing', label: 'Access Pricing', align: 'left' },
+  { id: 'name', label: 'Name', align: 'left' },
+  { id: 'address', label: 'Address', align: 'left' },
+  // { id: 'access_level', label: 'Access Level', align: 'left' },
+  // { id: 'access_pricing', label: 'Access Pricing', align: 'left' },
   { id: 'created_date', label: 'Created Date', align: 'left' },
   { id: '' },
 ];
@@ -34,14 +37,8 @@ const TABLE_HEAD = [
 
 export default function Customers() {
   const navigate = useNavigate();
-  const customerlist = [1, 2, 3, 4, 5, 6].map((id) => ({
-    id,
-    customer: 'ABC',
-    access: 'Yes',
-    access_level: '1',
-    access_pricing: 'No',
-    created_date: '2023-01-06',
-  }));
+
+  const { customerList } = useSelector((state) => state.account);
 
   const dense = true;
 
@@ -61,7 +58,7 @@ export default function Customers() {
   } = useTable();
 
   const [filterName, setFilterName] = useState('');
-  const [tableData, setTableData] = useState(customerlist);
+  const [tableData, setTableData] = useState(customerList);
   const [filterRole, setFilterRole] = useState('All');
 
   // Delete one row

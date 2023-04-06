@@ -12,6 +12,9 @@ import useTabs from '../../hooks/useTabs';
 // roots
 import { PATH_ACCOUNT } from '../../routes/paths';
 
+// redux
+import { useSelector } from '../../redux/store';
+
 // components
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 import UserTableToolbar from './UserTableToolbar';
@@ -44,19 +47,7 @@ Users.propTypes = {
 
 export default function Users({ toolbar = true, checkbox = true }) {
   const navigate = useNavigate();
-
-  const userlist = [1, 2, 3, 4, 5, 6].map((id) => ({
-    id,
-    user_name: 'jdoe123',
-    first_name: 'Jane',
-    last_name: 'Doe',
-    email: 'jeoe@doe.com',
-    customer: 'ABC',
-    access: 'Yes',
-    access_level: '1',
-    access_pricing: 'No',
-    created_date: '2023-01-06',
-  }));
+  const { userList } = useSelector((state) => state.account);
 
   const dense = true;
 
@@ -76,9 +67,8 @@ export default function Users({ toolbar = true, checkbox = true }) {
   } = useTable();
 
   const [filterName, setFilterName] = useState('');
-  const [tableData, setTableData] = useState(userlist);
+  const [tableData, setTableData] = useState(userList);
   const [filterRole, setFilterRole] = useState('All');
-
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);

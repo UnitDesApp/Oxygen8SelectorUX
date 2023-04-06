@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 // @mui
-import { Stack, Card, Alert } from '@mui/material';
+import { Stack, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { FormProvider, RHFTextField } from '../../components/hook-form';
@@ -17,7 +17,6 @@ import { serverUrl } from '../../config';
 // ----------------------------------------------------------------------
 
 export default function AccountChangePassword() {
-  const { enqueueSnackbar } = useSnackbar();
 
   const ChangePassWordSchema = Yup.object().shape({
     oldPassword: Yup.string().required('Old Password is required'),
@@ -64,7 +63,7 @@ export default function AccountChangePassword() {
   return (
     <GroupBox title="Change Password">
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3, p: 2 }}>
+        <Stack spacing={2} alignItems="flex-end" sx={{ mt: 3, p: 2 }}>
           {!!errors.afterSubmit && (
             <Alert sx={{ width: '100%' }} severity="error">
               {errors.afterSubmit.message}
@@ -76,11 +75,11 @@ export default function AccountChangePassword() {
             </Alert>
           )}
 
-          <RHFTextField name="oldPassword" type="password" label="Old Password" />
+          <RHFTextField size="small" name="oldPassword" type="password" label="Old Password" />
 
-          <RHFTextField name="newPassword" type="password" label="New Password" />
+          <RHFTextField size="small" name="newPassword" type="password" label="New Password" />
 
-          <RHFTextField name="confirmNewPassword" type="password" label="Confirm New Password" />
+          <RHFTextField size="small" name="confirmNewPassword" type="password" label="Confirm New Password" />
 
           <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
             Update Password

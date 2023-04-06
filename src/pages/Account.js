@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { capitalCase } from 'change-case';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 
 // @mui
 import { styled } from '@mui/material/styles';
@@ -15,17 +15,16 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import useTabs from '../hooks/useTabs';
 import useAuth from '../hooks/useAuth';
 
+// redux
+import { getAccountInfo } from '../redux/slices/AccountReducer';
+import { useDispatch } from '../redux/store';
+
 // components
-import {
-  AccountGeneral,
-  Users,
-  Customers,
-  NewUserDialog,
-  NewCustomerDialog,
-} from '../sections/account';
+import { AccountGeneral, Users, Customers, NewUserDialog, NewCustomerDialog } from '../sections/account';
+import Loading from '../sections/Loading';
 
 // config
-import { intUAL_Admin, intUAL_IntLvl_2 } from '../config';
+import { intUAL_Admin, intUAL_IntAdmin, intUAL_IntLvl_2 } from '../config';
 
 // ----------------------------------------------------------------------
 
@@ -41,14 +40,28 @@ const RootStyle = styled('div')(({ theme }) => ({
 export default function Account() {
   const { tab } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { currentTab, onChangeTab } = useTabs(tab);
+  const { currentTab, onChangeTab } = useTabs(tab || 'general');
 
   const [addUserDlgOpen, setAddUserDlgOpen] = useState(false);
   const [addCustomerDlgOpen, setAddCustomerDlgOpen] = useState(false);
   const [successDlgOpen, setSuccessDlgOpen] = useState(false);
   const [failDlgOpen, setFailDlgOpen] = useState(false);
   const [successText, setSuccessText] = useState('');
+  const [isLoading, setIsloading] = useState(true);
+
+  useEffect(() => {
+    const get = async () => {
+      await dispatch(getAccountInfo());
+      setIsloading(false);
+    };
+    get();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (isLoading) return <Loading />;
 
   const onCloseUserDlg = () => {
     setAddUserDlgOpen(false);
@@ -81,12 +94,12 @@ export default function Account() {
       value: 'general',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
       component: <AccountGeneral />,
-    }
+    },
   ];
 
   const intUAL = parseInt(user.UAL, 10);
 
-  if (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 ) {
+  if (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 || intUAL === intUAL_IntAdmin) {
     ACCOUNT_TABS = [
       ...ACCOUNT_TABS,
       {
@@ -99,8 +112,13 @@ export default function Account() {
         icon: <Iconify icon={'raphael:users'} width={20} height={20} />,
         component: <Customers />,
       },
-    ];  
+    ];
   }
+
+  const handleChangeTab = (event, newValue) => {
+    navigate(`/account/${newValue}`);
+    onChangeTab(event, newValue);
+  };
 
   return (
     <Page title="User: Account Settings">
@@ -142,7 +160,7 @@ export default function Account() {
             variant="scrollable"
             scrollButtons="auto"
             value={currentTab}
-            onChange={onChangeTab}
+            onChange={handleChangeTab}
           >
             {ACCOUNT_TABS.map((tab) => (
               <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
