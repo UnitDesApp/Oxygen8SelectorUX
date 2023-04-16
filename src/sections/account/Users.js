@@ -1,20 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
-
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
-
 // hooks
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
-
 // roots
 import { PATH_ACCOUNT } from '../../routes/paths';
-
 // redux
 import { useSelector } from '../../redux/store';
-
+import { removeUser } from '../../redux/slices/AccountReducer';
 // components
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 import UserTableToolbar from './UserTableToolbar';
@@ -24,6 +20,7 @@ import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 
 // ----------------------------------------------------------------------
+
 
 const TABLE_HEAD = [
   { id: 'user_name', label: 'Username', align: 'left' },
@@ -85,9 +82,8 @@ export default function Users({ toolbar = true, checkbox = true }) {
   };
 
   const handleDeleteRow = async () => {
-    console.log(deleteRowID);
-    // const data = await deleteUnits({ action: 'DELETE_ONE', jobId, unitId: deleteRowID });
-    // setTableData(data);
+    const data = await removeUser({ action: 'DELETE_ONE', userId: deleteRowID });
+    setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
   };
@@ -108,15 +104,15 @@ export default function Users({ toolbar = true, checkbox = true }) {
   };
 
   const handleDeleteRows = async () => {
-    // const data = await deleteUnits({ action: 'DELETE_MULTI', jobId, unitIds: selected });
-    // setTableData(data);
+    const data = await removeUser({ action: 'DELETE_MULTI', userIds: selected  });
+    setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);
   };
 
   const handleEditRow = (row) => {
     console.log(row);
-    navigate(PATH_ACCOUNT.edituser, { ...row });
+    navigate(PATH_ACCOUNT.edituser(row.id), row);
   };
 
   const filteredData = applySortFilter({

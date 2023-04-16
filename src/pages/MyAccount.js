@@ -1,9 +1,7 @@
 import { capitalCase } from 'change-case';
-
 // @mui
 import { styled } from '@mui/material/styles';
 import { Container, Box, Tab, Tabs } from '@mui/material';
-
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';

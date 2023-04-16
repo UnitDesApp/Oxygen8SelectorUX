@@ -20,6 +20,9 @@ import { LoadingButton } from '@mui/lab';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+// redux
+import { useSelector, useDispatch } from '../../redux/store';
+import { updateCustomer } from '../../redux/slices/AccountReducer';
 // hooks
 import { FormProvider, RHFSelect, RHFTextField } from '../../components/hook-form';
 // roots
@@ -27,7 +30,6 @@ import { PATH_ACCOUNT } from '../../routes/paths';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import GroupBox from '../../components/GroupBox';
 import Iconify from '../../components/Iconify';
 import { NewUserDialog, NewCustomerDialog, Users } from '../../sections/account';
 
@@ -43,36 +45,32 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ------------------------------------------------------------------------
 
 export default function UserEdit() {
-  const navigate = useNavigate();
-  const { state } = useParams();
+  const { customerId } = useParams();
+  const dispatch = useDispatch();
+  const { customerList, customerType, fobPoint, country } = useSelector((state) => state.account);
 
+  const selectedCustomer = customerList.filter((cusstomer) => cusstomer.id === parseInt(customerId, 10))[0];
+  console.log(selectedCustomer);
   const NewUserSchema = Yup.object().shape({
-    firstname: Yup.string().required('This field is required!'),
-    lastname: Yup.string().required('This field is required!'),
-    email: Yup.string().required('This field is required!'),
     username: Yup.string().required('This field is required!'),
-    password: Yup.string().required('This field is required!'),
-    customerType: Yup.string().required('This field is required!'),
-    customerName: Yup.string().required('This field is required!'),
-    access: Yup.string().required('This field is required!'),
-    accessLevel: Yup.string().required('This field is required!'),
-    accessPricing: Yup.string().required('This field is required!'),
-    fobPoint: Yup.string().required('This field is required!'),
+    customerType: Yup.number().required('This field is required!'),
+    countryId: Yup.number().required('This field is required!'),
+    address: Yup.string().required('This field is required!'),
+    contactName: Yup.string().required('This field is required!'),
+    fobPoint: Yup.number().required('This field is required!'),
+    shippingFactor: Yup.number().required('This field is required!'),
     createdDate: Yup.string().required('This field is required!'),
   });
 
   const defaultValues = {
-    firstname: '',
-    lastname: '',
-    email: '',
-    username: '',
-    password: '',
-    customerType: '',
-    customerName: '',
-    access: '',
-    accessLevel: '',
-    accessPricing: '',
-    fobPoint: '',
+    username: selectedCustomer?.name,
+    customerType: selectedCustomer?.customer_type_id,
+    countryId: selectedCustomer?.country_id,
+    address: selectedCustomer?.address,
+    contactName: selectedCustomer?.contact_name,
+    fobPoint: selectedCustomer?.fob_point_id,
+    shippingFactor: selectedCustomer?.shipping_factor_percent,
+    createdDate: selectedCustomer?.created_date,
   };
 
   const methods = useForm({
@@ -85,14 +83,6 @@ export default function UserEdit() {
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  const onSubmit = async (data) => {
-    try {
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const [addUserDlgOpen, setAddUserDlgOpen] = useState(false);
   const [addCustomerDlgOpen, setAddCustomerDlgOpen] = useState(false);
@@ -127,105 +117,132 @@ export default function UserEdit() {
     setSuccessDlgOpen(true);
   };
 
+  const onSubmit = async (data) => {
+    try {
+      await dispatch(updateCustomer({ ...data, customerId }));
+      setSuccessText('Successfully Updated');
+      setSuccessDlgOpen(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <Page>
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <HeaderBreadcrumbs
-              heading="Project Submittal"
-              links={[
-                { name: 'My account', href: PATH_ACCOUNT.account },
-                { name: 'Customers', href: PATH_ACCOUNT.customers },
-                { name: '' },
-              ]}
-              action={
-                <Stack direction="row" justifyContent="center" spacing={1}>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    startIcon={<Iconify icon="mdi:plus" />}
-                    onClick={() => {
-                      setAddCustomerDlgOpen(true);
-                    }}
-                  >
-                    Add new customer
-                  </Button>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    startIcon={<Iconify icon="mdi:user" />}
-                    onClick={() => {
-                      setAddUserDlgOpen(true);
-                    }}
-                  >
-                    Add new user
-                  </Button>
-                </Stack>
-              }
-            />
-            <Stack spacing={2}>
-              <Accordion
-                expanded={expanded.panel1}
-                onChange={() => setExpanded({ ...expanded, panel1: !expanded.panel1 })}
-              >
-                <AccordionSummary
-                  expandIcon={<Iconify icon="il:arrow-down" />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
+          <HeaderBreadcrumbs
+            heading="Project Submittal"
+            links={[
+              { name: 'My account', href: PATH_ACCOUNT.account },
+              { name: 'Customers', href: PATH_ACCOUNT.customers },
+              { name: '' },
+            ]}
+            action={
+              <Stack direction="row" justifyContent="center" spacing={1}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  startIcon={<Iconify icon="mdi:plus" />}
+                  onClick={() => {
+                    setAddCustomerDlgOpen(true);
+                  }}
                 >
-                  <Typography color="primary.main" variant="h6">
-                    CUSTOMER INFO
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
+                  Add new customer
+                </Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  startIcon={<Iconify icon="mdi:user" />}
+                  onClick={() => {
+                    setAddUserDlgOpen(true);
+                  }}
+                >
+                  Add new user
+                </Button>
+              </Stack>
+            }
+          />
+          <Stack spacing={2}>
+            <Accordion
+              expanded={expanded.panel1}
+              onChange={() => setExpanded({ ...expanded, panel1: !expanded.panel1 })}
+            >
+              <AccordionSummary
+                expandIcon={<Iconify icon="il:arrow-down" />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography color="primary.main" variant="h6">
+                  CUSTOMER INFO
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                   <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(2, 1fr)' }}>
-                    <RHFTextField size="small" name="customerID" label="Customer ID" />
+                    <RHFTextField size="small" name="username" label="Customer Name" />
                     <RHFSelect size="small" name="customerType" label="Customer type" placeholder="">
-                      <option value="Internal" />
-                      <option value="External" />
+                      {customerType?.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.items}
+                        </option>
+                      ))}
+                      {!customerType && <option value="" />}
                     </RHFSelect>
-                    <RHFTextField size="small" name="companyName" label="Company name" />
-                    <RHFSelect size="small" name="customerName" label="Customer name" placeholder="">
-                      <option value="N/A" />
-                      <option value="John" />
-                      <option value="James" />
-                      <option value="Joey" />
+                    <RHFTextField size="small" name="address" label="Address" />
+                    <RHFSelect size="small" name="countryId" label="Country" placeholder="">
+                      {country?.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.items}
+                        </option>
+                      ))}
+                      {!customerList && <option value="" />}
                     </RHFSelect>
                     <RHFTextField size="small" name="contactName" label="Contact name" />
                     <RHFSelect size="small" name="fobPoint" label="FOB point" placeholder="">
-                      <option value="Vancouver" />
-                      <option value="Harvard" />
-                    </RHFSelect>
-                    <RHFSelect size="small" name="country" label="Country" placeholder="">
-                      <option value="CAN" />
-                      <option value="USA" />
+                      {fobPoint?.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.items}
+                        </option>
+                      ))}
+                      {!fobPoint && <option value="" />}
                     </RHFSelect>
                     <RHFTextField size="small" name="createdDate" label="Create date" />
-                    <RHFTextField size="small" name="address" label="Address" />
                     <RHFTextField size="small" name="shippingFactor" label="Shipping factor(%)" />
                   </Box>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion
-                expanded={expanded.panel2}
-                onChange={() => setExpanded({ ...expanded, panel2: !expanded.panel2 })}
+                  <Stack spacing={2} p={2}>
+                    <Stack direction="row" justifyContent="flex-end">
+                      <LoadingButton
+                        type="summit"
+                        loading={isSubmitting}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => console.log(getValues())}
+                      >
+                        Update
+                      </LoadingButton>
+                    </Stack>
+                  </Stack>
+                </FormProvider>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              expanded={expanded.panel2}
+              onChange={() => setExpanded({ ...expanded, panel2: !expanded.panel2 })}
+            >
+              <AccordionSummary
+                expandIcon={<Iconify icon="il:arrow-down" />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
               >
-                <AccordionSummary
-                  expandIcon={<Iconify icon="il:arrow-down" />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography color="primary.main" variant="h6">
-                    USER LIST
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Users toolbar={false} checkbox={false} />
-                </AccordionDetails>
-              </Accordion>
-            </Stack>
-          </FormProvider>
+                <Typography color="primary.main" variant="h6">
+                  USER LIST
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Users toolbar={false} checkbox={false} />
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
         </Container>
         <Snackbar open={successDlgOpen} autoHideDuration={3000} onClose={onCloseSuccessDlgOpen}>
           <Alert onClose={onCloseSuccessDlgOpen} severity="success" sx={{ width: '100%' }}>

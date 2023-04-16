@@ -9,8 +9,8 @@ import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
 
 // redux
-import { useSelector } from '../../redux/store';
-
+import { useSelector, useDispatch } from '../../redux/store';
+import { removeCustomer } from '../../redux/slices/AccountReducer'
 // root
 import { PATH_ACCOUNT } from '../../routes/paths';
 
@@ -37,7 +37,7 @@ const TABLE_HEAD = [
 
 export default function Customers() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const { customerList } = useSelector((state) => state.account);
 
   const dense = true;
@@ -77,9 +77,8 @@ export default function Customers() {
   };
 
   const handleDeleteRow = async () => {
-    console.log(deleteRowID);
-    // const data = await deleteUnits({ action: 'DELETE_ONE', jobId, unitId: deleteRowID });
-    // setTableData(data);
+    const data = await removeCustomer({ action: 'DELETE_ONE', customerId: deleteRowID });
+    setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
   };
@@ -100,15 +99,14 @@ export default function Customers() {
   };
 
   const handleDeleteRows = async () => {
-    // const data = await deleteUnits({ action: 'DELETE_MULTI', jobId, unitIds: selected });
-    // setTableData(data);
+    const data = await removeCustomer({ action: 'DELETE_MULTI', customerIds: selected });
+    setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);
   };
 
   const handleEditRow = (row) => {
-    console.log(row);
-    navigate(PATH_ACCOUNT.editcustomer, { ...row });
+    navigate(PATH_ACCOUNT.editCustomer(row.id));
   };
 
   const filteredData = applySortFilter({
@@ -223,9 +221,9 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter(
-      (item) => item.customer.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-    );
+    tableData = tableData.filter((item) => Object.values(item).filter(
+        (value) => value.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      ).length > 0);
   }
 
   if (filterStatus !== 'All') {

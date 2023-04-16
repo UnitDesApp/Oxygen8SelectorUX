@@ -9,7 +9,8 @@ import { LoadingButton } from '@mui/lab';
 // hooks
 import useAuth from '../../hooks/useAuth';
 // redux
-import { useSelector } from '../../redux/store';
+import { updateMyProfile } from '../../redux/slices/AccountReducer';
+import { useSelector, useDispatch } from '../../redux/store';
 // components
 import { FormProvider, RHFTextField, RHFSelect } from '../../components/hook-form';
 import GroupBox from '../../components/GroupBox';
@@ -17,6 +18,8 @@ import AccountChangePassword from './AccountChangePassword';
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
+  const dispatch = useDispatch();
+  const { updateUser } = useAuth();
   const { user } = useAuth();
   const { customerType, fobPoint, customerList } = useSelector((state) => state.account);
 
@@ -26,7 +29,7 @@ export default function AccountGeneral() {
     email: Yup.string().required('This field is required!'),
     username: Yup.string().required('This field is required!'),
     customerType: Yup.string().required('This field is required!'),
-    customerName: Yup.string().required('This field is required!'),
+    customerId: Yup.string().required('This field is required!'),
     access: Yup.string().required('This field is required!'),
     accessLevel: Yup.string().required('This field is required!'),
     accessPricing: Yup.string().required('This field is required!'),
@@ -34,20 +37,18 @@ export default function AccountGeneral() {
     createdDate: Yup.string().required('This field is required!'),
   });
 
-  console.log(user);
-
   const defaultValues = {
-    username: user.username,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    email: user.email,
+    username: user?.username,
+    firstname: user?.firstname,
+    lastname: user?.lastname,
+    email: user?.email,
     customerType: customerType[0]?.id,
     customerId: customerList[0]?.id,
-    access: user.access,
+    access: user?.access,
     accessLevel: 10,
-    accessPricing: user.accessPricing,
+    accessPricing: user?.accessPricing,
     fobPoint: fobPoint[0]?.id,
-    createdData: user.created_date,
+    createdDate: user?.createdDate,
   };
 
   const methods = useForm({
@@ -60,9 +61,10 @@ export default function AccountGeneral() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await dispatch(updateMyProfile({ ...data, userId: user?.userId }));
+      updateUser(data);
     } catch (error) {
       console.error(error);
     }

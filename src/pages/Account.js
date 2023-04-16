@@ -36,7 +36,6 @@ const RootStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
-
 export default function Account() {
   const { tab } = useParams();
   const { user } = useAuth();
@@ -97,7 +96,7 @@ export default function Account() {
     },
   ];
 
-  const intUAL = parseInt(user.UAL, 10);
+  const intUAL = parseInt(user?.UAL, 10);
 
   if (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 || intUAL === intUAL_IntAdmin) {
     ACCOUNT_TABS = [
@@ -180,7 +179,7 @@ export default function Account() {
           </Alert>
         </Snackbar>
         <Snackbar open={failDlgOpen} autoHideDuration={3000} onClose={onCloseFailDlgOpen}>
-          <Alert onClose={onCloseFailDlgOpen} severity="success" sx={{ width: '100%' }}>
+          <Alert onClose={onCloseFailDlgOpen} severity="warning" sx={{ width: '100%' }}>
             Server error!
           </Alert>
         </Snackbar>

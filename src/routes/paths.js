@@ -58,11 +58,11 @@ export const PATH_PAGE = {
   page500: '/500',
   components: '/components',
 };
-
+const ROOTS_ACCOUNT = '/account';
 export const PATH_ACCOUNT = {
   account: '/account',
   users: '/account/users',
   customers: '/account/customers',
-  edituser: '/account/edit/user',
-  editcustomer: '/account/edit/customer',
+  edituser: (userId) => path(ROOTS_ACCOUNT, `/edit/user/${userId}`),
+  editCustomer: (customerId) => path(ROOTS_ACCOUNT, `/edit/customer/${customerId}`),
 };

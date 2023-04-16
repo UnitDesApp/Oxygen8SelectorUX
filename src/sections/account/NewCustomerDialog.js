@@ -1,45 +1,45 @@
 import PropTypes from 'prop-types';
 // import { useNavigate } from 'react-router-dom';
-
 import * as Yup from 'yup';
 import { Box, Stack, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // form
-
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+// redux
+import { useDispatch, useSelector } from '../../redux/store';
+import { addNewCustomer } from '../../redux/slices/AccountReducer';
 // components
 import { FormProvider, RHFSelect, RHFTextField } from '../../components/hook-form';
 
 NewCustomerDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  setOpenSuccess: PropTypes.func,
-  setOpenFail: PropTypes.func,
+  onSuccess: PropTypes.func,
+  onFail: PropTypes.func,
 };
 
-export default function NewCustomerDialog({ open, onClose, setOpenSuccess, setOpenFail }) {
+export default function NewCustomerDialog({ open, onClose, onSuccess, onFail }) {
+  const dispatch = useDispatch();
+  const { customerList, customerType, fobPoint, country } = useSelector((state) => state.account);
+
   const NewCustomerSchema = Yup.object().shape({
-    customerType: Yup.string().required('This field is required!'),
-    customerName: Yup.string().required('This field is required!'),
-    customerID: Yup.string().required('This field is required!'),
-    companyName: Yup.string().required('This field is required!'),
-    country: Yup.string().required('This field is required!'),
-    access: Yup.string().required('This field is required!'),
+    username: Yup.string().required('This field is required!'),
+    customerType: Yup.number().required('This field is required!'),
+    countryId: Yup.number().required('This field is required!'),
+    address: Yup.string().required('This field is required!'),
     contactName: Yup.string().required('This field is required!'),
-    fobPoint: Yup.string().required('This field is required!'),
-    shippingFactor: Yup.string().required('This field is required!'),
+    fobPoint: Yup.number().required('This field is required!'),
+    shippingFactor: Yup.number().required('This field is required!'),
   });
 
   const defaultValues = {
-    customerType: '',
-    customerName: '',
-    customerID: '',
-    companyName: '',
-    country: '',
-    access: '',
+    username: '',
+    customerType: 0,
+    countryId: 0,
+    address: '',
     contactName: '',
-    fobPoint: '',
+    fobPoint: 0,
     shippingFactor: '',
   };
 
@@ -50,17 +50,20 @@ export default function NewCustomerDialog({ open, onClose, setOpenSuccess, setOp
 
   const {
     getValues,
+    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
-      setOpenSuccess();
+      await dispatch(addNewCustomer({ ...data, createdDate: '' }));
+      onSuccess();
+      reset(defaultValues);
+      onClose();
     } catch (error) {
       console.error(error);
-      setOpenFail();
+      onFail();
     }
   };
 
@@ -71,30 +74,35 @@ export default function NewCustomerDialog({ open, onClose, setOpenSuccess, setOp
         <DialogContent>
           <Box sx={{ minWidth: '500px', display: 'grid', rowGap: 3, columnGap: 2 }}>
             <Stack direction="row" justifyContent="space-around" spacing={1}>
+              <RHFTextField size="small" name="username" label="Customer Name" />
               <RHFSelect size="small" name="customerType" label="Customer type" placeholder="">
-                <option value="Internal" />
-                <option value="External" />
-              </RHFSelect>
-              <RHFSelect size="small" name="customerName" label="Customer name" placeholder="">
-                <option value="N/A" />
-                <option value="John" />
-                <option value="James" />
-                <option value="Joey" />
+                {customerType?.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.items}
+                  </option>
+                ))}
+                {!customerType && <option value="" />}
               </RHFSelect>
             </Stack>
-            <RHFTextField size="small" name="customerID" label="Customer ID" />
-            <RHFTextField size="small" type="companyName" name="Company Name" label="" />
-            <RHFSelect size="small" name="country" label="Country" placeholder="">
-              <option value="CAD" />
-              <option value="USA" />
+            <RHFTextField size="small" name="address" label="Address" />
+            <RHFSelect size="small" name="countryId" label="Country" placeholder="">
+              {country?.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.items}
+                </option>
+              ))}
+              {!customerList && <option value="" />}
             </RHFSelect>
-            <RHFTextField size="small" name="access" label="Access" />
             <RHFTextField size="small" name="contactName" label="Contact name" />
             <RHFSelect size="small" name="fobPoint" label="FOB point" placeholder="">
-              <option value="Vancouver" />
-              <option value="Harvard" />
+              {fobPoint?.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.items}
+                </option>
+              ))}
+              {!fobPoint && <option value="" />}
             </RHFSelect>
-            <RHFTextField size="small" name="shippingFactor" label="Shipping factor (%)" />
+            <RHFTextField size="small" name="shippingFactor" label="Shipping factor(%)" />
           </Box>
         </DialogContent>
         <DialogActions>
