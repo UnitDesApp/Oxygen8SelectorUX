@@ -77,7 +77,7 @@ export default function Customers() {
   };
 
   const handleDeleteRow = async () => {
-    const data = await removeCustomer({ action: 'DELETE_ONE', customerId: deleteRowID });
+    const data = await dispatch(removeCustomer({ action: 'DELETE_ONE', customerId: deleteRowID }));
     setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
@@ -99,7 +99,7 @@ export default function Customers() {
   };
 
   const handleDeleteRows = async () => {
-    const data = await removeCustomer({ action: 'DELETE_MULTI', customerIds: selected });
+    const data = await dispatch(removeCustomer({ action: 'DELETE_MULTI', customerIds: selected }));
     setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);

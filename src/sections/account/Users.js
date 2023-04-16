@@ -9,7 +9,7 @@ import useTabs from '../../hooks/useTabs';
 // roots
 import { PATH_ACCOUNT } from '../../routes/paths';
 // redux
-import { useSelector } from '../../redux/store';
+import { useSelector, useDispatch } from '../../redux/store';
 import { removeUser } from '../../redux/slices/AccountReducer';
 // components
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
@@ -44,6 +44,7 @@ Users.propTypes = {
 
 export default function Users({ toolbar = true, checkbox = true }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { userList } = useSelector((state) => state.account);
 
   const dense = true;
@@ -82,8 +83,9 @@ export default function Users({ toolbar = true, checkbox = true }) {
   };
 
   const handleDeleteRow = async () => {
-    const data = await removeUser({ action: 'DELETE_ONE', userId: deleteRowID });
+    const data = await dispatch(removeUser({ action: 'DELETE_ONE', userId: deleteRowID }));
     setTableData(data);
+    console.log(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
   };
@@ -104,7 +106,7 @@ export default function Users({ toolbar = true, checkbox = true }) {
   };
 
   const handleDeleteRows = async () => {
-    const data = await removeUser({ action: 'DELETE_MULTI', userIds: selected  });
+    const data = await dispatch(removeUser({ action: 'DELETE_MULTI', userIds: selected  }));
     setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);
