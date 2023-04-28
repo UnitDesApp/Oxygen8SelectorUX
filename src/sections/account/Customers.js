@@ -99,10 +99,12 @@ export default function Customers() {
   };
 
   const handleDeleteRows = async () => {
-    const data = await dispatch(removeCustomer({ action: 'DELETE_MULTI', customerIds: selected }));
-    setTableData(data);
-    setSelected([]);
-    setMultiConfirmDialogState(false);
+    if (selected.length > 0) {
+      const data = await dispatch(removeCustomer({ action: 'DELETE_MULTI', customerIds: selected }));
+      setTableData(data);
+      setSelected([]);
+      setMultiConfirmDialogState(false);  
+    }
   };
 
   const handleEditRow = (row) => {
@@ -126,7 +128,7 @@ export default function Customers() {
 
   return (
     <Box>
-      <CustomerTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} />
+      <CustomerTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} onDeleteSelectedData={handleMultiConfirmDialogOpen}/>
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
           {selected.length > 0 && (

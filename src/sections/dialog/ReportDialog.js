@@ -15,6 +15,8 @@ import {
   Checkbox,
   Grid,
   Box,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from '../../redux/store';
@@ -33,9 +35,10 @@ ReportDialog.propTypes = {
   onClose: PropTypes.func,
   intProjectID: PropTypes.string,
   intUnitNo: PropTypes.number,
+  QuoteTitle: PropTypes.string,
 };
 
-export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo }) {
+export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo, QuoteTitle }) {
   const dispatch = useDispatch();
   const [methods, setMethods] = useState({
     submittal: false,
@@ -45,6 +48,10 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo 
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [openSuccessNotify, setOpenSuccessNotify] = useState(false);
+  const [successNotifyText, setSuccessNotifyText] = useState(false);
+  const [openFailNotify, setOpenFailNotify] = useState(false);
+  const [failNotifyText, setFailNotifyText] = useState(false);
   const { ExportSubmittal, ExportSubmittalEpicor, ExportQuote, ExportRevit, ExportSchedule } = useExport();
 
   const onChangeMethods = (label, value) => {
@@ -54,8 +61,24 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo 
   const onClickExports = async () => {
     setIsLoading(true);
     if (methods.submittal) {
-      await ExportSubmittal(intProjectID);
-      await ExportSubmittalEpicor();
+      const isSubmittalSuccess = await ExportSubmittal(intProjectID);
+      const isSubmitallEpicorSuccess = await ExportSubmittalEpicor(intProjectID);
+
+      if (isSubmittalSuccess && isSubmitallEpicorSuccess) {
+        setSuccessNotifyText("Success export report for Submitall!");
+        openSuccessNotify(true);
+      }
+      else if (!isSubmittalSuccess) {
+        setFailNotifyText("Unfortunately, fail in downloading Submttal Data!");
+        openFailNotify(true);
+      }
+      else if (!isSubmitallEpicorSuccess) {
+        setFailNotifyText("Unfortunately, fail in downloading file, please check  Submttal and Quote data!");
+        openFailNotify(true);
+      } else {
+        setFailNotifyText("Please check the project submittal project!");
+        openFailNotify(true);
+      }
     }
 
     if (methods.schedule) {
@@ -67,7 +90,14 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo 
     }
 
     if (methods.quote) {
-      // await ExportQuote(intProjectID);
+      const result = await ExportQuote(intProjectID);
+      if (result === "server_error") {
+        setFailNotifyText("Server Error!");
+        setOpenFailNotify(true);
+      } else if (result === "fail") {
+        setFailNotifyText("Please check your the project Quote info!");
+        setOpenFailNotify(true);
+      }
     }
     setIsLoading(false);
   };
@@ -75,6 +105,14 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo 
   const onCloseDialog = () => {
     setIsLoading(false);
     onClose();
+  };
+
+  const handleCloseNotify = (key) => {
+    if (key === 'success') {
+      setOpenSuccessNotify(false);
+    } else if (key === 'fail') {
+      setOpenFailNotify(false);
+    }
   };
 
   return (
@@ -117,6 +155,16 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo 
             </Grid>
           </Grid>
         </DialogActions>
+        <Snackbar open={openSuccessNotify} autoHideDuration={3000} onClose={() => handleCloseNotify("success")}>
+          <Alert onClose={() => handleCloseNotify("success")} severity="success" sx={{ width: '100%' }}>
+            {successNotifyText}
+          </Alert>
+        </Snackbar>
+        <Snackbar open={openFailNotify} autoHideDuration={3000} onClose={() => handleCloseNotify("warning")}>
+          <Alert onClose={() => handleCloseNotify("fail")} severity="warning" sx={{ width: '100%' }}>
+            {failNotifyText}
+          </Alert>
+        </Snackbar>
       </Box>
     </Dialog>
   );

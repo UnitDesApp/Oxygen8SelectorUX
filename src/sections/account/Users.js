@@ -85,7 +85,6 @@ export default function Users({ toolbar = true, checkbox = true }) {
   const handleDeleteRow = async () => {
     const data = await dispatch(removeUser({ action: 'DELETE_ONE', userId: deleteRowID }));
     setTableData(data);
-    console.log(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
   };
@@ -106,10 +105,12 @@ export default function Users({ toolbar = true, checkbox = true }) {
   };
 
   const handleDeleteRows = async () => {
-    const data = await dispatch(removeUser({ action: 'DELETE_MULTI', userIds: selected  }));
-    setTableData(data);
-    setSelected([]);
-    setMultiConfirmDialogState(false);
+    if (selected) {
+      const data = await dispatch(removeUser({ action: 'DELETE_MULTI', userIds: selected  }));
+      setTableData(data);
+      setSelected([]);
+      setMultiConfirmDialogState(false);  
+    }
   };
 
   const handleEditRow = (row) => {
@@ -135,7 +136,7 @@ export default function Users({ toolbar = true, checkbox = true }) {
   return (
     <Box>
       {toolbar && (
-        <UserTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} />
+        <UserTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} onDeleteSelectedData={handleMultiConfirmDialogOpen}/>
       )}
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>

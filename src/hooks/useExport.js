@@ -28,6 +28,7 @@ export const useExport = () => {
       saveAs(response.data, `${filename}.pdf`);
     });
   };
+
   const ExportSubmittal = async (intProjectID) => {
     const data = {
       intJobID: intProjectID,
@@ -38,7 +39,7 @@ export const useExport = () => {
     const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
     console.log(response.data.type);
     if (response.data.type === 'application/json') {
-      return;
+      return false;
     }
 
     // Get File Name
@@ -54,8 +55,8 @@ export const useExport = () => {
 
     // Save File
     saveAs(response.data, `${filename}`);
+    return true;
   };
-
   // export pdf of form data
   const ExportSubmittalEpicor = async (intProjectId) => {
     const data = {
@@ -66,7 +67,7 @@ export const useExport = () => {
 
     const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
     if (response.data.type === 'application/json') {
-      return;
+      return false;
     }
 
     // Get File Name
@@ -80,12 +81,9 @@ export const useExport = () => {
       }
     }
 
-    console.log(filename);
-
     // Save File
     saveAs(response.data, `${filename}`);
-
-    console.log('Successed');
+    return true;
   };
 
   const ExportSchedule = (projectInfo) => {};
@@ -98,10 +96,10 @@ export const useExport = () => {
     };
 
     const response = await axios.post(`${serverUrl}/api/quote/exportPdf`, data, { responseType: 'blob' });
-    console.log(response);
 
     if (response.data.type === 'application/json') {
-      return;
+      if (!response.data.success) return 'fail';
+      return 'server_error';
     }
 
     // Get File Name
@@ -117,6 +115,7 @@ export const useExport = () => {
 
     // Save File
     saveAs(response.data, `${filename}.pdf`);
+    return true;
   };
 
   return {

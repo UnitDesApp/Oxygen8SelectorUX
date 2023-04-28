@@ -13,6 +13,7 @@ UserTableToolbar.propTypes = {
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
   userNum: PropTypes.number,
+  onDeleteSelectedData: PropTypes.func,
 };
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -23,7 +24,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export default function UserTableToolbar({ filterName, onFilterName, userNum }) {
+export default function UserTableToolbar({ filterName, onFilterName, userNum, onDeleteSelectedData }) {
   return (
     <Stack
       spacing={2}
@@ -38,7 +39,7 @@ export default function UserTableToolbar({ filterName, onFilterName, userNum }) 
         <Stack direction="row" justifyContent="left" spacing={3}>
           <Button startIcon={<Iconify icon={'ic:outline-filter-alt'} />}>Filter</Button>
           <Button startIcon={<Iconify icon={'ic:sharp-sort'} />}>Sort</Button>
-          <Button startIcon={<Iconify icon={'ic:outline-delete-outline'} />}>Delete</Button>
+          <Button startIcon={<Iconify icon={'ic:outline-delete-outline'} />} onClick={onDeleteSelectedData}>Delete</Button>
         </Stack>
       </Item>
       <Item sx={{ width: { md: '20%', xs: '100%' } }}>

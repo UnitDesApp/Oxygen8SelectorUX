@@ -96,6 +96,6 @@ export function removeCustomer(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/account/deleteCustomer`, data);
     dispatch(AccountSlice.actions.setCustomerInfo(response.data));
-    return response.data
+    return response.data;
   }
 }
