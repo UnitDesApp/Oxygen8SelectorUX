@@ -113,6 +113,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [expanded, setExpanded] = React.useState({
     panel1: true,
@@ -141,17 +142,21 @@ export default function Selection({ unitTypeData, intUnitNo }) {
 
   useEffect(() => {
     const getSelectionData = async () => {
-      await dispatch(
-        getViewSelectionInfo({
-          intUserID: localStorage.getItem('userId'),
-          intUAL: localStorage.getItem('UAL'),
-          intProjectID: projectId,
-          intProductTypeID: unitTypeData.intProductTypeID,
-          intUnitTypeID: unitTypeData.intUnitTypeID,
-          intUnitNo,
-        })
-      );
-      setIsLoading(false);
+      try {
+        await dispatch(
+          getViewSelectionInfo({
+            intUserID: localStorage.getItem('userId'),
+            intUAL: localStorage.getItem('UAL'),
+            intProjectID: projectId,
+            intProductTypeID: unitTypeData.intProductTypeID,
+            intUnitTypeID: unitTypeData.intUnitTypeID,
+            intUnitNo,
+          })
+        );
+        setIsLoading(false);
+      } catch (e) {
+        setError(e);
+      }
     };
 
     getSelectionData();
@@ -671,16 +676,21 @@ export default function Selection({ unitTypeData, intUnitNo }) {
         ]
       : [];
 
-  console.log(viewSelectionInfo);
-  console.log(SelectionInfo);
+  console.log(error);
 
   return (
     <Page title="Project: Edit">
       <RootStyle>
         <Container>
-          {isLoading ? (
-            <LinearProgress color="info" />
-          ) : (
+          {error && (
+            <Box>
+              <Typography color="red" sx={{ marginLeft: 'auto', marginRight: 'auto', marginTop: '100px', width: "350px" }}>
+                Server error! Try again later...
+              </Typography>
+            </Box>
+          )}
+          {isLoading && !error && <LinearProgress color="info" />}
+          {!isLoading && !error && (
             <Stack spacing={5} sx={{ mt: 2 }}>
               {SelectionInfo.map((item, index) => (
                 <Accordion

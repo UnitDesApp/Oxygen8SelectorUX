@@ -51,7 +51,6 @@ const handlers = {
   }),
   REGISTER: (state, action) => {
     const { user } = action.payload;
-
     return {
       ...state,
       isAuthenticated: true,
@@ -204,23 +203,57 @@ function AuthProvider({ children }) {
     });
   };
 
-  const register = async (email, password, firstName, lastName) => {
-    const response = await axios.post('/api/account/register', {
+  const register = async (email, password, username, firstname, lastname, accessLevel) => {
+    const response = await axios.post(`${serverUrl}/api/auth/register`, {
       email,
       password,
-      firstName,
-      lastName,
+      username,
+      firstname,
+      lastname,
+      accessLevel,
+      createdDate: new Date(),
     });
-    const { accessToken, user } = response.data;
+    const { action, accessToken, data } = response.data;
+    if (action === 'success') {
+      setSession(accessToken);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('userId', data[0].id);
+      localStorage.setItem('username', data[0].username);
+      localStorage.setItem('firstname', data[0].first_name);
+      localStorage.setItem('lastname', data[0].last_name);
+      localStorage.setItem('initials', data[0].initials);
+      localStorage.setItem('email', data[0].email);
+      localStorage.setItem('title', data[0].title);
+      localStorage.setItem('customerId', data[0].customer_id);
+      localStorage.setItem('access', data[0].access);
+      localStorage.setItem('UAL', data[0].access_level);
+      localStorage.setItem('accessPricing', data[0].access_pricing);
+      localStorage.setItem('createdDate', data[0].created_date);
+      localStorage.setItem('accessToken', accessToken);
 
-    localStorage.setItem('accessToken', accessToken);
-
-    dispatch({
-      type: 'REGISTER',
-      payload: {
-        user,
-      },
-    });
+      dispatch({
+        type: 'REGISTER',
+        payload: {
+          user: {
+            accessToken,
+            userId: data[0].id,
+            username: data[0].username,
+            firstname: data[0].first_name,
+            lastname: data[0].last_name,
+            initials: data[0].initials,
+            email: data[0].email,
+            title: data[0].title,
+            customerId: data[0].customer_id,
+            access: data[0].access,
+            UAL: data[0].access_level,
+            accessPricing: data[0].access_pricing,
+            createdDate: data[0].created_date,
+          },
+        },
+      });
+      return true;
+    }
+    return false;
   };
 
   const logout = async () => {

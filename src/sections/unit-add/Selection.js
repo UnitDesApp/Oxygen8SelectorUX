@@ -113,6 +113,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [expanded, setExpanded] = React.useState({
     panel1: true,
@@ -141,17 +142,21 @@ export default function Selection({ unitTypeData, intUnitNo }) {
 
   useEffect(() => {
     const getSelectionData = async () => {
-      await dispatch(
-        getViewSelectionInfo({
-          intUserID: localStorage.getItem('userId'),
-          intUAL: localStorage.getItem('UAL'),
-          intProjectID: projectId,
-          intProductTypeID: unitTypeData.intProductTypeID,
-          intUnitTypeID: unitTypeData.intUnitTypeID,
-          intUnitNo,
-        })
-      );
-      setIsLoading(false);
+      try {
+        await dispatch(
+          getViewSelectionInfo({
+            intUserID: localStorage.getItem('userId'),
+            intUAL: localStorage.getItem('UAL'),
+            intProjectID: projectId,
+            intProductTypeID: unitTypeData.intProductTypeID,
+            intUnitTypeID: unitTypeData.intUnitTypeID,
+            intUnitNo,
+          })
+        );
+        setIsLoading(false);  
+      } catch (e) {
+        setError(false);
+      }
     };
 
     getSelectionData();
@@ -671,13 +676,17 @@ export default function Selection({ unitTypeData, intUnitNo }) {
         ]
       : [];
 
-  console.log(viewSelectionInfo);
-  console.log(SelectionInfo);
-
   return (
     <Page title="Project: Edit">
       <RootStyle>
         <Container>
+          {
+            error && (
+              <Box sx={{ maringLeft: "auto", marginRight: "auto", marginTop: "50px"}}>
+                Server Error!
+              </Box>    
+            )
+          }
           {isLoading ? (
             <LinearProgress color="info" />
           ) : (

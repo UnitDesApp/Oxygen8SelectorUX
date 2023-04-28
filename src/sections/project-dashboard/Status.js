@@ -21,7 +21,6 @@ export default function Status() {
   const { projectId } = useParams();
   const theme = useTheme();
   const { unitList} = useSelector((state) => state.projectDashboard);
-  // const { projectInfo } = useSelector((state) => state.projects);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitDrawing, setSubmitDrawing] = useState(false);
   const [isNoteAdded, setIsNoteAdded] = useState(false);
@@ -47,6 +46,7 @@ export default function Status() {
     };
 
     getSubmitalInfo();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) return <LinearProgress  color="info" />

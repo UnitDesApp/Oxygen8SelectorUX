@@ -58,7 +58,7 @@ export function updateUser(userInfo) {
 
 export function updateMyProfile(userInfo) {
   return async () => {
-    const response = await axios.post(`${serverUrl}/api/account/updateMyProfile`, userInfo);
+    const response = await axios.post(`${serverUrl}/api/account/updateUser`, userInfo);
     return response.data;
   };
 }

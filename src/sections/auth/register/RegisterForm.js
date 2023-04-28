@@ -11,7 +11,7 @@ import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFTextField, RHFSelect } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -23,17 +23,21 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
+    firstname: Yup.string().required('First name required'),
+    lastname: Yup.string().required('Last name required'),
+    username: Yup.string().required('User name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
+    accessLevel: Yup.string().required('Access Level is required'),
   });
 
   const defaultValues = {
     firstName: '',
     lastName: '',
+    username: '',
     email: '',
     password: '',
+    accessLevel: 10,
   };
 
   const methods = useForm({
@@ -50,7 +54,19 @@ export default function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
-      await register(data.email, data.password, data.firstName, data.lastName);
+      const result = await register(
+        data.email,
+        data.password,
+        data.username,
+        data.firstname,
+        data.lastname,
+        data.accessLevel
+      );
+      if (!result) {
+        setError('afterSubmit', { message: 'Your email is already existed!' });
+      } else {
+        location.href = '/';
+      }
     } catch (error) {
       console.error(error);
       reset();
@@ -64,14 +80,20 @@ export default function RegisterForm() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+          <RHFTextField name="firstname" label="First name" />
+          <RHFTextField name="lastname" label="Last name" />
         </Stack>
-
+        <RHFTextField name="username" label="User name" />
         <RHFTextField name="email" label="Email address" />
-
+        <RHFSelect size="small" name="accessLevel" label="Access level" placeholder="">
+          <option value="10">Admin</option>
+          <option value="4">Internal Admin</option>
+          <option value="3">Internal 2</option>
+          <option value="2">Internal 1</option>
+          <option value="1">External</option>
+          <option value="5">External Special</option>
+        </RHFSelect>
         <RHFTextField
           name="password"
           label="Password"

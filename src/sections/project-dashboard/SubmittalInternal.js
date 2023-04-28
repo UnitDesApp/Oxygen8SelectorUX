@@ -79,24 +79,10 @@ const BoxStyles = styled(Box)(() => ({
   marginTop: 20,
 }));
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
+const TableHeaderCellStyled = styled(TableCell)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: 'white',
+  boxShadow: 'none!important',
 }));
 
 // ----------------------------------------------------------------------
@@ -107,6 +93,7 @@ export default function SubmittalInternal() {
   const dispatch = useDispatch();
   const { submittalInfo, submittalDetailInfo, notes, shippingNotes } = useSelector((state) => state.submittal);
   const isResetCalled = useRef(false);
+  const theme = useTheme();
 
   // State
   const [expanded, setExpanded] = useState({
@@ -424,25 +411,21 @@ export default function SubmittalInternal() {
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <TableContainer component={Paper} dense="true" sx={{ mt: 1.5 }}>
+                      <TableContainer component={Paper} sx={{ mt: 1.5 }}>
                         <Scrollbar>
                           <Table size="small">
                             <TableHead>
-                              <TableRow
-                                sx={{
-                                  '&:last-child td, &:last-child th': { border: 0, boxShadow: 'none' },
-                                }}
-                              >
+                              <TableRow>
                                 {PROJECT_INFO_TABLE_HEADER.map((item, index) => (
-                                  <StyledTableCell key={index} component="th" scope="row" align="left">
+                                  <TableHeaderCellStyled key={index} component="th" scope="row" align="left">
                                     {item}
-                                  </StyledTableCell>
+                                  </TableHeaderCellStyled>
                                 ))}
                               </TableRow>
                             </TableHead>
 
                             <TableBody>
-                              {submittalDetailInfo.map((row, index) => (
+                              {submittalDetailInfo?.map((row, index) => (
                                 <Row row={row} key={index} />
                               ))}
                             </TableBody>
@@ -488,24 +471,24 @@ export default function SubmittalInternal() {
                         <Table size="small">
                           <TableHead>
                             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0, boxShadow: 'none' } }}>
-                              <StyledTableCell component="th" sx={{ width: '20%' }} align="center">
+                              <TableHeaderCellStyled component="th" sx={{ width: '20%' }} align="center">
                                 No
-                              </StyledTableCell>
-                              <StyledTableCell component="th" sx={{ width: '80%' }} align="center">
+                              </TableHeaderCellStyled>
+                              <TableHeaderCellStyled component="th" sx={{ width: '80%' }} align="center">
                                 Shipping Instruction
-                              </StyledTableCell>
+                              </TableHeaderCellStyled>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {shippingNotes?.gvShippingNotesDataSource?.map((row, index) => (
-                              <StyledTableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <StyledTableCell component="th" scope="row" align="center">
+                              <TableRow key={index}>
+                                <TableCell component="th" scope="row" align="center">
                                   {index + 1}
-                                </StyledTableCell>
-                                <StyledTableCell component="th" scope="row" align="center">
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="center">
                                   {row.shipping_notes}
-                                </StyledTableCell>
-                              </StyledTableRow>
+                                </TableCell>
+                              </TableRow>
                             ))}
                           </TableBody>
                         </Table>
@@ -548,25 +531,25 @@ export default function SubmittalInternal() {
                       <Box sx={{ pt: '10px' }}>
                         <Table size="small">
                           <TableHead>
-                            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                              <StyledTableCell component="th" sx={{ width: '20%' }} scope="row" align="center">
+                            <TableRow>
+                              <TableHeaderCellStyled component="th" sx={{ width: '20%' }} scope="row" align="center">
                                 No
-                              </StyledTableCell>
-                              <StyledTableCell component="th" sx={{ width: '80%' }} scope="row" align="center">
+                              </TableHeaderCellStyled>
+                              <TableHeaderCellStyled component="th" sx={{ width: '80%' }} scope="row" align="center">
                                 Note
-                              </StyledTableCell>
+                              </TableHeaderCellStyled>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {notes.gvNotesDataSource.map((row, index) => (
-                              <StyledTableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <StyledTableCell component="th" scope="row" align="center">
+                              <TableRow key={index}>
+                                <TableCell component="th" scope="row" align="center">
                                   {index + 1}
-                                </StyledTableCell>
-                                <StyledTableCell component="th" scope="row" align="center">
+                                </TableCell>
+                                <TableCell component="th" scope="row" align="center">
                                   {row.notes}
-                                </StyledTableCell>
-                              </StyledTableRow>
+                                </TableCell>
+                              </TableRow>
                             ))}
                           </TableBody>
                         </Table>
@@ -622,43 +605,43 @@ Row.propTypes = {
 };
 function Row({ row }) {
   return (
-    <StyledTableRow>
-      <StyledTableCell component="th" scope="row" align="left">
+    <TableRow>
+      <TableCell component="th" scope="row" align="left">
         {row.qty}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.tag}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.item}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.model}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.voltage}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.controls_preference}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.installation}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.duct_connection}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.handing}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.part_desc}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.part_number}
-      </StyledTableCell>
-      <StyledTableCell component="th" scope="row" align="left">
+      </TableCell>
+      <TableCell component="th" scope="row" align="left">
         {row.pricing}
-      </StyledTableCell>
-    </StyledTableRow>
+      </TableCell>
+    </TableRow>
   );
 }
