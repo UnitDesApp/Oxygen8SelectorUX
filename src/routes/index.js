@@ -116,5 +116,5 @@ const UserEdit = Loadable(lazy(() => import('../pages/account/UserEdit')));
 const CustomerEdit = Loadable(lazy(() => import('../pages/account/CustomerEdit')));
 
 // Resource
-const Resources = Loadable(lazy(() => import('../pages/Recources')));
+const Resources = Loadable(lazy(() => import('../pages/Resources')));
 const Page404 = Loadable(lazy(() => import('../pages/Page404')));
