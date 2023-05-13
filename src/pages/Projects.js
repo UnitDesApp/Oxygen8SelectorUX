@@ -24,7 +24,7 @@ import useTabs from '../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../hooks/useTable';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
-import { getProjectsInfo, deleteProject } from '../redux/slices/projectsReducer';
+import { getProjectsInfo, deleteProject, duplicateProject } from '../redux/slices/projectsReducer';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -102,6 +102,12 @@ export default function MyProjects() {
   const { projectList, isLoading, projectInitInfo } = useSelector((state) => state.projects);
   const tableData = projectList;
 
+  const [openDuplicateSuccess, setOpenDuplicateSuccess] = useState(false);
+  
+  const handleDuplicateCloseSuccess = () => {
+    setOpenDuplicateSuccess(false);
+  };
+
   const [openSuccess, setOpenSuccess] = useState(false);
   const handleCloseSuccess = (event, reason) => {
     if (reason === 'clickaway') {
@@ -150,7 +156,7 @@ export default function MyProjects() {
   };
 
   const handleDeleteRow = () => {
-    dispatch(deleteProject({ action: 'DELETE_ONE', jobId: deleteRowID }));
+    dispatch(deleteProject({ action: 'DELETE_ONE', projectId: deleteRowID }));
     setSelected([]);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
@@ -181,6 +187,11 @@ export default function MyProjects() {
     setSelected([]);
     setMultiConfirmDialogState(false);
   };
+
+  const handleDuplicate = (row) => {
+    dispatch(duplicateProject(row));
+    setOpenDuplicateSuccess(true);
+  }
 
   const handleEditRow = (projectid) => {
     navigate(PATH_PROJECT.project(projectid, 'unitlist'));
@@ -273,6 +284,7 @@ export default function MyProjects() {
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         onDeleteRow={() => handleOneConfirmDialogOpen(row.id)}
+                        onDuplicate = {() => handleDuplicate(row)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
@@ -297,6 +309,11 @@ export default function MyProjects() {
             </Box>
           </Card>
         </Container>
+        <Snackbar open={openDuplicateSuccess} autoHideDuration={3000} onClose={handleDuplicateCloseSuccess}>
+          <Alert onClose={handleDuplicateCloseSuccess} severity="success" sx={{ width: '100%' }}>
+            Project duplicate successfully!
+          </Alert>
+        </Snackbar>
         <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
           <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
             New project added success!

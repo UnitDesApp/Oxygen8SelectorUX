@@ -1,6 +1,6 @@
 import * as React from 'react';
 // import { paramCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // @mui
 import {
@@ -13,11 +13,13 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 
 // redux
-import { useSelector, /* useDispatch */ } from 'react-redux';
-import { deleteUnits } from '../../redux/slices/projectDashboardReducer';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteUnits, duplicateUnit, multiDuplicateUnits } from '../../redux/slices/projectDashboardReducer';
 // hooks
 import useTabs from '../../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
@@ -32,7 +34,7 @@ import ConfirmDialog from '../dialog/ConfirmDialog';
 import { PATH_UNIT } from '../../routes/paths';
 // ----------------------------------------------------------------------
 
-const ROLE_OPTIONS = ['All', 'My Jobs', 'By Others'];
+const SORT_OPTIONS = ['tag', 'qty', 'type', 'modal', 'cfm'];
 
 const TABLE_HEAD = [
   { id: 'tag', label: 'Tag', align: 'left' },
@@ -48,9 +50,7 @@ const TABLE_HEAD = [
 export default function UnitList() {
   const { projectId } = useParams();
   const { unitList } = useSelector((state) => state.projectDashboard);
-  // const dispatch = useDispatch();
-
-  console.log(unitList);
+  const dispatch = useDispatch();
 
   const {
     page,
@@ -74,15 +74,22 @@ export default function UnitList() {
   const navigate = useNavigate();
 
   const [tableData, setTableData] = useState(unitList);
-
   const [filterName, setFilterName] = useState('');
-
   const [filterRole, setFilterRole] = useState('All');
+  const [openSuccess, setOpenSuccess] = useState(false);
+
+  useEffect(() => {
+    setTableData(unitList);
+  }, [unitList]);
 
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = React.useState(false);
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = React.useState(false);
   const [deleteRowID, setDeleteRowID] = React.useState(-1);
+
+  const handleCloseSuccess = () => {
+    setOpenSuccess(false);
+  };
 
   const handleOneConfirmDialogOpen = (id) => {
     setDeleteRowID(id);
@@ -109,7 +116,7 @@ export default function UnitList() {
     setMultiConfirmDialogState(false);
   };
 
-  const { currentTab: filterStatus, /* onChangeTab: onChangeFilterStatus */ } = useTabs('All');
+  const { currentTab: filterStatus /* onChangeTab: onChangeFilterStatus */ } = useTabs('All');
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -132,8 +139,16 @@ export default function UnitList() {
     });
   };
 
-  const handleClickNewUnit = () => {
-    navigate(PATH_UNIT.add(projectId));
+  const onDuplicate = (row) => {
+    dispatch(duplicateUnit({ ...row, job_id: projectId }));
+    setOpenSuccess(true);
+  };
+
+  const onMultiDuplicate = async () => {
+    if (selected.length > 0) {
+      await dispatch(multiDuplicateUnits({ unitIds: selected, projectId }));
+      setOpenSuccess(true);  
+    }
   };
 
   const dataFiltered = applySortFilter({
@@ -157,11 +172,12 @@ export default function UnitList() {
         <UnitTableToolbar
           filterName={filterName}
           filterRole={filterRole}
+          onDeleteRows={() => setMultiConfirmDialogState(true)}
           onFilterName={handleFilterName}
-          onFilterRole={handleFilterRole}
-          onAddNewUnit={handleClickNewUnit}
+          onDuplicate={onMultiDuplicate}
+          onSort={onSort}
           unitCount={tableData.length}
-          optionsRole={ROLE_OPTIONS}
+          sortOptions={SORT_OPTIONS}
         />
 
         <Scrollbar>
@@ -210,6 +226,7 @@ export default function UnitList() {
                     row={row}
                     selected={selected.includes(row.unit_no)}
                     onSelectRow={() => onSelectRow(row.unit_no)}
+                    onDuplicate={() => onDuplicate(row)}
                     onDeleteRow={() => handleOneConfirmDialogOpen(row.unit_no)}
                     onEditRow={() => handleEditRow(row)}
                   />
@@ -235,6 +252,11 @@ export default function UnitList() {
           />
         </Box>
       </Card>
+      <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
+        <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+          Unit is duplicated successfully!
+        </Alert>
+      </Snackbar>
       <ConfirmDialog
         isOpen={isOneConfirmDialog}
         onClose={handleOneConfirmDialogClose}

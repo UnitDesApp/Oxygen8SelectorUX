@@ -18,10 +18,11 @@ ProjectTableRow.propTypes = {
   selected: PropTypes.bool,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
+  onDuplicate: PropTypes.func,
   onDeleteRow: PropTypes.func,
 };
 
-export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow, onDuplicate, onDeleteRow }) {
   // const theme = useTheme();
 
   const {
@@ -84,7 +85,7 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }}>
         <Stack direction="row" spacing={1}>
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" onClick={onDuplicate}>
             <Iconify icon="ic:outline-file-copy" />
           </IconButton>
           <IconButton aria-label="delete" onClick={onDeleteRow}>

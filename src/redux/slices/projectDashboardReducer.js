@@ -36,7 +36,7 @@ const ProjectDashboardSlice = createSlice({
     },
     getAbleToDownload(state, action) {
       state.ableToDownload = action.payload;
-    }
+    },
   },
 });
 
@@ -72,5 +72,21 @@ export const getAbleToDownload = async (data) => {
   dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
   return response.data;
 };
+
+export function duplicateUnit(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/duplicateInfo`, data);
+    dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
+    return response.data;
+  };
+}
+
+export function multiDuplicateUnits(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/multiduplicate`, data);
+    dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
+    return response.data;
+  }
+}
 
 // ----------------------------------------------------------------------

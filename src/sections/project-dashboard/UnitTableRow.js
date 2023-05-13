@@ -15,10 +15,11 @@ UserTableRow.propTypes = {
   selected: PropTypes.bool,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
+  onDuplicate: PropTypes.func,
   onDeleteRow: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function UserTableRow({ row, selected, onEditRow, onDuplicate, onSelectRow, onDeleteRow }) {
   // const theme = useTheme();
 
   const { tag, qty, unit_type, unit_model, cfm } = row;
@@ -38,13 +39,21 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
-
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{tag}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{qty}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{unit_type}</TableCell>
-
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{unit_model}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{cfm}</TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {tag}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {qty}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {unit_type}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {unit_model}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {cfm}
+      </TableCell>
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}
@@ -56,7 +65,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                 <Iconify icon={'fa-solid:pen'} />
                 Edit Unit
               </MenuItem>
-              <MenuItem sx={{ color: 'info.main' }}>
+              <MenuItem sx={{ color: 'info.main' }} onClick={onDuplicate}>
                 <Iconify icon={'codicon:copy'} />
                 Duplicate
               </MenuItem>

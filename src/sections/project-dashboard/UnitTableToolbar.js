@@ -32,27 +32,29 @@ UserTableToolbar.propTypes = {
   unitCount: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
-  onFilterRole: PropTypes.func,
-  optionsRole: PropTypes.arrayOf(PropTypes.string),
-  onAddNewUnit: PropTypes.func,
+  onSort: PropTypes.func,
+  onDuplicate: PropTypes.func,
+  onDeleteRows: PropTypes.func,
+  sortOptions: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default function UserTableToolbar({
   filterName,
   onFilterName,
-  onFilterRole,
-  optionsRole,
-  onAddNewUnit,
+  onSort,
+  onDuplicate,
+  sortOptions,
+  onDeleteRows,
   unitCount,
 }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [sortAnchorEl, setSortAnchorEl] = React.useState(null);
+  const open = Boolean(sortAnchorEl);
+  const handleSortClick = (event) => {
+    setSortAnchorEl(event.currentTarget);
   };
-  const handleClose = (event) => {
-    onFilterRole(event);
-    setAnchorEl(null);
+  const handleSortClose = (event) => {
+    onSort(event);
+    setSortAnchorEl(null);
   };
 
   return (
@@ -67,26 +69,20 @@ export default function UserTableToolbar({
       </Item>
       <Item sx={{ width: { md: '50%', sm: '50%', xs: '100%' } }} >
         <Stack direction="row" spacing={3} >
-          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'codicon:filter-filled'} />} onClick={handleClick}>
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'codicon:filter-filled'} />} >
              Filter
           </Button>
-          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'ic:outline-sort'} />} onClick={handleClick}>
+          <Button aria-label="sort" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'ic:outline-sort'} />} onClick={handleSortClick}>
              Sort
-          </Button>
-          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'ic:outline-file-copy'} />} onClick={handleClick}>
-            Duplicate
-          </Button>
-          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'mdi:delete'} />} onClick={handleClick}>
-            Delete
           </Button>
           <Menu
             id="role"
             MenuListProps={{
               'aria-labelledby': 'role',
             }}
-            anchorEl={anchorEl}
+            anchorEl={sortAnchorEl}
             open={open}
-            onClose={() => handleClose('All')}
+            onClose={() => handleSortClose('All')}
             PaperProps={{
               style: {
                 maxHeight: '300px',
@@ -94,7 +90,7 @@ export default function UserTableToolbar({
               },
             }}
           >
-            {optionsRole.map((option) => (
+            {sortOptions.map((option) => (
               <MenuItem
                 key={option}
                 value={option}
@@ -105,12 +101,19 @@ export default function UserTableToolbar({
                   typography: 'body2',
                   textTransform: 'capitalize',
                 }}
-                onClick={(event) => handleClose(event.target.attributes.value.value)}
+                onClick={(event) => handleSortClose(event.target.attributes.value.value)}
               >
                 {option}
               </MenuItem>
             ))}
           </Menu>
+
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'ic:outline-file-copy'} />} onClick={onDuplicate}>
+            Duplicate
+          </Button>
+          <Button aria-label="filter" id="role" label="Role" sx={{ fontSize: '16px' }} startIcon={<Iconify icon={'mdi:delete'} />} onClick={onDeleteRows}>
+            Delete
+          </Button>
         </Stack>
       </Item>
       <Item sx={{ width: { md: '30%', sm: '30%', xs: '100%' } }}>

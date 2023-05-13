@@ -118,6 +118,13 @@ export function deleteProject(data) {
   };
 }
 
+export function duplicateProject(data)  {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/job/duplicate`, data);
+    dispatch(ProjectsSlice.actions.updateProject(response.data));
+  };
+}
+
 export function getProjectsAndUnitsInfo(data) {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
