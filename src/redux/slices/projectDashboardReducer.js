@@ -13,6 +13,7 @@ const initialState = {
   projectInfo: {},
   unitList: [],
   ableToDownload: {},
+  projectNote: ""
 };
 
 const ProjectDashboardSlice = createSlice({
@@ -37,6 +38,9 @@ const ProjectDashboardSlice = createSlice({
     getAbleToDownload(state, action) {
       state.ableToDownload = action.payload;
     },
+    setProjectNote(state, action) {
+      state.projectNote = action.payload;
+    }
   },
 });
 
@@ -85,6 +89,21 @@ export function multiDuplicateUnits(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/multiduplicate`, data);
     dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
+    return response.data;
+  }
+}
+
+export function saveNotes(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/saveNotes`, data);
+    return response.data;
+  }
+}
+
+export function getProjectNote(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/getNotes`, data);
+    dispatch(ProjectDashboardSlice.actions.setProjectNote(response.data));
     return response.data;
   }
 }

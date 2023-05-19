@@ -99,11 +99,12 @@ export default function Quote() {
   const theme = useTheme();
   const { projectId } = useParams();
   const { unitList } = useSelector((state) => state.projectDashboard);
+  const { isEdit } = useSelector((state) => state.quote);
   const dispatch = useDispatch();
 
   const [alignment, setAlignment] = useState('stage1');
   const [isLoading, setIsLoading] = useState(false);
-  const [doWannaGenerate, setDoWannaGenerate] = useState(false);
+  const [doWannaGenerate, setDoWannaGenerate] = useState(isEdit);
 
   useEffect(() => {
     const getQuoteInitInfo = () => {
@@ -290,34 +291,6 @@ export default function Quote() {
             <Typography variant="h5" sx={{ color: theme.palette.primary.main }}>
               Select a stage to generate a quote
             </Typography>
-            <ToggleButtonGroup
-              color="primary"
-              value={alignment}
-              exclusive
-              onChange={handleChange}
-              aria-label="Platform"
-            >
-              <ToggleButton value="stage1">
-                <Stack direction="row" spacing={2} justifyContent="center" alignContent="center">
-                  {alignment === 'stage1' && (
-                    <Iconify icon="material-symbols:check-circle-outline" sx={{ marginTop: '5px' }} />
-                  )}
-                  Stage
-                </Stack>
-              </ToggleButton>
-              <ToggleButton value="stage2">
-                {alignment === 'stage2' && <Iconify icon="material-symbols:check-circle-outline" />}
-                Stage
-              </ToggleButton>
-              <ToggleButton value="stage3">
-                {alignment === 'stage3' && <Iconify icon="material-symbols:check-circle-outline" />}
-                Stage
-              </ToggleButton>
-              <ToggleButton value="stage4">
-                {alignment === 'stage4' && <Iconify icon="material-symbols:check-circle-outline" />}
-                Stage
-              </ToggleButton>
-            </ToggleButtonGroup>
             <Button
               onClick={wannaGenerate}
               color="primary"
