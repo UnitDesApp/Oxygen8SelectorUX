@@ -12,6 +12,7 @@ import { serverUrl } from '../../config';
 
 const initialState = {
   isLoading: true,
+  isEdit: false,
   quoteFormInfo: {},
   quoteControlInfo: {},
   gvPricingGeneral: {},
@@ -88,6 +89,7 @@ const QuoteSlice = createSlice({
 
 
       state.isLoading = false;
+      state.isEdit = isEdit;
     },
     updateQuoteInfo(state, action) {
       const { quoteFormInfo, updatedInfo } = action.payload;
