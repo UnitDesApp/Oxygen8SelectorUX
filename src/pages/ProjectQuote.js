@@ -66,23 +66,6 @@ const RootStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-//------------------------------------------------
-
-// const ProjectInfoTableHeader = [
-//   'QTY',
-//   'TAG',
-//   'ITEM',
-//   'MODEL',
-//   'VOLTAGE',
-//   'CONTROLS PREFERENCE',
-//   'INSTALLATION',
-//   'DUCT CONNECTION',
-//   'HANDING',
-//   'PART DESC',
-//   'PART NUMBER',
-//   'PRICING',
-// ];
-
 const DefaultMiscValues = {
   txbMisc: '',
   txbMiscQty: '1',

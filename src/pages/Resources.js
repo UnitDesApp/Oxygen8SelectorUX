@@ -3,21 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Container, Divider, LinearProgress } from '@mui/material';
 import { intUAL_Admin } from 'src/config';
-
 // redux
 import { getFileList } from 'src/redux/slices/ResourceReducer';
 import { useDispatch, useSelector } from 'src/redux/store';
-
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import Iconify from '../components/Iconify';
-
 // sections
 import { ResourceTable, ResourceHeader } from '../sections/resources';
 import { FileUploadDialog } from '../sections/dialog';
-
-// ----------------------------------------------------------------------------
+// utils
+import { ResourceNames } from '../utils/constants';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
@@ -25,15 +22,6 @@ const RootStyle = styled('div')(({ theme }) => ({
     paddingTop: theme.spacing(11),
   },
 }));
-
-// ----------------------------------------------------------------------
-
-const resourceNames = {
-  nova: 'NOVA',
-  terra: 'TERRA',
-  ventum: 'VENTUM',
-  ventum_lite: 'VENTUM LITE',
-};
 
 export default function Resources() {
   const dispatch = useDispatch();
@@ -88,7 +76,7 @@ export default function Resources() {
                     key={i}
                     resourceType={item[0]}
                     objResources={item[1]}
-                    title={resourceNames[item[0]]}
+                    title={ResourceNames[item[0]]}
                     sx={{ width: '100%' }}
                   />
                 )

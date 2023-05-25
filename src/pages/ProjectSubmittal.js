@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import * as Yup from 'yup';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // @mui
@@ -41,9 +41,10 @@ import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar';
-import { FormProvider, RHFTextField, RHFSelect, RHFCheckbox } from '../components/hook-form';
+import { FormProvider, RHFTextField, RHFSelect } from '../components/hook-form';
 // utils
 import axios from '../utils/axios';
+import { ProjectInfoTableHeader } from '../utils/constants';
 // config
 import { serverUrl } from '../config';
 // sections
@@ -63,23 +64,6 @@ const RootStyle = styled('div')(({ theme }) => ({
     paddingTop: theme.spacing(11),
   },
 }));
-
-//------------------------------------------------
-
-const ProjectInfoTableHeader = [
-  'QTY',
-  'TAG',
-  'ITEM',
-  'MODEL',
-  'VOLTAGE',
-  'CONTROLS PREFERENCE',
-  'INSTALLATION',
-  'DUCT CONNECTION',
-  'HANDING',
-  'PART DESC',
-  'PART NUMBER',
-  'PRICING',
-];
 
 export default function JobSubmittal() {
   const { projectId } = useParams();
@@ -110,7 +94,6 @@ export default function JobSubmittal() {
     txbShippingPostalCode: Yup.string().required('Please enter a Zip'),
     ddlCountry: Yup.string().required('Please Select a Country'),
     ddlDockType: Yup.string().required('Please Select a Dock type'),
-    // ddlCoilHandling: Yup.string().required('Please Select a Coil Handling'),
     ckbBACNetPointList: Yup.boolean(),
     ckbBackdraftDamper: Yup.boolean(),
     ckbBypassDefrost: Yup.boolean(),
@@ -142,7 +125,6 @@ export default function JobSubmittal() {
         submittalInfo.txbShippingPostalCode === undefined ? '' : submittalInfo.txbShippingPostalCode,
       ddlCountry: submittalInfo.ddlCountry === undefined ? '' : submittalInfo.ddlCountry,
       ddlDockType: submittalInfo.ddlDockType === undefined ? '' : submittalInfo.ddlDockType,
-      // ddlCoilHandling: submittalInfo.ddlCoilHandling,
       ckbBACNetPointList: false,
       ckbBackdraftDamper: false,
       ckbBypassDefrost: false,
@@ -241,8 +223,6 @@ export default function JobSubmittal() {
 
     // Save File
     saveAs(response.data, `${filename}`);
-
-    console.log('Successed');
   };
 
   // export pdf of form data
@@ -270,13 +250,8 @@ export default function JobSubmittal() {
       }
     }
 
-
-    console.log(filename);
-
     // Save File
     saveAs(response.data, `${filename}`);
-
-    console.log('Successed');
   };
 
   // submmit function
@@ -294,10 +269,6 @@ export default function JobSubmittal() {
       setFail(true);
     }
   };
-
-  // const clickCheckbox = (key) => {
-  //   setValue(key, !getValues(key));
-  // };
 
   return isLoading ? (
     <Loading />
@@ -382,150 +353,6 @@ export default function JobSubmittal() {
                 </Card>
               </Grid>
             </Grid>
-            {/* <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="All (defualt)" />
-                  <CardContent>
-                    <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbVoltageTable"
-                        label="Voltage Table"
-                        defaultChecked={getValues('ckbVoltageTable')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbVoltageTable');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbBACNetPointList"
-                        label="BACNet Points List"
-                        defaultChecked={getValues('ckbBACNetPointList')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbBACNetPointList');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbOJHMISpec"
-                        label="OJ HMI Spec"
-                        defaultChecked={getValues('ckbOJHMISpec')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbOJHMISpec');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbTerminalWiring"
-                        label="Terminal string wiring diagram"
-                        defaultChecked={getValues('ckbTerminalWiring')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbTerminalWiring');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbFireAlarm"
-                        label="Fire alarm"
-                        defaultChecked={getValues('ckbFireAlarm')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbFireAlarm');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbBackdraftDamper"
-                        label="Backdraft dampers"
-                        defaultChecked={getValues('ckbBackdraftDamper')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbBackdraftDamper');
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="SOO" />
-                  <CardContent>
-                    <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbBypassDefrost"
-                        label="Bpass for Defrost"
-                        defaultChecked={getValues('ckbBypassDefrost')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbBypassDefrost');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbConstantVolume"
-                        label="Constant Volume"
-                        defaultChecked={getValues('ckbConstantVolume')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbConstantVolume');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbHydronicPreheat"
-                        label="Hydronic pre-heat"
-                        defaultChecked={getValues('ckbHydronicPreheat')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbHydronicPreheat');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbHumidification"
-                        label="Humidification"
-                        defaultChecked={getValues('ckbHumidification')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbHumidification');
-                        }}
-                      />
-                      <RHFCheckbox
-                        size="small"
-                        name="ckbTemControl"
-                        label="Temperature control"
-                        defaultChecked={getValues('ckbTemControl')}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          clickCheckbox('ckbTemControl');
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ mb: 3 }}>
-                  <CardHeaderStyle title="Handling" />
-                  <CardContent>
-                    <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                      <RHFSelect size="small" name="ddlCoilHandling" label="Coil handling" placeholder="">
-                        <option value="" />
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                      </RHFSelect>{' '}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid> */}
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card sx={{ mb: 3 }}>

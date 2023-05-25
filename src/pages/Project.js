@@ -97,37 +97,31 @@ export default function Project() {
     {
       value: 'unitlist',
       title: 'Unit list',
-      // icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
       component: <UnitList />,
     },
     {
       value: 'project_detail',
       title: 'Project detail',
-      // icon: <Iconify icon={'ic:round-receipt'} width={20} height={20} />,
       component: <ProjectDetail projectInfo={projectInfo} />,
     },
     {
       value: 'quote',
       title: 'Quote',
-      // icon: <Iconify icon={'eva:bell-fill'} width={20} height={20} />,
       component: <Quote />,
     },
     {
       value: 'submittal',
       title: 'Submittal(internal)',
-      // icon: <Iconify icon={'eva:share-fill'} width={20} height={20} />,
       component: <SubmittalInternal />,
     },
     {
       value: 'status',
       title: 'Status',
-      // icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
       component: <Status />,
     },
     {
       value: 'notes',
       title: 'Notes',
-      // icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
       component: <Notes />,
     },
   ];

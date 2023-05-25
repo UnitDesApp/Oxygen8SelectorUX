@@ -5,7 +5,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import { Grid, Card, Divider, Container, Paper, Button, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_PROJECT } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -65,7 +65,7 @@ export default function UnitEdit() {
           <HeaderBreadcrumbs
             heading={'Edit Unit'}
             links={[
-              { name: 'My projects', href: PATH_PROJECT.root },
+              { name: 'My projects', href: PATH_PROJECTS.root },
               { name: 'Dashboard', href: PATH_PROJECT.project(projectId, 'unitlist') },
               { name: 'Edit Unit' },
             ]}

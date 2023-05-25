@@ -16,7 +16,6 @@ import {
   Alert,
   Snackbar,
 } from '@mui/material';
-
 // routes
 import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
 // hooks
@@ -37,13 +36,12 @@ import {
   TableLoadingData,
   TableSelectedActions,
 } from '../components/table';
-
 // sections
 import { ProjectTableRow, ProjectTableToolbar } from '../sections/project-list';
 import { NewProjectFormDialog, ConfirmDialog } from '../sections/dialog';
 import Loading from '../sections/Loading';
-
-// ----------------------------------------------------------------------
+// utils
+import { ROLE_OPTIONS, TABLE_HEAD } from '../utils/constants';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
@@ -51,26 +49,6 @@ const RootStyle = styled('div')(({ theme }) => ({
     paddingTop: theme.spacing(11),
   },
 }));
-
-// ----------------------------------------------------------------------
-
-const ROLE_OPTIONS = ['All', 'Projects', 'By Others'];
-
-const TABLE_HEAD = [
-  { id: 'job_name', label: 'Project Name', align: 'left', width: 200 },
-  { id: 'reference_no', label: 'Ref no.', align: 'left', width: 80 },
-  { id: 'revision_no', label: 'Rev no.', align: 'left', width: 80 },
-  { id: 'status', label: 'status', align: 'left', width: 80 },
-  { id: 'Customer_Name', label: 'Rep', align: 'left', width: 120 },
-  { id: 'Created_User_Full_Name', label: 'Created By', align: 'left', width: 100 },
-  { id: 'Revised_User_Full_Name', label: 'Revisied By', align: 'left', width: 100 },
-  { id: 'created_date', label: 'Date created', align: 'left', width: 140 },
-  { id: 'revised_date', label: 'Date revised', align: 'left', width: 140 },
-  { id: '', label: 'Actions', align: 'center', width: 30 },
-  { id: '', width: 10 },
-];
-
-// ----------------------------------------------------------------------
 
 export default function MyProjects() {
   const dispatch = useDispatch();
@@ -103,7 +81,7 @@ export default function MyProjects() {
   const tableData = projectList;
 
   const [openDuplicateSuccess, setOpenDuplicateSuccess] = useState(false);
-  
+
   const handleDuplicateCloseSuccess = () => {
     setOpenDuplicateSuccess(false);
   };
@@ -191,7 +169,7 @@ export default function MyProjects() {
   const handleDuplicate = (row) => {
     dispatch(duplicateProject(row));
     setOpenDuplicateSuccess(true);
-  }
+  };
 
   const handleEditRow = (projectid) => {
     navigate(PATH_PROJECT.project(projectid, 'unitlist'));
@@ -208,7 +186,7 @@ export default function MyProjects() {
   const denseHeight = dense ? 52 : 72;
 
   const isNotFound =
-    (!dataFiltered.length && !!filterName) || 
+    (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterRole) ||
     (!dataFiltered.length && !!filterStatus);
 
@@ -284,7 +262,7 @@ export default function MyProjects() {
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         onDeleteRow={() => handleOneConfirmDialogOpen(row.id)}
-                        onDuplicate = {() => handleDuplicate(row)}
+                        onDuplicate={() => handleDuplicate(row)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
@@ -328,7 +306,7 @@ export default function MyProjects() {
           newProjectDialogOpen={newProjectDialogOpen}
           handleNewProjectDialogClose={handleNewProjectDialogClose}
           setOpenSuccess={() => setOpenSuccess(true)}
-          setOpenFail={()=> setOpenFail(true)}
+          setOpenFail={() => setOpenFail(true)}
           initialInfo={projectInitInfo}
         />
         <ConfirmDialog

@@ -37,6 +37,7 @@ export default function MyAccount() {
       component: <AccountChangePassword />,
     },
   ];
+  
   return (
     <Page title="User: Account Settings">
       <RootStyle>

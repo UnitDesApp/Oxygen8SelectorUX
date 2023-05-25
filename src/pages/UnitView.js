@@ -18,16 +18,12 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { UnitList } from '../sections/unit-list';
 import Loading from '../sections/Loading';
 
-// ----------------------------------------------------------------------
-
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
   [theme.breakpoints.up('md')]: {
     paddingTop: theme.spacing(11),
   },
 }));
-
-// ----------------------------------------------------------------------
 
 export default function ViewUnitInfo() {
   const { themeStretch } = useSettings();

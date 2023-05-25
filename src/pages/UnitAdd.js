@@ -48,8 +48,6 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-// ----------------------------------------------------------------------
-
 const DEFAULT_UNIT_DATA = {
   intProductTypeID: -1,
   txbProductType: '',
@@ -58,8 +56,6 @@ const DEFAULT_UNIT_DATA = {
 };
 
 const STEP_PAGE_NAME = ['Select product type', 'Info', 'Selection'];
-
-// ----------------------------------------------------------------------
 
 AddNewUnit.prototype = {};
 
@@ -74,8 +70,6 @@ export default function AddNewUnit() {
   const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
 
   const navigate = useNavigate();
-  // const isComplete = activeStep === STEPS.length;
-
   const onSelectAppliaionItem = (value, txb) => {
     setUnitTypeData({ ...unitTypeData, intApplicationTypeID: value, txbApplicationType: txb });
   };
@@ -116,7 +110,6 @@ export default function AddNewUnit() {
     setIsSelectionDownloading(true);
 
     await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
-      console.log(response);
       // Get File Name
       let filename = '';
       const disposition = response.headers['content-disposition'];

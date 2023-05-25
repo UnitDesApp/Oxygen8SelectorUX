@@ -28,7 +28,6 @@ import { serverUrl } from '../config';
 
 const CardHeaderStyle = styled(CardHeader)(({ theme }) => ({
   padding: '15px 30px',
-  // color: 'white',
   color: theme.palette.primary.main,
 }));
 

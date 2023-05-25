@@ -122,7 +122,7 @@ export default function ProjectDashboard() {
           <Container>
             <HeaderBreadcrumbs
               heading={projectInfo.job_name}
-              links={[{ name: 'projects', href: PATH_PROJECTS.root }, { name: projectInfo.job_name }]}
+              links={[{ name: 'Projects', href: PATH_PROJECTS.root }, { name: projectInfo.job_name }]}
             />
             <Card sx={{ padding: '50px', pb: '10px', pt: '20px', mb: 1 }}>
               <Grid container justifyContent={unitList.length > 0 ? 'center' : 'flex-start'}>
