@@ -150,7 +150,7 @@ export default QuoteSlice.reducer;
 export function getQuoteInfo(data) {
   return async () => {
     dispatch(QuoteSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/Quote/get`, data);
+    const response = await axios.post(`${serverUrl}/api/quote/get`, data);
     console.log(response.data);
     if (response.data.status === "success") dispatch(QuoteSlice.actions.setQuoteInfo(response.data));
     return response.data.status;

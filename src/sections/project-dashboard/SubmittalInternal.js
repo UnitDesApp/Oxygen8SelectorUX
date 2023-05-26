@@ -114,8 +114,8 @@ export default function SubmittalInternal() {
     txbRepName: Yup.string(),
     txbSalesEngineer: Yup.string(),
     txbLeadTime: Yup.string().required('Please enter a Lead Time'),
-    txbRevisionNo: Yup.string().required('Please enter a Revision No'),
-    txbPONumber: Yup.string().required('Please enter a PO Number'),
+    txbRevisionNo: Yup.number().required('Please enter a Revision No'),
+    txbPONumber: Yup.number().required('Please enter a PO Number'),
     txbShipName: Yup.string().required('Please enter a Ship Name'),
     txbShippingStreetAddress: Yup.string().required('Please enter a Street Address'),
     txbShippingCity: Yup.string().required('Please enter a City'),
@@ -234,71 +234,6 @@ export default function SubmittalInternal() {
     setShippingNote('');
   };
 
-  // export pdf of form data
-  const downloadPDF = async () => {
-    const data = {
-      intJobID: projectId,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-
-    const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
-    console.log(response.data.type);
-    if (response.data.type === 'application/json') {
-      setFail(true);
-      return;
-    }
-
-    // Get File Name
-    let filename = '';
-    const disposition = response.headers['content-disposition'];
-    if (disposition && disposition.indexOf('attachment') !== -1) {
-      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, '');
-      }
-    }
-
-    // Save File
-    saveAs(response.data, `${filename}`);
-
-    console.log('Successed');
-  };
-
-  // export pdf of form data
-  const downloadEpicor = async () => {
-    const data = {
-      intJobID: projectId,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-
-    const response = await axios.post(`${serverUrl}/api/submittals/exportepicor`, data, { responseType: 'blob' });
-    if (response.data.type === 'application/json') {
-      setFail(true);
-      return;
-    }
-
-    // Get File Name
-    let filename = '';
-    const disposition = response.headers['content-disposition'];
-    if (disposition && disposition.indexOf('attachment') !== -1) {
-      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, '');
-      }
-    }
-
-    console.log(filename);
-
-    // Save File
-    saveAs(response.data, `${filename}`);
-
-    console.log('Successed');
-  };
-
   // submmit function
   const onProjectInfoSubmit = async (data) => {
     try {
@@ -308,8 +243,12 @@ export default function SubmittalInternal() {
         intUAL: localStorage.getItem('UAL'),
         intJobID: projectId,
       };
-      await dispatch(saveSubmittalInfo(requestData));
-      setSuccess(true);
+      const returnValue = await dispatch(saveSubmittalInfo(requestData));
+      if (returnValue) {
+        setSuccess(true);
+      } else {
+        setFail(true);
+      }
     } catch (error) {
       setFail(true);
     }

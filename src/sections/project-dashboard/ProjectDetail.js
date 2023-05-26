@@ -67,12 +67,10 @@ export default function ProjectDetail({ projectInfo }) {
     dispatch(getProjectsInfo());
   }, [dispatch]);
 
-  const { baseOfDesign, UoM, country, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
+  const { baseOfDesign, UoM, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
     projectInitInfo;
 
   const [expanded, setExpanded] = React.useState({ panel1: true, panel2: false });
-  const [provStateInfo, setProvStateInfo] = useState([]);
-  const [cityInfo, setCityInfo] = useState([]);
   const [companyNameId, setCompanyNameId] = useState(
     state !== null ? state.companyNameId : !isLoading && projectInfo.company_name_id
   );
@@ -173,19 +171,26 @@ export default function ProjectDetail({ projectInfo }) {
     getValues,
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
 
-  useEffect(() => {
-    if (!isLoading) {
-      const provStateInfoTemp = provState.filter((item) => item.country === defaultValues.country);
-      const cityInfoTemp = weatherData.filter(
-        (item) => item.country === defaultValues.country && item.prov_state === defaultValues.state
-      );
-      setProvStateInfo(provStateInfoTemp);
-      setCityInfo(cityInfoTemp);
-    }
-  }, [country, provState, weatherData, defaultValues, isLoading]);
+  const formState = watch();
+
+  const provStateInfo = useMemo(() => {
+    const data = provState?.filter((item) => item.country === (formState.country === "CA" ? "CAN" : formState.country ));
+    setValue('state', data && data[0] ? data[0].prov_state : []);
+    return data;
+  }, [provState, setValue, formState.country]);
+
+  const cityInfo = useMemo(() => {
+    const data = weatherData?.filter(
+      (item) => item.country === (formState.country === "CA" ? "CAN" : formState.country ) && item.prov_state === formState.state
+    );
+    setValue('city', data && data[0] ? data[0].id : '');
+    return data;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weatherData, setValue, provStateInfo, formState.state]);
 
   useEffect(() => {
     reset(defaultValues);
@@ -257,40 +262,12 @@ export default function ProjectDetail({ projectInfo }) {
 
   // onChange handle for country
   const handleChangeCountry = (e) => {
-    try {
-      setValue('country', e.target.value);
-
-      const provStateInfoTemp = provState.filter((item) => item.country === e.target.value);
-      setProvStateInfo(provStateInfoTemp);
-      setValue('state', provStateInfoTemp[0].prov_state);
-
-      const cityInfoTemp = weatherData.filter(
-        (item) => item.prov_state === provStateInfoTemp[0].prov_state && item.country === e.target.value
-      );
-      setCityInfo(cityInfoTemp);
-      setValue('city', cityInfoTemp[0].id);
-
-      // getAllOutdoorInfo();
-    } catch (e) {
-      console.log(e);
-    }
+    setValue('country', e.target.value);
   };
 
   // onChange handle for State
   const handleChangeProvState = (e) => {
-    try {
-      setValue('state', e.target.value);
-
-      const cityInfoTemp = weatherData.filter(
-        (item) => item.prov_state === e.target.value && item.country === getValues('country')
-      );
-      setCityInfo(cityInfoTemp);
-      setValue('city', cityInfoTemp[0].id);
-
-      // getAllOutdoorInfo();
-    } catch (e) {
-      console.log(e);
-    }
+    setValue('state', e.target.value);
   };
 
   // onChange handle for city
@@ -495,7 +472,7 @@ export default function ProjectDetail({ projectInfo }) {
                             onChange={handleChangeCountry}
                           >
                             <option value="" />
-                            {country.map((info, index) => (
+                            {projectInitInfo?.country?.map((info, index) => (
                               <option key={index} value={info.value}>
                                 {info.items}
                               </option>
@@ -509,7 +486,7 @@ export default function ProjectDetail({ projectInfo }) {
                             onChange={handleChangeProvState}
                           >
                             <option value="" />
-                            {provStateInfo.map((info, index) => (
+                            {provStateInfo?.map((info, index) => (
                               <option key={index} value={info.prov_state}>
                                 {info.prov_state}
                               </option>
@@ -517,7 +494,7 @@ export default function ProjectDetail({ projectInfo }) {
                           </RHFSelect>
                           <RHFSelect size="small" name="city" label="City" placeholder="" onChange={handleChangeCity}>
                             <option value="" />
-                            {cityInfo.map((info, index) => (
+                            {cityInfo?.map((info, index) => (
                               <option key={index} value={info.id}>
                                 {info.station}
                               </option>

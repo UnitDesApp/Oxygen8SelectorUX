@@ -55,7 +55,7 @@ export default function MainHeader() {
   const isDesktop = useResponsive('up', 'md');
 
   return (
-    <AppBar sx={{ boxShadow: 0, zIndex: 3000, bgcolor: 'transparent', background: '#ffff' }}>
+    <AppBar sx={{ boxShadow: 0, zIndex: 1000, bgcolor: 'transparent', background: '#ffff' }}>
       <ToolbarStyle
         disableGutters
         sx={{

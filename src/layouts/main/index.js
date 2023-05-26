@@ -10,15 +10,13 @@ import MainHeader from './MainHeader';
 // ----------------------------------------------------------------------
 
 export default function MainLayout() {
-  const { pathname } = useLocation();
-
-  const isHome = pathname === '/';
-
   return (
     <Stack sx={{ minHeight: 1 }}>
       <MainHeader />
 
-      <Outlet />
+      <Box sx={{ mt: '40px' }}>
+        <Outlet />
+      </Box>
 
       <Box sx={{ flexGrow: 1 }} />
     </Stack>
