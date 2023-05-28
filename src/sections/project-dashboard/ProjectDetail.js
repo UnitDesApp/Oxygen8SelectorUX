@@ -178,18 +178,25 @@ export default function ProjectDetail({ projectInfo }) {
   const formState = watch();
 
   const provStateInfo = useMemo(() => {
-    const data = provState?.filter((item) => item.country === (formState.country === "CA" ? "CAN" : formState.country ));
-    setValue('state', data && data[0] ? data[0].prov_state : []);
-    return data;
-  }, [provState, setValue, formState.country]);
+    const data = weatherData
+      ?.filter((item) => item.country === (formState.country === 'CA' ? 'CAN' : formState.country))
+      .map((item) => item.prov_state);
+    if (data) {
+      const uniqueArray = [...new Set(data)];
+      setValue('state', uniqueArray && uniqueArray[0] ? uniqueArray[0] : []);
+      return uniqueArray;
+    }
+    return [];
+  }, [weatherData, formState.country, setValue]);
 
   const cityInfo = useMemo(() => {
     const data = weatherData?.filter(
-      (item) => item.country === (formState.country === "CA" ? "CAN" : formState.country ) && item.prov_state === formState.state
+      (item) =>
+        item.country === (formState.country === 'CA' ? 'CAN' : formState.country) && item.prov_state === formState.state
     );
     setValue('city', data && data[0] ? data[0].id : '');
     return data;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weatherData, setValue, provStateInfo, formState.state]);
 
   useEffect(() => {
@@ -487,8 +494,8 @@ export default function ProjectDetail({ projectInfo }) {
                           >
                             <option value="" />
                             {provStateInfo?.map((info, index) => (
-                              <option key={index} value={info.prov_state}>
-                                {info.prov_state}
+                              <option key={index} value={info}>
+                                {info}
                               </option>
                             ))}
                           </RHFSelect>
