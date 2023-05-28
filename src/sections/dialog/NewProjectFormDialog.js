@@ -133,9 +133,18 @@ export default function NewProjectFormDialog({
     if (value === 'CA') {
       value = 'CAN';
     }
-    const newProvState = provState.filter((ele) => ele.country === value);
-    setProvStateInfo(newProvState);
-    setCityInfo([]);
+     const data = weatherData
+      ?.filter((item) => item.country === value)
+      .map((item) => item.prov_state);
+    if (data) {
+      const uniqueArray = [...new Set(data)];
+      setValue('state', uniqueArray && uniqueArray[0] ? uniqueArray[0] : []);
+      setProvStateInfo(uniqueArray);
+      setCityInfo([]);
+    } else {
+      setProvStateInfo([]);
+      setCityInfo([]);  
+    }
   };
 
   const handleOnChangeProvState = (e) => {
@@ -144,10 +153,10 @@ export default function NewProjectFormDialog({
     if (country === 'CA') {
       country = 'CAN';
     }
-    console.log(value, country);
     setValue('state', value);
     const newCity = weatherData.filter((ele) => ele.prov_state === value && ele.country === country);
     setCityInfo(newCity);
+    setValue('city', newCity[0].id);
   };
 
   // onChange handle for company Name
@@ -314,8 +323,8 @@ export default function NewProjectFormDialog({
                     <option value="" />
                     {provStateInfo !== undefined &&
                       provStateInfo.map((option) => (
-                        <option key={`${option.id}`} value={option.prov_state}>
-                          {option.station}
+                        <option key={`${option}`} value={option}>
+                          {option}
                         </option>
                       ))}
                   </RHFSelect>

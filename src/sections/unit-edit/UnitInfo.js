@@ -487,6 +487,16 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
 
   const isAvailable = (value) => !!value && value.length > 0;
 
+  if (!isLoading && !locationInfo) {
+    return (
+      <Box sx={{ width: '100%' }}>
+        <Typography sx={{ marginX: 'auto', marginTop: '50px', color: 'red' }}>
+          Data is crashed! You can't see this data.
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Page title="Project: Edit">
       <RootStyle>
