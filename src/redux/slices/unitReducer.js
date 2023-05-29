@@ -379,7 +379,7 @@ const UnitSlice = createSlice({
           Data: data?.coolingDXC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.coolingDXC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.coolingDXC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          PerfOutputs: data?.coolingDXC_Output?.performanceDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          PerfOutputs: data?.coolingDXC_Output?.perfOutputsDataTbl?.map((item) => [item.cLabel, item.cValue]),
           EKEXV_Kit: data?.coolingDXC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         heatingCondCoil: {
