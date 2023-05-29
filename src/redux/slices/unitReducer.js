@@ -530,7 +530,7 @@ export function getUnitTypeInfo() {
 export function getInitUnitinfo(data) {
   return async () => {
     dispatch(UnitSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/units/getunitinfo`, data);
+    const response = await axios.post(`${serverUrl}/api/units/GetUnitInfo`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.setInitInfo(response.data));
     return response.data;
