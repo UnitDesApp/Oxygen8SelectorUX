@@ -70,6 +70,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
           intUAL: localStorage.getItem('UAL'),
           intProjectID: projectId,
           intProductTypeID: unitData.intProductTypeID,
+          intUnitTypeID: unitData.intUnitTypeID,
           intUnitNo: unitId,
         })
       );

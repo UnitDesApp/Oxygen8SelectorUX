@@ -379,7 +379,7 @@ const UnitSlice = createSlice({
           Data: data?.coolingDXC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Entering: data?.coolingDXC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
           Leaving: data?.coolingDXC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          PerfOutputs: data?.coolingDXC_Output?.performanceDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          PerfOutputs: data?.coolingDXC_Output?.perfOutputsDataTbl?.map((item) => [item.cLabel, item.cValue]),
           EKEXV_Kit: data?.coolingDXC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
         },
         heatingCondCoil: {
@@ -530,7 +530,7 @@ export function getUnitTypeInfo() {
 export function getInitUnitinfo(data) {
   return async () => {
     dispatch(UnitSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/units/getunitinfo`, data);
+    const response = await axios.post(`${serverUrl}/api/units/GetUnitInfo`, data);
     console.log(response.data);
     dispatch(UnitSlice.actions.setInitInfo(response.data));
     return response.data;
