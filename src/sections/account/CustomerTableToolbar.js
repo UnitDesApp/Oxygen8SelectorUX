@@ -1,21 +1,12 @@
 import * as React from 'react';
-
 import PropTypes from 'prop-types';
+// materials
 import { Stack, InputAdornment, TextField, Button, Paper, Divider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
 // components
 import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
-
-CustomerTableToolbar.propTypes = {
-  filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
-  userNum: PropTypes.number,
-  onDeleteSelectedData: PropTypes.func,
-};
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -23,6 +14,13 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
+
+CustomerTableToolbar.propTypes = {
+  filterName: PropTypes.string,
+  onFilterName: PropTypes.func,
+  userNum: PropTypes.number,
+  onDeleteSelectedData: PropTypes.func,
+};
 
 export default function CustomerTableToolbar({ filterName, onFilterName, userNum, onDeleteSelectedData }) {
   return (
@@ -39,7 +37,9 @@ export default function CustomerTableToolbar({ filterName, onFilterName, userNum
         <Stack direction="row" justifyContent="left" spacing={3}>
           <Button startIcon={<Iconify icon={'ic:outline-filter-alt'} />}>Filter</Button>
           <Button startIcon={<Iconify icon={'ic:sharp-sort'} />}>Sort</Button>
-          <Button startIcon={<Iconify icon={'ic:outline-delete-outline'} />} onClick={onDeleteSelectedData}>Delete</Button>
+          <Button startIcon={<Iconify icon={'ic:outline-delete-outline'} />} onClick={onDeleteSelectedData}>
+            Delete
+          </Button>
         </Stack>
       </Item>
       <Item sx={{ width: { md: '20%', xs: '100%' } }}>

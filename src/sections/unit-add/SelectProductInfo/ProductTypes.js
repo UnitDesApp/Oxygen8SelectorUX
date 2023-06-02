@@ -6,8 +6,6 @@ import { Container, CardContent, Card, Box } from '@mui/material';
 import ProductTypeItem from './ProductTypeItem';
 
 // ----------------------------------------------------------------------
-// const productType = ['Nova', 'Ventum', 'Terra', 'Ventum Lite'];
-
 ProductType.propTypes = {
   productTypes: PropTypes.array,
   onSelectItem: PropTypes.func,

@@ -1,5 +1,5 @@
 // react
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 // yup
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,17 +23,18 @@ const FileUploadDialog = ({ isOpen, onClose }) => {
   const submitRef = useRef(null);
   const dispatch = useDispatch();
 
-  const formData = new FormData();
-
   const RegisterSchema = Yup.object().shape({
     resourceType: Yup.string().required('This field is required'),
     files: Yup.array().required('Please select resource files'),
   });
 
-  const defaultValues = {
-    resourceType: 'nova',
-    files: [],
-  };
+  const defaultValues = useMemo(
+    () => ({
+      resourceType: 'nova',
+      files: [],
+    }),
+    []
+  );
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
@@ -43,23 +44,24 @@ const FileUploadDialog = ({ isOpen, onClose }) => {
   const {
     reset,
     watch,
-    setError,
     handleSubmit,
     setValue,
-    getValues,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = methods;
 
   const values = watch();
 
-  const onSubmit = async (data) => {
-    try {
-      await dispatch(uploadFiles(data));
-      reset();
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await dispatch(uploadFiles(data));
+        reset();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    [dispatch, reset]
+  );
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
@@ -69,18 +71,21 @@ const FileUploadDialog = ({ isOpen, onClose }) => {
     [setValue, values.files]
   );
 
-  const handleRemoveAll = () => {
+  const handleRemoveAll = useCallback(() => {
     setValue('files', []);
-  };
+  }, [setValue]);
 
-  const handleRemove = (file) => {
-    const filteredItems = values.files?.filter((_file) => _file !== file);
-    setValue('files', filteredItems);
-  };
+  const handleRemove = useCallback(
+    (file) => {
+      const filteredItems = values.files?.filter((_file) => _file !== file);
+      setValue('files', filteredItems);
+    },
+    [setValue, values.files]
+  );
 
-  const handleUpload = () => {
+  const handleUpload = useCallback(() => {
     submitRef?.current?.onClick();
-  };
+  }, []);
 
   return (
     <Dialog open={isOpen} onClose={onClose} sx={{ marginX: 'auto', borderRadius: '6px!important' }}>

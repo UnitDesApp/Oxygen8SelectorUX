@@ -1,6 +1,5 @@
 import * as React from 'react';
-// import { paramCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // @mui
 import {
@@ -16,7 +15,6 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
-
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteUnits, duplicateUnit, multiDuplicateUnits } from '../../redux/slices/projectDashboardReducer';
@@ -75,8 +73,8 @@ export default function UnitList() {
 
   const [tableData, setTableData] = useState(unitList);
   const [filterName, setFilterName] = useState('');
-  const [filterRole, setFilterRole] = useState('All');
   const [openSuccess, setOpenSuccess] = useState(false);
+  const filterRole = "All";
 
   useEffect(() => {
     setTableData(unitList);
@@ -87,84 +85,97 @@ export default function UnitList() {
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = React.useState(false);
   const [deleteRowID, setDeleteRowID] = React.useState(-1);
 
-  const handleCloseSuccess = () => {
+  const handleCloseSuccess = useCallback(() => {
     setOpenSuccess(false);
-  };
+  }, []);
 
-  const handleOneConfirmDialogOpen = (id) => {
+  const handleOneConfirmDialogOpen = useCallback((id) => {
     setDeleteRowID(id);
     setOneConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleOneConfirmDialogClose = () => {
+  const handleOneConfirmDialogClose = useCallback(() => {
     setDeleteRowID(-1);
     setOneConfirmDialogState(false);
-  };
+  }, []);
 
-  const handleDeleteRow = async () => {
+  const handleDeleteRow = useCallback(async () => {
     const data = await deleteUnits({ action: 'DELETE_ONE', projectId, unitId: deleteRowID });
     setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
-  };
+  }, [deleteRowID, handleOneConfirmDialogClose, projectId]);
 
-  const handleMultiConfirmDialogOpen = () => {
+  const handleMultiConfirmDialogOpen = useCallback(() => {
     setMultiConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleMultiConfirmDialogClose = () => {
+  const handleMultiConfirmDialogClose = useCallback(() => {
     setMultiConfirmDialogState(false);
-  };
+  }, []);
 
   const { currentTab: filterStatus /* onChangeTab: onChangeFilterStatus */ } = useTabs('All');
 
-  const handleFilterName = (filterName) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
-  const handleFilterRole = (value) => {
-    setFilterRole(value);
-  };
+  const handleFilterName = useCallback(
+    (filterName) => {
+      setFilterName(filterName);
+      setPage(0);
+    },
+    [setPage]
+  );
 
-  const handleDeleteRows = async () => {
+  const handleDeleteRows = useCallback(async () => {
     const data = await deleteUnits({ action: 'DELETE_MULTI', projectId, unitIds: selected });
     setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);
-  };
+  }, [projectId, selected, setSelected]);
 
-  const handleEditRow = (row) => {
-    navigate(PATH_UNIT.edit(projectId, row.unit_no), {
-      state: { ...row, intUnitTypeID: row.unit_nbr, intProductTypeID: row.product_type_id },
-    });
-  };
+  const handleEditRow = useCallback(
+    (row) => {
+      navigate(PATH_UNIT.edit(projectId, row.unit_no), {
+        state: { ...row, intUnitTypeID: row.unit_nbr, intProductTypeID: row.product_type_id },
+      });
+    },
+    [navigate, projectId]
+  );
 
-  const onDuplicate = (row) => {
-    dispatch(duplicateUnit({ ...row, job_id: projectId }));
-    setOpenSuccess(true);
-  };
+  const onDuplicate = useCallback(
+    (row) => {
+      dispatch(duplicateUnit({ ...row, job_id: projectId }));
+      setOpenSuccess(true);
+    },
+    [dispatch, projectId]
+  );
 
-  const onMultiDuplicate = async () => {
+  const onMultiDuplicate = useCallback(async () => {
     if (selected.length > 0) {
       await dispatch(multiDuplicateUnits({ unitIds: selected, projectId }));
-      setOpenSuccess(true);  
+      setOpenSuccess(true);
     }
-  };
+  }, [dispatch, projectId, selected]);
 
-  const dataFiltered = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterRole,
-    filterStatus,
-  });
+  const dataFiltered = useMemo(
+    () =>
+      applySortFilter({
+        tableData,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterRole,
+        filterStatus,
+      }),
+    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+  );
 
   const denseHeight = dense ? 52 : 72;
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
+  const isNotFound = useMemo(
+    () =>
+      (!dataFiltered.length && !!filterName) ||
+      (!dataFiltered.length && !!filterRole) ||
+      (!dataFiltered.length && !!filterStatus),
+    [dataFiltered.length, filterName, filterRole, filterStatus]
+  );
 
   return (
     <Container>

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   // useNavigate,
   useParams,
@@ -57,7 +57,6 @@ ProjectDetail.propTypes = {
 };
 
 export default function ProjectDetail({ projectInfo }) {
-  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const { state } = useLocation();
@@ -67,8 +66,7 @@ export default function ProjectDetail({ projectInfo }) {
     dispatch(getProjectsInfo());
   }, [dispatch]);
 
-  const { baseOfDesign, UoM, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
-    projectInitInfo;
+  const { baseOfDesign, UoM, applications, designCondition, companyInfo, weatherData, usersInfo } = projectInitInfo;
 
   const [expanded, setExpanded] = React.useState({ panel1: true, panel2: false });
   const [companyNameId, setCompanyNameId] = useState(
@@ -91,7 +89,6 @@ export default function ProjectDetail({ projectInfo }) {
     setOpenFail(false);
   };
 
-  console.log(projectInfo, projectInitInfo, isLoading);
   const projectInfoSchema = Yup.object().shape({
     jobName: Yup.string().required('Please enter a Project Name'),
     basisOfDesign: Yup.string().required('Please enter a Basis Of Design'),
@@ -204,7 +201,7 @@ export default function ProjectDetail({ projectInfo }) {
   }, [defaultValues, reset]);
 
   // get all ourdoor infomation from server
-  const getAllOutdoorInfo = () => {
+  const getAllOutdoorInfo = useCallback(() => {
     axios
       .post(`${serverUrl}/api/project/getoutdoorinfo`, {
         action: 'GET_ALL_DATA',
@@ -222,160 +219,173 @@ export default function ProjectDetail({ projectInfo }) {
         setValue('winter_air_wb', data.winterOutdoorAirWB);
         setValue('winter_air_rh', data.winterOutdoorAirRH);
       });
-  };
-
-  // // get HR value from server
-  // const get_RH_By_DBWB = (first, second, setValueId) => {
-  //   if (first === '' || second === '') return;
-  //   axios
-  //     .post(`${serverUrl}/api/project/getoutdoorinfo`, {
-  //       action: 'GET_RH_BY_DB_WB',
-  //       first,
-  //       second,
-  //       altitude: getValues('altitude'),
-  //     })
-  //     .then((response) => {
-  //       setValue(setValueId, response.data);
-  //     });
-  // };
-
-  // // get WB value from server
-  // const get_WB_By_DBRH = (first, second, setValueId) => {
-  //   if (first === '' || second === '') return;
-  //   axios
-  //     .post(`${serverUrl}/api/project/getoutdoorinfo`, {
-  //       action: 'GET_WB_BY_DB_HR',
-  //       first,
-  //       second,
-  //       altitude: getValues('altitude'),
-  //     })
-  //     .then((response) => {
-  //       setValue(setValueId, response.data);
-  //     });
-  // };
+  }, [getValues, setValue]);
 
   // onChange handle for company Name
-  const handleChangeCompanyName = (e) => {
-    setValue('companyNameId', e.target.value);
-    setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
-    setCompanyNameId(e.target.value);
-  };
+  const handleChangeCompanyName = useCallback(
+    (e) => {
+      setValue('companyNameId', e.target.value);
+      setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
+      setCompanyNameId(e.target.value);
+    },
+    [setValue]
+  );
 
   // onChange handle for contactName
-  const handleChangeContactName = (e) => {
-    setValue('contactNameId', e.target.value);
-    setValue('contactName', e.nativeEvent.target[e.target.selectedIndex].text);
-  };
+  const handleChangeContactName = useCallback(
+    (e) => {
+      setValue('contactNameId', e.target.value);
+      setValue('contactName', e.nativeEvent.target[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
 
   // onChange handle for country
-  const handleChangeCountry = (e) => {
-    setValue('country', e.target.value);
-  };
+  const handleChangeCountry = useCallback(
+    (e) => {
+      setValue('country', e.target.value);
+    },
+    [setValue]
+  );
 
   // onChange handle for State
-  const handleChangeProvState = (e) => {
-    setValue('state', e.target.value);
-  };
+  const handleChangeProvState = useCallback(
+    (e) => {
+      setValue('state', e.target.value);
+    },
+    [setValue]
+  );
 
   // onChange handle for city
-  const handleChangeCity = (e) => {
-    setValue('city', e.target.value);
-    // getAllOutdoorInfo();
-  };
+  const handleChangeCity = useCallback(
+    (e) => {
+      setValue('city', e.target.value);
+    },
+    [setValue]
+  );
 
   // Onchange handle for design condition
-  const handleChangeDesignCondition = (e) => {
-    setValue('ashareDesignConditions', e.target.value);
-    getAllOutdoorInfo();
-  };
+  const handleChangeDesignCondition = useCallback(
+    (e) => {
+      setValue('ashareDesignConditions', e.target.value);
+      getAllOutdoorInfo();
+    },
+    [getAllOutdoorInfo, setValue]
+  );
 
   // Summer Outdoor Air DB
-  const handleChangeSummerOutdoorAirDBChanged = (e) => {
-    setValue('summer_air_db', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
-  };
+  const handleChangeSummerOutdoorAirDBChanged = useCallback(
+    (e) => {
+      setValue('summer_air_db', e.target.value);
+    },
+    [setValue]
+  );
   // Summer Outdoor Air WB
-  const handleChangeSummerOutdoorAirWBChanged = (e) => {
-    setValue('summer_air_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
-  };
+  const handleChangeSummerOutdoorAirWBChanged = useCallback(
+    (e) => {
+      setValue('summer_air_wb', e.target.value);
+    },
+    [setValue]
+  );
   // Summer Outdoor Air RH
-  const handleChangeSummerOutdoorAirRHChanged = (e) => {
-    setValue('summer_air_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('summer_air_db'), getValues('summer_air_rh'), 'summer_air_wb');
-  };
-
+  const handleChangeSummerOutdoorAirRHChanged = useCallback(
+    (e) => {
+      setValue('summer_air_rh', e.target.value);
+    },
+    [setValue]
+  );
   // Winter Outdoor Air DB
-  const handleChangeWinterOutdoorAirDBChanged = (e) => {
-    setValue('winter_air_db', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
-  };
+  const handleChangeWinterOutdoorAirDBChanged = useCallback(
+    (e) => {
+      setValue('winter_air_db', e.target.value);
+    },
+    [setValue]
+  );
 
   // Winter Outdoor Air WB
-  const handleChangeWinterOutdoorAirWBChanged = (e) => {
-    setValue('winter_air_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
-  };
+  const handleChangeWinterOutdoorAirWBChanged = useCallback(
+    (e) => {
+      setValue('winter_air_wb', e.target.value);
+    },
+    [setValue]
+  );
 
   // Winter Outdoor Air RH
-  const handleChangeWinterOutdoorAirRHChanged = (e) => {
-    setValue('winter_air_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('winter_air_db'), getValues('winter_air_rh'), 'winter_air_wb');
-  };
+  const handleChangeWinterOutdoorAirRHChanged = useCallback(
+    (e) => {
+      setValue('winter_air_rh', e.target.value);
+    },
+    [setValue]
+  );
 
   // Summer Return Air DB
-  const handleChangeSummerReturnAirDBChanged = (e) => {
-    setValue('summer_return_db', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
-  };
+  const handleChangeSummerReturnAirDBChanged = useCallback(
+    (e) => {
+      setValue('summer_return_db', e.target.value);
+    },
+    [setValue]
+  );
   // Summer Return Air WB
-  const handleChangeSummerReturnAirWBChanged = (e) => {
-    setValue('summer_return_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
-  };
+  const handleChangeSummerReturnAirWBChanged = useCallback(
+    (e) => {
+      setValue('summer_return_wb', e.target.value);
+    },
+    [setValue]
+  );
   // Summer Return Air RH
-  const handleChangeSummerReturnAirRHChanged = (e) => {
-    setValue('summer_return_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('summer_return_db'), getValues('summer_return_rh'), 'summer_return_wb');
-  };
+  const handleChangeSummerReturnAirRHChanged = useCallback(
+    (e) => {
+      setValue('summer_return_rh', e.target.value);
+    },
+    [setValue]
+  );
 
   // Winter Return Air DB
-  const handleChangeWinterReturnAirDBChanged = (e) => {
-    setValue('winter_return_db', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
-  };
+  const handleChangeWinterReturnAirDBChanged = useCallback(
+    (e) => {
+      setValue('winter_return_db', e.target.value);
+    },
+    [setValue]
+  );
 
   // Winter Return Air WB
-  const handleChangeWinterReturnAirWBChanged = (e) => {
-    setValue('winter_return_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
-  };
+  const handleChangeWinterReturnAirWBChanged = useCallback(
+    (e) => {
+      setValue('winter_return_wb', e.target.value);
+    },
+    [setValue]
+  );
 
   // Winter Return Air RH
-  const handleChangeWinterReturnAirRHChanged = (e) => {
-    setValue('winter_return_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('winter_return_db'), getValues('winter_return_rh'), 'winter_return_wb');
-  };
+  const handleChangeWinterReturnAirRHChanged = useCallback(
+    (e) => {
+      setValue('winter_return_rh', e.target.value);
+    },
+    [setValue]
+  );
 
   // handle submit
-  const onProjectInfoSubmit = async (data) => {
-    try {
-      const newData = await dispatch(
-        updateProject({
-          ...data,
-          jobId: projectId,
-          createdUserId: projectInfo.created_user_id,
-          revisedUserId: localStorage.getItem('userId'),
-          applicationOther: '',
-        })
-      );
-      await dispatch(updateProjectInfo(newData));
-      setOpenSuccess(true);
-    } catch (error) {
-      setOpenFail(true);
-      console.error(error);
-    }
-  };
+  const onProjectInfoSubmit = useCallback(
+    async (data) => {
+      try {
+        const newData = await dispatch(
+          updateProject({
+            ...data,
+            jobId: projectId,
+            createdUserId: projectInfo.created_user_id,
+            revisedUserId: localStorage.getItem('userId'),
+            applicationOther: '',
+          })
+        );
+        await dispatch(updateProjectInfo(newData));
+        setOpenSuccess(true);
+      } catch (error) {
+        setOpenFail(true);
+        console.error(error);
+      }
+    },
+    [dispatch, projectId, projectInfo.created_user_id]
+  );
 
   return (
     <Page title="Project: Edit">

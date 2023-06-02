@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useCallback, useMemo } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Checkbox, TableRow, TableCell, Stack, IconButton } from '@mui/material';
@@ -7,13 +7,11 @@ import { Checkbox, TableRow, TableCell, Stack, IconButton } from '@mui/material'
 import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
-
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   width: 30,
   height: 30,
   color: theme.palette.primary.main,
 }));
-
 // ----------------------------------------------------------------------
 
 CustomerTableRow.propTypes = {
@@ -25,26 +23,19 @@ CustomerTableRow.propTypes = {
 };
 
 export default function CustomerTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, address, access, access_level, access_pricing, created_date } = row;
+  const { name, address, created_date } = row;
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>
       <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
-
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {name}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {address}
       </TableCell>
-      {/* <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {access_level}
-      </TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {access_pricing}
-      </TableCell> */}
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {created_date}
       </TableCell>

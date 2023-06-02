@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-
+// material
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-
 
 ConfirmDialog.propTypes = {
   isOpen: PropTypes.bool,
@@ -15,9 +14,14 @@ ConfirmDialog.propTypes = {
 };
 
 export default function ConfirmDialog({ isOpen, onClose, onConfirm, isOneRow }) {
-  const text = isOneRow
-    ? 'Are you sure you want to delete this row data?'
-    : 'Are you sure you want to delete the selected data?';
+  const text = useMemo(
+    () =>
+      isOneRow
+        ? 'Are you sure you want to delete this row data?'
+        : 'Are you sure you want to delete the selected data?',
+    [isOneRow]
+  );
+
   return (
     <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
       <DialogTitle id="responsive-dialog-title">{text}</DialogTitle>

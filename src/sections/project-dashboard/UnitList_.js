@@ -1,6 +1,4 @@
-import * as React from 'react';
-// import { paramCase } from 'change-case';
-import { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // @mui
 import {
@@ -14,9 +12,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-
 // redux
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { deleteUnits } from '../../redux/slices/projectDashboardReducer';
 // hooks
 import useTabs from '../../hooks/useTabs';
@@ -48,9 +45,6 @@ const TABLE_HEAD = [
 export default function UnitList() {
   const { projectId } = useParams();
   const { unitList } = useSelector((state) => state.projectDashboard);
-  const dispatch = useDispatch();
-
-  console.log(unitList);
 
   const {
     page,
@@ -84,70 +78,84 @@ export default function UnitList() {
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = React.useState(false);
   const [deleteRowID, setDeleteRowID] = React.useState(-1);
 
-  const handleOneConfirmDialogOpen = (id) => {
+  const handleOneConfirmDialogOpen = useCallback((id) => {
     setDeleteRowID(id);
     setOneConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleOneConfirmDialogClose = () => {
+  const handleOneConfirmDialogClose = useCallback(() => {
     setDeleteRowID(-1);
     setOneConfirmDialogState(false);
-  };
+  }, []);
 
-  const handleDeleteRow = async () => {
+  const handleDeleteRow = useCallback(async () => {
     const data = await deleteUnits({ action: 'DELETE_ONE', projectId, unitId: deleteRowID });
     setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
-  };
+  }, [deleteRowID, handleOneConfirmDialogClose, projectId]);
 
-  const handleMultiConfirmDialogOpen = () => {
+  const handleMultiConfirmDialogOpen = useCallback(() => {
     setMultiConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleMultiConfirmDialogClose = () => {
+  const handleMultiConfirmDialogClose = useCallback(() => {
     setMultiConfirmDialogState(false);
-  };
+  }, []);
 
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
-  const handleFilterName = (filterName) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
-  const handleFilterRole = (value) => {
-    setFilterRole(value);
-  };
+  const handleFilterName = useCallback(
+    (filterName) => {
+      setFilterName(filterName);
+      setPage(0);
+    },
+    [setPage]
+  );
 
-  const handleDeleteRows = async () => {
+  const handleFilterRole = useCallback((value) => {
+    setFilterRole(value);
+  }, []);
+
+  const handleDeleteRows = useCallback(async () => {
     const data = await deleteUnits({ action: 'DELETE_MULTI', projectId, unitIds: selected });
     setTableData(data);
     setSelected([]);
     setMultiConfirmDialogState(false);
-  };
+  }, [projectId, selected, setSelected]);
 
-  const handleEditRow = (row) => {
-    navigate(PATH_UNIT.edit(projectId, row.unit_no), { state: {...row, intProductTypeID: row.product_type_id} });
-  };
+  const handleEditRow = useCallback(
+    (row) => {
+      navigate(PATH_UNIT.edit(projectId, row.unit_no), { state: { ...row, intProductTypeID: row.product_type_id } });
+    },
+    [navigate, projectId]
+  );
 
-  const handleClickNewUnit = () => {
+  const handleClickNewUnit = useCallback(() => {
     navigate(PATH_UNIT.add(projectId));
-  };
+  }, [navigate, projectId]);
 
-  const dataFiltered = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterRole,
-    filterStatus,
-  });
+  const dataFiltered = useCallback(
+    () =>
+      applySortFilter({
+        tableData,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterRole,
+        filterStatus,
+      }),
+    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+  );
 
   const denseHeight = dense ? 52 : 72;
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
+  const isNotFound = useMemo(
+    () =>
+      (!dataFiltered.length && !!filterName) ||
+      (!dataFiltered.length && !!filterRole) ||
+      (!dataFiltered.length && !!filterStatus),
+    [dataFiltered.length, filterName, filterRole, filterStatus]
+  );
 
   return (
     <Container>

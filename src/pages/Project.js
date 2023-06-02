@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { capitalCase } from 'change-case';
 import { useParams, useNavigate } from 'react-router-dom';
 // @mui
@@ -19,9 +19,7 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
 import { UnitList, ProjectDetail, Quote, SubmittalInternal, Status, Notes } from '../sections/project-dashboard';
 import { ReportDialog } from '../sections/dialog';
-
 // ----------------------------------------------------------------------
-
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(10),
   [theme.breakpoints.up('md')]: {
@@ -67,15 +65,13 @@ export default function Project() {
   const { projectInfo, isLoading } = useSelector((state) => state.projectDashboard);
   const [openRPDialog, setOpenRPDialog] = useState(false);
 
-  console.log(projectInfo);
-
-  const openDialog = () => {
+  const openDialog = useCallback(() => {
     setOpenRPDialog(true);
-  };
+  }, []);
 
-  const closeDialog = () => {
+  const closeDialog = useCallback(() => {
     setOpenRPDialog(false);
-  };
+  }, []);
 
   useEffect(() => {
     dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
@@ -84,16 +80,16 @@ export default function Project() {
 
   const { currentTab, onChangeTab } = useTabs(pageId);
 
-  const onChangeTabHandle = (e, newId) => {
+  const onChangeTabHandle = useCallback((e, newId) => {
     navigate(PATH_PROJECT.project(projectId, newId));
     onChangeTab(e, newId);
-  };
+  }, [navigate, onChangeTab, projectId]);
 
-  const onClickAddNewUnit = () => {
+  const onClickAddNewUnit = useCallback(() => {
     navigate(PATH_UNIT.add(projectId));
-  };
+  }, [navigate, projectId]);
 
-  const ACCOUNT_TABS = [
+  const ACCOUNT_TABS = useMemo(() =>[
     {
       value: 'unitlist',
       title: 'Unit list',
@@ -124,7 +120,7 @@ export default function Project() {
       title: 'Notes',
       component: <Notes />,
     },
-  ];
+  ], [projectInfo]);
 
   return (
     <Page title="Project: Dashboard">

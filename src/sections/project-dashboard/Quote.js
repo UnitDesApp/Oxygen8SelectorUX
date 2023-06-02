@@ -1,8 +1,7 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import {
@@ -21,12 +20,9 @@ import {
   Snackbar,
   Alert,
   Typography,
-  ToggleButtonGroup,
-  ToggleButton,
   LinearProgress,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
 // hooks
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -102,7 +98,6 @@ export default function Quote() {
   const { isEdit } = useSelector((state) => state.quote);
   const dispatch = useDispatch();
 
-  const [alignment, setAlignment] = useState('stage1');
   const [isLoading, setIsLoading] = useState(false);
   const [doWannaGenerate, setDoWannaGenerate] = useState(isEdit);
 
@@ -124,13 +119,9 @@ export default function Quote() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
-
-  const wannaGenerate = () => {
+  const wannaGenerate = useCallback(() => {
     if (unitList.length > 0) setDoWannaGenerate(true);
-  };
+  }, [unitList.length]);
 
   const { quoteFormInfo, quoteControlInfo, gvPricingGeneral, gvPricingUnits, gvPricingTotal, gvMisc, gvNotes } =
     useSelector((state) => state.quote);
@@ -210,76 +201,97 @@ export default function Quote() {
   }, [defaultValues, reset]);
 
   // event handler for addding misc
-  const addMisc = async (objMisc) => {
-    const data = {
-      ...objMisc,
-      intJobID: projectId,
-    };
-    await dispatch(quoteReducer.addNewMisc(data));
-  };
-
-  const updateMisc = async (objMisc, miscNo) => {
-    const data = {
-      ...objMisc,
-      intJobID: projectId,
-      miscNo,
-    };
-    await dispatch(quoteReducer.updateMisc(data));
-  };
-
-  const deleteMisc = async (miscNo) => {
-    const data = {
-      intJobID: projectId,
-      miscNo,
-    };
-    await dispatch(quoteReducer.deleteMisc(data));
-  };
-
-  // event handler for adding notes
-  const addNotes = async (txbNotes) => {
-    const data = {
-      intJobID: projectId,
-      txbNotes,
-    };
-    await dispatch(quoteReducer.addNewNotes(data));
-  };
-
-  const updateNotes = async (txbNotes, notesNo) => {
-    const data = {
-      intJobID: projectId,
-      txbNotes,
-      notesNo,
-    };
-    await dispatch(quoteReducer.updateNotes(data));
-  };
-
-  const deleteNotes = async (notesNo) => {
-    const data = {
-      intJobID: projectId,
-      notesNo,
-    };
-    await dispatch(quoteReducer.deleteNotes(data));
-  };
-
-  // submmit function
-  const onQuoteSubmit = async (data) => {
-    try {
-      const quoteData = {
-        ...data,
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
+  const addMisc = useCallback(
+    async (objMisc) => {
+      const data = {
+        ...objMisc,
         intJobID: projectId,
       };
-      const result = await dispatch(quoteReducer.saveQuoteInfo(quoteData));
-      if (result === 'success') {
-        setSuccess(true);
-      } else {
+      await dispatch(quoteReducer.addNewMisc(data));
+    },
+    [dispatch, projectId]
+  );
+
+  const updateMisc = useCallback(
+    async (objMisc, miscNo) => {
+      const data = {
+        ...objMisc,
+        intJobID: projectId,
+        miscNo,
+      };
+      await dispatch(quoteReducer.updateMisc(data));
+    },
+    [dispatch, projectId]
+  );
+
+  const deleteMisc = useCallback(
+    async (miscNo) => {
+      const data = {
+        intJobID: projectId,
+        miscNo,
+      };
+      await dispatch(quoteReducer.deleteMisc(data));
+    },
+    [dispatch, projectId]
+  );
+
+  // event handler for adding notes
+  const addNotes = useCallback(
+    async (txbNotes) => {
+      const data = {
+        intJobID: projectId,
+        txbNotes,
+      };
+      await dispatch(quoteReducer.addNewNotes(data));
+    },
+    [dispatch, projectId]
+  );
+
+  const updateNotes = useCallback(
+    async (txbNotes, notesNo) => {
+      const data = {
+        intJobID: projectId,
+        txbNotes,
+        notesNo,
+      };
+      await dispatch(quoteReducer.updateNotes(data));
+    },
+    [dispatch, projectId]
+  );
+
+  const deleteNotes = useCallback(
+    async (notesNo) => {
+      const data = {
+        intJobID: projectId,
+        notesNo,
+      };
+      await dispatch(quoteReducer.deleteNotes(data));
+    },
+    [dispatch, projectId]
+  );
+
+  // submmit function
+  const onQuoteSubmit = useCallback(
+    async (data) => {
+      try {
+        const quoteData = {
+          ...data,
+          intUserID: localStorage.getItem('userId'),
+          intUAL: localStorage.getItem('UAL'),
+          intJobID: projectId,
+        };
+        const result = await dispatch(quoteReducer.saveQuoteInfo(quoteData));
+        if (result === 'success') {
+          setSuccess(true);
+        } else {
+          setFail(true);
+        }
+      } catch (error) {
         setFail(true);
       }
-    } catch (error) {
-      setFail(true);
-    }
-  };
+    },
+    [dispatch, projectId]
+  );
 
   return (
     <Box sx={{ paddingTop: 5, paddingBottom: 5 }}>

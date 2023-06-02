@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import { Box, IconButton, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
@@ -9,31 +9,34 @@ import axios from '../../utils/axios';
 const ResourceTable = ({ objResources, title, resourceType, sx }) => {
   const theme = useTheme();
 
-  const onDownload = (fileName) => {
-    axios
-      .post(
-        `${serverUrl}/api/resource/filedownload`,
-        { resourceType, fileName },
-        {
-          responseType: 'blob',
-        }
-      )
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-      });
-  };
+  const onDownload = useCallback(
+    (fileName) => {
+      axios
+        .post(
+          `${serverUrl}/api/resource/filedownload`,
+          { resourceType, fileName },
+          {
+            responseType: 'blob',
+          }
+        )
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+        });
+    },
+    [resourceType]
+  );
 
-  const convertDate = (date) => {
+  const convertDate = useCallback((date) => {
     const originalDate = new Date(date);
     const isoString = originalDate.toISOString(); // convert to ISO format
     const formattedString = isoString.replace('T', ' ').slice(0, -5);
     return formattedString;
-  };
+  }, []);
 
   return (
     <Box sx={{ ...sx, margin: 1, px: '20px' }}>

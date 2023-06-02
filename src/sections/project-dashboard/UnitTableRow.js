@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 // @mui
 // import { useTheme } from '@mui/material/styles';
 import { Checkbox, TableRow, TableCell, MenuItem, Divider } from '@mui/material';
@@ -26,13 +26,13 @@ export default function UserTableRow({ row, selected, onEditRow, onDuplicate, on
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = useCallback((event) => {
     setOpenMenuActions(event.currentTarget);
-  };
+  }, []);
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = useCallback(() => {
     setOpenMenuActions(null);
-  };
+  }, []);
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>

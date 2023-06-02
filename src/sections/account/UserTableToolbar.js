@@ -1,21 +1,12 @@
 import * as React from 'react';
-
 import PropTypes from 'prop-types';
+// materials
 import { Stack, InputAdornment, TextField, Button, Paper, Divider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
 // components
 import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
-
-UserTableToolbar.propTypes = {
-  filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
-  userNum: PropTypes.number,
-  onDeleteSelectedData: PropTypes.func,
-};
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -23,6 +14,13 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
+
+UserTableToolbar.propTypes = {
+  filterName: PropTypes.string,
+  onFilterName: PropTypes.func,
+  userNum: PropTypes.number,
+  onDeleteSelectedData: PropTypes.func,
+};
 
 export default function UserTableToolbar({ filterName, onFilterName, userNum, onDeleteSelectedData }) {
   return (

@@ -17,17 +17,10 @@ export const strSesVarElecHeaterVoltageID = 'ElecHeaterVoltageID';
 // -------------------------------------------------------------------------
 // ATTRIBUTES
 // -------------------------------------------------------------------------
-// export const strAttUnitNo = "UnitNo";
 export const strAttProductTypeID = 'ProductTypeID';
-// export const strAttQuoteID = "QuoteID";
-// export const strAttUnitModelID = "UnitModelID";
 export const strAttSelectionTypeID = 'SelectionTypeID';
 export const strAttUnitVoltageID = 'UnitVoltageID';
 export const strAttUnitModelSelected = 'UnitModelSelected';
-// export const strAttUnitModel_1_HX_CondWarning = "UnitModel_1_HX_CondWarning";
-// export const strAttUnitModel_2_HX_CondWarning = "UnitModel_2_HX_CondWarning";
-// export const strAttUnitModel_3_HX_CondWarning = "UnitModel_3_HX_CondWarning";
-// export const strAttUnitModel_4_HX_CondWarning = "UnitModel_4_HX_CondWarning";
 
 // -------------------------------------------------------------------------
 // ID'S FROM DATABASE TABLES
@@ -36,8 +29,6 @@ export const intApplicationOtherID = 10;
 
 export const intDesignDataCooling_010_Heating_990_ID = 1;
 export const intDesignDataCooling_004_Heating_996_ID = 2;
-// export const intDesignDataCooling_010_ID = 3;
-// export const intDesignDataCooling_004_ID = 4;
 
 export const intUoM_Imperial = 1;
 export const intUoM_Metric = 2;

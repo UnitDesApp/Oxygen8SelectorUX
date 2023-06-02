@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -27,29 +27,29 @@ export default function QuoteNoteDataTable({ tableData, addRow, deleteRow, updat
   const [selectedID, setSelectedID] = useState(-1);
   const theme = useTheme();
 
-  const addNoteClicked = async () => {
+  const addNoteClicked = useCallback(async () => {
     if (txbNotes) {
       await addRow(txbNotes);
       setNotes('');
       setSelectedID(-1);
     }
-  };
+  }, [addRow, txbNotes]);
 
-  const updateNoteClicked = async () => {
+  const updateNoteClicked = useCallback(async () => {
     await updateRow(txbNotes, selectedID);
     setNotes('');
     setSelectedID(-1);
-  };
+  }, [selectedID, txbNotes, updateRow]);
 
-  const cancelEditClicked = () => {
+  const cancelEditClicked = useCallback(() => {
     setNotes('');
     setSelectedID(-1);
-  };
+  }, []);
 
-  const selectRowClicked = (txt, id) => {
+  const selectRowClicked = useCallback((txt, id) => {
     setNotes(txt);
     setSelectedID(id);
-  };
+  }, []);
 
   return (
     <>

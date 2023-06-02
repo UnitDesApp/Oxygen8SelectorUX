@@ -1,8 +1,7 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -170,7 +169,7 @@ export default function JobSubmittal() {
   }, []);
 
   // event handler for addding note
-  const addNoteClicked = () => {
+  const addNoteClicked = useCallback(() => {
     if (note === '') return;
     const data = {
       intUserID: localStorage.getItem('userId'),
@@ -180,10 +179,10 @@ export default function JobSubmittal() {
     };
     dispatch(addNewNote(data));
     setNote('');
-  };
+  }, [dispatch, note, projectId]);
 
   // event handler for adding shipping note
-  const addShippingInstructionClicked = () => {
+  const addShippingInstructionClicked = useCallback(() => {
     if (shippingNote === '') return;
     const data = {
       intUserID: localStorage.getItem('userId'),
@@ -193,10 +192,10 @@ export default function JobSubmittal() {
     };
     dispatch(addNewShippingNote(data));
     setShippingNote('');
-  };
+  }, [dispatch, projectId, shippingNote]);
 
   // export pdf of form data
-  const downloadPDF = async () => {
+  const downloadPDF = useCallback(async () => {
     const data = {
       intJobID: projectId,
       intUAL: localStorage.getItem('UAL'),
@@ -223,10 +222,10 @@ export default function JobSubmittal() {
 
     // Save File
     saveAs(response.data, `${filename}`);
-  };
+  }, [projectId]);
 
   // export pdf of form data
-  const downloadEpicor = async () => {
+  const downloadEpicor = useCallback(async () => {
     const data = {
       intJobID: projectId,
       intUAL: localStorage.getItem('UAL'),
@@ -252,23 +251,26 @@ export default function JobSubmittal() {
 
     // Save File
     saveAs(response.data, `${filename}`);
-  };
+  }, [projectId]);
 
   // submmit function
-  const onJobInfoSubmit = async (data) => {
-    try {
-      const requestData = {
-        ...data,
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: projectId,
-      };
-      await dispatch(saveSubmittalInfo(requestData));
-      setSuccess(true);
-    } catch (error) {
-      setFail(true);
-    }
-  };
+  const onJobInfoSubmit = useCallback(
+    async (data) => {
+      try {
+        const requestData = {
+          ...data,
+          intUserID: localStorage.getItem('userId'),
+          intUAL: localStorage.getItem('UAL'),
+          intJobID: projectId,
+        };
+        await dispatch(saveSubmittalInfo(requestData));
+        setSuccess(true);
+      } catch (error) {
+        setFail(true);
+      }
+    },
+    [dispatch, projectId]
+  );
 
   return isLoading ? (
     <Loading />

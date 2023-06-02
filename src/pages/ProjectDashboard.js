@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // @mui
 import { m } from 'framer-motion';
@@ -95,23 +95,21 @@ export default function ProjectDashboard() {
 
   const { projectInfo, unitList, isLoading } = useSelector((state) => state.projectDashboard);
 
-  console.log(projectInfo);
-
   useEffect(() => {
     dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const activeStep = unitList.length > 0 ? 2 : 1;
+  const activeStep = useMemo(() => unitList.length > 0 ? 2 : 1, []);
   // const isComplete = activeStep === STEPS.length;
 
-  const onClickRequestSubmittal = () => {
+  const onClickRequestSubmittal = useCallback(() => {
     navigate(PATH_PROJECT.submittal(projectId));
-  };
+  }, [navigate, projectId]);
 
-  const onClickRequestQuote = () => {
+  const onClickRequestQuote = useCallback(() => {
     navigate(PATH_PROJECT.quote(projectId), { state: unitList.length });
-  };
+  }, [navigate, projectId, unitList.length]);
 
   return (
     <Page title="Project: Dashboard">

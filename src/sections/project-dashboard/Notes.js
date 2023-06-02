@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react';
-// import PropTypes from 'prop-types';
-import {
-  useParams,
-} from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -20,7 +17,7 @@ import { FormProvider, RHFTextField } from '../../components/hook-form';
 // ----------------------------------------------------------------------
 export default function Notes() {
   const dispatch = useDispatch();
-  const { projectNote } = useSelector((state) => state.projectDashboard)
+  const { projectNote } = useSelector((state) => state.projectDashboard);
   const { projectId } = useParams();
 
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -59,23 +56,26 @@ export default function Notes() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (data) => {
-    try {
-      await dispatch(saveNotes({...data, projectId}));
-      setOpenSuccess(true);
-    } catch (error) {
-      setOpenFail(true);
-      console.error(error);
-    }
-  };
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await dispatch(saveNotes({ ...data, projectId }));
+        setOpenSuccess(true);
+      } catch (error) {
+        setOpenFail(true);
+        console.error(error);
+      }
+    },
+    [dispatch, projectId]
+  );
 
   useEffect(() => {
-    dispatch(getProjectNote({projectId}));
-  }, [dispatch, projectId])
+    dispatch(getProjectNote({ projectId }));
+  }, [dispatch, projectId]);
 
   useEffect(() => {
-    setValue("notes", projectNote);
-  }, [setValue, projectNote])
+    setValue('notes', projectNote);
+  }, [setValue, projectNote]);
 
   return (
     <Box sx={{ paddingTop: 1, width: '100%' }}>
@@ -90,7 +90,7 @@ export default function Notes() {
           rows={15}
           sx={{ width: '100%' }}
         />
-        <Stack direction="row" justifyContent="flex-end" sx={{ paddingTop: 2, paddingBottom: 10}}>
+        <Stack direction="row" justifyContent="flex-end" sx={{ paddingTop: 2, paddingBottom: 10 }}>
           <LoadingButton
             type="submit"
             startIcon={<Iconify icon={'fluent:save-24-regular'} />}

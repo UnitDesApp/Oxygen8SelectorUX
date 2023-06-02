@@ -1,5 +1,5 @@
 // react
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 // prop-types
 import PropTypes from 'prop-types';
 // @mui
@@ -22,7 +22,7 @@ const productInfomation = {
 SelectProductInfo.propTypes = {
   onSelectAppliaionItem: PropTypes.func,
   onSelectProductTypeItem: PropTypes.func,
-  onSelectUnitTypeItem: PropTypes.func
+  onSelectUnitTypeItem: PropTypes.func,
 };
 
 export default function SelectProductInfo(props) {
@@ -47,29 +47,37 @@ export default function SelectProductInfo(props) {
 
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = useCallback((event, newValue) => {
     setValue(newValue);
-  };
+  }, []);
 
-  const onSelectApplicationValue = (label, id) => {
-    onSelectAppliaionItem(id, label);
-    setApplicationValue(label);
-    setValue(1);
-  };
+  const onSelectApplicationValue = useCallback(
+    (label, id) => {
+      onSelectAppliaionItem(id, label);
+      setApplicationValue(label);
+      setValue(1);
+    },
+    [onSelectAppliaionItem]
+  );
 
-  const onSelectProductTypeValue = (label, id) => {
-    onSelectProductTypeItem(id, label);
-    setProductTypeValue(label);
-    setProductTypeID(id);
-    setValue(2);
-    // SetIsOpenSideDescriptionOfProductType(true);
-  };
+  const onSelectProductTypeValue = useCallback(
+    (label, id) => {
+      onSelectProductTypeItem(id, label);
+      setProductTypeValue(label);
+      setProductTypeID(id);
+      setValue(2);
+    },
+    [onSelectProductTypeItem]
+  );
 
-  const onSelectUnitTypeValue = (label, id) => {
-    onSelectUnitTypeItem(id, label);
-    setUnitTypeValue(label);
-    SetIsOpenSideDescriptionOfProductType(true);
-  };
+  const onSelectUnitTypeValue = useCallback(
+    (label, id) => {
+      onSelectUnitTypeItem(id, label);
+      setUnitTypeValue(label);
+      SetIsOpenSideDescriptionOfProductType(true);
+    },
+    [onSelectUnitTypeItem]
+  );
 
   return (
     <Container>
@@ -90,7 +98,11 @@ export default function SelectProductInfo(props) {
             <ProductTypes productTypes={productTypeDataTbl} onSelectItem={onSelectProductTypeValue} />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <UnitTypes productTypeID={productTypeID} productTypeUnitTypeLinkDataTbl={productTypeUnitTypeLinkDataTbl} onSelectItem={onSelectUnitTypeValue} />
+            <UnitTypes
+              productTypeID={productTypeID}
+              productTypeUnitTypeLinkDataTbl={productTypeUnitTypeLinkDataTbl}
+              onSelectItem={onSelectUnitTypeValue}
+            />
           </TabPanel>
         </CardContent>
       </Card>

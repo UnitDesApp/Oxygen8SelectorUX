@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Stack, ToggleButtonGroup, ToggleButton, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import Iconify from '../../components/Iconify';
 
 const ResourceHeader = ({ curValue, updateCurValue }) => {
-  const handleAlignment = (e, newValue) => {
-    if (newValue) updateCurValue(newValue);
-  };
+  const handleAlignment = useCallback(
+    (e, newValue) => {
+      if (newValue) updateCurValue(newValue);
+    },
+    [updateCurValue]
+  );
 
   return (
     <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={5}>

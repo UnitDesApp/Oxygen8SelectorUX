@@ -45,13 +45,10 @@ export default function NewProjectFormDialog({
     designCondition,
     companyInfo,
     weatherData,
-    provState,
     usersInfo,
     createdDate,
     revisedDate,
   } = initialInfo;
-
-  console.log(initialInfo);
 
   const NewUserSchema = Yup.object().shape({
     jobName: Yup.string().required('Please enter a Project Name'),
@@ -173,7 +170,6 @@ export default function NewProjectFormDialog({
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       await dispatch(
         addNewProject({
           ...data,
@@ -190,7 +186,6 @@ export default function NewProjectFormDialog({
       setOpenSuccess();
       handleNewProjectDialogClose();
     } catch (error) {
-      console.error(error);
       setOpenFail()
     }
   };

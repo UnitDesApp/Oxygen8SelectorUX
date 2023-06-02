@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { capitalCase } from 'change-case';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -6,10 +7,9 @@ import { Container, Box, Tab, Tabs } from '@mui/material';
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
-
 // hooks
 import useTabs from '../hooks/useTabs';
-
+// sections
 import { AccountGeneral, AccountChangePassword } from '../sections/account';
 // ----------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ const RootStyle = styled('div')(({ theme }) => ({
 export default function MyAccount() {
   const { currentTab, onChangeTab } = useTabs('general');
 
-  const ACCOUNT_TABS = [
+  const ACCOUNT_TABS = useMemo(() => [
     {
       value: 'general',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
@@ -36,7 +36,7 @@ export default function MyAccount() {
       icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
       component: <AccountChangePassword />,
     },
-  ];
+  ], []);
   
   return (
     <Page title="User: Account Settings">

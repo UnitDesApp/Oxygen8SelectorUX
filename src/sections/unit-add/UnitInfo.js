@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -17,18 +16,14 @@ import {
   TextField,
   Snackbar,
   Alert,
-  // AlertTitle,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useUnitEditFormSchema } from '../../hooks/useUnitEditForm';
-// paths
-// import { PATH_PROJECT } from '../../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-// import { addNewProject, updateProject } from '../../redux/slices/projectsReducer';
 import * as unitReducer from '../../redux/slices/unitReducer';
 // components
 import Page from '../../components/Page';
@@ -41,15 +36,10 @@ import {
   RHFUploadSingleFile,
 } from '../../components/hook-form';
 import Iconify from '../../components/Iconify';
-// utils
-// import axios from '../../utils/axios';
 // config
 import * as IDs from './config';
-// import { serverUrl } from '../../config';
-// theme
 
 //------------------------------------------------
-
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(3),
   mb: '100px',
@@ -57,10 +47,6 @@ const RootStyle = styled('div')(({ theme }) => ({
     paddingTop: theme.spacing(3),
   },
 }));
-
-//------------------------------------------------
-
-// const dblTempErrorValue = 0.0;
 
 //------------------------------------------------
 UnitInfo.propTypes = {
@@ -72,7 +58,7 @@ UnitInfo.propTypes = {
 export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUnit }) {
   const dispatch = useDispatch();
   const { projectId } = useParams();
-  const { controlInfo, unitInfo, layoutInfo } = useSelector((state) => state.unit);
+  const { controlInfo, unitInfo } = useSelector((state) => state.unit);
   const isResetCalled = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -96,16 +82,13 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log('==================== Unit Information ==================');
-  console.log(controlInfo, unitInfo, layoutInfo, isLoading);
-
   const [openSuccess, setOpenSuccess] = useState(false);
-  const handleCloseSuccess = (event, reason) => {
+  const handleCloseSuccess = useCallback((event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setOpenSuccess(false);
-  };
+  }, []);
 
   const [openError, setOpenError] = useState(false);
   const handleCloseError = (event, reason) => {
@@ -119,12 +102,10 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     ualInfo,
     locationInfo,
     orientationInfo,
-    // unitTypeInfo,
     bypassInfo,
     unitModelInfo,
     unitVoltageInfo,
     unitVoltageSPPInfo,
-    // preheatRequiredInfo,
     componentInfo,
     dxCoilRefrigDesignCondInfo,
     condCoilRefrigDesignCondInfo,
@@ -148,17 +129,12 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     heatingFluidDesignCondInfo,
     outdoorAirFilterInfo,
     returnAirFilterInfo,
-    // setpointsInfo,
     heatingSetpointInfo,
     coolingSetpointInfo,
     customInputsInfo,
     reheatSetpointInfo,
     supplyAirOpeningInfo,
     remainingOpeningsInfo,
-    // supplyAirESPInfo,
-    // returnAirESPInfo,
-    // summerReturnAirCFMInfo,
-    // summerSupplyAirCFMInfo,
   } = controlInfo;
 
   const [ckbBypassVal, setCkbBypassVal] = useState(!!bypassInfo?.ckbBypassVal);
@@ -181,7 +157,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     ckbReheatHWC_UseFlowRate: false,
   });
 
-  const [expanded, setExpanded] = React.useState({
+  const [expanded, setExpanded] = useState({
     panel1: true,
     panel2: true,
     panel3: true,
@@ -354,35 +330,32 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     }
   }, [isLoading, reset, defaultValues]);
 
-  const getDisplay = (key) => ({ display: key ? 'block' : 'none' });
+  const getDisplay = useCallback((key) => ({ display: key ? 'block' : 'none' }), []);
 
-  const getAllFormData = () => ({
-    ...getValues(),
-    intProjectID: projectId,
-    intUnitNo: 0,
-    intProductTypeID: unitTypeData.intProductTypeID,
-    intUnitTypeID: unitTypeData.intUnitTypeID,
-    ddlUnitTypeId: unitTypeData.intUnitTypeID,
-    intUAL: localStorage.getItem('UAL'),
-    intUserID: localStorage.getItem('userId'),
-    ckbBypassVal,
-    ckbDrainPanVal,
-    ckbVoltageSPPVal,
-    ckbDehumidificationVal,
-    ckbValveAndActuatorVal,
-    ckbHeatPumpVal,
-    ckbDownshotVal,
-    ...ckbFlowRateAndCap,
-  });
+  const getAllFormData =
+    (() => ({
+      ...getValues(),
+      intProjectID: projectId,
+      intUnitNo: 0,
+      intProductTypeID: unitTypeData.intProductTypeID,
+      intUnitTypeID: unitTypeData.intUnitTypeID,
+      ddlUnitTypeId: unitTypeData.intUnitTypeID,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+      ckbBypassVal,
+      ckbDrainPanVal,
+      ckbVoltageSPPVal,
+      ckbDehumidificationVal,
+      ckbValveAndActuatorVal,
+      ckbHeatPumpVal,
+      ckbDownshotVal,
+      ...ckbFlowRateAndCap,
+    }),
+    []);
 
   // handle submit
-  const onSubmit = async () => {
+  const onSubmit = useCallback(async () => {
     try {
-      const data = getAllFormData();
-
-      console.log('--------------------- Submit Data----------------------');
-      console.log(data);
-
       const intUnitNo = await dispatch(unitReducer.saveUnitInfo(getAllFormData()));
       setOpenSuccess(true);
       setIsAddedNewUnit(intUnitNo);
@@ -390,384 +363,217 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       console.log(e);
       setOpenError(true);
     }
-  };
+  }, [dispatch, getAllFormData, setIsAddedNewUnit]);
 
-  const ddlLocationChanged = async (e) => {
-    setValue('ddlLocationId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlLocationChanged(getAllFormData()));
-    setValue('ddlOrientationId', result.ddlOrientationId);
-    setValue('ddlDamperAndActuatorId', result.ddlDamperAndActuatorId);
-    setValue('ddlUnitModelId', result.ddlUnitModelId);
-    setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-    setValue('ckbDownshotVal', result.downshot);
-    setValue('ddlPreheatElecHeaterInstallationId', result.preheatElectricHeater.ddlPreheatElecHeaterInstallationId);
-    setValue('txbSupplyAirESP', result.txbSupplyAirESP);
-    setValue('txbExhaustAirESP', result.txbExhaustAirESP);
-  };
+  const ddlLocationChanged = useCallback(
+    async (e) => {
+      setValue('ddlLocationId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlLocationChanged(getAllFormData()));
+      setValue('ddlOrientationId', result.ddlOrientationId);
+      setValue('ddlDamperAndActuatorId', result.ddlDamperAndActuatorId);
+      setValue('ddlUnitModelId', result.ddlUnitModelId);
+      setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
+      setValue('ckbDownshotVal', result.downshot);
+      setValue('ddlPreheatElecHeaterInstallationId', result.preheatElectricHeater.ddlPreheatElecHeaterInstallationId);
+      setValue('txbSupplyAirESP', result.txbSupplyAirESP);
+      setValue('txbExhaustAirESP', result.txbExhaustAirESP);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const ddlOrientationChanged = async (e) => {
-    setValue('ddlOrientationId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlOrientationChanged(getAllFormData()));
-    setValue('ddlUnitModelId', result.ddlUnitModelId);
-    setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-    setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
-    setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
-  };
+  const ddlOrientationChanged = useCallback(
+    async (e) => {
+      setValue('ddlOrientationId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlOrientationChanged(getAllFormData()));
+      setValue('ddlUnitModelId', result.ddlUnitModelId);
+      setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
+      setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
+      setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  // const txbSummerSupplyAirCFMChanged = async () => {
-  //   setValue('ddlOrientationId', result.ddlOrientationId);
-  //   setValue('ddlUnitModelId', result.ddlUnitModelId);
-  //   setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-  //   setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
-  //   setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
-  //   setValue('txbSummerSupplyAirCFM', result.txbSummerSupplyAirCFM);
-  //   setValue('txbSummerReturnAirCFM', result.txbSummerReturnAirCFM);
-  // };
-
-  // const txbSummerReturnAirCFMChanged = async () => {
-  //   const result = await dispatch(unitReducer.txbSummerReturnAirCFMChanged(getAllFormData()));
-  //   setValue('txbSummerReturnAirCFM', result.summerReturnAirCFMInfo.summerReturnAirCFM);
-  // };
-
-  // const txbSupplyAirESPChanged = async () => {
-  //   const result = await dispatch(unitReducer.txbSupplyAirESPChanged(getAllFormData()));
-  //   setValue('txbSupplyAirESP', result);
-  // };
-
-  // const txbExhaustAirESPChanged = async () => {
-  //   const result = await dispatch(unitReducer.txbExhaustAirESPChanged(getAllFormData()));
-  //   setValue('txbExhaustAirESP', result);
-  // };
-
-  const ddlUnitModelChanged = async (e) => {
-    setValue('ddlUnitModelId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlUnitModelChanged(getAllFormData()));
-    setValue('ddlUnitVoltageId', result.ddlUnitVoltageId);
-    setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
-    setValue('txbSupplyAirESP', result.txbSupplyAirESP);
-  };
-
-  const ddlUnitVoltageChanged = async (e) => {
-    setValue('ddlUnitVoltageId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlUnitVoltageChanged(getAllFormData()));
-    setValue('ddlElecHeaterVoltageId', result.ddlElecHeaterVoltageId);
-  };
-
-  // const txbSummerOutdoorAirDBChanged = async (e) => {
-  //   setValue('txbSummerOutdoorAirDB', parseFloat(e.target.value, 10));
-  //   if (e.target.value === 0) {
-  //     setValue('txbSummerOutdoorAirWB', 0);
-  //     setValue('txbSummerOutdoorAirRH', 100);
-  //   } else {
-  //     setValue('txbSummerOutdoorAirWB', dblTempErrorValue);
-  //     setValue('txbSummerOutdoorAirRH', dblTempErrorValue);
-  //   }
-  // };
-
-  // const txbSummerOutdoorAirWBChanged = async (e) => {
-  //   setValue('txbSummerOutdoorAirWB', parseFloat(e.target.value, 10));
-  //   const result = await dispatch(unitReducer.txbSummerOutdoorAirWBChanged(getAllFormData()));
-  //   setValue('txbSummerOutdoorAirRH', result);
-  // };
-
-  // const txbSummerOutdoorAirRHChanged = async (e) => {
-  //   setValue('txbSummerOutdoorAirRH', parseFloat(e.target.value, 10));
-  //   const result = await dispatch(unitReducer.txbSummerOutdoorAirRHChanged(getAllFormData()));
-  //   setValue('txbSummerOutdoorAirWB', result);
-  // };
-
-  // const txbWinterOutdoorAirDBChanged = async (e) => {
-  //   setValue('txbWinterOutdoorAirDB', parseFloat(e.target.value, 10));
-  //   if (e.target.value === 0) {
-  //     setValue('txbWinterOutdoorAirWB', 0);
-  //     setValue('txbWinterOutdoorAirRH', 100);
-  //   } else {
-  //     setValue('txbWinterOutdoorAirWB', dblTempErrorValue);
-  //     setValue('txbWinterOutdoorAirRH', dblTempErrorValue);
-  //   }
-  // };
-
-  // const txbWinterOutdoorAirWBChanged = async (e) => {
-  //   setValue('txbWinterOutdoorAirWB', parseFloat(e.target.value, 10));
-  //   const result = await dispatch(unitReducer.txbWinterOutdoorAirWBChanged(getAllFormData()));
-  //   setValue('txbWinterOutdoorAirRH', result);
-  // };
-
-  // const txbWinterOutdoorAirRHChanged = async (e) => {
-  //   setValue('txbWinterOutdoorAirRH', parseFloat(e.target.value, 10));
-  //   const result = await dispatch(unitReducer.txbWinterOutdoorAirRHChanged(getAllFormData()));
-  //   setValue('txbWinterOutdoorAirWB', result);
-  // };
-
-  // const txbSummerReturnAirDBChanged = (e) => {
-  //   setValue('txbSummerReturnAirDB', parseFloat(e.target.value, 10));
-  //   if (e.target.value === 0) {
-  //     setValue('txbSummerReturnAirWB', 0);
-  //     setValue('txbSummerReturnAirRH', 100);
-  //   } else {
-  //     setValue('txbSummerReturnAirWB', dblTempErrorValue);
-  //     setValue('txbSummerReturnAirRH', dblTempErrorValue);
-  //   }
-  // };
-
-  // const txbSummerReturnAirWBChanged = async (e) => {
-  //   setValue('txbSummerReturnAirWB', parseFloat(e.target.value, 10));
-  //   const result = await dispatch(unitReducer.txbSummerReturnAirWBChanged(getAllFormData()));
-  //   setValue('txbSummerReturnAirRH', result);
-  // };
-
-  // const txbSummerReturnAirRHChanged = async (e) => {
-  //   setValue('txbSummerReturnAirRH', parseFloat(e.target.value, 10));
-  //   const result = await dispatch(unitReducer.txbSummerReturnAirRHChanged(getAllFormData()));
-  //   setValue('txbSummerReturnAirWB', result);
-  // };
-
-  // const txbWinterReturnAirDBChanged = (e) => {
-  //   if (e.target.value === '') {
-  //     setValue('txbWinterReturnAirWB', '');
-  //   } else if (!isNaN(+e.target.value)) {
-  //     setValue('txbWinterReturnAirDB', parseFloat(e.target.value, 10));
-
-  //     if (e.target.value === 0) {
-  //       setValue('txbWinterReturnAirWB', 0);
-  //       setValue('txbWinterReturnAirRH', 100);
-  //     } else {
-  //       setValue('txbWinterReturnAirWB', dblTempErrorValue);
-  //       setValue('txbWinterReturnAirRH', dblTempErrorValue);
-  //     }
-  //   }
-  // };
-
-  // const txbWinterReturnAirWBChanged = async (e) => {
-  //   if (e.target.value === '') {
-  //     setValue('txbWinterReturnAirWB', '');
-  //   } else if (!isNaN(+e.target.value)) {
-  //     setValue('txbWinterReturnAirWB', parseFloat(e.target.value, 10));
-  //     const result = await dispatch(unitReducer.txbWinterReturnAirWBChanged(getAllFormData()));
-  //     setValue('txbWinterReturnAirRH', result);
-  //   }
-  // };
-
-  // const txbWinterReturnAirRHChanged = async (e) => {
-  //   if (e.target.value === '') {
-  //     setValue('txbWinterReturnAirRH', '');
-  //   } else if (!isNaN(+e.target.value)) {
-  //     setValue('txbWinterReturnAirRH', parseFloat(e.target.value, 10));
-  //     const result = await dispatch(unitReducer.txbWinterReturnAirRHChanged(getAllFormData()));
-  //     setValue('txbWinterReturnAirWB', result);
-  //   }
-  // };
-
-  const ddlPreheatCompChanged = async (e) => {
-    setValue('ddlPreheatCompId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlPreheatCompChanged(getAllFormData()));
-    if (result.preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) {
-      setValue(
-        'ddlPreheatElecHeaterInstallationId',
-        result.preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationId
-      );
-    }
-    if (result.elecHeaterVoltageInfo.divElecHeaterVoltageVisible) {
+  const ddlUnitModelChanged = useCallback(
+    async (e) => {
+      setValue('ddlUnitModelId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlUnitModelChanged(getAllFormData()));
+      setValue('ddlUnitVoltageId', result.ddlUnitVoltageId);
       setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
-    }
-  };
+      setValue('txbSupplyAirESP', result.txbSupplyAirESP);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  // const ddlHeatExchCompChanged = (e) => {
-  //   console.log(e.target.value);
-  // };
+  const ddlUnitVoltageChanged = useCallback(
+    async (e) => {
+      setValue('ddlUnitVoltageId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlUnitVoltageChanged(getAllFormData()));
+      setValue('ddlElecHeaterVoltageId', result.ddlElecHeaterVoltageId);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const ddlCoolingCompChanged = async (e) => {
-    setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
-    if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPumpVal(false);
-    if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidificationVal(false);
-    await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
-  };
+  const ddlPreheatCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlPreheatCompId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlPreheatCompChanged(getAllFormData()));
+      if (result.preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) {
+        setValue(
+          'ddlPreheatElecHeaterInstallationId',
+          result.preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationId
+        );
+      }
+      if (result.elecHeaterVoltageInfo.divElecHeaterVoltageVisible) {
+        setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
+      }
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const ckbHeatPumpChanged = async () => {
+  const ddlCoolingCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
+      if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPumpVal(false);
+      if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidificationVal(false);
+      await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
+    },
+    [dispatch, getAllFormData, getValues, setValue]
+  );
+
+  const ckbHeatPumpChanged = useCallback(async () => {
     setCkbHeatPumpVal(!ckbHeatPumpVal);
     const data = {
       ...getAllFormData(),
       ckbHeatPumpVal: !ckbHeatPumpVal,
     };
     await dispatch(unitReducer.ckbHeatPumpChanged(data));
-  };
+  }, [ckbHeatPumpVal, dispatch, getAllFormData]);
 
-  const ckbDehumidificationChanged = async (e) => {
-    setCkbDehumidificationVal(!ckbDehumidificationVal);
-    setValue('ckbDehumidificationVal', e.target.checked);
-    await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
-  };
+  const ckbDehumidificationChanged = useCallback(
+    async (e) => {
+      setCkbDehumidificationVal(!ckbDehumidificationVal);
+      setValue('ckbDehumidificationVal', e.target.checked);
+      await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
+    },
+    [ckbDehumidificationVal, dispatch, getAllFormData, setValue]
+  );
 
-  const ddlHeatingCompChanged = async (e) => {
-    setValue('ddlHeatingCompId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlHeatingCompChanged(getAllFormData()));
-    setValue(
-      'ddlHeatingElecHeaterInstallationId',
-      result.heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible &&
-        result.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId
-    );
-  };
-
-  const ddlReheatCompChanged = async (e) => {
-    setValue('ddlReheatCompId', parseInt(e.target.value, 10));
-    await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
-  };
-
-  // const txbOA_FilterPDChanged = async (e) => {
-  //   if (e.target.value > 1.0) {
-  //     setValue('txbOA_FilterPD', 1.0);
-  //   } else if (e.target.value < 0.3) {
-  //     setValue('txbOA_FilterPD', 0.3);
-  //   } else {
-  //     setValue('txbOA_FilterPD', parseFloat(e.target.value, 10));
-  //   }
-  // };
-
-  // const txbRA_FilterPDChanged = (e) => {
-  //   if (e.target.value > 1.0) {
-  //     setValue('txbRA_FilterPD', 1.0);
-  //   } else if (e.target.value < 0.3) {
-  //     setValue('txbRA_FilterPD', 0.3);
-  //   } else {
-  //     setValue('txbRA_FilterPD', parseFloat(e.target.value, 10));
-  //   }
-  // };
-
-  const ddlElecHeaterVoltageChanged = async (e) => {
-    setValue('ddlElecHeaterVoltageId', parseInt(e.target.value, 10));
-  };
-
-  const setValueWithCheck = (e, key) => {
-    if (e.target.value === '') {
-      setValue(key, '');
-    } else if (!isNaN(+e.target.value)) {
-      setValue(key, parseFloat(e.target.value, 10));
-    }
-  };
-
-  // const ckbDehumidificationInfo = async (e) => {
-  //   setCkbDehumidificationVal(e.target.checked);
-  //   await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
-  // };
-
-  const ddlHandingChanged = async (e) => {
-    setValue('ddlHandingId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlHandingChanged(getAllFormData()));
-    setValue('ddlSupplyAirOpeningId', parseInt(result.supplyAirOpeningInfo.ddlSupplyAirOpeningId, 10));
-    setValue('ddlSupplyAirOpeningText', result.supplyAirOpeningInfo.ddlSupplyAirOpeningText);
-    setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
-    setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
-    setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
-    setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
-    setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
-    setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
-  };
-
-  const ddlSupplyAirOpeningChanged = async (e) => {
-    setValue('ddlSupplyAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
-    const result = await dispatch(unitReducer.ddlSupplyAirOpeningChanged(getAllFormData()));
-    setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
-    setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
-    setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
-    setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
-    setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
-    setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
-  };
-
-  const ddlExhaustAirOpeningChanged = async (e) => {
-    setValue('ddlExhaustAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
-  };
-
-  const ddlOutdoorAirOpeningChanged = async (e) => {
-    setValue('ddlOutdoorAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
-  };
-
-  const ddlReturnAirOpeningChanged = async (e) => {
-    setValue('ddlReturnAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
-  };
-
-  // const isCkbValuesAndActuatorVisible = () =>
-  //   getValues('ddlPreheatCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlHeatingCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlReheatCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlCoolingCompId') === IDs.intCompCWC_ID;
-  // const isCkbHeatPumpVisible = () => getValues('ddlCoolingCompId') === IDs.intCompDX_ID;
-  // const isCkbDehumidificationVisible = () =>
-  //   getValues('ddlCoolingCompId') === IDs.intCompCWC_ID || getValues('ddlCoolingCompId') === IDs.intCompDX_ID;
-  // const isCbkDrainPanVisible = () =>
-  //   (intProductTypeID === IDs.intProdTypeVentumID || intProductTypeID === IDs.intProdTypeVentumLiteID) &&
-  //   intProductTypeID === IDs.intUnitTypeHRV_ID;
-  // const isCkbVoltageSPPVisible = () => intProductTypeID === IDs.intProdTypeTerraID;
-  // const isDdlElecHeaterVolatageVisible = () =>
-  //   getValues('ddlPreheatCompId') === IDs.intCompElecHeaterID ||
-  //   getValues('ddlHeatingCompId') === IDs.intCompElecHeaterID ||
-  //   getValues('ddlReheatCompId') === IDs.intCompElecHeaterID;
-  // const isDdlHeatElecHeaterInstallationVisible = () =>
-  //   getValues('ddlHeatingCompId') === IDs.intCompElecHeaterID ||
-  //   getValues('ddlReheatCompId') === IDs.intCompElecHeaterID;
-  // const isDdlPreheatElecHeaterInstallationVisible = () => getValues('ddlPreheatCompId') === IDs.intCompElecHeaterID;
-  // const isTxbReheatSetpointDBVisible = () =>
-  //   getValues('ddlReheatCompId') !== IDs.intCompNA_ID &&
-  //   getValues('ddlCoolingCompId') !== IDs.intCompNA_ID &&
-  //   ckbDehumidificationVal;
-  // const isDivHeatingFluidDesignConditionsVisible = () =>
-  //   getValues('ddlPreheatCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlHeatingCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlReheatCompId') === IDs.intCompHWC_ID;
-
-  // const isPreheatCompHWC = () => getValues('ddlPreheatComp') === IDs.intCompHWC_ID;
-  // const isCoolingCompCWC = () => getValues('ddlCoolingComp') === IDs.intCompCWC_ID;
-  // const isHeatingCompHWC = () => getValues('ddlHeatingComp') === IDs.intCompHWC_ID;
-  // const isReheatCompHWC = () => getValues('ddlReheatComp') === IDs.intCompHWC_ID;
-
-  // const isDivSetpointsVisible = () =>
-  //   (getValues('intUnitTypeID') === IDs.intUnitTypeAHU_ID && getValues('intPreheatCompId') > 1) ||
-  //   getValues('ddlCoolingCompId') > 1 ||
-  //   getValues('ddlHeatingCompId') > 1 ||
-  //   getValues('ddlReheatCompId') > 1;
-  // const isDivDXCoilRefrigDesignCondVisible = () => {
-  //   const intUAL = localStorage.getItem('UAL');
-  //   return (
-  //     (intUAL === IDs.intUAL_Admin ||
-  //       intUAL === IDs.intUAL_IntAdmin ||
-  //       intUAL === IDs.intUAL_IntLvl_1 ||
-  //       intUAL === IDs.intUAL_IntLvl_2) &&
-  //     getValues('ddlCoolingCompId') === IDs.intCompDX_ID
-  //   );
-  // };
-  // const isDivHeatingFluidDesignCondVisible = () =>
-  //   getValues('intPreheatCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlHeatingCompId') === IDs.intCompHWC_ID ||
-  //   getValues('ddlReheatCompId') === IDs.intCompHWC_ID;
-  // const isDivCondCoilRefrigDesignCondVisible = () => ckbHeatPumpVal || getValues('ddlReheatCompId') === IDs.intCompHGRH_ID;
-  // const isTxbCoolingSetpointVisible = () =>
-  //   getValues('ddlCoolingCompId') === IDs.intCompCWC_ID || getValues('ddlCoolingCompId') === IDs.intCompDX_ID;
-  // const isTxbHeatingSetpointVisible = () =>
-  //   getValues('ddlHeatingCompId') === IDs.intCompElecHeaterID ||
-  //   getValues('ddlHeatingCompId') === IDs.intCompHWC_ID ||
-  //   ckbHeatPumpVal;
-  const isUnitTypeAHU = () => unitTypeData.intProductTypeID === IDs.intUnitTypeAHU_ID;
-  // const isTxbSummerReturnAirCFMVisible = () => intUnitTypeID !== IDs.intUnitTypeAHU_ID;
-  // const isTxbReturnAirESPVisible = () => intUnitTypeID !== IDs.intUnitTypeAHU_ID;
-
-  const handleDrop = (acceptedFiles) => {
-    const file = acceptedFiles[0];
-
-    if (file) {
+  const ddlHeatingCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlHeatingCompId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlHeatingCompChanged(getAllFormData()));
       setValue(
-        'layoutImage',
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
+        'ddlHeatingElecHeaterInstallationId',
+        result.heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible &&
+          result.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId
       );
-    }
-  };
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const isAvailable = (value) => !!value && value.length > 0;
+  const ddlReheatCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlReheatCompId', parseInt(e.target.value, 10));
+      await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlElecHeaterVoltageChanged = useCallback(
+    async (e) => {
+      setValue('ddlElecHeaterVoltageId', parseInt(e.target.value, 10));
+    },
+    [setValue]
+  );
+
+  const setValueWithCheck = useCallback(
+    (e, key) => {
+      if (e.target.value === '') {
+        setValue(key, '');
+      } else if (!isNaN(+e.target.value)) {
+        setValue(key, parseFloat(e.target.value, 10));
+      }
+    },
+    [setValue]
+  );
+
+  const ddlHandingChanged = useCallback(
+    async (e) => {
+      setValue('ddlHandingId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlHandingChanged(getAllFormData()));
+      setValue('ddlSupplyAirOpeningId', parseInt(result.supplyAirOpeningInfo.ddlSupplyAirOpeningId, 10));
+      setValue('ddlSupplyAirOpeningText', result.supplyAirOpeningInfo.ddlSupplyAirOpeningText);
+      setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
+      setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
+      setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
+      setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
+      setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
+      setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlSupplyAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlSupplyAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
+      const result = await dispatch(unitReducer.ddlSupplyAirOpeningChanged(getAllFormData()));
+      setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
+      setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
+      setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
+      setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
+      setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
+      setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlExhaustAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlExhaustAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
+
+  const ddlOutdoorAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlOutdoorAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
+
+  const ddlReturnAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlReturnAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
+
+  const isUnitTypeAHU = useCallback(
+    () => unitTypeData.intProductTypeID === IDs.intUnitTypeAHU_ID,
+    [unitTypeData.intProductTypeID]
+  );
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          'layoutImage',
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        );
+      }
+    },
+    [setValue]
+  );
+
+  const isAvailable = useCallback((value) => !!value && value.length > 0, []);
 
   return (
     <Page title="Project: Edit">

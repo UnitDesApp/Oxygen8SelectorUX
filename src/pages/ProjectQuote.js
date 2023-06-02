@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useParams, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -163,7 +163,6 @@ export default function JobQuote() {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  // // getting all form data from server
   useEffect(() => {
     dispatch(
       quoteReducer.getQuoteInfo({
@@ -177,59 +176,77 @@ export default function JobQuote() {
   }, []);
 
   // event handler for addding misc
-  const addMisc = async (objMisc) => {
-    const data = {
-      ...objMisc,
-      intJobID: projectId,
-    };
-    await dispatch(quoteReducer.addNewMisc(data));
-  };
+  const addMisc = useCallback(
+    async (objMisc) => {
+      const data = {
+        ...objMisc,
+        intJobID: projectId,
+      };
+      await dispatch(quoteReducer.addNewMisc(data));
+    },
+    [dispatch, projectId]
+  );
 
-  const updateMisc = async (objMisc, miscNo) => {
-    const data = {
-      ...objMisc,
-      intJobID: projectId,
-      miscNo,
-    };
-    await dispatch(quoteReducer.updateMisc(data));
-  };
+  const updateMisc = useCallback(
+    async (objMisc, miscNo) => {
+      const data = {
+        ...objMisc,
+        intJobID: projectId,
+        miscNo,
+      };
+      await dispatch(quoteReducer.updateMisc(data));
+    },
+    [dispatch, projectId]
+  );
 
-  const deleteMisc = async (miscNo) => {
-    const data = {
-      intJobID: projectId,
-      miscNo,
-    };
-    await dispatch(quoteReducer.deleteMisc(data));
-  };
+  const deleteMisc = useCallback(
+    async (miscNo) => {
+      const data = {
+        intJobID: projectId,
+        miscNo,
+      };
+      await dispatch(quoteReducer.deleteMisc(data));
+    },
+    [dispatch, projectId]
+  );
 
   // event handler for adding notes
-  const addNotes = async (txbNotes) => {
-    const data = {
-      intJobID: projectId,
-      txbNotes,
-    };
-    await dispatch(quoteReducer.addNewNotes(data));
-  };
+  const addNotes = useCallback(
+    async (txbNotes) => {
+      const data = {
+        intJobID: projectId,
+        txbNotes,
+      };
+      await dispatch(quoteReducer.addNewNotes(data));
+    },
+    [dispatch, projectId]
+  );
 
-  const updateNotes = async (txbNotes, notesNo) => {
-    const data = {
-      intJobID: projectId,
-      txbNotes,
-      notesNo,
-    };
-    await dispatch(quoteReducer.updateNotes(data));
-  };
+  const updateNotes = useCallback(
+    () => async (txbNotes, notesNo) => {
+      const data = {
+        intJobID: projectId,
+        txbNotes,
+        notesNo,
+      };
+      await dispatch(quoteReducer.updateNotes(data));
+    },
+    [dispatch, projectId]
+  );
 
-  const deleteNotes = async (notesNo) => {
-    const data = {
-      intJobID: projectId,
-      notesNo,
-    };
-    await dispatch(quoteReducer.deleteNotes(data));
-  };
+  const deleteNotes = useCallback(
+    async (notesNo) => {
+      const data = {
+        intJobID: projectId,
+        notesNo,
+      };
+      await dispatch(quoteReducer.deleteNotes(data));
+    },
+    [dispatch, projectId]
+  );
 
   // export pdf of form data
-  const downloadPDF = async () => {
+  const downloadPDF = useCallback(async () => {
     const data = {
       ...getValues(),
       intJobID: projectId,
@@ -258,36 +275,36 @@ export default function JobQuote() {
 
     // Save File
     saveAs(response.data, `${filename}.pdf`);
-  };
+  }, [getValues, projectId]);
 
   // export pdf of form data
   const downloadExcel = async () => {
-    // there is no api in backend... (:
+    // there is no api in backend...
   };
 
   // submmit function
-  const onQuoteSubmit = async (data) => {
-    try {
-      const quoteData = {
-        ...data,
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: projectId,
-      };
-      const result = await dispatch(quoteReducer.saveQuoteInfo(quoteData));
-      if (result === 'success') {
-        setSuccess(true);
-      } else {
+  const onQuoteSubmit = useCallback(
+    async (data) => {
+      try {
+        const quoteData = {
+          ...data,
+          intUserID: localStorage.getItem('userId'),
+          intUAL: localStorage.getItem('UAL'),
+          intJobID: projectId,
+        };
+        const result = await dispatch(quoteReducer.saveQuoteInfo(quoteData));
+        if (result === 'success') {
+          setSuccess(true);
+        } else {
+          setFail(true);
+        }
+      } catch (error) {
         setFail(true);
       }
-    } catch (error) {
-      setFail(true);
-    }
-  };
+    },
+    [dispatch, projectId]
+  );
 
-  // const clickCheckbox = (key) => {
-  //   setValue(key, !getValues(key));
-  // };
 
   return isLoading ? (
     <Loading />

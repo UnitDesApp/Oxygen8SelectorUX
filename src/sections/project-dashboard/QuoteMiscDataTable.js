@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -33,33 +33,33 @@ export default function QuoteMiscDataTable({ tableData, addRow, deleteRow, updat
   const [selectedID, setSelectedID] = useState(-1);
   const theme = useTheme();
 
-  const addMiscClicked = () => {
+  const addMiscClicked = useCallback(() => {
     if (objMisc.txbMisc) {
       addRow(objMisc);
       setMisc(DefaultMiscValues);
       setSelectedID(-1);
     }
-  };
+  }, [addRow, objMisc]);
 
-  const updateMiscClicked = () => {
+  const updateMiscClicked = useCallback(() => {
     updateRow(objMisc, selectedID);
     setMisc(DefaultMiscValues);
     setSelectedID(-1);
-  };
+  }, [objMisc, selectedID, updateRow]);
 
-  const cancelEditClicked = () => {
+  const cancelEditClicked = useCallback(() => {
     setMisc(DefaultMiscValues);
     setSelectedID(-1);
-  };
+  }, []);
 
-  const selectRowClicked = (row) => {
+  const selectRowClicked = useCallback((row) => {
     setMisc({
       txbMisc: row.misc,
       txbMiscQty: row.qty,
       txbMiscPrice: row.price.substring(1),
     });
     setSelectedID(row.misc_no);
-  };
+  }, []);
 
   return (
     <>

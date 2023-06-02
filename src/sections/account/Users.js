@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 // @mui
@@ -20,8 +20,6 @@ import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 
 // ----------------------------------------------------------------------
-
-
 const TABLE_HEAD = [
   { id: 'user_name', label: 'Username', align: 'left' },
   { id: 'first_name', label: 'First Name', align: 'left' },
@@ -34,7 +32,6 @@ const TABLE_HEAD = [
   { id: 'created_date', label: 'Created Date', align: 'left' },
   { id: '' },
 ];
-
 // ------------------------------------------------------------------------
 
 Users.propTypes = {
@@ -66,77 +63,95 @@ export default function Users({ toolbar = true, checkbox = true }) {
 
   const [filterName, setFilterName] = useState('');
   const [tableData, setTableData] = useState(userList);
-  const [filterRole, setFilterRole] = useState('All');
+  const filterRole = 'All';
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
   const [deleteRowID, setDeleteRowID] = useState(-1);
 
-  const handleOneConfirmDialogOpen = (id) => {
+  const handleOneConfirmDialogOpen = useCallback((id) => {
     setDeleteRowID(id);
     setOneConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleOneConfirmDialogClose = () => {
+  const handleOneConfirmDialogClose = useCallback(() => {
     setDeleteRowID(-1);
     setOneConfirmDialogState(false);
-  };
+  }, []);
 
-  const handleDeleteRow = async () => {
+  const handleDeleteRow = useCallback(async () => {
     const data = await dispatch(removeUser({ action: 'DELETE_ONE', userId: deleteRowID }));
     setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
-  };
+  }, [deleteRowID, dispatch, handleOneConfirmDialogClose]);
 
-  const handleMultiConfirmDialogOpen = () => {
+  const handleMultiConfirmDialogOpen = useCallback(() => {
     setMultiConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleMultiConfirmDialogClose = () => {
+  const handleMultiConfirmDialogClose = useCallback(() => {
     setMultiConfirmDialogState(false);
-  };
+  }, []);
 
+  // eslint-disable-next-line no-unused-vars
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
-  const handleFilterName = (filterName) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
+  const handleFilterName = useCallback(
+    (filterName) => {
+      setFilterName(filterName);
+      setPage(0);
+    },
+    [setPage]
+  );
 
-  const handleDeleteRows = async () => {
+  const handleDeleteRows = useCallback(async () => {
     if (selected) {
-      const data = await dispatch(removeUser({ action: 'DELETE_MULTI', userIds: selected  }));
+      const data = await dispatch(removeUser({ action: 'DELETE_MULTI', userIds: selected }));
       setTableData(data);
       setSelected([]);
-      setMultiConfirmDialogState(false);  
+      setMultiConfirmDialogState(false);
     }
-  };
+  }, [dispatch, selected, setSelected]);
 
-  const handleEditRow = (row) => {
-    console.log(row);
-    navigate(PATH_ACCOUNT.edituser(row.id), row);
-  };
+  const handleEditRow = useCallback(
+    (row) => {
+      navigate(PATH_ACCOUNT.edituser(row.id), row);
+    },
+    [navigate]
+  );
 
-  const filteredData = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterRole,
-    filterStatus,
-  });
+  const filteredData = useMemo(
+    () =>
+      applySortFilter({
+        tableData,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterRole,
+        filterStatus,
+      }),
+    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+  );
 
-  const denseHeight = dense ? 52 : 72;
+  const denseHeight = useMemo(() => (dense ? 52 : 72), [dense]);
 
-  const isNotFound =
-    (!filteredData.length && !!filterName) ||
-    (!filteredData.length && !!filterRole) ||
-    (!filteredData.length && !!filterStatus);
+  const isNotFound = useMemo(
+    () =>
+      (!filteredData.length && !!filterName) ||
+      (!filteredData.length && !!filterRole) ||
+      (!filteredData.length && !!filterStatus),
+    [filterName, filterRole, filterStatus, filteredData.length]
+  );
 
   return (
     <Box>
       {toolbar && (
-        <UserTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} onDeleteSelectedData={handleMultiConfirmDialogOpen}/>
+        <UserTableToolbar
+          filterName={filterName}
+          onFilterName={handleFilterName}
+          userNum={filteredData.length}
+          onDeleteSelectedData={handleMultiConfirmDialogOpen}
+        />
       )}
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>

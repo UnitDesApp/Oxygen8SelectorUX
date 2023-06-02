@@ -89,13 +89,12 @@ export default function AddNewUnit() {
     else if (currentStep === 2) navigate(PATH_PROJECT.project(projectId, 'unitlist'));
   };
 
-  console.log(unitTypeData);
   const validateContinue = () => {
     if (currentStep === 0) {
       if (
         unitTypeData.intProductTypeID === -1 ||
         unitTypeData.intUnitTypeID === -1 ||
-        unitTypeData.intApplicationTypeID === ""
+        unitTypeData.intApplicationTypeID === ''
       )
         return true;
       return false;

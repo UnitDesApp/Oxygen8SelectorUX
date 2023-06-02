@@ -1,8 +1,6 @@
-/* eslint-disable camelcase */
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 // @mui
-// import { useTheme } from '@mui/material/styles';
 import { Checkbox, TableRow, TableCell, MenuItem, Stack, IconButton } from '@mui/material';
 // components
 import Label from '../../components/Label';
@@ -23,30 +21,19 @@ ProjectTableRow.propTypes = {
 };
 
 export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow, onDuplicate, onDeleteRow }) {
-  // const theme = useTheme();
-
-  const {
-    job_name,
-    reference_no,
-    revision_no,
-    Customer_Name,
-    User_Full_Name,
-    // Revised_User_Full_Name,
-    created_date,
-    revised_date,
-  } = row;
+  const { job_name, reference_no, revision_no, Customer_Name, User_Full_Name, created_date, revised_date } = row;
 
   const status = statusArr[Math.floor(Math.random() * 10) % 4];
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = useCallback((event) => {
     setOpenMenuActions(event.currentTarget);
-  };
+  }, []);
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = useCallback(() => {
     setOpenMenuActions(null);
-  };
+  }, []);
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>

@@ -82,7 +82,6 @@ export function getProjectsInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/jobs/get`);
-    console.log(response.data);
     dispatch(ProjectsSlice.actions.setProjectInfo(response.data));
   };
 };

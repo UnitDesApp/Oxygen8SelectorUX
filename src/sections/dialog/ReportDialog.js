@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -19,9 +19,8 @@ import {
   Alert,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useDispatch, useSelector } from '../../redux/store';
+import { useDispatch } from '../../redux/store';
 import { useExport } from '../../hooks/useExport';
-import { getAbleToDownload } from '../../redux/slices/projectDashboardReducer';
 
 const EXPORT_METHODS = [
   { label: 'Submittal', id: 'submittal' },
@@ -39,7 +38,6 @@ ReportDialog.propTypes = {
 };
 
 export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo, QuoteTitle }) {
-  const dispatch = useDispatch();
   const [methods, setMethods] = useState({
     submittal: false,
     schedule: false,
@@ -54,29 +52,30 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo,
   const [failNotifyText, setFailNotifyText] = useState(false);
   const { ExportSubmittal, ExportSubmittalEpicor, ExportQuote, ExportRevit, ExportSchedule } = useExport();
 
-  const onChangeMethods = (label, value) => {
-    setMethods({ ...methods, [label]: !value });
-  };
+  const onChangeMethods = useCallback(
+    (label, value) => {
+      setMethods({ ...methods, [label]: !value });
+    },
+    [methods]
+  );
 
-  const onClickExports = async () => {
+  const onClickExports = useCallback(async () => {
     setIsLoading(true);
     if (methods.submittal) {
       const isSubmittalSuccess = await ExportSubmittal(intProjectID);
       const isSubmitallEpicorSuccess = await ExportSubmittalEpicor(intProjectID);
 
       if (isSubmittalSuccess && isSubmitallEpicorSuccess) {
-        setSuccessNotifyText("Success export report for Submitall!");
+        setSuccessNotifyText('Success export report for Submitall!');
         openSuccessNotify(true);
-      }
-      else if (!isSubmittalSuccess) {
-        setFailNotifyText("Unfortunately, fail in downloading Submttal Data!");
+      } else if (!isSubmittalSuccess) {
+        setFailNotifyText('Unfortunately, fail in downloading Submttal Data!');
         openFailNotify(true);
-      }
-      else if (!isSubmitallEpicorSuccess) {
-        setFailNotifyText("Unfortunately, fail in downloading file, please check  Submttal and Quote data!");
+      } else if (!isSubmitallEpicorSuccess) {
+        setFailNotifyText('Unfortunately, fail in downloading file, please check  Submttal and Quote data!');
         openFailNotify(true);
       } else {
-        setFailNotifyText("Please check the project submittal project!");
+        setFailNotifyText('Please check the project submittal project!');
         openFailNotify(true);
       }
     }
@@ -91,29 +90,42 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo,
 
     if (methods.quote) {
       const result = await ExportQuote(intProjectID);
-      if (result === "server_error") {
-        setFailNotifyText("Server Error!");
+      if (result === 'server_error') {
+        setFailNotifyText('Server Error!');
         setOpenFailNotify(true);
-      } else if (result === "fail") {
-        setFailNotifyText("Please check your the project Quote info!");
+      } else if (result === 'fail') {
+        setFailNotifyText('Please check your the project Quote info!');
         setOpenFailNotify(true);
       }
     }
     setIsLoading(false);
-  };
+  }, [
+    ExportQuote,
+    ExportRevit,
+    ExportSchedule,
+    ExportSubmittal,
+    ExportSubmittalEpicor,
+    intProjectID,
+    methods.quote,
+    methods.revit_files,
+    methods.schedule,
+    methods.submittal,
+    openFailNotify,
+    openSuccessNotify,
+  ]);
 
-  const onCloseDialog = () => {
+  const onCloseDialog = useCallback(() => {
     setIsLoading(false);
     onClose();
-  };
+  }, [onClose]);
 
-  const handleCloseNotify = (key) => {
+  const handleCloseNotify = useCallback((key) => {
     if (key === 'success') {
       setOpenSuccessNotify(false);
     } else if (key === 'fail') {
       setOpenFailNotify(false);
     }
-  };
+  }, []);
 
   return (
     <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
@@ -155,13 +167,13 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo,
             </Grid>
           </Grid>
         </DialogActions>
-        <Snackbar open={openSuccessNotify} autoHideDuration={3000} onClose={() => handleCloseNotify("success")}>
-          <Alert onClose={() => handleCloseNotify("success")} severity="success" sx={{ width: '100%' }}>
+        <Snackbar open={openSuccessNotify} autoHideDuration={3000} onClose={() => handleCloseNotify('success')}>
+          <Alert onClose={() => handleCloseNotify('success')} severity="success" sx={{ width: '100%' }}>
             {successNotifyText}
           </Alert>
         </Snackbar>
-        <Snackbar open={openFailNotify} autoHideDuration={3000} onClose={() => handleCloseNotify("warning")}>
-          <Alert onClose={() => handleCloseNotify("fail")} severity="warning" sx={{ width: '100%' }}>
+        <Snackbar open={openFailNotify} autoHideDuration={3000} onClose={() => handleCloseNotify('warning')}>
+          <Alert onClose={() => handleCloseNotify('fail')} severity="warning" sx={{ width: '100%' }}>
             {failNotifyText}
           </Alert>
         </Snackbar>

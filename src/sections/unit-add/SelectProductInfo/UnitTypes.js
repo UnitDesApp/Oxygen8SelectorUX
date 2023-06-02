@@ -1,16 +1,11 @@
 import PropTypes from 'prop-types';
 // @mui
 import { Container, CardContent, Card, Box } from '@mui/material';
-
 // components
 import UnitTypeItem from './UnitTypeItem';
-
 // ----------------------------------------------------------------------
-// const productType = ['Nova', 'Ventum', 'Terra', 'Ventum Lite'];
-
 UnitTypes.propTypes = {
   productTypeID: PropTypes.number,
-  // unitTypes: PropTypes.array,
   productTypeUnitTypeLinkDataTbl: PropTypes.array,
   onSelectItem: PropTypes.func,
 };

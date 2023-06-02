@@ -1,9 +1,7 @@
-import * as React from 'react';
-
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Stack, IconButton, InputAdornment, TextField, Menu, MenuItem, Button, Paper, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
 // components
 import Iconify from '../../components/Iconify';
 
@@ -28,13 +26,16 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function ProjectTableToolbar({ filterName, onFilterName, onFilterRole, optionsRole, onOpneDialog }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClose = (event) => {
-    onFilterRole(event);
-    setAnchorEl(null);
-  };
+  }, []);
+  const handleClose = useCallback(
+    (event) => {
+      onFilterRole(event);
+      setAnchorEl(null);
+    },
+    [onFilterRole]
+  );
 
   return (
     <Stack
@@ -64,7 +65,7 @@ export default function ProjectTableToolbar({ filterName, onFilterName, onFilter
         >
           {optionsRole.map((option, key) => (
             <MenuItem
-              key={option}
+              key={key}
               value={option}
               sx={{
                 mx: 1,

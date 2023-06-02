@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -82,24 +81,21 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // console.log('==================== Unit Information ==================');
-  console.log(controlInfo, unitInfo);
-
   const [openSuccess, setOpenSuccess] = useState(false);
-  const handleCloseSuccess = (event, reason) => {
+  const handleCloseSuccess = useCallback((event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setOpenSuccess(false);
-  };
+  }, []);
 
   const [openError, setOpenError] = useState(false);
-  const handleCloseError = (event, reason) => {
+  const handleCloseError = useCallback((event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setOpenError(false);
-  };
+  }, []);
 
   const {
     ualInfo,
@@ -161,7 +157,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     ckbReheatHWC_UseFlowRate: false,
   });
 
-  const [expanded, setExpanded] = React.useState({
+  const [expanded, setExpanded] = useState({
     panel1: true,
     panel2: true,
     panel3: true,
@@ -261,8 +257,6 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     [unitInfo]
   );
 
-  console.log(defaultValues);
-
   const methods = useForm({
     resolver: yupResolver(useUnitEditFormSchema),
     defaultValues,
@@ -283,210 +277,277 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
-  const getDisplay = (key) => ({ display: key ? 'block' : 'none' });
+  const getDisplay = useCallback((key) => ({ display: key ? 'block' : 'none' }), []);
 
-  const getAllFormData = () => ({
-    ...getValues(),
-    intProjectID: projectId,
-    intUnitNo: unitId,
-    intProductTypeID: unitData.intProductTypeID,
-    intUnitTypeID: getValues('ddlUnitTypeId'),
-    intUAL: localStorage.getItem('UAL'),
-    intUserID: localStorage.getItem('userId'),
-    ckbBypassVal,
-    ckbDehumidificationVal,
-    ckbDrainPanVal,
-    ckbVoltageSPPVal,
-    ckbValveAndActuatorVal,
-    ckbHeatPumpVal,
-    ckbDownshotVal,
-    ...ckbFlowRateAndCap,
-  });
+  const getAllFormData = useCallback(
+    () => ({
+      ...getValues(),
+      intProjectID: projectId,
+      intUnitNo: unitId,
+      intProductTypeID: unitData.intProductTypeID,
+      intUnitTypeID: getValues('ddlUnitTypeId'),
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+      ckbBypassVal,
+      ckbDehumidificationVal,
+      ckbDrainPanVal,
+      ckbVoltageSPPVal,
+      ckbValveAndActuatorVal,
+      ckbHeatPumpVal,
+      ckbDownshotVal,
+      ...ckbFlowRateAndCap,
+    }),
+    [
+      ckbBypassVal,
+      ckbDehumidificationVal,
+      ckbDownshotVal,
+      ckbDrainPanVal,
+      ckbFlowRateAndCap,
+      ckbHeatPumpVal,
+      ckbValveAndActuatorVal,
+      ckbVoltageSPPVal,
+      getValues,
+      projectId,
+      unitData.intProductTypeID,
+      unitId,
+    ]
+  );
 
   // handle submit
-  const onSubmit = async () => {
+  const onSubmit = useCallback(async () => {
     try {
       const formData = getAllFormData();
-
-      console.log('--------------------- Submit Data----------------------');
-      console.log(formData);
-
       await dispatch(unitReducer.saveUnitInfo(formData));
       setOpenSuccess(true);
     } catch (e) {
       console.log(e);
       setOpenError(true);
     }
-  };
+  }, [dispatch, getAllFormData]);
 
-  const ddlLocationChanged = async (e) => {
-    setValue('ddlLocationId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlLocationChanged(getAllFormData()));
-    setValue('ddlOrientationId', result.ddlOrientationId);
-    setValue('ddlDamperAndActuatorId', result.ddlDamperAndActuatorId);
-    setValue('ddlUnitModelId', result.ddlUnitModelId);
-    setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-    setValue('ckbDownshotVal', result.downshot);
-    setValue('ddlPreheatElecHeaterInstallationId', result.preheatElectricHeater.ddlPreheatElecHeaterInstallationId);
-    setValue('txbSupplyAirESP', result.txbSupplyAirESP);
-    setValue('txbExhaustAirESP', result.txbExhaustAirESP);
-  };
+  const ddlLocationChanged = useCallback(
+    async (e) => {
+      setValue('ddlLocationId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlLocationChanged(getAllFormData()));
+      setValue('ddlOrientationId', result.ddlOrientationId);
+      setValue('ddlDamperAndActuatorId', result.ddlDamperAndActuatorId);
+      setValue('ddlUnitModelId', result.ddlUnitModelId);
+      setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
+      setValue('ckbDownshotVal', result.downshot);
+      setValue('ddlPreheatElecHeaterInstallationId', result.preheatElectricHeater.ddlPreheatElecHeaterInstallationId);
+      setValue('txbSupplyAirESP', result.txbSupplyAirESP);
+      setValue('txbExhaustAirESP', result.txbExhaustAirESP);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const ddlOrientationChanged = async (e) => {
-    setValue('ddlOrientationId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlOrientationChanged(getAllFormData()));
-    setValue('ddlUnitModelId', result.ddlUnitModelId);
-    setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-    setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
-    setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
-  };
+  const ddlOrientationChanged = useCallback(
+    async (e) => {
+      setValue('ddlOrientationId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlOrientationChanged(getAllFormData()));
+      setValue('ddlUnitModelId', result.ddlUnitModelId);
+      setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
+      setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
+      setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const txbSummerSupplyAirCFMChanged = async (e) => {
-    setValue('txbSummerSupplyAirCFM', e.target.value);
-  };
+  const txbSummerSupplyAirCFMChanged = useCallback(
+    async (e) => {
+      setValue('txbSummerSupplyAirCFM', e.target.value);
+    },
+    [setValue]
+  );
 
-  const txbSummerReturnAirCFMChanged = async (e) => {
-    setValue('txbSummerReturnAirCFM', e.target.value);
-  };
+  const txbSummerReturnAirCFMChanged = useCallback(
+    async (e) => {
+      setValue('txbSummerReturnAirCFM', e.target.value);
+    },
+    [setValue]
+  );
 
-  const ddlUnitModelChanged = async (e) => {
-    setValue('ddlUnitModelId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlUnitModelChanged(getAllFormData()));
-    setValue('ddlUnitVoltageId', result.ddlUnitVoltageId);
-    setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
-    setValue('txbSupplyAirESP', result.txbSupplyAirESP);
-  };
-
-  const ddlUnitVoltageChanged = async (e) => {
-    setValue('ddlUnitVoltageId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlUnitVoltageChanged(getAllFormData()));
-    setValue('ddlElecHeaterVoltageId', result.ddlElecHeaterVoltageId);
-  };
-
-  const ddlPreheatCompChanged = async (e) => {
-    setValue('ddlPreheatCompId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlPreheatCompChanged(getAllFormData()));
-    if (result.preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) {
-      setValue(
-        'ddlPreheatElecHeaterInstallationId',
-        result.preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationId
-      );
-    }
-    if (result.elecHeaterVoltageInfo.divElecHeaterVoltageVisible) {
+  const ddlUnitModelChanged = useCallback(
+    async (e) => {
+      setValue('ddlUnitModelId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlUnitModelChanged(getAllFormData()));
+      setValue('ddlUnitVoltageId', result.ddlUnitVoltageId);
       setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
-    }
-  };
+      setValue('txbSupplyAirESP', result.txbSupplyAirESP);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const ddlCoolingCompChanged = async (e) => {
-    setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
-    if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPumpVal(false);
-    if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidificationVal(false);
-    await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
-  };
+  const ddlUnitVoltageChanged = useCallback(
+    async (e) => {
+      setValue('ddlUnitVoltageId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlUnitVoltageChanged(getAllFormData()));
+      setValue('ddlElecHeaterVoltageId', result.ddlElecHeaterVoltageId);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const ckbHeatPumpChanged = async () => {
+  const ddlPreheatCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlPreheatCompId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlPreheatCompChanged(getAllFormData()));
+      if (result.preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) {
+        setValue(
+          'ddlPreheatElecHeaterInstallationId',
+          result.preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationId
+        );
+      }
+      if (result.elecHeaterVoltageInfo.divElecHeaterVoltageVisible) {
+        setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
+      }
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlCoolingCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
+      if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPumpVal(false);
+      if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidificationVal(false);
+      await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
+    },
+    [dispatch, getAllFormData, getValues, setValue]
+  );
+
+  const ckbHeatPumpChanged = useCallback(async () => {
     setCkbHeatPumpVal(!ckbHeatPumpVal);
     const data = {
       ...getAllFormData(),
       ckbHeatPumpVal: !ckbHeatPumpVal,
     };
     await dispatch(unitReducer.ckbHeatPumpChanged(data));
-  };
+  }, [ckbHeatPumpVal, dispatch, getAllFormData]);
 
-  const ckbDehumidificationChanged = async (e) => {
-    setCkbDehumidificationVal(!ckbDehumidificationVal);
-    setValue('ckbDehumidificationVal', e.target.checked);
-    await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
-  };
+  const ckbDehumidificationChanged = useCallback(
+    async (e) => {
+      setCkbDehumidificationVal(!ckbDehumidificationVal);
+      setValue('ckbDehumidificationVal', e.target.checked);
+      await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
+    },
+    [ckbDehumidificationVal, dispatch, getAllFormData, setValue]
+  );
 
-  const ddlHeatingCompChanged = async (e) => {
-    setValue('ddlHeatingCompId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlHeatingCompChanged(getAllFormData()));
-    setValue(
-      'ddlHeatingElecHeaterInstallationId',
-      result.heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible &&
-        result.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId
-    );
-  };
-
-  const ddlReheatCompChanged = async (e) => {
-    setValue('ddlReheatCompId', parseInt(e.target.value, 10));
-    await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
-  };
-
-  const ddlElecHeaterVoltageChanged = async (e) => {
-    setValue('ddlElecHeaterVoltageId', parseInt(e.target.value, 10));
-  };
-
-  const setValueWithCheck = (e, key) => {
-    if (e.target.value === '') {
-      setValue(key, '');
-    } else if (!isNaN(+e.target.value)) {
-      setValue(key, parseFloat(e.target.value, 10));
-    }
-  };
-
-  // const ckbDehumidificationInfo = async (e) => {
-  //   setCkbDehumidificationVal(e.target.checked);
-  //   await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
-  // };
-
-  const ddlHandingChanged = async (e) => {
-    setValue('ddlHandingId', parseInt(e.target.value, 10));
-    const result = await dispatch(unitReducer.ddlHandingChanged(getAllFormData()));
-    setValue('ddlSupplyAirOpeningId', parseInt(result.supplyAirOpeningInfo.ddlSupplyAirOpeningId, 10));
-    setValue('ddlSupplyAirOpeningText', result.supplyAirOpeningInfo.ddlSupplyAirOpeningText);
-    setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
-    setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
-    setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
-    setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
-    setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
-    setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
-  };
-
-  const ddlSupplyAirOpeningChanged = async (e) => {
-    setValue('ddlSupplyAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
-    const result = await dispatch(unitReducer.ddlSupplyAirOpeningChanged(getAllFormData()));
-    setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
-    setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
-    setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
-    setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
-    setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
-    setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
-  };
-
-  const ddlExhaustAirOpeningChanged = async (e) => {
-    setValue('ddlExhaustAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
-  };
-
-  const ddlOutdoorAirOpeningChanged = async (e) => {
-    setValue('ddlOutdoorAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
-  };
-
-  const ddlReturnAirOpeningChanged = async (e) => {
-    setValue('ddlReturnAirOpeningId', parseInt(e.target.value, 10));
-    setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
-  };
-
-  const isUnitTypeAHU = () => unitData.intProductTypeID === IDs.intUnitTypeAHU_ID;
-
-  const handleDrop = (acceptedFiles) => {
-    const file = acceptedFiles[0];
-
-    if (file) {
+  const ddlHeatingCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlHeatingCompId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlHeatingCompChanged(getAllFormData()));
       setValue(
-        'layoutImage',
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
+        'ddlHeatingElecHeaterInstallationId',
+        result.heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible &&
+          result.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId
       );
-    }
-  };
+    },
+    [dispatch, getAllFormData, setValue]
+  );
 
-  const isAvailable = (value) => !!value && value.length > 0;
+  const ddlReheatCompChanged = useCallback(
+    async (e) => {
+      setValue('ddlReheatCompId', parseInt(e.target.value, 10));
+      await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlElecHeaterVoltageChanged = useCallback(
+    async (e) => {
+      setValue('ddlElecHeaterVoltageId', parseInt(e.target.value, 10));
+    },
+    [setValue]
+  );
+
+  const setValueWithCheck = useCallback(
+    (e, key) => {
+      if (e.target.value === '') {
+        setValue(key, '');
+      } else if (!isNaN(+e.target.value)) {
+        setValue(key, parseFloat(e.target.value, 10));
+      }
+    },
+    [setValue]
+  );
+
+  const ddlHandingChanged = useCallback(
+    async (e) => {
+      setValue('ddlHandingId', parseInt(e.target.value, 10));
+      const result = await dispatch(unitReducer.ddlHandingChanged(getAllFormData()));
+      setValue('ddlSupplyAirOpeningId', parseInt(result.supplyAirOpeningInfo.ddlSupplyAirOpeningId, 10));
+      setValue('ddlSupplyAirOpeningText', result.supplyAirOpeningInfo.ddlSupplyAirOpeningText);
+      setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
+      setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
+      setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
+      setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
+      setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
+      setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlSupplyAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlSupplyAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
+      const result = await dispatch(unitReducer.ddlSupplyAirOpeningChanged(getAllFormData()));
+      setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
+      setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
+      setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
+      setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
+      setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
+      setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
+    },
+    [dispatch, getAllFormData, setValue]
+  );
+
+  const ddlExhaustAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlExhaustAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
+
+  const ddlOutdoorAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlOutdoorAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
+
+  const ddlReturnAirOpeningChanged = useCallback(
+    async (e) => {
+      setValue('ddlReturnAirOpeningId', parseInt(e.target.value, 10));
+      setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
+
+  const isUnitTypeAHU = useCallback(
+    () => unitData.intProductTypeID === IDs.intUnitTypeAHU_ID,
+    [unitData.intProductTypeID]
+  );
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          'layoutImage',
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        );
+      }
+    },
+    [setValue]
+  );
+
+  const isAvailable = useMemo((value) => !!value && value.length > 0, []);
 
   if (!isLoading && !locationInfo) {
     return (

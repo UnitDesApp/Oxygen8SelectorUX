@@ -151,7 +151,6 @@ export function getQuoteInfo(data) {
   return async () => {
     dispatch(QuoteSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/quote/get`, data);
-    console.log(response.data);
     if (response.data.status === "success") dispatch(QuoteSlice.actions.setQuoteInfo(response.data));
     return response.data.status;
   };
@@ -160,7 +159,6 @@ export function getQuoteInfo(data) {
 export function saveQuoteInfo(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/Quote/save`, data);
-    console.log(response.data);
     if (response.data.status === "success") dispatch(QuoteSlice.actions.updateQuoteInfo({quoteFormInfo: data, updatedInfo: response.data}));
     return response.data.status;
   }
@@ -170,7 +168,6 @@ export function saveQuoteInfo(data) {
 export function addNewMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/addMisc`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
@@ -178,7 +175,6 @@ export function addNewMisc(data) {
 export function updateMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/updateMisc`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
@@ -186,7 +182,6 @@ export function updateMisc(data) {
 export function deleteMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/deleteMisc`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
@@ -194,7 +189,6 @@ export function deleteMisc(data) {
 export function addNewNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/addNotes`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }
@@ -202,7 +196,6 @@ export function addNewNotes(data) {
 export function updateNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/updateNotes`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }
@@ -211,7 +204,6 @@ export function updateNotes(data) {
 export function deleteNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/deleteNotes`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }

@@ -1,5 +1,5 @@
+import { useCallback } from 'react';
 import * as Yup from 'yup';
-import { useSnackbar } from 'notistack';
 // form
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -17,7 +17,6 @@ import { serverUrl } from '../../config';
 // ----------------------------------------------------------------------
 
 export default function AccountChangePassword() {
-
   const ChangePassWordSchema = Yup.object().shape({
     oldPassword: Yup.string().required('Old Password is required'),
     newPassword: Yup.string().min(6, 'Password must be at least 6 characters').required('New Password is required'),
@@ -36,29 +35,31 @@ export default function AccountChangePassword() {
   });
 
   const {
-    reset,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
   } = methods;
 
-  const onSubmit = async (data) => {
-    try {
-      const response = await axios.post(`${serverUrl}/api/user/updatePassword`, {
-        userId: localStorage.getItem('userId'),
-        currentPassword: data.oldPassword,
-        updatedPassword: data.newPassword,
-      });
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        const response = await axios.post(`${serverUrl}/api/user/updatePassword`, {
+          userId: localStorage.getItem('userId'),
+          currentPassword: data.oldPassword,
+          updatedPassword: data.newPassword,
+        });
 
-      if (response.data === 'incorrect_current_password') {
-        setError('afterSubmit', { message: 'Incorrect Old Password!' });
-      } else if (response.data === 'success') {
-        setError('afterSubmitSuccess', { message: 'Updated successfully!' });
+        if (response.data === 'incorrect_current_password') {
+          setError('afterSubmit', { message: 'Incorrect Old Password!' });
+        } else if (response.data === 'success') {
+          setError('afterSubmitSuccess', { message: 'Updated successfully!' });
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    },
+    [setError]
+  );
 
   return (
     <GroupBox title="Change Password">

@@ -1,10 +1,9 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 // @mui
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import {
   Container,
   Box,
@@ -26,15 +25,11 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-// file-saver
-import { saveAs } from 'file-saver';
-// paths
-import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
 import {
@@ -45,16 +40,10 @@ import {
 } from '../../redux/slices/submittalReducer';
 // components
 import Iconify from '../../components/Iconify';
-import GroupBox from '../../components/GroupBox';
 import Scrollbar from '../../components/Scrollbar';
 import { FormProvider, RHFTextField, RHFSelect } from '../../components/hook-form';
-// utils
-import axios from '../../utils/axios';
-// config
-import { serverUrl } from '../../config';
 
 // ----------------------------------------------------------------------
-
 const PROJECT_INFO_TABLE_HEADER = [
   'QTY',
   'TAG',
@@ -93,7 +82,6 @@ export default function SubmittalInternal() {
   const dispatch = useDispatch();
   const { submittalInfo, submittalDetailInfo, notes, shippingNotes } = useSelector((state) => state.submittal);
   const isResetCalled = useRef(false);
-  const theme = useTheme();
 
   // State
   const [expanded, setExpanded] = useState({
@@ -123,7 +111,6 @@ export default function SubmittalInternal() {
     txbShippingPostalCode: Yup.string().required('Please enter a Zip'),
     ddlCountry: Yup.string().required('Please Select a Country'),
     ddlDockType: Yup.string().required('Please Select a Dock type'),
-    // ddlCoilHandling: Yup.string().required('Please Select a Coil Handling'),
     ckbBACNetPointList: Yup.boolean(),
     ckbBackdraftDamper: Yup.boolean(),
     ckbBypassDefrost: Yup.boolean(),
@@ -209,7 +196,7 @@ export default function SubmittalInternal() {
   }, []);
 
   // event handler for addding note
-  const addNoteClicked = () => {
+  const addNoteClicked = useCallback(() => {
     if (note === '') return;
     const data = {
       intUserID: localStorage.getItem('userId'),
@@ -219,10 +206,10 @@ export default function SubmittalInternal() {
     };
     dispatch(addNewNote(data));
     setNote('');
-  };
+  }, [dispatch, note, projectId]);
 
   // event handler for adding shipping note
-  const addShippingInstructionClicked = () => {
+  const addShippingInstructionClicked = useCallback(() => {
     if (shippingNote === '') return;
     const data = {
       intUserID: localStorage.getItem('userId'),
@@ -232,27 +219,30 @@ export default function SubmittalInternal() {
     };
     dispatch(addNewShippingNote(data));
     setShippingNote('');
-  };
+  }, [dispatch, projectId, shippingNote]);
 
   // submmit function
-  const onProjectInfoSubmit = async (data) => {
-    try {
-      const requestData = {
-        ...data,
-        intUserID: localStorage.getItem('userId'),
-        intUAL: localStorage.getItem('UAL'),
-        intJobID: projectId,
-      };
-      const returnValue = await dispatch(saveSubmittalInfo(requestData));
-      if (returnValue) {
-        setSuccess(true);
-      } else {
+  const onProjectInfoSubmit = useCallback(
+    async (data) => {
+      try {
+        const requestData = {
+          ...data,
+          intUserID: localStorage.getItem('userId'),
+          intUAL: localStorage.getItem('UAL'),
+          intJobID: projectId,
+        };
+        const returnValue = await dispatch(saveSubmittalInfo(requestData));
+        if (returnValue) {
+          setSuccess(true);
+        } else {
+          setFail(true);
+        }
+      } catch (error) {
         setFail(true);
       }
-    } catch (error) {
-      setFail(true);
-    }
-  };
+    },
+    [dispatch, projectId]
+  );
 
   return (
     <Box>

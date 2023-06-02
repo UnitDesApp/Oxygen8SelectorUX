@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // @mui
@@ -44,19 +44,15 @@ const Item = styled(Paper)(({ theme }) => ({
 UnitEdit.prototype = {};
 
 export default function UnitEdit() {
+  const theme = useTheme();
   const { projectId, unitId } = useParams();
   const { state } = useLocation();
-  // eslint-disable-next-line no-unused-vars
-  console.log(state, unitId);
-  const theme = useTheme();
   const [currentStep, setCurrentStep] = useState(1);
-
   const navigate = useNavigate();
-  // const isComplete = activeStep === STEPS.length;
 
-  const onClickDone = () => {
+  const onClickDone = useCallback(() => {
     navigate(PATH_PROJECT.project(projectId, 'unitlist'));
-  };
+  }, [navigate, projectId]);
 
   return (
     <Page title="Unit: Edit">

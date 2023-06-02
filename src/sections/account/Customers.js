@@ -1,19 +1,15 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
-
 // hooks
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
-
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
-import { removeCustomer } from '../../redux/slices/AccountReducer'
+import { removeCustomer } from '../../redux/slices/AccountReducer';
 // root
 import { PATH_ACCOUNT } from '../../routes/paths';
-
 // components
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 import CustomerTableToolbar from './CustomerTableToolbar';
@@ -27,8 +23,6 @@ import Scrollbar from '../../components/Scrollbar';
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
   { id: 'address', label: 'Address', align: 'left' },
-  // { id: 'access_level', label: 'Access Level', align: 'left' },
-  // { id: 'access_pricing', label: 'Access Pricing', align: 'left' },
   { id: 'created_date', label: 'Created Date', align: 'left' },
   { id: '' },
 ];
@@ -59,76 +53,95 @@ export default function Customers() {
 
   const [filterName, setFilterName] = useState('');
   const [tableData, setTableData] = useState(customerList);
-  const [filterRole, setFilterRole] = useState('All');
+  const filterRole = useState('All');
 
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
   const [deleteRowID, setDeleteRowID] = useState(-1);
 
-  const handleOneConfirmDialogOpen = (id) => {
+  const handleOneConfirmDialogOpen = useCallback((id) => {
     setDeleteRowID(id);
     setOneConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleOneConfirmDialogClose = () => {
+  const handleOneConfirmDialogClose = useCallback(() => {
     setDeleteRowID(-1);
     setOneConfirmDialogState(false);
-  };
+  }, []);
 
-  const handleDeleteRow = async () => {
+  const handleDeleteRow = useCallback(async () => {
     const data = await dispatch(removeCustomer({ action: 'DELETE_ONE', customerId: deleteRowID }));
     setTableData(data);
     setDeleteRowID(-1);
     handleOneConfirmDialogClose(false);
-  };
+  }, [deleteRowID, dispatch, handleOneConfirmDialogClose]);
 
-  const handleMultiConfirmDialogOpen = () => {
+  const handleMultiConfirmDialogOpen = useCallback(() => {
     setMultiConfirmDialogState(true);
-  };
+  }, []);
 
-  const handleMultiConfirmDialogClose = () => {
+  const handleMultiConfirmDialogClose = useCallback(() => {
     setMultiConfirmDialogState(false);
-  };
+  }, []);
 
+  // eslint-disable-next-line no-unused-vars
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
-  const handleFilterName = (filterName) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
+  const handleFilterName = useCallback(
+    (filterName) => {
+      setFilterName(filterName);
+      setPage(0);
+    },
+    [setPage]
+  );
 
-  const handleDeleteRows = async () => {
+  const handleDeleteRows = useCallback(async () => {
     if (selected.length > 0) {
       const data = await dispatch(removeCustomer({ action: 'DELETE_MULTI', customerIds: selected }));
       setTableData(data);
       setSelected([]);
-      setMultiConfirmDialogState(false);  
+      setMultiConfirmDialogState(false);
     }
-  };
+  }, [dispatch, selected, setSelected]);
 
-  const handleEditRow = (row) => {
-    navigate(PATH_ACCOUNT.editCustomer(row.id));
-  };
+  const handleEditRow = useCallback(
+    (row) => {
+      navigate(PATH_ACCOUNT.editCustomer(row.id));
+    },
+    [navigate]
+  );
 
-  const filteredData = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterRole,
-    filterStatus,
-  });
+  const filteredData = useMemo(
+    () =>
+      applySortFilter({
+        tableData,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterRole,
+        filterStatus,
+      }),
+    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+  );
 
-  const denseHeight = dense ? 52 : 72;
+  const denseHeight = useMemo(() => (dense ? 52 : 72), [dense]);
 
-  const isNotFound =
-    (!filteredData.length && !!filterName) ||
-    (!filteredData.length && !!filterRole) ||
-    (!filteredData.length && !!filterStatus);
+  const isNotFound = useMemo(
+    () =>
+      (!filteredData.length && !!filterName) ||
+      (!filteredData.length && !!filterRole) ||
+      (!filteredData.length && !!filterStatus),
+    [filterName, filterRole, filterStatus, filteredData.length]
+  );
 
   return (
     <Box>
-      <CustomerTableToolbar filterName={filterName} onFilterName={handleFilterName} userNum={filteredData.length} onDeleteSelectedData={handleMultiConfirmDialogOpen}/>
+      <CustomerTableToolbar
+        filterName={filterName}
+        onFilterName={handleFilterName}
+        userNum={filteredData.length}
+        onDeleteSelectedData={handleMultiConfirmDialogOpen}
+      />
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
           {selected.length > 0 && (
@@ -223,9 +236,11 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => Object.values(item).filter(
-        (value) => value.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-      ).length > 0);
+    tableData = tableData.filter(
+      (item) =>
+        Object.values(item).filter((value) => value.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+          .length > 0
+    );
   }
 
   if (filterStatus !== 'All') {

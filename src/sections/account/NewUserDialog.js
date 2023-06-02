@@ -1,5 +1,5 @@
+import { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-// import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Box, Stack, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -38,20 +38,23 @@ export default function NewUserDialog({ open, onClose, onSuccess, onFail }) {
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
   });
 
-  const defaultValues = {
-    firstname: '',
-    lastname: '',
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    customerType: '',
-    customerId: '',
-    access: '',
-    accessLevel: '',
-    accessPricing: '',
-    fobPoint: 0,
-  };
+  const defaultValues = useMemo(
+    () => ({
+      firstname: '',
+      lastname: '',
+      email: '',
+      username: '',
+      password: '',
+      confirmPassword: '',
+      customerType: '',
+      customerId: '',
+      access: '',
+      accessLevel: '',
+      accessPricing: '',
+      fobPoint: 0,
+    }),
+    []
+  );
 
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
@@ -65,17 +68,20 @@ export default function NewUserDialog({ open, onClose, onSuccess, onFail }) {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (data) => {
-    try {
-      await dispatch(addNewUser({ ...data, createdDate: '' }));
-      onSuccess();
-      reset(defaultValues);
-      onClose();
-    } catch (error) {
-      console.error(error);
-      onFail();
-    }
-  };
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await dispatch(addNewUser({ ...data, createdDate: '' }));
+        onSuccess();
+        reset(defaultValues);
+        onClose();
+      } catch (error) {
+        console.error(error);
+        onFail();
+      }
+    },
+    [defaultValues, dispatch, onClose, onFail, onSuccess, reset]
+  );
 
   return (
     <Dialog open={open} onClose={onClose} sx={{ mt: 10 }}>

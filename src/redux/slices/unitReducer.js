@@ -531,7 +531,6 @@ export function getInitUnitinfo(data) {
   return async () => {
     dispatch(UnitSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/units/GetUnitInfo`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.setInitInfo(response.data));
     return response.data;
   };
@@ -555,7 +554,6 @@ export function saveLayout(data) {
 export function ddlLocationChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/LocationChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlLocationChanged(response.data));
     return response.data;
   };
@@ -564,7 +562,6 @@ export function ddlLocationChanged(data) {
 export function ddlOrientationChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/OrientationChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlOrientationChanged(response.data));
     return response.data;
   };
@@ -573,7 +570,6 @@ export function ddlOrientationChanged(data) {
 export function txbSummerSupplyAirCFMChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/SummerSupplyAirCFMChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerSupplyAirCFMChanged(response.data));
     return response.data;
   };
@@ -582,7 +578,6 @@ export function txbSummerSupplyAirCFMChanged(data) {
 export function txbSummerReturnAirCFMChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirCFMChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerReturnAirCFMChanged(response.data));
     return response.data;
   };
@@ -591,7 +586,6 @@ export function txbSummerReturnAirCFMChanged(data) {
 export function txbSupplyAirESPChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/SupplyAirESPChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbSupplyAirESPChanged(response.data));
     return response.data;
   };
@@ -600,7 +594,6 @@ export function txbSupplyAirESPChanged(data) {
 export function txbExhaustAirESPChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ExhaustAirESPChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbExhaustAirESPChanged(response.data));
     return response.data;
   };
@@ -609,7 +602,6 @@ export function txbExhaustAirESPChanged(data) {
 export function ddlUnitModelChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/UnitModelChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlUnitModelChanged(response.data));
     return response.data;
   };
@@ -618,7 +610,6 @@ export function ddlUnitModelChanged(data) {
 export function ddlUnitVoltageChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/UnitVoltageChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlUnitVoltageChanged(response.data));
     return response.data;
   };
@@ -627,7 +618,6 @@ export function ddlUnitVoltageChanged(data) {
 export function txbSummerOutdoorAirWBChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/SummerOutdoorAirWBChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerOutdoorAirWBChanged(response.data));
     return response.data;
   };
@@ -636,7 +626,6 @@ export function txbSummerOutdoorAirWBChanged(data) {
 export function txbSummerOutdoorAirRHChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api//units/SummerOutdoorAirRHChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerOutdoorAirRHChanged(response.data));
     return response.data;
   };
@@ -645,7 +634,6 @@ export function txbSummerOutdoorAirRHChanged(data) {
 export function txbWinterOutdoorAirWBChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api//units/WinterOutdoorAirWBChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterOutdoorAirWBChanged(response.data));
     return response.data;
   };
@@ -654,7 +642,6 @@ export function txbWinterOutdoorAirWBChanged(data) {
 export function txbWinterOutdoorAirRHChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/WinterOutdoorAirRHChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterOutdoorAirRHChanged(response.data));
     return response.data;
   };
@@ -663,7 +650,6 @@ export function txbWinterOutdoorAirRHChanged(data) {
 export function txbSummerReturnAirWBChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirWBChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbSummerReturnAirWBChanged(response.data));
     return response.data;
   };
@@ -672,8 +658,6 @@ export function txbSummerReturnAirWBChanged(data) {
 export function txbSummerReturnAirRHChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirRHChanged`, data);
-    console.log(response.data);
-    console.log(UnitSlice.actions);
     dispatch(UnitSlice.actions.txbSummerReturnAirRHChanged(response.data));
     return response.data;
   };
@@ -682,7 +666,6 @@ export function txbSummerReturnAirRHChanged(data) {
 export function txbWinterReturnAirWBChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirWBChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterReturnAirWBChanged(response.data));
     return response.data;
   };
@@ -691,7 +674,6 @@ export function txbWinterReturnAirWBChanged(data) {
 export function txbWinterReturnAirRHChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirRHChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.txbWinterReturnAirRHChanged(response.data));
     return response.data;
   };
@@ -700,7 +682,6 @@ export function txbWinterReturnAirRHChanged(data) {
 export function ddlPreheatCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlPreheatCompChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, unitInfo: data }));
     return response.data;
   };
@@ -709,7 +690,6 @@ export function ddlPreheatCompChanged(data) {
 export function ddlCoolingCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlCoolingCompChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlCoolingCompChanged(response.data));
     return response.data;
   };
@@ -718,7 +698,6 @@ export function ddlCoolingCompChanged(data) {
 export function ckbHeatPumpChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ckbHeatPumpChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ckbHeatPumpChanged(response.data));
     return response.data;
   };
@@ -727,7 +706,6 @@ export function ckbHeatPumpChanged(data) {
 export function ckbDehumidificationChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ckbDehumidificationChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ckbDehumidificationChanged(response.data));
     return response.data;
   };
@@ -736,7 +714,6 @@ export function ckbDehumidificationChanged(data) {
 export function ddlHeatingCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
     return response.data;
   };
@@ -745,7 +722,6 @@ export function ddlHeatingCompChanged(data) {
 export function ddlReheatCompChanged(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
     return response.data;
   };
@@ -755,7 +731,6 @@ export function getViewSelectionInfo(data) {
   return async () => {
     dispatch(UnitSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/units/ViewSelection`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
     return response.data;
   };
@@ -763,18 +738,13 @@ export function getViewSelectionInfo(data) {
 
 export function updateLayoutValues(data) {
   return async () => {
-    console.log('-------------Updated Layout Values--------------');
-    console.log(data);
     dispatch(UnitSlice.actions.updateLayoutValues(data));
   };
 }
 
 export function ddlHandingChanged(data) {
   return async () => {
-    console.log('---------------Handing Changed-----------------');
-    // console.log(data);
     const response = await axios.post(`${serverUrl}/api/units/ddlHandingChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlHandingChanged(response.data));
     return response.data;
   };
@@ -782,10 +752,7 @@ export function ddlHandingChanged(data) {
 
 export function ddlSupplyAirOpeningChanged(data) {
   return async () => {
-    console.log('-----------SupplyAirOpendingChanged------------');
-    // console.log(data);
     const response = await axios.post(`${serverUrl}/api/units/ddlSupplyAirOpeningChanged`, data);
-    console.log(response.data);
     dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged(response.data));
     return response.data;
   };

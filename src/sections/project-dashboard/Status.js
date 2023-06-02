@@ -38,7 +38,6 @@ export default function Status() {
         intJobID: projectId,
       });
 
-      console.log(data);
       setSubmitDrawing(data.ckbBACNetPointList !== undefined);
       if (data?.gvNotes?.gvNotesDataSource?.length > 0) setIsNoteAdded(true);
       if (data?.gvShippingNotes?.gvShippingNotesDataSource?.length > 0) setIsShippingNoteAdded(true);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { capitalCase } from 'change-case';
 import { useParams, useNavigate } from 'react-router';
 
@@ -57,67 +57,71 @@ export default function Account() {
       setIsloading(false);
     };
     get();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+
+  const onCloseUserDlg = useCallback(() => {
+    setAddUserDlgOpen(false);
   }, []);
 
-  if (isLoading) return <Loading />;
-
-  const onCloseUserDlg = () => {
-    setAddUserDlgOpen(false);
-  };
-
-  const onCloseCustomerDlg = () => {
+  const onCloseCustomerDlg = useCallback(() => {
     setAddCustomerDlgOpen(false);
-  };
+  }, []);
 
-  const onCloseSuccessDlgOpen = () => {
+  const onCloseSuccessDlgOpen = useCallback(() => {
     setSuccessDlgOpen(false);
-  };
+  }, []);
 
-  const onCloseFailDlgOpen = () => {
+  const onCloseFailDlgOpen = useCallback(() => {
     setFailDlgOpen(false);
-  };
+  }, []);
 
-  const onSuccessAddUser = () => {
+  const onSuccessAddUser = useCallback(() => {
     setSuccessText('New user has been added');
     setSuccessDlgOpen(true);
-  };
+  }, []);
 
-  const onSuccessAddCustomer = () => {
+  const onSuccessAddCustomer = useCallback(() => {
     setSuccessText('New customer has been added');
     setSuccessDlgOpen(true);
-  };
+  }, []);
 
-  let ACCOUNT_TABS = [
-    {
-      value: 'general',
-      icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <AccountGeneral />,
-    },
-  ];
-
-  const intUAL = parseInt(user?.UAL, 10);
-
-  if (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 || intUAL === intUAL_IntAdmin) {
-    ACCOUNT_TABS = [
-      ...ACCOUNT_TABS,
+  const ACCOUNT_TABS = useMemo(() => {
+    let tab = [
       {
-        value: 'users',
-        icon: <Iconify icon={'ph:users-three'} width={20} height={20} />,
-        component: <Users />,
-      },
-      {
-        value: 'customers',
-        icon: <Iconify icon={'raphael:users'} width={20} height={20} />,
-        component: <Customers />,
+        value: 'general',
+        icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
+        component: <AccountGeneral />,
       },
     ];
-  }
+  
+    const intUAL = parseInt(user?.UAL, 10);
+  
+    if (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 || intUAL === intUAL_IntAdmin) {
+      tab = [
+        ...tab,
+        {
+          value: 'users',
+          icon: <Iconify icon={'ph:users-three'} width={20} height={20} />,
+          component: <Users />,
+        },
+        {
+          value: 'customers',
+          icon: <Iconify icon={'raphael:users'} width={20} height={20} />,
+          component: <Customers />,
+        },
+      ];
+    }
 
-  const handleChangeTab = (event, newValue) => {
+    return tab;
+  }, [user?.UAL])
+
+  const handleChangeTab = useCallback((event, newValue) => {
     navigate(`/account/${newValue}`);
     onChangeTab(event, newValue);
-  };
+  }, [navigate, onChangeTab]);
+
+  if (isLoading) return <Loading />;
 
   return (
     <Page title="User: Account Settings">

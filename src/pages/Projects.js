@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -68,8 +68,6 @@ export default function MyProjects() {
     onChangeRowsPerPage,
   } = useTable();
 
-  const dense = true;
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,122 +75,129 @@ export default function MyProjects() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { projectList, isLoading, projectInitInfo } = useSelector((state) => state.projects);
-  const tableData = projectList;
+  const { projectList: tableData, isLoading, projectInitInfo } = useSelector((state) => state.projects);
 
   const [openDuplicateSuccess, setOpenDuplicateSuccess] = useState(false);
 
-  const handleDuplicateCloseSuccess = () => {
+  const handleDuplicateCloseSuccess = useCallback(() => {
     setOpenDuplicateSuccess(false);
-  };
-
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const handleCloseSuccess = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSuccess(false);
-  };
-
-  const [openFail, setOpenFail] = useState(false);
-  const handleCloseFail = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFail(false);
-  };
-
-  // console.log(projectInitInfo);
-
-  const [filterName, setFilterName] = useState('');
-
-  const [filterRole, setFilterRole] = useState('All');
-
-  const [newProjectDialogOpen, setNewProjectDialog] = useState(false);
-
-  const handleClickNewProjectDialogOpen = () => {
-    setNewProjectDialog(true);
-  };
-
-  const handleNewProjectDialogClose = () => {
-    setNewProjectDialog(false);
-  };
-
-  // Delete one row
-  const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
-  const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
-  const [deleteRowID, setDeleteRowID] = useState(-1);
-
-  const handleOneConfirmDialogOpen = (id) => {
-    setDeleteRowID(id);
-    setOneConfirmDialogState(true);
-  };
-
-  const handleOneConfirmDialogClose = () => {
-    setDeleteRowID(-1);
-    setOneConfirmDialogState(false);
-  };
-
-  const handleDeleteRow = () => {
-    dispatch(deleteProject({ action: 'DELETE_ONE', projectId: deleteRowID }));
-    setSelected([]);
-    setDeleteRowID(-1);
-    handleOneConfirmDialogClose(false);
-  };
-
-  const handleMultiConfirmDialogOpen = () => {
-    setMultiConfirmDialogState(true);
-  };
-
-  const handleMultiConfirmDialogClose = () => {
-    setMultiConfirmDialogState(false);
-  };
+  }, []);
 
   // eslint-disable-next-line no-unused-vars
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
-  const handleFilterName = (filterName) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openFail, setOpenFail] = useState(false);
+  const [filterName, setFilterName] = useState('');
+  const [filterRole, setFilterRole] = useState('All');
+  const [newProjectDialogOpen, setNewProjectDialog] = useState(false);
+  const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
+  const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
+  const [deleteRowID, setDeleteRowID] = useState(-1);
 
-  const handleFilterRole = (value) => {
+  const handleCloseSuccess = useCallback((event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSuccess(false);
+  }, []);
+
+  const handleCloseFail = useCallback((event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFail(false);
+  }, []);
+
+  const handleClickNewProjectDialogOpen = useCallback(() => {
+    setNewProjectDialog(true);
+  }, []);
+
+  const handleNewProjectDialogClose = useCallback(() => {
+    setNewProjectDialog(false);
+  }, []);
+
+  const handleOneConfirmDialogOpen = useCallback((id) => {
+    setDeleteRowID(id);
+    setOneConfirmDialogState(true);
+  }, []);
+
+  const handleOneConfirmDialogClose = useCallback(() => {
+    setDeleteRowID(-1);
+    setOneConfirmDialogState(false);
+  }, []);
+
+  const handleDeleteRow = useCallback(() => {
+    dispatch(deleteProject({ action: 'DELETE_ONE', projectId: deleteRowID }));
+    setSelected([]);
+    setDeleteRowID(-1);
+    handleOneConfirmDialogClose(false);
+  }, [deleteRowID, dispatch, handleOneConfirmDialogClose, setSelected]);
+
+  const handleMultiConfirmDialogOpen = useCallback(() => {
+    setMultiConfirmDialogState(true);
+  }, []);
+
+  const handleMultiConfirmDialogClose = useCallback(() => {
+    setMultiConfirmDialogState(false);
+  }, []);
+
+  const handleFilterName = useCallback(
+    (filterName) => {
+      setFilterName(filterName);
+      setPage(0);
+    },
+    [setPage]
+  );
+
+  const handleFilterRole = useCallback((value) => {
     setFilterRole(value);
-  };
+  }, []);
 
-  const handleDeleteRows = () => {
+  const handleDeleteRows = useCallback(() => {
     dispatch(deleteProject({ action: 'DELETE_MULTIPUL', projectIdData: selected }));
     setSelected([]);
     setMultiConfirmDialogState(false);
-  };
+  }, [dispatch, selected, setSelected]);
 
-  const handleDuplicate = (row) => {
-    dispatch(duplicateProject(row));
-    setOpenDuplicateSuccess(true);
-  };
+  const handleDuplicate = useCallback(
+    (row) => {
+      dispatch(duplicateProject(row));
+      setOpenDuplicateSuccess(true);
+    },
+    [dispatch]
+  );
 
-  const handleEditRow = (projectid) => {
-    navigate(PATH_PROJECT.project(projectid, 'unitlist'));
-  };
+  const handleEditRow = useCallback(
+    (projectid) => {
+      navigate(PATH_PROJECT.project(projectid, 'unitlist'));
+    },
+    [navigate]
+  );
 
-  const dataFiltered = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterRole,
-    filterStatus,
-  });
+  const dataFiltered = useMemo(
+    () =>
+      applySortFilter({
+        tableData,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterRole,
+        filterStatus,
+      }),
+    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+  );
 
-  const denseHeight = dense ? 52 : 72;
+  const isNotFound = useMemo(
+    () =>
+      (!dataFiltered.length && !!filterName) ||
+      (!dataFiltered.length && !!filterRole) ||
+      (!dataFiltered.length && !!filterStatus),
+    [dataFiltered.length, filterName, filterRole, filterStatus]
+  );
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
+  if (isLoading) return <Loading />;
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  return (
     <Page title="Projects">
       <RootStyle>
         <Container>
@@ -220,7 +225,7 @@ export default function MyProjects() {
               <TableContainer sx={{ minWidth: 800, position: 'relative', overflowX: 'initial!important' }}>
                 {selected.length > 0 && (
                   <TableSelectedActions
-                    dense={dense}
+                    dense
                     numSelected={selected.length}
                     rowCount={tableData.length}
                     onSelectAllRows={(checked) =>
@@ -239,7 +244,7 @@ export default function MyProjects() {
                   />
                 )}
 
-                <Table size={dense ? 'small' : 'medium'}>
+                <Table size={'small'}>
                   <TableHeadCustom
                     order={order}
                     orderBy={orderBy}
@@ -266,7 +271,7 @@ export default function MyProjects() {
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={52} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
                     <TableLoadingData isLoading={isLoading} />
                     <TableNoData isNotFound={isNotFound} isLoading={isLoading} />
                   </TableBody>

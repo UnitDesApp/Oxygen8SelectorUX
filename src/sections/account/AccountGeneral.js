@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-// import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -37,7 +37,7 @@ export default function AccountGeneral() {
     createdDate: Yup.string().required('This field is required!'),
   });
 
-  const defaultValues = {
+  const defaultValues = useMemo(() => ({
     username: user?.username,
     firstname: user?.firstname,
     lastname: user?.lastname,
@@ -49,7 +49,7 @@ export default function AccountGeneral() {
     accessPricing: user?.accessPricing,
     fobPoint: fobPoint[0]?.id,
     createdDate: user?.createdDate,
-  };
+  }), [customerList, customerType, fobPoint, user?.access, user?.accessPricing, user?.createdDate, user?.email, user?.firstname, user?.lastname, user?.username]);
 
   const methods = useForm({
     resolver: yupResolver(UpdateUserSchema),
@@ -61,14 +61,14 @@ export default function AccountGeneral() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (data) => {
+  const onSubmit = useCallback(async (data) => {
     try {
       await dispatch(updateMyProfile({ ...data, userId: user?.userId }));
       updateUser(data);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [dispatch, updateUser, user?.userId]);
 
   return (
     <Grid container spacing={3} sx={{ mb: 3 }}>
