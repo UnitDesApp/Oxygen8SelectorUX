@@ -51,6 +51,8 @@ const Item = styled(Paper)(({ theme }) => ({
 const DEFAULT_UNIT_DATA = {
   intProductTypeID: -1,
   txbProductType: '',
+  intUnitTypeID: -1,
+  txbUnitType: '',
   intApplicationTypeID: -1,
   txbApplicationType: '',
 };
@@ -87,11 +89,16 @@ export default function AddNewUnit() {
     else if (currentStep === 2) navigate(PATH_PROJECT.project(projectId, 'unitlist'));
   };
 
+  console.log(unitTypeData);
   const validateContinue = () => {
     if (currentStep === 0) {
-      console.log(unitTypeData);
-      if (unitTypeData.intProductTypeID !== -1 && unitTypeData.intUnitTypeID !== -1) return false;
-      return true;
+      if (
+        unitTypeData.intProductTypeID === -1 ||
+        unitTypeData.intUnitTypeID === -1 ||
+        unitTypeData.intApplicationTypeID === ""
+      )
+        return true;
+      return false;
     }
 
     if (currentStep === 1 && isAddedNewUnit) return false;
