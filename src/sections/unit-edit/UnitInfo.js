@@ -238,7 +238,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
       txbRefrigCondensingTemp: unitInfo.txbRefrigCondensingTempText,
       txbRefrigVaporTemp: unitInfo.txbRefrigVaporTempText,
       txbRefrigSubcoolingTemp: unitInfo.txbRefrigSubcoolingTempText,
-      txbPercentCondensingLoad: 0,
+      txbPercentCondensingLoad: 100,
       txbUnitHeightText: unitInfo.txbUnitHeightText,
       txbUnitLengthText: unitInfo.txbUnitLengthText,
       txbUnitWeightText: unitInfo.txbUnitWeightText,
@@ -547,7 +547,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     [setValue]
   );
 
-  const isAvailable = useMemo((value) => !!value && value.length > 0, []);
+  const isAvailable = useCallback((value) => !!value && value.length > 0, []);
 
   if (!isLoading && !locationInfo) {
     return (
@@ -1415,14 +1415,6 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
                           onChange={(e) => {
                             setValueWithCheck(e, 'txbSummerReheatSetpointDB');
                           }}
-                        />
-                        <RHFControlCheckbox
-                          size="small"
-                          name="ckbDehumidificationVal"
-                          label="Dehumidification"
-                          sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
-                          checked={!!ckbDehumidificationVal}
-                          onChange={ckbDehumidificationChanged}
                         />
                       </Stack>
                       <Stack
