@@ -3,10 +3,10 @@ import axios from '../utils/axios';
 import { serverUrl } from '../config';
 
 export const useExport = () => {
-  const ExportSelection = async (projectInfo) => {
+  const ExportSelectionPDF = async (projectId, unitInfo) => {
     const data = {
-      intProjectID: projectInfo.projectId,
-      intUnitNo: projectInfo.unitNo,
+      intProjectID: projectId,
+      intUnitNo: unitInfo,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
     };
@@ -119,7 +119,7 @@ export const useExport = () => {
   };
 
   return {
-    ExportSelection,
+    ExportSelectionPDF,
     ExportSubmittal,
     ExportSubmittalEpicor,
     ExportSchedule,

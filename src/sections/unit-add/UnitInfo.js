@@ -332,8 +332,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
 
   const getDisplay = useCallback((key) => ({ display: key ? 'block' : 'none' }), []);
 
-  const getAllFormData =
-    (() => ({
+  const getAllFormData = useCallback(
+    () => ({
       ...getValues(),
       intProjectID: projectId,
       intUnitNo: 0,
@@ -351,7 +351,21 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       ckbDownshotVal,
       ...ckbFlowRateAndCap,
     }),
-    []);
+    [
+      ckbBypassVal,
+      ckbDehumidificationVal,
+      ckbDownshotVal,
+      ckbDrainPanVal,
+      ckbFlowRateAndCap,
+      ckbHeatPumpVal,
+      ckbValveAndActuatorVal,
+      ckbVoltageSPPVal,
+      getValues,
+      projectId,
+      unitTypeData.intProductTypeID,
+      unitTypeData.intUnitTypeID,
+    ]
+  );
 
   // handle submit
   const onSubmit = useCallback(async () => {

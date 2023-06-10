@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // file-saver
@@ -15,6 +15,7 @@ import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
 import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
+import { ExportSelectionDialog } from '../sections/dialog';
 // utils
 import axios from '../utils/axios';
 // config
@@ -70,6 +71,15 @@ export default function AddNewUnit() {
   const [unitTypeData, setUnitTypeData] = useState(DEFAULT_UNIT_DATA);
   const [intUnitNo, setIntUnitNo] = useState(0);
   const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
+  const [openRPDialog, setOpenRPDialog] = useState(false);
+
+  const openDialog = useCallback(() => {
+    setOpenRPDialog(true);
+  }, []);
+
+  const closeDialog = useCallback(() => {
+    setOpenRPDialog(false);
+  }, []);
 
   const navigate = useNavigate();
   const onSelectAppliaionItem = (value, txb) => {
@@ -149,9 +159,9 @@ export default function AddNewUnit() {
             action={
               <>
                 {currentStep === 1 && (
-                  <Button variant="text" startIcon={<Iconify icon="ic:outline-edit" />}>
-                    Edit project details
-                  </Button>
+                  <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
+                    Export report
+                  </Button>                
                 )}
                 {currentStep === 2 && (
                   <Stack direction="row" spacing={5}>
@@ -230,6 +240,7 @@ export default function AddNewUnit() {
             </Grid>
           </Grid>
         </FooterStepStyle>
+        <ExportSelectionDialog isOpen={openRPDialog} onClose={closeDialog} intProjectID={projectId} intUnitNo={intUnitNo} />
       </RootStyle>
     </Page>
   );
