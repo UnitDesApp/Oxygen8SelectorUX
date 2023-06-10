@@ -137,15 +137,13 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     remainingOpeningsInfo,
   } = controlInfo;
 
-  const [ckbBypassVal, setCkbBypassVal] = useState(!!bypassInfo?.ckbBypassVal);
-  const [ckbDrainPanVal, setCkbDrainPanVal] = useState(!!drainPanInfo?.ckbDrainPanVal);
-  const [ckbVoltageSPPVal, setCkbVoltageSPPVal] = useState(!!unitVoltageSPPInfo?.ckbVoltageSPPVal);
-  const [ckbDehumidificationVal, setCkbDehumidificationVal] = useState(
-    !!dehumidificationInfo?.ckbDehumidificationChecked
-  );
-  const [ckbValveAndActuatorVal, setCkbValveAndActuatorVal] = useState(!!valveAndActuatorInfo?.ckbValveAndActuatorVal);
-  const [ckbHeatPumpVal, setCkbHeatPumpVal] = useState(!!heatPumpInfo?.ckbHeatPumpVal);
-  const [ckbDownshotVal, setCkbDownshotVal] = useState(!!downshotInfo?.isDownshotVal);
+  const [ckbBypassVal, setCkbBypassVal] = useState(!!unitInfo?.ckbBypassVal);
+  const [ckbDrainPanVal, setCkbDrainPanVal] = useState(!!unitInfo?.ckbDrainPanVal);
+  const [ckbVoltageSPPVal, setCkbVoltageSPPVal] = useState(!!unitInfo?.ckbVoltageSPPVal);
+  const [ckbDehumidificationVal, setCkbDehumidificationVal] = useState(!!unitInfo?.ckbDehumidificationVal);
+  const [ckbValveAndActuatorVal, setCkbValveAndActuatorVal] = useState(!!unitInfo?.ckbValveAndActuatorVal);
+  const [ckbHeatPumpVal, setCkbHeatPumpVal] = useState(!!unitInfo?.ckbHeatPumpVal);
+  const [ckbDownshotVal, setCkbDownshotVal] = useState(!!unitInfo?.isDownshotVal);
   const [ckbFlowRateAndCap, setCkbFlowRateAndCap] = useState({
     ckbPreheatHWC_UseCap: false,
     ckbPreheatHWC_UseFlowRate: false,
@@ -156,6 +154,35 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     ckbReheatHWC_UseCap: false,
     ckbReheatHWC_UseFlowRate: false,
   });
+
+  useEffect(() => {
+    setCkbBypassVal(!!unitInfo?.ckbBypassVal);
+    setCkbDrainPanVal(!!unitInfo?.ckbDrainPanVal);
+    setCkbVoltageSPPVal(!!unitInfo?.ckbVoltageSPPVal);
+    setCkbDehumidificationVal(!!unitInfo?.ckbDehumidificationVal);
+    setCkbValveAndActuatorVal(!!unitInfo?.ckbValveAndActuatorVal);
+    setCkbHeatPumpVal(!!unitInfo?.ckbHeatPumpVal);
+    setCkbDownshotVal(!!unitInfo?.ckbDownshot?.isDownshot);
+    setCkbFlowRateAndCap({
+      ckbPreheatHWC_UseCap: false,
+      ckbPreheatHWC_UseFlowRate: false,
+      ckbCoolingCWC_UseCap: false,
+      ckbCoolingCWC_UseFlowRate: false,
+      ckbHeatingHWC_UseCap: false,
+      ckbHeatingHWC_UseFlowRate: false,
+      ckbReheatHWC_UseCap: false,
+      ckbReheatHWC_UseFlowRate: false,
+    });
+  }, [
+    unitInfo?.ckbBypassVal,
+    unitInfo.ckbDehumidificationChecked,
+    unitInfo?.ckbDehumidificationVal,
+    unitInfo?.ckbDownshot?.isDownshot,
+    unitInfo?.ckbDrainPanVal,
+    unitInfo?.ckbHeatPumpVal,
+    unitInfo?.ckbValveAndActuatorVal,
+    unitInfo?.ckbVoltageSPPVal,
+  ]);
 
   const [expanded, setExpanded] = useState({
     panel1: true,
@@ -1046,6 +1073,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
                           label="Dehumidification"
                           sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
                           checked={ckbDehumidificationVal}
+                          defaultChecked={ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
                         {isAvailable(coolingCoilHandingInfo.ddlCoolingCoilHandingDataTbl) && (
@@ -1571,6 +1599,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
                           label="Include Valves & Actuator"
                           sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible)}
                           checked={ckbValveAndActuatorVal}
+                          defaultChecked={ckbValveAndActuatorVal}
                           onChange={() => setCkbValveAndActuatorVal(!ckbValveAndActuatorVal)}
                         />
                         <RHFControlCheckbox

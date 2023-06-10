@@ -227,7 +227,7 @@ export default function MyProjects() {
                   <TableSelectedActions
                     dense
                     numSelected={selected.length}
-                    rowCount={tableData.length}
+                    rowCount={tableData?.length || 0}
                     onSelectAllRows={(checked) =>
                       onSelectAllRows(
                         checked,
@@ -249,8 +249,8 @@ export default function MyProjects() {
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={tableData.length}
-                    numSelected={selected.length}
+                    rowCount={tableData?.length || 0}
+                    numSelected={selected?.length || 0}
                     onSort={onSort}
                     onSelectAllRows={(checked) =>
                       onSelectAllRows(
@@ -271,7 +271,7 @@ export default function MyProjects() {
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
-                    <TableEmptyRows height={52} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={52} emptyRows={emptyRows(page, rowsPerPage, tableData?.length || 0)} />
                     <TableLoadingData isLoading={isLoading} />
                     <TableNoData isNotFound={isNotFound} isLoading={isLoading} />
                   </TableBody>
@@ -334,6 +334,7 @@ export default function MyProjects() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+  if (!tableData || tableData.length === 0) return [];
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
