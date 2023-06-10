@@ -48,7 +48,7 @@ export default function ExportSelectionDialog({ isOpen, onClose, intProjectID, i
   const [successNotifyText, setSuccessNotifyText] = useState(false);
   const [openFailNotify, setOpenFailNotify] = useState(false);
   const [failNotifyText, setFailNotifyText] = useState(false);
-  const { ExportSelectionPDF, ExportRevit } = useExport();
+  const { ExportSelectionPDF, ExportSelectionExcel, ExportRevit } = useExport();
 
   const onChangeMethods = useCallback(
     (label, value) => {
@@ -64,7 +64,7 @@ export default function ExportSelectionDialog({ isOpen, onClose, intProjectID, i
     }
 
     if (methods.excelSelection) {
-      // const isSubmittalSuccess = await ExportSelection(intProjectID);
+      const isSubmittalSuccess = await ExportSelectionExcel(intProjectID, intUnitNo);
     }
 
     if (methods.revit_files) {
@@ -74,8 +74,10 @@ export default function ExportSelectionDialog({ isOpen, onClose, intProjectID, i
     setIsLoading(false);
   }, [
     ExportRevit,
+    ExportSelectionExcel,
     ExportSelectionPDF,
     intProjectID,
+    intUnitNo,
     methods.excelSelection,
     methods.pdfSelection,
     methods.revit_files,

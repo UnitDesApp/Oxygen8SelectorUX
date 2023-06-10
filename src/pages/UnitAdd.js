@@ -158,11 +158,11 @@ export default function AddNewUnit() {
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
             action={
               <>
-                {currentStep === 1 && (
+                {/* {currentStep === 1 && (
                   <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
                     Export report
-                  </Button>                
-                )}
+                  </Button>
+                )} */}
                 {currentStep === 2 && (
                   <Stack direction="row" spacing={5}>
                     <LoadingButton

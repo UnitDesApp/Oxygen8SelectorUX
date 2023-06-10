@@ -29,6 +29,38 @@ export const useExport = () => {
     });
   };
 
+  const ExportSelectionExcel = async (projectId, unitInfo) => {
+    const data = {
+      intProjectID: projectId,
+      intUnitNo: unitInfo,
+      intUAL: localStorage.getItem('UAL'),
+      intUserID: localStorage.getItem('userId'),
+    };
+
+    await axios
+      .post(`${serverUrl}/api/units/downloadselectionwithexcel`, data, { responseType: 'blob' })
+      .then((response) => {
+        // Extract the filename from the response headers
+        const disposition = response.headers['content-disposition'];
+        const regex = /filename="(.+)"/;
+        const matches = regex.exec(disposition);
+        const fileName = matches && matches[1] ? matches[1] : 'selection.xlsx';
+
+        // Create a temporary URL for the downloaded file
+        const url = URL.createObjectURL(new Blob([response.data]));
+        // Create a link element and simulate a click to trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup: remove the temporary URL and link element
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      });
+  };
+
   const ExportSubmittal = async (intProjectID) => {
     const data = {
       intJobID: intProjectID,
@@ -120,6 +152,7 @@ export const useExport = () => {
 
   return {
     ExportSelectionPDF,
+    ExportSelectionExcel,
     ExportSubmittal,
     ExportSubmittalEpicor,
     ExportSchedule,

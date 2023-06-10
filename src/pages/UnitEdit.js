@@ -12,6 +12,7 @@ import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
 import { UnitInfo, Selection } from '../sections/unit-edit';
+import { ExportSelectionDialog } from '../sections/dialog';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,16 @@ export default function UnitEdit() {
   const { projectId, unitId } = useParams();
   const { state } = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
+  const [openRPDialog, setOpenRPDialog] = useState(false);
+
+  const openDialog = useCallback(() => {
+    setOpenRPDialog(true);
+  }, []);
+
+  const closeDialog = useCallback(() => {
+    setOpenRPDialog(false);
+  }, []);
+
   const navigate = useNavigate();
 
   const onClickDone = useCallback(() => {
@@ -66,6 +77,13 @@ export default function UnitEdit() {
               { name: 'Edit Unit' },
             ]}
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
+            action={
+              currentStep === 1 && (
+                <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
+                  Export report
+                </Button>
+              )
+            }
           />
           {currentStep === 1 && <UnitInfo projectId={projectId} unitId={unitId} unitData={state} />}
           {currentStep === 2 && <Selection unitTypeData={state} intUnitNo={unitId} />}
@@ -108,6 +126,7 @@ export default function UnitEdit() {
             </Grid>
           </Grid>
         </FooterStepStyle>
+        <ExportSelectionDialog isOpen={openRPDialog} onClose={closeDialog} intProjectID={projectId} intUnitNo={unitId} />
       </RootStyle>
     </Page>
   );
