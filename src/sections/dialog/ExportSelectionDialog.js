@@ -32,7 +32,7 @@ ExportSelectionDialog.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   intProjectID: PropTypes.string,
-  intUnitNo: PropTypes.number,
+  intUnitNo: PropTypes.string,
   QuoteTitle: PropTypes.string,
 };
 
