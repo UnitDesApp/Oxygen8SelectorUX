@@ -735,7 +735,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
       reheatHWC?.ValveActuator,
       reheatHWC?.Visible,
       soundData?.Data,
-      soundData.Visible,
+      soundData?.Visible,
       supplyFan?.Data,
       supplyFan?.GraphImageUrl,
       supplyFan?.SoundData,
