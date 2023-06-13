@@ -688,7 +688,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
       exhaustFan?.Data,
       exhaustFan?.GraphImageUrl,
       exhaustFan?.SoundData,
-      exhaustFan.Visible,
+      exhaustFan?.Visible,
       heatExchCORE?.designConditions,
       heatExchCORE?.performance,
       heatExchCORE?.performanceLeavingAir,
