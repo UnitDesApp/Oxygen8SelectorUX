@@ -1385,8 +1385,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                 </Accordion>
                 <Accordion
                   sx={getDisplay(reheatInfo.divReheatCompVisible || ckbDehumidificationVal)}
-                  expanded={expanded.panel4}
-                  onChange={() => setExpanded({ ...expanded, panel4: !expanded.panel4 })}
+                  expanded={expanded.panel5}
+                  onChange={() => setExpanded({ ...expanded, panel5: !expanded.panel5 })}
                 >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}
@@ -1526,8 +1526,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                   </AccordionDetails>
                 </Accordion>
                 <Accordion
-                  expanded={expanded.panel5}
-                  onChange={() => setExpanded({ ...expanded, panel5: !expanded.panel5 })}
+                  expanded={expanded.panel6}
+                  onChange={() => setExpanded({ ...expanded, panel6: !expanded.panel6 })}
                 >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}
@@ -1621,8 +1621,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                   </AccordionDetails>
                 </Accordion>
                 <Accordion
-                  expanded={expanded.panel6}
-                  onChange={() => setExpanded({ ...expanded, panel6: !expanded.panel6 })}
+                  expanded={expanded.panel7}
+                  onChange={() => setExpanded({ ...expanded, panel7: !expanded.panel7 })}
                 >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}
@@ -1729,8 +1729,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                   </AccordionDetails>
                 </Accordion>
                 <Accordion
-                  expanded={expanded.panel7}
-                  onChange={() => setExpanded({ ...expanded, panel7: !expanded.panel7 })}
+                  expanded={expanded.panel8}
+                  onChange={() => setExpanded({ ...expanded, panel8: !expanded.panel8 })}
                 >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}

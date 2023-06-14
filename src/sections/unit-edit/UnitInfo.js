@@ -192,6 +192,7 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     panel5: true,
     panel6: true,
     panel7: true,
+    panel8: true,
   });
 
   const defaultValues = useMemo(
@@ -1394,8 +1395,8 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
                 </Accordion>
                 <Accordion
                   sx={getDisplay(reheatInfo.divReheatCompVisible || ckbDehumidificationVal)}
-                  expanded={expanded.panel4}
-                  onChange={() => setExpanded({ ...expanded, panel4: !expanded.panel4 })}
+                  expanded={expanded.panel8}
+                  onChange={() => setExpanded({ ...expanded, panel8: !expanded.panel8 })}
                 >
                   <AccordionSummary
                     expandIcon={<Iconify icon="il:arrow-down" />}
