@@ -894,7 +894,6 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
                           </RHFSelect>
                         )}
                       </Stack>
-                      {console.log(heatingFluidDesignCondInfo)}
                       <Stack spacing={1} sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
