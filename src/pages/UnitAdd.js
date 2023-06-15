@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // file-saver
@@ -205,7 +205,6 @@ export default function AddNewUnit() {
               <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} spacing={2}>
                 <Item
                   sx={{ color: currentStep === 0 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(0)}
                 >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-one-fill" width="25px" height="25px" />
@@ -214,7 +213,6 @@ export default function AddNewUnit() {
                 </Item>
                 <Item
                   sx={{ color: currentStep === 1 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(1)}
                 >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-two-fill" width="25px" height="25px" />
@@ -223,7 +221,6 @@ export default function AddNewUnit() {
                 </Item>
                 <Item
                   sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(2)}
                 >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
@@ -240,7 +237,12 @@ export default function AddNewUnit() {
             </Grid>
           </Grid>
         </FooterStepStyle>
-        <ExportSelectionDialog isOpen={openRPDialog} onClose={closeDialog} intProjectID={projectId} intUnitNo={intUnitNo} />
+        <ExportSelectionDialog
+          isOpen={openRPDialog}
+          onClose={closeDialog}
+          intProjectID={projectId}
+          intUnitNo={intUnitNo}
+        />
       </RootStyle>
     </Page>
   );

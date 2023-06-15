@@ -308,8 +308,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     ]
   );
 
-  console.log(defaultValues);
-
   const methods = useForm({
     resolver: yupResolver(useUnitEditFormSchema),
     defaultValues,

@@ -54,9 +54,10 @@ UnitInfo.propTypes = {
   projectId: PropTypes.string,
   unitId: PropTypes.string,
   unitData: PropTypes.object,
+  setFunction: PropTypes.func,
 };
 
-export default function UnitInfo({ projectId, unitId, unitData }) {
+export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
   const dispatch = useDispatch();
   const { controlInfo, unitInfo } = useSelector((state) => state.unit);
   const [isLoading, setIsLoading] = useState(true);
@@ -197,6 +198,21 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
 
   const defaultValues = useMemo(
     () => ({
+      ckbBypassVal: undefined,
+      ckbCoolingCWC_UseCap: undefined,
+      ckbCoolingCWC_UseFlowRate: undefined,
+      ckbDehumidificationVal: undefined,
+      ckbDownshotVal: undefined,
+      ckbDrainPanVal: undefined,
+      ckbHeatPumpVal: undefined,
+      ckbHeatingHWC_UseCap: undefined,
+      ckbHeatingHWC_UseFlowRate: undefined,
+      ckbPreheatHWC_UseCap: undefined,
+      ckbPreheatHWC_UseFlowRate: undefined,
+      ckbReheatHWC_UseCap: undefined,
+      ckbReheatHWC_UseFlowRate: undefined,
+      ckbValveAndActuatorVal: undefined,
+      ckbVoltageSPPVal: undefined,
       txtTag: unitInfo.txbTagText,
       txbQty: unitInfo.txbQtyText,
       ddlLocationId: unitInfo.locationID,
@@ -587,6 +603,8 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
     );
   }
 
+  setFunction(handleSubmit(onSubmit));
+
   return (
     <Page title="Project: Edit">
       <RootStyle>
@@ -894,7 +912,10 @@ export default function UnitInfo({ projectId, unitId, unitData }) {
                           </RHFSelect>
                         )}
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}>
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}
+                      >
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (

@@ -29,9 +29,7 @@ export default function SelectProductInfo(props) {
   const dispatch = useDispatch();
   const { onSelectAppliaionItem, onSelectProductTypeItem, onSelectUnitTypeItem } = props;
 
-  const { productTypeDataTbl, unitTypeDataTbl, productTypeUnitTypeLinkDataTbl } = useSelector((state) => state.unit);
-
-  console.log(productTypeDataTbl, unitTypeDataTbl);
+  const { productTypeDataTbl, productTypeUnitTypeLinkDataTbl } = useSelector((state) => state.unit);
 
   useEffect(() => {
     dispatch(getUnitTypeInfo());

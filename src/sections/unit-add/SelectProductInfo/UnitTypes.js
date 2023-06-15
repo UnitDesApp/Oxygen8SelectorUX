@@ -15,8 +15,6 @@ export default function UnitTypes(props) {
 
   const units = productTypeUnitTypeLinkDataTbl.filter((element) => element.product_type_id === productTypeID)
 
-  console.log(productTypeID, units, productTypeUnitTypeLinkDataTbl);
-
   return (
     <Container>
       <Card sx={{ minWidth: 500 }}>

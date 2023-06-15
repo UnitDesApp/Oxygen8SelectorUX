@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // @mui
@@ -50,6 +50,7 @@ export default function UnitEdit() {
   const { state } = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [openRPDialog, setOpenRPDialog] = useState(false);
+  let onSubmitRef = useRef < Function > null;
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);
@@ -64,6 +65,17 @@ export default function UnitEdit() {
   const onClickDone = useCallback(() => {
     navigate(PATH_PROJECT.project(projectId, 'unitlist'));
   }, [navigate, projectId]);
+
+  const setFunction = (refCheckIsChagned) => {
+    onSubmitRef = refCheckIsChagned;
+  };
+
+  const handleMakeSelection = async () => {
+    if (onSubmitRef) {
+      await onSubmitRef();
+      setCurrentStep(2);
+    }
+  };
 
   return (
     <Page title="Unit: Edit">
@@ -85,7 +97,9 @@ export default function UnitEdit() {
               )
             }
           />
-          {currentStep === 1 && <UnitInfo projectId={projectId} unitId={unitId} unitData={state} />}
+          {currentStep === 1 && (
+            <UnitInfo projectId={projectId} unitId={unitId} unitData={state} setFunction={setFunction} />
+          )}
           {currentStep === 2 && <Selection unitTypeData={state} intUnitNo={unitId} />}
         </Container>
         <FooterStepStyle>
@@ -109,7 +123,7 @@ export default function UnitEdit() {
                 </Item>
                 <Item
                   sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(2)}
+                  onClick={handleMakeSelection}
                 >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
@@ -126,7 +140,12 @@ export default function UnitEdit() {
             </Grid>
           </Grid>
         </FooterStepStyle>
-        <ExportSelectionDialog isOpen={openRPDialog} onClose={closeDialog} intProjectID={projectId} intUnitNo={unitId} />
+        <ExportSelectionDialog
+          isOpen={openRPDialog}
+          onClose={closeDialog}
+          intProjectID={projectId}
+          intUnitNo={unitId}
+        />
       </RootStyle>
     </Page>
   );

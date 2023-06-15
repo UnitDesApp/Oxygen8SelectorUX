@@ -96,7 +96,7 @@ function CustomGroupBox({ title, children, bordersx, titlesx }) {
 //------------------------------------------------
 Selection.propTypes = {
   unitTypeData: PropTypes.object,
-  intUnitNo: PropTypes.number,
+  intUnitNo: PropTypes.string,
 };
 
 export default function Selection({ unitTypeData, intUnitNo }) {
