@@ -883,10 +883,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           </RHFSelect>
                         )}
                       </Stack>
-                      <Stack
-                        spacing={1}
-                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}
-                      >
+                      <Stack spacing={1} sx={{ ...getDisplay(getValues('ddlPreheatCompId') === IDs.intCompHWC_ID) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
@@ -1291,15 +1288,12 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                         )}
                       </Stack>
 
-                      <Stack
-                        spacing={1}
-                        sx={{ ...getDisplay(heatingFluidDesignCondInfo.divHeatingFluidDesignCondVisible) }}
-                      >
+                      <Stack spacing={1} sx={{ ...getDisplay(getValues('ddlHeatingCompId') === IDs.intCompHWC_ID) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
                               <option key={index} value={item.id}>
-                                {item.items}``
+                                {item.items}
                               </option>
                             ))}
                           </RHFSelect>
@@ -1519,6 +1513,42 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                           sx={getDisplay(customInputsInfo.divReheatHWC_UseFlowRateVisible)}
                           onChange={(e) => {
                             setValueWithCheck(e, 'txbReheatHWC_FlowRate');
+                          }}
+                        />
+                      </Stack>
+                      <Stack spacing={1} sx={{ ...getDisplay(getValues('ddlReheatCompId') === IDs.intCompHWC_ID) }}>
+                        {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
+                          <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
+                            {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl) && (
+                          <RHFSelect size="small" name="ddlHeatingFluidConcentrationId" label="Heating Fluid %">
+                            {heatingFluidDesignCondInfo.ddlHeatingFluidConcentrationDataTbl?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
+                          </RHFSelect>
+                        )}
+                        <RHFTextField
+                          size="small"
+                          name="txbHeatingFluidEntTemp"
+                          label="Heating Fluid Ent Temp (F)"
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbHeatingFluidEntTemp');
+                          }}
+                        />
+                        <RHFTextField
+                          size="small"
+                          name="txbHeatingFluidLvgTemp"
+                          label="Heating Fluid Lvg Temp (F)"
+                          onChange={(e) => {
+                            setValueWithCheck(e, 'txbHeatingFluidLvgTemp');
                           }}
                         />
                       </Stack>
