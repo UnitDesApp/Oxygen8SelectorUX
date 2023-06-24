@@ -195,12 +195,25 @@ export default function MyProjects() {
     [dataFiltered.length, filterName, filterRole, filterStatus]
   );
 
+  const moveToVerificationPage = () => {
+    navigate('/auth/email-verification');
+  };
+
   if (isLoading) return <Loading />;
 
   return (
     <Page title="Projects">
       <RootStyle>
         <Container>
+          {(localStorage.getItem('verified') === 0 || localStorage.getItem('verified') === '' || !localStorage.getItem('verified')) && (
+            <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
+              <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
+              <a href="" onClick={moveToVerificationPage}>
+                please resend verification link!
+              </a>
+              .
+            </Alert>
+          )}
           <Alert sx={{ width: '100%', mt: 3 }} severity="info">
             <b>Pricing module is now availble</b> - select Quote after making a selection to review and generate a PDF.
             All values shown are Net prices.

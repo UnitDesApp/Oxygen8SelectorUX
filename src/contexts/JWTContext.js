@@ -142,6 +142,7 @@ function AuthProvider({ children }) {
     // if (password !== '1234') return;
 
     const { action, data, accessToken } = response.data;
+    console.log(data)
 
     if (action === 'success') {
       setSession(accessToken);
@@ -158,6 +159,7 @@ function AuthProvider({ children }) {
       localStorage.setItem('UAL', data[0].access_level);
       localStorage.setItem('accessPricing', data[0].access_pricing);
       localStorage.setItem('createdDate', data[0].created_date);
+      localStorage.setItem('verified', data[0].verified);
 
       dispatch({
         type: 'LOGIN',
@@ -176,6 +178,7 @@ function AuthProvider({ children }) {
             UAL: data[0].access_level,
             accessPricing: data[0].access_pricing,
             createdDate: data[0].created_date,
+            verified: data[0].verified,
           },
         },
       });
