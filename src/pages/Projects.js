@@ -205,7 +205,10 @@ export default function MyProjects() {
     <Page title="Projects">
       <RootStyle>
         <Container>
-          {(localStorage.getItem('verified') === 0 || localStorage.getItem('verified') === '' || !localStorage.getItem('verified')) && (
+          {(localStorage.getItem('verified') === 0 ||
+            localStorage.getItem('verified') === '0' ||
+            localStorage.getItem('verified') === '' ||
+            !localStorage.getItem('verified')) && (
             <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
               <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
               <a href="" onClick={moveToVerificationPage}>

@@ -27,8 +27,16 @@ export default function EmailVerification() {
   const [isVerified, setIsVerified] = useState(false);
 
   const sendingVerificationLink = useCallback(() => {
+    setIsVerifying(true);
+    setIsVerified(false);
     axios.post(`${serverUrl}/api/auth/sendingverifylink`, { email: localStorage.getItem('email') }).then((response) => {
-      console.log(response.data);
+      if (response.data) {
+        setIsVerifying(false);
+        setIsVerified(true);
+      } else {
+        setIsVerifying(false);
+        setIsVerified(false);
+      }
     });
   }, []);
 
