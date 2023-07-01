@@ -99,6 +99,7 @@ function AuthProvider({ children }) {
             UAL: localStorage.getItem('UAL'),
             accessPricing: localStorage.getItem('accessPricing'),
             createdDate: localStorage.getItem('createdDate'),
+            verified: localStorage.getItem('verified'),
           };
 
           dispatch({
@@ -197,6 +198,7 @@ function AuthProvider({ children }) {
     localStorage.setItem('UAL', user.accessLevel);
     localStorage.setItem('accessPricing', user.accessPricing);
     localStorage.setItem('createdDate', user.createdDate);
+    localStorage.setItem('verified', user.verified);
 
     dispatch({
       type: 'UPDATE',
@@ -233,6 +235,7 @@ function AuthProvider({ children }) {
       localStorage.setItem('accessPricing', data[0].access_pricing);
       localStorage.setItem('createdDate', data[0].created_date);
       localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('verified', data[0].verified);
 
       dispatch({
         type: 'REGISTER',
