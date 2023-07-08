@@ -743,7 +743,7 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
                           <RHFTextField
                             size="small"
                             name="txbExhaustAirESP"
-                            label="Supply Air ESP(inH2O)"
+                            label="Exhaust Air ESP(inH2O)"
                             sx={getDisplay(!isUnitTypeAHU())}
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbExhaustAirESP');
