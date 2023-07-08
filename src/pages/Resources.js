@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Button, Container, Divider, LinearProgress } from '@mui/material';
+import { Box, Button, Container, Divider, LinearProgress, Alert } from '@mui/material';
 import { intUAL_Admin } from 'src/config';
 // redux
 import { getFileList } from 'src/redux/slices/ResourceReducer';
@@ -15,6 +16,7 @@ import { ResourceTable, ResourceHeader } from '../sections/resources';
 import { FileUploadDialog } from '../sections/dialog';
 // utils
 import { ResourceNames } from '../utils/constants';
+import useAuth from '../hooks/useAuth';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
@@ -25,9 +27,11 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 export default function Resources() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [currentTab, onChangeTab] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
   const intUAL = localStorage.getItem('UAL');
 
   const { resource } = useSelector((state) => state.resource);
@@ -42,6 +46,10 @@ export default function Resources() {
     getAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const moveToVerificationPage = () => {
+    navigate('/auth/email-verification');
+  };
 
   return (
     <Page title="Resources">
@@ -58,33 +66,49 @@ export default function Resources() {
                   onClick={() => {
                     setIsOpen(true);
                   }}
+                  disabled={!Number(user?.verified)}
                 >
                   Upload Files
                 </Button>
               )
             }
           />
-          <ResourceHeader curValue={currentTab} updateCurValue={onChangeTab} />
-          <Divider sx={{ my: 3 }} />
-          <Box
-            sx={{ display: 'grid', gridTemplateColumns: currentTab === 'all' ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)' }}
-          >
-            {!isLoading && Object.entries(resource)?.map(
-              (item, i) =>
-                (item[0] === currentTab || currentTab === 'all') && item[1].length > 0 && (
-                  <ResourceTable
-                    key={i}
-                    resourceType={item[0]}
-                    objResources={item[1]}
-                    title={ResourceNames[item[0]]}
-                    sx={{ width: '100%' }}
-                  />
-                )
-            )}
-          </Box>
-          {
-            isLoading &&  <LinearProgress color="info"/>
-          }
+          {!Number(user.verified) ? (
+            <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
+              <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
+              <a href="" onClick={moveToVerificationPage}>
+                please resend verification link!
+              </a>
+              .
+            </Alert>
+          ) : (
+            <>
+              <ResourceHeader curValue={currentTab} updateCurValue={onChangeTab} />
+              <Divider sx={{ my: 3 }} />
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: currentTab === 'all' ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+                }}
+              >
+                {!isLoading &&
+                  Object.entries(resource)?.map(
+                    (item, i) =>
+                      (item[0] === currentTab || currentTab === 'all') &&
+                      item[1].length > 0 && (
+                        <ResourceTable
+                          key={i}
+                          resourceType={item[0]}
+                          objResources={item[1]}
+                          title={ResourceNames[item[0]]}
+                          sx={{ width: '100%' }}
+                        />
+                      )
+                  )}
+              </Box>
+              {isLoading && <LinearProgress color="info" />}
+            </>
+          )}
         </Container>
         <FileUploadDialog
           isOpen={isOpen}

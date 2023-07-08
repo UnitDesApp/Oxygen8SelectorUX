@@ -6,6 +6,7 @@ import { Checkbox, TableRow, TableCell, MenuItem, Stack, IconButton } from '@mui
 import Label from '../../components/Label';
 import Iconify from '../../components/Iconify';
 import { TableMoreMenu } from '../../components/table';
+import useAuth from '../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +23,8 @@ ProjectTableRow.propTypes = {
 
 export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow, onDuplicate, onDeleteRow }) {
   const { job_name, reference_no, revision_no, Customer_Name, User_Full_Name, created_date, revised_date } = row;
+
+  const { user } = useAuth();
 
   const status = statusArr[Math.floor(Math.random() * 10) % 4];
 
@@ -72,10 +75,10 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }}>
         <Stack direction="row" spacing={1}>
-          <IconButton aria-label="delete" onClick={onDuplicate}>
+          <IconButton disabled={!Number(user?.verified)} aria-label="delete" onClick={onDuplicate}>
             <Iconify icon="ic:outline-file-copy" />
           </IconButton>
-          <IconButton aria-label="delete" onClick={onDeleteRow}>
+          <IconButton disabled={!Number(user?.verified)} aria-label="delete" onClick={onDeleteRow}>
             <Iconify icon="mdi:trash-outline" />
           </IconButton>
         </Stack>

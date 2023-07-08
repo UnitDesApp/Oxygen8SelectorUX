@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 
 // components
 import Iconify from '../../components/Iconify';
+import useAuth from '../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +38,7 @@ export default function UserTableToolbar({
   unitCount,
 }) {
   const [sortAnchorEl, setSortAnchorEl] = React.useState(null);
+  const { user } = useAuth();
   const open = Boolean(sortAnchorEl);
 
   const handleSortClick = useCallback((event) => {
@@ -121,6 +123,7 @@ export default function UserTableToolbar({
             sx={{ fontSize: '16px' }}
             startIcon={<Iconify icon={'ic:outline-file-copy'} />}
             onClick={onDuplicate}
+            disabled={!Number(user?.verified)}
           >
             Duplicate
           </Button>
@@ -131,6 +134,7 @@ export default function UserTableToolbar({
             sx={{ fontSize: '16px' }}
             startIcon={<Iconify icon={'mdi:delete'} />}
             onClick={onDeleteRows}
+            disabled={!Number(user?.verified)}
           >
             Delete
           </Button>

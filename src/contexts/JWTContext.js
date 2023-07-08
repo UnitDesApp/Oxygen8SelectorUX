@@ -198,7 +198,7 @@ function AuthProvider({ children }) {
     localStorage.setItem('UAL', user.accessLevel);
     localStorage.setItem('accessPricing', user.accessPricing);
     localStorage.setItem('createdDate', user.createdDate);
-    localStorage.setItem('verified', user.verified);
+    localStorage.setItem('verified', !Number(user?.verified));
 
     dispatch({
       type: 'UPDATE',

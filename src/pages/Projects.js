@@ -42,6 +42,7 @@ import { NewProjectFormDialog, ConfirmDialog } from '../sections/dialog';
 import Loading from '../sections/Loading';
 // utils
 import { ROLE_OPTIONS, TABLE_HEAD } from '../utils/constants';
+import useAuth from '../hooks/useAuth';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
@@ -69,6 +70,7 @@ export default function MyProjects() {
   } = useTable();
 
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     dispatch(getProjectsInfo());
@@ -205,10 +207,7 @@ export default function MyProjects() {
     <Page title="Projects">
       <RootStyle>
         <Container>
-          {(localStorage.getItem('verified') === 0 ||
-            localStorage.getItem('verified') === '0' ||
-            localStorage.getItem('verified') === '' ||
-            !localStorage.getItem('verified')) && (
+          {!Number(user.verified) && (
             <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
               <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
               <a href="" onClick={moveToVerificationPage}>

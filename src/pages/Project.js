@@ -19,6 +19,7 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // sections
 import { UnitList, ProjectDetail, Quote, SubmittalInternal, Status, Notes } from '../sections/project-dashboard';
 import { ReportDialog } from '../sections/dialog';
+import useAuth from '../hooks/useAuth';
 // ----------------------------------------------------------------------
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(10),
@@ -64,6 +65,7 @@ export default function Project() {
   const { projectId, pageId } = useParams();
   const { projectInfo, isLoading } = useSelector((state) => state.projectDashboard);
   const [openRPDialog, setOpenRPDialog] = useState(false);
+  const { user } = useAuth();
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);
@@ -80,47 +82,61 @@ export default function Project() {
 
   const { currentTab, onChangeTab } = useTabs(pageId);
 
-  const onChangeTabHandle = useCallback((e, newId) => {
-    navigate(PATH_PROJECT.project(projectId, newId));
-    onChangeTab(e, newId);
-  }, [navigate, onChangeTab, projectId]);
+  const onChangeTabHandle = useCallback(
+    (e, newId) => {
+      navigate(PATH_PROJECT.project(projectId, newId));
+      onChangeTab(e, newId);
+    },
+    [navigate, onChangeTab, projectId]
+  );
 
   const onClickAddNewUnit = useCallback(() => {
     navigate(PATH_UNIT.add(projectId));
   }, [navigate, projectId]);
 
-  const ACCOUNT_TABS = useMemo(() =>[
-    {
-      value: 'unitlist',
-      title: 'Unit list',
-      component: <UnitList />,
-    },
-    {
-      value: 'project_detail',
-      title: 'Project detail',
-      component: <ProjectDetail projectInfo={projectInfo} />,
-    },
-    {
-      value: 'quote',
-      title: 'Quote',
-      component: <Quote />,
-    },
-    {
-      value: 'submittal',
-      title: 'Submittal(internal)',
-      component: <SubmittalInternal />,
-    },
-    {
-      value: 'status',
-      title: 'Status',
-      component: <Status />,
-    },
-    {
-      value: 'notes',
-      title: 'Notes',
-      component: <Notes />,
-    },
-  ], [projectInfo]);
+  const ACCOUNT_TABS = useMemo(
+    () => [
+      {
+        value: 'unitlist',
+        title: 'Unit list',
+        component: <UnitList />,
+      },
+      {
+        value: 'project_detail',
+        title: 'Project detail',
+        component: <ProjectDetail projectInfo={projectInfo} />,
+      },
+      ...(Number(user?.verified)
+        ? [
+            {
+              value: 'quote',
+              title: 'Quote',
+              component: <Quote />,
+            },
+            {
+              value: 'submittal',
+              title: 'Submittal(internal)',
+              component: <SubmittalInternal />,
+            },
+          ]
+        : []),
+      {
+        value: 'status',
+        title: 'Status',
+        component: <Status />,
+      },
+      ...(Number(user?.verified)
+        ? [
+            {
+              value: 'notes',
+              title: 'Notes',
+              component: <Notes />,
+            },
+          ]
+        : []),
+    ],
+    [projectInfo]
+  );
 
   return (
     <Page title="Project: Dashboard">
@@ -134,10 +150,16 @@ export default function Project() {
               links={[{ name: 'projects', href: PATH_PROJECTS.root }, { name: projectInfo.job_name }]}
               action={
                 <Stack spacing={2} direction="row" alignItems="flex-end" sx={{ mt: 3 }}>
-                  <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
+                  <Button
+                    variant="text"
+                    startIcon={<Iconify icon={'bxs:download'} />}
+                    onClick={openDialog}
+                    disabled={!Number(user?.verified)}
+                  >
                     Export report
                   </Button>
                   <Button
+                    disabled={!Number(user?.verified)}
                     variant="contained"
                     startIcon={<Iconify icon={'eva:plus-fill'} />}
                     onClick={onClickAddNewUnit}

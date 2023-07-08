@@ -40,6 +40,7 @@ import Iconify from '../../components/Iconify';
 import axios from '../../utils/axios';
 // config
 import { serverUrl } from '../../config';
+import useAuth from '../../hooks/useAuth';
 // theme
 
 //------------------------------------------------
@@ -60,6 +61,7 @@ export default function ProjectDetail({ projectInfo }) {
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const { state } = useLocation();
+  const { user } = useAuth();
   const { projectInitInfo, isLoading } = useSelector((state) => state.projects);
 
   useEffect(() => {
@@ -411,15 +413,32 @@ export default function ProjectDetail({ projectInfo }) {
                     <Grid container spacing={5}>
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFTextField size="small" name="jobName" label="Project Name" />
-                          <RHFSelect size="small" name="application" label="Applicaton" placeholder="">
+                          <RHFTextField
+                            size="small"
+                            name="jobName"
+                            label="Project Name"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFSelect
+                            size="small"
+                            name="application"
+                            label="Applicaton"
+                            disabled={!Number(user?.verified)}
+                            placeholder=""
+                          >
                             {applications.map((info, index) => (
                               <option key={index} value={info.id}>
                                 {info.items}
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFSelect size="small" name="basisOfDesign" label="Basis of Design" placeholder="">
+                          <RHFSelect
+                            size="small"
+                            name="basisOfDesign"
+                            label="Basis of Design"
+                            disabled={!Number(user?.verified)}
+                            placeholder=""
+                          >
                             {baseOfDesign.map((info, index) => (
                               <option key={index} value={info.id}>
                                 {info.items}
@@ -432,6 +451,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Company Name"
                             placeholder=""
                             onChange={handleChangeCompanyName}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
                             {companyInfo.map(
@@ -449,6 +469,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Contact Name"
                             placeholder=""
                             onChange={handleChangeContactName}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
                             {usersInfo.map(
@@ -465,7 +486,13 @@ export default function ProjectDetail({ projectInfo }) {
                       </Grid>
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFSelect size="small" name="uom" label="UoM" placeholder="">
+                          <RHFSelect
+                            size="small"
+                            name="uom"
+                            label="UoM"
+                            placeholder=""
+                            disabled={!Number(user?.verified)}
+                          >
                             <option value="" />
                             {UoM.map((info, index) => (
                               <option key={index} value={info.id}>
@@ -473,10 +500,30 @@ export default function ProjectDetail({ projectInfo }) {
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFTextField size="small" name="referenceNo" label="Reference no" />
-                          <RHFTextField size="small" name="revision" label="Revision no" />
-                          <RHFTextField size="small" name="createdDate" label="Date Created" />
-                          <RHFTextField size="small" name="revisedDate" label="Date Revised" />
+                          <RHFTextField
+                            size="small"
+                            name="referenceNo"
+                            label="Reference no"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFTextField
+                            size="small"
+                            name="revision"
+                            label="Revision no"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFTextField
+                            size="small"
+                            name="createdDate"
+                            label="Date Created"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFTextField
+                            size="small"
+                            name="revisedDate"
+                            label="Date Revised"
+                            disabled={!Number(user?.verified)}
+                          />
                         </Box>
                       </Grid>
                       <Grid item xs={4} md={4}>
@@ -487,6 +534,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Country"
                             placeholder=""
                             onChange={handleChangeCountry}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
                             {projectInitInfo?.country?.map((info, index) => (
@@ -501,6 +549,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Province / State"
                             placeholder=""
                             onChange={handleChangeProvState}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
                             {provStateInfo?.map((info, index) => (
@@ -509,7 +558,14 @@ export default function ProjectDetail({ projectInfo }) {
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFSelect size="small" name="city" label="City" placeholder="" onChange={handleChangeCity}>
+                          <RHFSelect
+                            size="small"
+                            name="city"
+                            label="City"
+                            placeholder=""
+                            onChange={handleChangeCity}
+                            disabled={!Number(user?.verified)}
+                          >
                             <option value="" />
                             {cityInfo?.map((info, index) => (
                               <option key={index} value={info.id}>
@@ -523,6 +579,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="ASHRAE Design Conditions"
                             placeholder=""
                             onChange={handleChangeDesignCondition}
+                            disabled={!Number(user?.verified)}
                           >
                             {designCondition.map((info, index) => (
                               <option key={index} value={info.id}>
@@ -530,7 +587,12 @@ export default function ProjectDetail({ projectInfo }) {
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFTextField size="small" name="altitude" label="Altitude" />
+                          <RHFTextField
+                            size="small"
+                            name="altitude"
+                            label="Altitude"
+                            disabled={!Number(user?.verified)}
+                          />
                         </Box>
                       </Grid>
                     </Grid>
@@ -556,36 +618,42 @@ export default function ProjectDetail({ projectInfo }) {
                             name="summer_air_db"
                             label="Summer Outdoor Air DB (F)"
                             onChange={handleChangeSummerOutdoorAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_air_wb"
                             label="Summer Outdoor Air WB (F)"
                             onChange={handleChangeSummerOutdoorAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_air_rh"
                             label="Summer Outdoor Air RH (%)"
                             onChange={handleChangeSummerOutdoorAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_air_db"
                             label="Winter Outdoor Air DB"
                             onChange={handleChangeWinterOutdoorAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_air_wb"
                             label="Winter Outdoor Air WB"
                             onChange={handleChangeWinterOutdoorAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_air_rh"
                             label="Winter Outdoor Air RH"
                             onChange={handleChangeWinterOutdoorAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                         </Box>
                       </Grid>
@@ -596,55 +664,66 @@ export default function ProjectDetail({ projectInfo }) {
                             name="summer_return_db"
                             label="Summer Return Air DB (F)"
                             onChange={handleChangeSummerReturnAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_return_wb"
                             label="Summer Return Air WB (F)"
                             onChange={handleChangeSummerReturnAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_return_rh"
                             label="Summer Return Air RH (%)"
                             onChange={handleChangeSummerReturnAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_return_db"
                             label="Winter Return Air DB"
                             onChange={handleChangeWinterReturnAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_return_wb"
                             label="Winter Return Air WB"
                             onChange={handleChangeWinterReturnAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_return_rh"
                             label="Winter Return Air RH"
                             onChange={handleChangeWinterReturnAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                         </Box>
                       </Grid>
                     </Grid>
                   </AccordionDetails>
                 </Accordion>
-                <Stack sx={{ mb: '20px!important' }} direction="row" justifyContent="flex-end">
-                  <Box sx={{ width: '150px' }}>
-                    <LoadingButton
-                      type="submit"
-                      variant="contained"
-                      onClick={() => console.log(getValues())}
-                      loading={isSubmitting}
-                      sx={{ width: '150px' }}
-                    >
-                      Save
-                    </LoadingButton>
-                  </Box>
-                </Stack>
+                {Number(user?.verified) ? (
+                  <Stack sx={{ mb: '20px!important' }} direction="row" justifyContent="flex-end">
+                    <Box sx={{ width: '150px' }}>
+                      <LoadingButton
+                        type="submit"
+                        variant="contained"
+                        onClick={() => console.log(getValues())}
+                        loading={isSubmitting}
+                        sx={{ width: '150px' }}
+                        disabled={!Number(user?.verified)}
+                      >
+                        Save
+                      </LoadingButton>
+                    </Box>
+                  </Stack>
+                ) : (
+                  <></>
+                )}
               </Stack>
             )}
           </FormProvider>
