@@ -112,8 +112,8 @@ export const allLangs = [
 export const defaultLang = allLangs[0]; // English
 
 // export const serverUrl = "http://localhost:51045";
-// export const serverUrl = "https://173.248.135.23:5007";
-export const serverUrl = "https://oxygen8api.com";
+export const serverUrl = "https://173.248.135.23:80";
+// export const serverUrl = "https://oxygen8api.com";
 
 // -------------------------------------------------------------------------
 // ID'S FROM DATABASE TABLES
