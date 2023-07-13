@@ -714,6 +714,7 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
                           <RHFTextField
+                            tabIndex={0}
                             size="small"
                             name="txbSummerSupplyAirCFM"
                             label="Supply Air (CFM)"
