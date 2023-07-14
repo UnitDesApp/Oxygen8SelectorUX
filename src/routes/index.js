@@ -81,7 +81,6 @@ export default function Router() {
             { path: 'project/new/', element: <ProjectEdit /> },
             { path: 'project/dashboard/:projectId', element: <ProjectDashboard /> },
             { path: 'project/edit/:projectId', element: <ProjectEdit /> },
-            { path: 'project/submittal/:projectId', element: <ProjectSubmittal /> },
             { path: 'project/quote/:projectId', element: <ProjectQuote /> },
             { path: 'unit/view/:projectId/', element: <UnitView /> },
             { path: 'unit/add/:projectId/', element: <UnitAdd /> },
@@ -107,7 +106,6 @@ const Projects = Loadable(lazy(() => import('../pages/Projects')));
 const Project = Loadable(lazy(() => import('../pages/Project')));
 const ProjectDashboard = Loadable(lazy(() => import('../pages/ProjectDashboard')));
 const ProjectEdit = Loadable(lazy(() => import('../pages/ProjectEdit')));
-const ProjectSubmittal = Loadable(lazy(() => import('../pages/ProjectSubmittal')));
 const ProjectQuote = Loadable(lazy(() => import('../pages/ProjectQuote')));
 // Unit
 const UnitView = Loadable(lazy(() => import('../pages/UnitView')));
