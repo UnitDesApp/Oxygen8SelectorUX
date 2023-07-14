@@ -203,7 +203,6 @@ export default function JobSubmittal() {
     };
 
     const response = await axios.post(`${serverUrl}/api/submittals/exportpdf`, data, { responseType: 'blob' });
-    console.log(response.data.type);
     if (response.data.type === 'application/json') {
       setFail(true);
       return;
@@ -372,7 +371,6 @@ export default function JobSubmittal() {
                               ))}
                             </TableRow>
                           </TableHead>
-
                           <TableBody>
                             {submittalDetailInfo.map((row, index) => (
                               <Row row={row} key={index} />
@@ -534,43 +532,47 @@ Row.propTypes = {
   row: PropTypes.object,
 };
 function Row({ row }) {
+  function parseString(htmlString) {
+    return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
+  }
+
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell component="th" scope="row" align="left">
-        {row.qty}
+        {parseString(row.qty)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.tag}
+        {parseString(row.tag)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.item}
+        {parseString(row.item)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.model}
+        {parseString(row.model)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.voltage}
+        {parseString(row.voltage)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.controls_preference}
+        {parseString(row.controls_preference)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.installation}
+        {parseString(row.installation)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.duct_connection}
+        {parseString(row.duct_connection)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.handing}
+        {parseString(row.handing)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.part_desc}
+        {parseString(row.part_desc)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.part_number}
+        {parseString(row.part_number)}
       </TableCell>
       <TableCell component="th" scope="row" align="left">
-        {row.pricing}
+        {parseString(row.pricing)}
       </TableCell>
     </TableRow>
   );

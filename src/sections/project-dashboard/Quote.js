@@ -293,6 +293,8 @@ export default function Quote() {
     [dispatch, projectId]
   );
 
+  console.log(quoteControlInfo);
+
   return (
     <Box sx={{ paddingTop: 5, paddingBottom: 5 }}>
       {isLoading ? (
