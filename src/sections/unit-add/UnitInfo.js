@@ -478,12 +478,9 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     setCkbHeatPumpVal(!ckbHeatPumpVal);
   }, [ckbHeatPumpVal]);
 
-  const ckbDehumidificationChanged = useCallback(
-    async () => {
-      setCkbDehumidificationVal(!ckbDehumidificationVal);
-    },
-    [ckbDehumidificationVal]
-  );
+  const ckbDehumidificationChanged = useCallback(async () => {
+    setCkbDehumidificationVal(!ckbDehumidificationVal);
+  }, [ckbDehumidificationVal]);
 
   const ddlHeatingCompChanged = useCallback(
     async (e) => {
@@ -597,6 +594,24 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     return unitModel;
   }, [values, unitTypeData.intUnitTypeID, unitTypeData.intProductTypeID, ckbBypassVal, data, user.UAL, setValue]);
 
+  const unitVoltage = useMemo(() => {
+    const { unitVoltage, ddlUnitVoltageId } = getUnitVoltage(data, getAllFormData(), strUnitModelValue);
+    if (Number(values.ddlUnitVoltageId) !== Number(ddlUnitVoltageId)) {
+      setValue('ddlUnitVoltageId', ddlUnitVoltageId);
+    }
+    return unitVoltage;
+  }, [data, getAllFormData, setValue, strUnitModelValue, values.ddlUnitVoltageId]);
+
+  const QAFilterModel = useMemo(
+    () => data.filterModel?.filter((item) => item.outdoor_air === 1 || item.id === values.ddlOA_FilterModelId),
+    [data, values]
+  );
+
+  const RAFilterModel = useMemo(
+    () => data.filterModel?.filter((item) => item.return_air === 1 || item.id === values.ddlOA_FilterModelId),
+    [data, values]
+  );
+
   // onChange functions
   const handleBlurSummerSupplyAirCFM = useCallback(
     (e) => {
@@ -635,14 +650,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     },
     [setValue, strUnitModelValue, unitTypeData.intProductTypeID, unitTypeData.intUnitTypeID, values.ddlUnitModelId]
   );
-
-  const unitVoltage = useMemo(() => {
-    const { unitVoltage, ddlUnitVoltageId } = getUnitVoltage(data, getAllFormData(), strUnitModelValue);
-    if (Number(values.ddlUnitVoltageId) !== Number(ddlUnitVoltageId)) {
-      setValue('ddlUnitVoltageId', ddlUnitVoltageId);
-    }
-    return unitVoltage;
-  }, [data, getAllFormData, setValue, strUnitModelValue, values.ddlUnitVoltageId]);
 
   const isAvailable = useCallback((value) => !!value && value.length > 0, []);
 
@@ -831,21 +838,21 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             checked={ckbVoltageSPPVal}
                             onChange={() => setCkbVoltageSPPVal(!ckbVoltageSPPVal)}
                           />
-                          {isAvailable(outdoorAirFilterInfo.ddlOA_FilterModelDataTbl) && (
+                          {isAvailable(QAFilterModel) && (
                             <RHFSelect
                               size="small"
                               name="ddlOA_FilterModelId"
                               label="QA Filter"
                               onChange={(e) => setValue('ddlOA_FilterModelId', parseInt(e.target.value, 10))}
                             >
-                              {outdoorAirFilterInfo.ddlOA_FilterModelDataTbl?.map((item, index) => (
+                              {QAFilterModel?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>
                               ))}
                             </RHFSelect>
                           )}
-                          {isAvailable(returnAirFilterInfo.ddlRA_FilterModelDataTbl) && (
+                          {isAvailable(RAFilterModel) && (
                             <RHFSelect
                               size="small"
                               name="ddlRA_FilterModelId"
@@ -853,7 +860,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                               sx={getDisplay(returnAirFilterInfo.divRA_FilterModelVisible)}
                               onChange={(e) => setValue('ddlRA_FilterModelId', parseInt(e.target.value, 10))}
                             >
-                              {returnAirFilterInfo.ddlRA_FilterModelDataTbl?.map((item, index) => (
+                              {RAFilterModel?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>

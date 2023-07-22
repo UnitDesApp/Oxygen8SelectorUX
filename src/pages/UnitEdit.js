@@ -55,10 +55,13 @@ export default function UnitEdit() {
   const [openRPDialog, setOpenRPDialog] = useState(false);
   let onSubmitRef = useRef < Function > null;
   const dispatch = useDispatch();
-  
+  const { data } = useSelector((state) => state.base);
+
   useEffect(() => {
-    dispatch(getAllBaseData());
-  }, []);
+    if (!data) {
+      dispatch(getAllBaseData());
+    }
+  }, [data, dispatch]);
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);

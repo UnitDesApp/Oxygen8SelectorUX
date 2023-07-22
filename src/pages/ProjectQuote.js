@@ -78,6 +78,7 @@ export default function JobQuote() {
   // const navigate = useNavigate();
   const { state } = useLocation();
   const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
   const {
     isLoading,
     quoteFormInfo,
@@ -90,8 +91,10 @@ export default function JobQuote() {
   } = useSelector((state) => state.quote);
 
   useEffect(() => {
-    dispatch(getAllBaseData());
-  }, []);
+    if (!data) {
+      dispatch(getAllBaseData());
+    }
+  }, [data, dispatch]);
 
   // State
   const [success, setSuccess] = useState(false);
@@ -309,7 +312,6 @@ export default function JobQuote() {
     },
     [dispatch, projectId]
   );
-
 
   return isLoading ? (
     <Loading />

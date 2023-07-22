@@ -66,6 +66,7 @@ export default function Project() {
   const dispatch = useDispatch();
   const { projectId, pageId } = useParams();
   const { projectInfo, isLoading } = useSelector((state) => state.projectDashboard);
+  const { data } = useSelector((state) => state.base);
   const [openRPDialog, setOpenRPDialog] = useState(false);
   const { user } = useAuth();
 
@@ -77,9 +78,15 @@ export default function Project() {
     setOpenRPDialog(false);
   }, []);
 
-  useEffect(async () => {
-    await dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
-    await dispatch(getAllBaseData());
+  useEffect(() => {
+    const getAllData = async () => {
+      await dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+      if (!data) {
+        await dispatch(getAllBaseData());
+      }
+    };
+
+    getAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

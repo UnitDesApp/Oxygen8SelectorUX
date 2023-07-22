@@ -15,7 +15,7 @@ import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // redux
 import { getAllBaseData } from '../redux/slices/BaseReducer';
-import { useDispatch } from '../redux/store';
+import { useDispatch, useSelector } from '../redux/store';
 // sections
 import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
 import { ExportSelectionDialog } from '../sections/dialog';
@@ -76,10 +76,13 @@ export default function AddNewUnit() {
   const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
   const [openRPDialog, setOpenRPDialog] = useState(false);
   const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
-    dispatch(getAllBaseData());
-  }, []);
+    if (!data) {
+      dispatch(getAllBaseData());
+    }
+  }, [data, dispatch]);
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);

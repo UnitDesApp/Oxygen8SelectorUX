@@ -133,8 +133,7 @@ const get_ddlItemsAddedOnID = (_dt, _strLinkColumn, _dtLink) => {
     }
   }
 
-  console.log(dtSelected);
-
+  // eslint-disable-next-line consistent-return
   return dtSelected;
 };
 
@@ -516,7 +515,6 @@ export const getSummerReturnAirCFM = (summerReturnAirCFM, values, intUAL, data) 
       }
       break;
     case ClsID.intProdTypeVentumID:
-      console.log(data);
       dtModel = data.ventumHUnitModel.filter((item) => item.id === intUnitModelID);
 
       if (
@@ -718,11 +716,8 @@ export const getUnitVoltage = (data, values, strUnitModelValue) => {
       break;
   }
 
-  console.log("modelVoltageLink:", modelVoltageLink);
   const dtLink = modelVoltageLink.filter((item) => item.unit_model_value === strUnitModelValue) || [];
-  console.log("dtLink:", dtLink);
   let dtVoltage = data.electricalVoltage;
-  console.log("dtVoltage:", dtVoltage);
   if (intProductTypeID === ClsID.intProdTypeTerraID && true) {
     dtVoltage = data.electricalVoltage?.filter((item) => item.terra_spp === 1);
   }

@@ -116,7 +116,7 @@ export default function Account() {
     }
 
     return tab;
-  }, [user?.UAL]);
+  }, [user?.UAL, user.verified]);
 
   const handleChangeTab = useCallback(
     (event, newValue) => {
