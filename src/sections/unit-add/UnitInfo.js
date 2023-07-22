@@ -22,6 +22,7 @@ import { LoadingButton } from '@mui/lab';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useUnitEditFormSchema } from '../../hooks/useUnitEditForm';
+import useAuth from '../../hooks/useAuth';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
 import * as unitReducer from '../../redux/slices/unitReducer';
@@ -37,7 +38,16 @@ import {
 } from '../../components/hook-form';
 import Iconify from '../../components/Iconify';
 // config
-import * as IDs from './config';
+import * as IDs from '../../config';
+import {
+  getExhaustAirESP,
+  getSummerReturnAirCFM,
+  getSummerSupplyAirCFM,
+  getSupplyAirESPInfo,
+  getUnitModel,
+  getUnitVoltage,
+} from '../../utils/handleUnitControls';
+import { getUnitModelCodes } from '../../utils/handleUnitModelCodes';
 
 //------------------------------------------------
 const RootStyle = styled('div')(({ theme }) => ({
@@ -59,6 +69,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const { controlInfo, unitInfo } = useSelector((state) => state.unit);
+  const { user } = useAuth();
+  const { data } = useSelector((state) => state.base);
   const isResetCalled = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -318,8 +330,51 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     getValues,
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const values = watch();
+
+  const { strUnitModelValue } = useMemo(() => {
+    let unitModel = [];
+
+    switch (Number(unitTypeData.intProductTypeID)) {
+      case IDs.intProdTypeNovaID:
+        unitModel = data.novaUnitModel;
+        break;
+      case IDs.intProdTypeVentumID:
+        unitModel = data.ventumHUnitModel;
+        break;
+      case IDs.intProdTypeVentumLiteID:
+        unitModel = data.ventumLiteUnitModel;
+        break;
+      case IDs.intProdTypeVentumPlusID:
+        unitModel = data.ventumPlusUnitModel;
+        break;
+      case IDs.intProdTypeTerraID:
+        unitModel = data.terraUnitModel;
+        break;
+      default:
+        break;
+    }
+    return getUnitModelCodes(
+      unitModel[0].value.toString(),
+      unitTypeData.intProductTypeID,
+      unitTypeData.intUnitTypeID,
+      values.ddlLocationId,
+      values.ddlOrientationId,
+      Number(ckbBypassVal),
+      data
+    );
+  }, [
+    ckbBypassVal,
+    data,
+    unitTypeData.intProductTypeID,
+    unitTypeData.intUnitTypeID,
+    values.ddlLocationId,
+    values.ddlOrientationId,
+  ]);
 
   useEffect(() => {
     if (!isLoading && !isResetCalled.current) {
@@ -379,116 +434,69 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
 
   const ddlLocationChanged = useCallback(
     async (e) => {
-      setValue('ddlLocationId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlLocationChanged(getAllFormData()));
-      setValue('ddlOrientationId', result.ddlOrientationId);
-      setValue('ddlDamperAndActuatorId', result.ddlDamperAndActuatorId);
-      setValue('ddlUnitModelId', result.ddlUnitModelId);
-      setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-      setValue('ckbDownshotVal', result.downshot);
-      setValue('ddlPreheatElecHeaterInstallationId', result.preheatElectricHeater.ddlPreheatElecHeaterInstallationId);
-      setValue('txbSupplyAirESP', result.txbSupplyAirESP);
-      setValue('txbExhaustAirESP', result.txbExhaustAirESP);
+      setValue('ddlLocationId', Number(e.target.value));
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlOrientationChanged = useCallback(
     async (e) => {
       setValue('ddlOrientationId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlOrientationChanged(getAllFormData()));
-      setValue('ddlUnitModelId', result.ddlUnitModelId);
-      setValue('ddlElecHeaterVoltageId', result.others.elecHeaterVoltage.ddlElecHeaterVoltageId);
-      setValue('ddlSupplyAirOpeningId', result.ddlSupplyAirOpeningId);
-      setValue('ddlSupplyAirOpeningText', result.ddlSupplyAirOpeningText);
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlUnitModelChanged = useCallback(
     async (e) => {
       setValue('ddlUnitModelId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlUnitModelChanged(getAllFormData()));
-      setValue('ddlUnitVoltageId', result.ddlUnitVoltageId);
-      setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
-      setValue('txbSupplyAirESP', result.txbSupplyAirESP);
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlUnitVoltageChanged = useCallback(
     async (e) => {
       setValue('ddlUnitVoltageId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlUnitVoltageChanged(getAllFormData()));
-      setValue('ddlElecHeaterVoltageId', result.ddlElecHeaterVoltageId);
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlPreheatCompChanged = useCallback(
     async (e) => {
       setValue('ddlPreheatCompId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlPreheatCompChanged(getAllFormData()));
-      if (result.preheatElecHeaterInstallationInfo.divPreheatElecHeaterInstallationVisible) {
-        setValue(
-          'ddlPreheatElecHeaterInstallationId',
-          result.preheatElecHeaterInstallationInfo.ddlPreheatElecHeaterInstallationId
-        );
-      }
-      if (result.elecHeaterVoltageInfo.divElecHeaterVoltageVisible) {
-        setValue('ddlElecHeaterVoltageId', result.elecHeaterVoltageInfo.ddlElecHeaterVoltageId);
-      }
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlCoolingCompChanged = useCallback(
     async (e) => {
       setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
-      if (getValues('ddlCoolingCompId') !== IDs.intCompDX_ID) setCkbHeatPumpVal(false);
-      if (getValues('ddlCoolingCompId') === IDs.intCompNA_ID) setCkbDehumidificationVal(false);
-      await dispatch(unitReducer.ddlCoolingCompChanged(getAllFormData()));
     },
-    [dispatch, getAllFormData, getValues, setValue]
+    [setValue]
   );
 
   const ckbHeatPumpChanged = useCallback(async () => {
     setCkbHeatPumpVal(!ckbHeatPumpVal);
-    const data = {
-      ...getAllFormData(),
-      ckbHeatPumpVal: !ckbHeatPumpVal,
-    };
-    await dispatch(unitReducer.ckbHeatPumpChanged(data));
-  }, [ckbHeatPumpVal, dispatch, getAllFormData]);
+  }, [ckbHeatPumpVal]);
 
   const ckbDehumidificationChanged = useCallback(
     async (e) => {
       setCkbDehumidificationVal(!ckbDehumidificationVal);
-      setValue('ckbDehumidificationVal', e.target.checked);
-      await dispatch(unitReducer.ckbDehumidificationChanged(getAllFormData()));
     },
-    [ckbDehumidificationVal, dispatch, getAllFormData, setValue]
+    [ckbDehumidificationVal]
   );
 
   const ddlHeatingCompChanged = useCallback(
     async (e) => {
       setValue('ddlHeatingCompId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlHeatingCompChanged(getAllFormData()));
-      setValue(
-        'ddlHeatingElecHeaterInstallationId',
-        result.heatElecHeaterInstallationInfo.divHeatElecHeaterInstallationVisible &&
-          result.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId
-      );
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlReheatCompChanged = useCallback(
     async (e) => {
       setValue('ddlReheatCompId', parseInt(e.target.value, 10));
-      await dispatch(unitReducer.ddlReheatCompChanged(getAllFormData()));
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlElecHeaterVoltageChanged = useCallback(
@@ -504,7 +512,9 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
         setValue(key, '');
       } else if (!isNaN(+e.target.value)) {
         setValue(key, parseFloat(e.target.value, 10));
+        return true;
       }
+      return false;
     },
     [setValue]
   );
@@ -512,32 +522,16 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   const ddlHandingChanged = useCallback(
     async (e) => {
       setValue('ddlHandingId', parseInt(e.target.value, 10));
-      const result = await dispatch(unitReducer.ddlHandingChanged(getAllFormData()));
-      setValue('ddlSupplyAirOpeningId', parseInt(result.supplyAirOpeningInfo.ddlSupplyAirOpeningId, 10));
-      setValue('ddlSupplyAirOpeningText', result.supplyAirOpeningInfo.ddlSupplyAirOpeningText);
-      setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
-      setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
-      setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
-      setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
-      setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
-      setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlSupplyAirOpeningChanged = useCallback(
     async (e) => {
       setValue('ddlSupplyAirOpeningId', parseInt(e.target.value, 10));
       setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
-      const result = await dispatch(unitReducer.ddlSupplyAirOpeningChanged(getAllFormData()));
-      setValue('ddlExhaustAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlExhaustAirOpeningId, 10));
-      setValue('ddlExhaustAirOpeningText', result.remainingOpeningsInfo.ddlExhaustAirOpeningText);
-      setValue('ddlOutdoorAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlOutdoorAirOpeningId, 10));
-      setValue('ddlOutdoorAirOpeningText', result.remainingOpeningsInfo.ddlOutdoorAirOpeningText);
-      setValue('ddlReturnAirOpeningId', parseInt(result.remainingOpeningsInfo.ddlReturnAirOpeningId, 10));
-      setValue('ddlReturnAirOpeningText', result.remainingOpeningsInfo.ddlReturnAirOpeningText);
     },
-    [dispatch, getAllFormData, setValue]
+    [setValue]
   );
 
   const ddlExhaustAirOpeningChanged = useCallback(
@@ -585,6 +579,71 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
     [setValue]
   );
 
+  const unitModel = useMemo(() => {
+    const { unitModel, summerSupplyAirCFM } = getUnitModel(
+      {
+        ...values,
+        intUnitTypeID: unitTypeData.intUnitTypeID,
+        intProductTypeID: unitTypeData.intProductTypeID,
+        ckbBypassVal,
+      },
+      data,
+      Number(user.UAL)
+    );
+    if (summerSupplyAirCFM && values.txbSummerSupplyAirCFM === summerSupplyAirCFM.toString()) {
+      setValue('txbSummerSupplyAirCFM', summerSupplyAirCFM.toString());
+    }
+
+    return unitModel;
+  }, [values, unitTypeData.intUnitTypeID, unitTypeData.intProductTypeID, ckbBypassVal, data, user.UAL, setValue]);
+
+  // onChange functions
+  const handleBlurSummerSupplyAirCFM = useCallback(
+    (e) => {
+      const value = getSummerSupplyAirCFM(e.target.value, getAllFormData(), Number(user.UAL), Number(ckbBypassVal));
+      setValue('txbSummerSupplyAirCFM', value);
+    },
+    [ckbBypassVal, getAllFormData, setValue, user.UAL]
+  );
+
+  const handleBlurSummerReturnAirCFM = useCallback(
+    (e) => {
+      const value = getSummerReturnAirCFM(e.target.value, getAllFormData(), Number(user.UAL), data);
+      setValue('txbSummerReturnAirCFM', value);
+    },
+    [data, getAllFormData, setValue, user.UAL]
+  );
+
+  const handleBlurSupplyAirESP = useCallback(
+    (e) => {
+      const value = getSupplyAirESPInfo(e.target.value, unitTypeData.intProductTypeID, values.ddlUnitModelId);
+      setValue('txbSupplyAirESP', value);
+    },
+    [setValue, unitTypeData.intProductTypeID, values.ddlUnitModelId]
+  );
+
+  const handleBlurExhaustAirESP = useCallback(
+    (e) => {
+      const value = getExhaustAirESP(
+        e.target.value,
+        unitTypeData.intProductTypeID,
+        unitTypeData.intUnitTypeID,
+        values.ddlUnitModelId,
+        strUnitModelValue
+      );
+      setValue('txbExhaustAirESP', value);
+    },
+    [setValue, strUnitModelValue, unitTypeData.intProductTypeID, unitTypeData.intUnitTypeID, values.ddlUnitModelId]
+  );
+
+  const unitVoltage = useMemo(() => {
+    const { unitVoltage, ddlUnitVoltageId } = getUnitVoltage(data, getAllFormData(), strUnitModelValue);
+    if (Number(values.ddlUnitVoltageId) !== Number(ddlUnitVoltageId)) {
+      setValue('ddlUnitVoltageId', ddlUnitVoltageId);
+    }
+    return unitVoltage;
+  }, [data, getAllFormData, setValue, strUnitModelValue, values.ddlUnitVoltageId]);
+
   const isAvailable = useCallback((value) => !!value && value.length > 0, []);
 
   return (
@@ -627,7 +686,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             //   setValueWithCheck(e, 'txbQty');
                             // }}
                           />
-                          {isAvailable(locationInfo.ddlLocationDataTbl) && (
+                          {isAvailable(data?.generalLocation) && (
                             <RHFSelect
                               size="small"
                               name="ddlLocationId"
@@ -635,7 +694,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                               placeholder=""
                               onChange={ddlLocationChanged}
                             >
-                              {locationInfo.ddlLocationDataTbl.map((item, index) => (
+                              {data?.generalLocation.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>
@@ -650,7 +709,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             checked={ckbDownshotVal}
                             onChange={() => setCkbDownshotVal(!ckbDownshotVal)}
                           />
-                          {isAvailable(orientationInfo.ddlOrientationDataTbl) && (
+                          {isAvailable(data?.generalOrientation) && (
                             <RHFSelect
                               size="small"
                               name="ddlOrientationId"
@@ -658,14 +717,14 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                               placeholder=""
                               onChange={ddlOrientationChanged}
                             >
-                              {orientationInfo.ddlOrientationDataTbl.map((item, index) => (
+                              {data?.generalOrientation?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>
                               ))}
                             </RHFSelect>
                           )}
-                          {isAvailable(controlsPreferenceInfo.ddlControlsPreferenceDataTbl) && (
+                          {isAvailable(data?.controlsPreference) && (
                             <RHFSelect
                               size="small"
                               name="ddlControlsPreferenceId"
@@ -675,7 +734,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                                 setValue('ddlControlsPreferenceId', parseInt(e.target.value, 10));
                               }}
                             >
-                              {controlsPreferenceInfo.ddlControlsPreferenceDataTbl?.map((item, index) => (
+                              {data?.controlsPreference?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>
@@ -693,6 +752,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSummerSupplyAirCFM');
                             }}
+                            onBlur={handleBlurSummerSupplyAirCFM}
                           />
                           <RHFTextField
                             size="small"
@@ -702,6 +762,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSummerReturnAirCFM');
                             }}
+                            onBlur={handleBlurSummerReturnAirCFM}
                           />
                           <RHFTextField
                             size="small"
@@ -710,6 +771,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSupplyAirESP');
                             }}
+                            onBlur={handleBlurSupplyAirESP}
                           />
                           <RHFTextField
                             size="small"
@@ -719,6 +781,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbExhaustAirESP');
                             }}
+                            onBlur={handleBlurExhaustAirESP}
                           />
                         </Box>
                       </Grid>
@@ -732,28 +795,28 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
                             checked={ckbBypassVal}
                             onChange={() => setCkbBypassVal(!ckbBypassVal)}
                           />
-                          {isAvailable(unitModelInfo.ddlUnitModelDataTbl) && (
+                          {isAvailable(unitModel) && (
                             <RHFSelect
                               size="small"
                               name="ddlUnitModelId"
                               label="Unit Model"
                               onChange={ddlUnitModelChanged}
                             >
-                              {unitModelInfo.ddlUnitModelDataTbl?.map((item, index) => (
+                              {unitModel?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>
                               ))}
                             </RHFSelect>
                           )}
-                          {isAvailable(unitVoltageInfo.ddlUnitVoltageDataTbl) && (
+                          {isAvailable(unitVoltage) && (
                             <RHFSelect
                               size="small"
                               name="ddlUnitVoltageId"
                               label="Unit Voltage"
                               onChange={ddlUnitVoltageChanged}
                             >
-                              {unitVoltageInfo.ddlUnitVoltageDataTbl?.map((item, index) => (
+                              {unitVoltage?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>

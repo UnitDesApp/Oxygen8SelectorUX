@@ -37,6 +37,7 @@ import { saveAs } from 'file-saver';
 import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 import * as quoteReducer from '../redux/slices/quoteReducer';
 // components
 import Page from '../components/Page';
@@ -87,6 +88,10 @@ export default function JobQuote() {
     gvMisc,
     gvNotes,
   } = useSelector((state) => state.quote);
+
+  useEffect(() => {
+    dispatch(getAllBaseData());
+  }, []);
 
   // State
   const [success, setSuccess] = useState(false);

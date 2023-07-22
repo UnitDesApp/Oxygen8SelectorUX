@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // @mui
@@ -10,6 +10,9 @@ import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+// redux
+import { useDispatch, useSelector } from '../redux/store';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 // sections
 import { UnitInfo, Selection } from '../sections/unit-edit';
 import { ExportSelectionDialog } from '../sections/dialog';
@@ -51,6 +54,11 @@ export default function UnitEdit() {
   const [currentStep, setCurrentStep] = useState(1);
   const [openRPDialog, setOpenRPDialog] = useState(false);
   let onSubmitRef = useRef < Function > null;
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(getAllBaseData());
+  }, []);
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);

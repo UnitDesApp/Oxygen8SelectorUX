@@ -136,6 +136,7 @@ export const intProdTypeNovaID = 1;
 export const intProdTypeVentumID = 2;
 export const intProdTypeVentumLiteID = 3;
 export const intProdTypeTerraID = 4;
+export const intProdTypeVentumPlusID = 5;
 
 export const intUnitTypeERV_ID = 1;
 export const intUnitTypeHRV_ID = 2;

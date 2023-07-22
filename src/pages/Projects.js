@@ -23,6 +23,7 @@ import useTabs from '../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../hooks/useTable';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 import { getProjectsInfo, deleteProject, duplicateProject } from '../redux/slices/projectsReducer';
 // components
 import Page from '../components/Page';
@@ -53,6 +54,10 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 export default function MyProjects() {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllBaseData());
+  }, []);
 
   const {
     page,

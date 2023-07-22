@@ -8,6 +8,7 @@ import submittalReducer from './slices/submittalReducer';
 import quoteReducer from './slices/quoteReducer';
 import accountReducer from './slices/AccountReducer';
 import resourceReducer from './slices/ResourceReducer';
+import BaseReducer from './slices/BaseReducer';
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   quote: quoteReducer,
   account: accountReducer,
   resource: resourceReducer,
+  base: BaseReducer,
 });
 
 export { rootPersistConfig, rootReducer };

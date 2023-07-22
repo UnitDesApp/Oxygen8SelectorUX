@@ -20,6 +20,7 @@ import {
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 // routes
 import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
@@ -95,8 +96,9 @@ export default function ProjectDashboard() {
 
   const { projectInfo, unitList, isLoading } = useSelector((state) => state.projectDashboard);
 
-  useEffect(() => {
-    dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+  useEffect(async () => {
+    await dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+    await dispatch(getAllBaseData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

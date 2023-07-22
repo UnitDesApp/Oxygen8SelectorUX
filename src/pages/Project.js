@@ -12,6 +12,8 @@ import { useSelector, useDispatch } from '../redux/store';
 import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
 // routes
 import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../routes/paths';
+// redux
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -75,8 +77,9 @@ export default function Project() {
     setOpenRPDialog(false);
   }, []);
 
-  useEffect(() => {
-    dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+  useEffect(async () => {
+    await dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+    await dispatch(getAllBaseData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
