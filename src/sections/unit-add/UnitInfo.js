@@ -479,7 +479,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   }, [ckbHeatPumpVal]);
 
   const ckbDehumidificationChanged = useCallback(
-    async (e) => {
+    async () => {
       setCkbDehumidificationVal(!ckbDehumidificationVal);
     },
     [ckbDehumidificationVal]
