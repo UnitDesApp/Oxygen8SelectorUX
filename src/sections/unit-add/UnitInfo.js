@@ -191,8 +191,8 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       txbSummerReturnAirCFM: 325,
       txbSupplyAirESP: 0.75,
       txbExhaustAirESP: 0.75,
-      ddlUnitModelId: unitModelInfo?.ddlUnitModelId,
-      ddlUnitVoltageId: unitVoltageInfo?.ddlUnitVoltageId,
+      ddlUnitModelId: 0,
+      ddlUnitVoltageId: 0,
       txbAltitude: unitInfo?.txbAltitudeText,
       txbSummerOutdoorAirDB: unitInfo?.txbSummerOutdoorAirDBText,
       txbSummerOutdoorAirWB: unitInfo?.txbSummerOutdoorAirWBText,
@@ -314,8 +314,6 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
       unitInfo?.txbWinterReturnAirDBText,
       unitInfo?.txbWinterReturnAirRHText,
       unitInfo?.txbWinterReturnAirWBText,
-      unitModelInfo?.ddlUnitModelId,
-      unitVoltageInfo?.ddlUnitVoltageId,
       valveTypeInfo?.ddlValveTypeId,
     ]
   );
@@ -433,7 +431,7 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
   }, [dispatch, getAllFormData, setIsAddedNewUnit]);
 
   const ddlLocationChanged = useCallback(
-    async (e) => {
+    (e) => {
       setValue('ddlLocationId', Number(e.target.value));
     },
     [setValue]
@@ -596,11 +594,9 @@ export default function UnitInfo({ unitTypeData, setIsAddedNewUnit, isAddedNewUn
 
   const unitVoltage = useMemo(() => {
     const { unitVoltage, ddlUnitVoltageId } = getUnitVoltage(data, getAllFormData(), strUnitModelValue);
-    if (Number(values.ddlUnitVoltageId) !== Number(ddlUnitVoltageId)) {
-      setValue('ddlUnitVoltageId', ddlUnitVoltageId);
-    }
+    setValue('ddlUnitVoltageId', ddlUnitVoltageId);
     return unitVoltage;
-  }, [data, getAllFormData, setValue, strUnitModelValue, values.ddlUnitVoltageId]);
+  }, [data, getAllFormData, setValue, strUnitModelValue]);
 
   const QAFilterModel = useMemo(
     () => data.filterModel?.filter((item) => item.outdoor_air === 1 || item.id === values.ddlOA_FilterModelId),
