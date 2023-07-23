@@ -20,6 +20,7 @@ import {
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getProjectsAndUnitsInfo } from '../redux/slices/projectDashboardReducer';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 // routes
 import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
@@ -91,16 +92,24 @@ function StepIcon({ active, completed }) {
 export default function ProjectDashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
   const { projectId } = useParams();
 
   const { projectInfo, unitList, isLoading } = useSelector((state) => state.projectDashboard);
 
   useEffect(() => {
-    dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+    const getAllData = async () => {
+      await dispatch(getProjectsAndUnitsInfo({ jobId: projectId }));
+      if (!data) {
+        await dispatch(getAllBaseData());
+      }
+    };
+
+    getAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const activeStep = useMemo(() => unitList.length > 0 ? 2 : 1, []);
+  const activeStep = useMemo(() => (unitList.length > 0 ? 2 : 1), [unitList.length]);
   // const isComplete = activeStep === STEPS.length;
 
   const onClickRequestSubmittal = useCallback(() => {

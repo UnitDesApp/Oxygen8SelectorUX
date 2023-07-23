@@ -399,14 +399,16 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
 
   const txbSummerSupplyAirCFMChanged = useCallback(
     async (e) => {
-      setValue('txbSummerSupplyAirCFM', e.target.value);
+      const data = await dispatch(unitReducer.txbSummerSupplyAirCFMChanged(getAllFormData()));
+      setValue('txbSummerSupplyAirCFM', data.summerSupplyAirCFMInfo.txbSummerSupplyAirCFM);
     },
     [setValue]
   );
 
   const txbSummerReturnAirCFMChanged = useCallback(
     async (e) => {
-      setValue('txbSummerReturnAirCFM', e.target.value);
+      const data = await dispatch(unitReducer.txbSummerReturnAirCFMChanged(getAllFormData()));
+      setValue('txbSummerReturnAirCFM', data.summerReturnAirCFMInfo.summerReturnAirCFM);
     },
     [setValue]
   );
@@ -913,10 +915,7 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
                           </RHFSelect>
                         )}
                       </Stack>
-                      <Stack
-                        spacing={1}
-                        sx={{ ...getDisplay(getValues("ddlPreheatCompId") === IDs.intCompHWC_ID) }}
-                      >
+                      <Stack spacing={1} sx={{ ...getDisplay(getValues('ddlPreheatCompId') === IDs.intCompHWC_ID) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
@@ -1322,10 +1321,7 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
                         )}
                       </Stack>
 
-                      <Stack
-                        spacing={1}
-                        sx={{ ...getDisplay(getValues("ddlHeatingCompId") === IDs.intCompHWC_ID) }}
-                      >
+                      <Stack spacing={1} sx={{ ...getDisplay(getValues('ddlHeatingCompId') === IDs.intCompHWC_ID) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (
@@ -1553,10 +1549,7 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
                           }}
                         />
                       </Stack>
-                      <Stack
-                        spacing={1}
-                        sx={{ ...getDisplay(getValues("ddlReheatCompId") === IDs.intCompHWC_ID) }}
-                      >
+                      <Stack spacing={1} sx={{ ...getDisplay(getValues('ddlReheatCompId') === IDs.intCompHWC_ID) }}>
                         {isAvailable(heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Heating Fluid Type">
                             {heatingFluidDesignCondInfo.ddlHeatingFluidTypeDataTbl?.map((item, index) => (

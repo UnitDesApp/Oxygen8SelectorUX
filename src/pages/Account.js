@@ -59,7 +59,6 @@ export default function Account() {
     get();
   }, [dispatch]);
 
-
   const onCloseUserDlg = useCallback(() => {
     setAddUserDlgOpen(false);
   }, []);
@@ -94,10 +93,13 @@ export default function Account() {
         component: <AccountGeneral />,
       },
     ];
-  
+
     const intUAL = parseInt(user?.UAL, 10);
-  
-    if (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 || intUAL === intUAL_IntAdmin) {
+
+    if (
+      (intUAL === intUAL_Admin || intUAL === intUAL_IntLvl_2 || intUAL === intUAL_IntAdmin) &&
+      Number(user.verified)
+    ) {
       tab = [
         ...tab,
         {
@@ -114,12 +116,19 @@ export default function Account() {
     }
 
     return tab;
-  }, [user?.UAL])
+  }, [user?.UAL, user.verified]);
 
-  const handleChangeTab = useCallback((event, newValue) => {
-    navigate(`/account/${newValue}`);
-    onChangeTab(event, newValue);
-  }, [navigate, onChangeTab]);
+  const handleChangeTab = useCallback(
+    (event, newValue) => {
+      navigate(`/account/${newValue}`);
+      onChangeTab(event, newValue);
+    },
+    [navigate, onChangeTab]
+  );
+
+  const moveToVerificationPage = () => {
+    navigate('/auth/email-verification');
+  };
 
   if (isLoading) return <Loading />;
 
@@ -157,21 +166,28 @@ export default function Account() {
               )
             }
           />
-
+          {!Number(user.verified) && (
+            <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
+              <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
+              <a href="" onClick={moveToVerificationPage}>
+                please resend verification link!
+              </a>
+              .
+            </Alert>
+          )}
           <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
             value={currentTab}
             onChange={handleChangeTab}
+            sx={{marginTop: "16px"}}
           >
             {ACCOUNT_TABS.map((tab) => (
               <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
             ))}
           </Tabs>
-
           <Box sx={{ mb: 5 }} />
-
           {ACCOUNT_TABS.map((tab) => {
             const isMatched = tab.value === currentTab;
             return isMatched && <Box key={tab.value}>{tab.component}</Box>;

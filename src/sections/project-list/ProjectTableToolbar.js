@@ -4,6 +4,7 @@ import { Stack, IconButton, InputAdornment, TextField, Menu, MenuItem, Button, P
 import { styled } from '@mui/material/styles';
 // components
 import Iconify from '../../components/Iconify';
+import useAuth from '../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +26,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function ProjectTableToolbar({ filterName, onFilterName, onFilterRole, optionsRole, onOpneDialog }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { user } = useAuth();
   const open = Boolean(anchorEl);
   const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -98,7 +100,12 @@ export default function ProjectTableToolbar({ filterName, onFilterName, onFilter
         />
       </Item>
       <Item sx={{ width: { md: '20%', xs: '100%' } }}>
-        <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />} onClick={onOpneDialog}>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon={'eva:plus-fill'} />}
+          onClick={onOpneDialog}
+          disabled={!Number(user?.verified)}
+        >
           Create New Project
         </Button>
       </Item>

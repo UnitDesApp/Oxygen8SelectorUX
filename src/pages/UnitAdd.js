@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // file-saver
@@ -13,6 +13,9 @@ import { PATH_PROJECT } from '../routes/paths';
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+// redux
+import { getAllBaseData } from '../redux/slices/BaseReducer';
+import { useDispatch, useSelector } from '../redux/store';
 // sections
 import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
 import { ExportSelectionDialog } from '../sections/dialog';
@@ -72,6 +75,14 @@ export default function AddNewUnit() {
   const [intUnitNo, setIntUnitNo] = useState(0);
   const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
   const [openRPDialog, setOpenRPDialog] = useState(false);
+  const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
+
+  useEffect(() => {
+    if (!data) {
+      dispatch(getAllBaseData());
+    }
+  }, [data, dispatch]);
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);
@@ -203,25 +214,19 @@ export default function AddNewUnit() {
           <Grid container>
             <Grid item xs={8}>
               <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} spacing={2}>
-                <Item
-                  sx={{ color: currentStep === 0 && theme.palette.primary.main, cursor: 'pointer' }}
-                >
+                <Item sx={{ color: currentStep === 0 && theme.palette.primary.main, cursor: 'pointer' }}>
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-one-fill" width="25px" height="25px" />
                     <Typography variant="body1">Select product type</Typography>
                   </Stack>
                 </Item>
-                <Item
-                  sx={{ color: currentStep === 1 && theme.palette.primary.main, cursor: 'pointer' }}
-                >
+                <Item sx={{ color: currentStep === 1 && theme.palette.primary.main, cursor: 'pointer' }}>
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-two-fill" width="25px" height="25px" />
                     <Typography variant="body1">Add unit info</Typography>
                   </Stack>
                 </Item>
-                <Item
-                  sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}
-                >
+                <Item sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}>
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
                     <Typography variant="body1">Make a selection</Typography>

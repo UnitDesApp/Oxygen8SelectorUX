@@ -17,12 +17,12 @@ export default function Login() {
         <>
           <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
             <Box alignItems="center" sx={{ flexGrow: 1 }}>
-              <Typography variant='h3' textAlign="center">Welcome Back</Typography>
+              <Typography variant='h3' textAlign="center">Welcome to Configure8!</Typography>
             </Box>
           </Stack>
           <LoginForm />
           <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-            Don’t have an account?{' '}
+            Don’t have an account?
             <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.register}>
               <b>Sign Up</b>
             </Link>

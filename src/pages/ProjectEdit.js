@@ -43,11 +43,14 @@ export default function EditProjectInfo() {
   const { projectId } = useParams();
   const { state } = useLocation();
   const { projectList, projectInitInfo, isLoading } = useSelector((state) => state.projects);
+  const { data } = useSelector((state) => state.base);
   const isNew = window.location.href.includes('new');
 
   useEffect(() => {
-    dispatch(getProjectsInfo());
-  }, [dispatch]);
+    if (!data) {
+      dispatch(getProjectsInfo());
+    }
+  }, [dispatch, data]);
 
   const { baseOfDesign, UoM, country, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
     projectInitInfo;

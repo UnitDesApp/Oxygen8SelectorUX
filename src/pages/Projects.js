@@ -23,6 +23,7 @@ import useTabs from '../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../hooks/useTable';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 import { getProjectsInfo, deleteProject, duplicateProject } from '../redux/slices/projectsReducer';
 // components
 import Page from '../components/Page';
@@ -42,6 +43,7 @@ import { NewProjectFormDialog, ConfirmDialog } from '../sections/dialog';
 import Loading from '../sections/Loading';
 // utils
 import { ROLE_OPTIONS, TABLE_HEAD } from '../utils/constants';
+import useAuth from '../hooks/useAuth';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
@@ -52,6 +54,13 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 export default function MyProjects() {
   const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
+
+  useEffect(() => {
+    if (!data) {
+      dispatch(getAllBaseData());
+    }
+  }, [data, dispatch]);
 
   const {
     page,
@@ -69,6 +78,7 @@ export default function MyProjects() {
   } = useTable();
 
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     dispatch(getProjectsInfo());
@@ -205,7 +215,7 @@ export default function MyProjects() {
     <Page title="Projects">
       <RootStyle>
         <Container>
-          {(localStorage.getItem('verified') === 0 || localStorage.getItem('verified') === '' || !localStorage.getItem('verified')) && (
+          {!Number(user.verified) && (
             <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
               <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
               <a href="" onClick={moveToVerificationPage}>

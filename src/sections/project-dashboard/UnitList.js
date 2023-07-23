@@ -21,6 +21,7 @@ import { deleteUnits, duplicateUnit, multiDuplicateUnits } from '../../redux/sli
 // hooks
 import useTabs from '../../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
+import useAuth from '../../hooks/useAuth';
 // components
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
@@ -48,6 +49,7 @@ const TABLE_HEAD = [
 export default function UnitList() {
   const { projectId } = useParams();
   const { unitList } = useSelector((state) => state.projectDashboard);
+  const { user } = useAuth();
   const dispatch = useDispatch();
 
   const {
@@ -74,7 +76,16 @@ export default function UnitList() {
   const [tableData, setTableData] = useState(unitList);
   const [filterName, setFilterName] = useState('');
   const [openSuccess, setOpenSuccess] = useState(false);
-  const filterRole = "All";
+  const [openVerifyAlert, setOpenVerifyAlert] = useState(false);
+  const filterRole = 'All';
+
+  const handleOpenVerifyAlert = () => {
+    setOpenVerifyAlert(true);
+  };
+
+  const handleCloseVerifyAlert = () => {
+    setOpenVerifyAlert(false);
+  };
 
   useEffect(() => {
     setTableData(unitList);
@@ -133,9 +144,13 @@ export default function UnitList() {
 
   const handleEditRow = useCallback(
     (row) => {
-      navigate(PATH_UNIT.edit(projectId, row.unit_no), {
-        state: { ...row, intUnitTypeID: row.unit_nbr, intProductTypeID: row.product_type_id },
-      });
+      if (Number(user?.verified)) {
+        navigate(PATH_UNIT.edit(projectId, row.unit_no), {
+          state: { ...row, intUnitTypeID: row.unit_nbr, intProductTypeID: row.product_type_id },
+        });
+      } else {
+        handleOpenVerifyAlert();
+      }
     },
     [navigate, projectId]
   );
@@ -166,6 +181,10 @@ export default function UnitList() {
       }),
     [filterName, filterRole, filterStatus, order, orderBy, tableData]
   );
+
+  const moveToVerificationPage = () => {
+    navigate('/auth/email-verification');
+  };
 
   const denseHeight = dense ? 52 : 72;
 
@@ -266,6 +285,14 @@ export default function UnitList() {
       <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
         <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
           Unit is duplicated successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openVerifyAlert} autoHideDuration={3000} onClose={handleCloseVerifyAlert}>
+        <Alert onClose={handleCloseVerifyAlert} severity="error" sx={{ width: '100%' }}>
+          Please verify your email to see the details of unit!{' '}
+          <a href="" onClick={moveToVerificationPage}>
+            please resend verification link!
+          </a>
         </Alert>
       </Snackbar>
       <ConfirmDialog

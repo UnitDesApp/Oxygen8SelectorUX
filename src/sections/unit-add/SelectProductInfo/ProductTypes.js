@@ -26,11 +26,11 @@ export default function ProductType(props) {
               paddingTop: 5,
               gridTemplateColumns: {
                 xs: 'repeat(1, 1fr)',
-                sm: `repeat(${productTypes.length}, 1fr)`,
+                sm: `repeat(${productTypes?.length || 0}, 1fr)`,
               },
             }}
           >
-            {productTypes.map((ele) => (
+            {productTypes?.map((ele) => (
               <ProductTypeItem
                 key={ele.id}
                 label={ele.items}

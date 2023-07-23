@@ -37,6 +37,7 @@ import { saveAs } from 'file-saver';
 import { PATH_PROJECT, PATH_PROJECTS, PATH_UNIT } from '../routes/paths';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 import * as quoteReducer from '../redux/slices/quoteReducer';
 // components
 import Page from '../components/Page';
@@ -77,6 +78,7 @@ export default function JobQuote() {
   // const navigate = useNavigate();
   const { state } = useLocation();
   const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
   const {
     isLoading,
     quoteFormInfo,
@@ -87,6 +89,12 @@ export default function JobQuote() {
     gvMisc,
     gvNotes,
   } = useSelector((state) => state.quote);
+
+  useEffect(() => {
+    if (!data) {
+      dispatch(getAllBaseData());
+    }
+  }, [data, dispatch]);
 
   // State
   const [success, setSuccess] = useState(false);
@@ -304,7 +312,6 @@ export default function JobQuote() {
     },
     [dispatch, projectId]
   );
-
 
   return isLoading ? (
     <Loading />

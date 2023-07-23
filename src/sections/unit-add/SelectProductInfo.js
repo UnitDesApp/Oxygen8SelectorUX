@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 import { Container, CardContent, Card, Box, Tabs, Tab } from '@mui/material';
 
 // redux
-import { useSelector, useDispatch } from 'react-redux';
-import { getUnitTypeInfo } from '../../redux/slices/unitReducer';
+import { useSelector } from 'react-redux';
 
 // components
 import { ProductTypes, Applications, SideDescription, UnitTypes } from './SelectProductInfo/index';
@@ -26,16 +25,8 @@ SelectProductInfo.propTypes = {
 };
 
 export default function SelectProductInfo(props) {
-  const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.base);
   const { onSelectAppliaionItem, onSelectProductTypeItem, onSelectUnitTypeItem } = props;
-
-  const { productTypeDataTbl, productTypeUnitTypeLinkDataTbl } = useSelector((state) => state.unit);
-
-  useEffect(() => {
-    dispatch(getUnitTypeInfo());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [applicationValue, setApplicationValue] = useState('Application');
   const [productTypeValue, setProductTypeValue] = useState('Product type');
   const [productTypeID, setProductTypeID] = useState(-1);
@@ -93,12 +84,12 @@ export default function SelectProductInfo(props) {
             />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <ProductTypes productTypes={productTypeDataTbl} onSelectItem={onSelectProductTypeValue} />
+            <ProductTypes productTypes={data?.prodType} onSelectItem={onSelectProductTypeValue} />
           </TabPanel>
           <TabPanel value={value} index={2}>
             <UnitTypes
               productTypeID={productTypeID}
-              productTypeUnitTypeLinkDataTbl={productTypeUnitTypeLinkDataTbl}
+              productTypeUnitTypeLinkDataTbl={data?.prodTypeUnitTypeLink}
               onSelectItem={onSelectUnitTypeValue}
             />
           </TabPanel>
