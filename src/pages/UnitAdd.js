@@ -76,17 +76,10 @@ export default function AddNewUnit() {
   const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
   const [openRPDialog, setOpenRPDialog] = useState(false);
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
-    if (!data) {
-      dispatch(getAllBaseData());
-    }
-  }, [data, dispatch]);
-
-  const openDialog = useCallback(() => {
-    setOpenRPDialog(true);
-  }, []);
+    dispatch(getAllBaseData());
+  }, [dispatch]);
 
   const closeDialog = useCallback(() => {
     setOpenRPDialog(false);
