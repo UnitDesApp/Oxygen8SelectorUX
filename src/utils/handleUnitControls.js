@@ -140,8 +140,7 @@ const get_ddlItemsAddedOnID = (_dt, _strLinkColumn, _dtLink) => {
 const sortColume = (data, colume) => data.sort((a, b) => a[colume] - b[colume]);
 
 const unitModelFilter = (data, value, minColumeName, maxColumeName, unitModelId) =>
-  data
-    ?.filter((item) => (item[minColumeName] >= value && value <= item[maxColumeName]) || item.id === unitModelId)
+  data?.filter((item) => (item[minColumeName] >= value && value <= item[maxColumeName]) || item.id === unitModelId)
     .sort((a, b) => a.cfm_max - b.cfm_max);
 
 export const getUnitModel = (values, data, intUAL) => {
@@ -296,21 +295,9 @@ export const getUnitModel = (values, data, intUAL) => {
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
           if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumPlusUnitModel,
-              summerSupplyAirCFM,
-              'erv_cfm_min_ext_users',
-              'erv_cfm_max_ext_users',
-              unitModelId
-            );
+            unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'erv_cfm_min_ext_users', 'erv_cfm_max_ext_users', unitModelId);
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumPlusUnitModel,
-              summerSupplyAirCFM,
-              'hrv_cfm_min_ext_users',
-              'hrv_cfm_max_ext_users',
-              unitModelId
-            );
+            unitModel = unitModelFilter(data.ventumPlusUnitModel,summerSupplyAirCFM,'hrv_cfm_min_ext_users','hrv_cfm_max_ext_users',unitModelId);
           }
         } else {
           unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
