@@ -261,3 +261,6 @@ export const arrFanQtyToText = ['Zero', 'Single', 'Two', 'Three', 'Four', 'Five'
 export const strSoftwareVersion = 'Version 1.0.0.4'; //  2022-Feb-02
 
 export const strPricingVersion = 'Version 1.0.0.0';
+
+export const intElecHeaterInstallInCasingFieldID = 3;
+export const intElecHeaterInstallInCasingFactoryID = 4;
