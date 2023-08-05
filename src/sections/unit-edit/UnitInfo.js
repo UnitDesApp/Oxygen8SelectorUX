@@ -34,6 +34,16 @@ import {
   RHFCheckbox,
   RHFUploadSingleFile,
 } from '../../components/hook-form';
+
+import {
+  getExhaustAirESP,
+  getSummerReturnAirCFM,
+  getSummerSupplyAirCFM,
+  getSupplyAirESPInfo,
+  getUnitModel,
+  getUnitVoltage,
+} from '../../utils/handleUnitControls';
+
 import Iconify from '../../components/Iconify';
 // config
 import * as IDs from './config';
@@ -404,6 +414,7 @@ export default function UnitInfo({ projectId, unitId, unitData, setFunction }) {
     },
     [setValue]
   );
+
 
   const txbSummerReturnAirCFMChanged = useCallback(
     async (e) => {

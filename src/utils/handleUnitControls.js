@@ -336,142 +336,63 @@ export const getSummerSupplyAirCFM = (summerSupplyAirCFM, intProductTypeID, intU
   let intSummerSupplyAirCFM = Number(summerSupplyAirCFM);
   switch (intProductTypeID) {
     case ClsID.intProdTypeNovaID:
-      if (
-        intUAL === ClsID.intUAL_Admin ||
-        intUAL === ClsID.intUAL_IntAdmin ||
-        intUAL === ClsID.intUAL_IntLvl_2 ||
-        intUAL === ClsID.intUAL_IntLvl_1
-      ) {
-        if (intSummerSupplyAirCFM < intNOVA_MIN_CFM) {
-          intSummerSupplyAirCFM = intNOVA_MIN_CFM;
-        } else if (intSummerSupplyAirCFM > intNOVA_MAX_CFM) {
-          intSummerSupplyAirCFM = intNOVA_MAX_CFM;
-        }
-      } else if (intSummerSupplyAirCFM < intNOVA_INT_USERS_MIN_CFM) {
-        intSummerSupplyAirCFM = intNOVA_INT_USERS_MIN_CFM;
-      } else if (intSummerSupplyAirCFM > intNOVA_INT_USERS_MAX_CFM) {
-        intSummerSupplyAirCFM = intNOVA_INT_USERS_MAX_CFM;
-      }
+      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
+        if (intSummerSupplyAirCFM < intNOVA_MIN_CFM) { intSummerSupplyAirCFM = intNOVA_MIN_CFM; }
+        else if (intSummerSupplyAirCFM > intNOVA_MAX_CFM) { intSummerSupplyAirCFM = intNOVA_MAX_CFM; }
+      } else if (intSummerSupplyAirCFM < intNOVA_INT_USERS_MIN_CFM) { intSummerSupplyAirCFM = intNOVA_INT_USERS_MIN_CFM; }
+        else if (intSummerSupplyAirCFM > intNOVA_INT_USERS_MAX_CFM) { intSummerSupplyAirCFM = intNOVA_INT_USERS_MAX_CFM; }
       break;
     case ClsID.intProdTypeVentumID:
-      if (
-        intUAL === ClsID.intUAL_Admin ||
-        intUAL === ClsID.intUAL_IntAdmin ||
-        intUAL === ClsID.intUAL_IntLvl_2 ||
-        intUAL === ClsID.intUAL_IntLvl_1
-      ) {
+      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_WITH_BYPASS;
-          } else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_WITH_BYPASS;
-          }
-        } else if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_NO_BYPASS;
-        } else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_NO_BYPASS;
-        }
+          if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_NO_BYPASS; }
       } else if (ckbBypassVal === 1) {
-        if (intSummerSupplyAirCFM < intVEN_MIN_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intVEN_MIN_CFM_WITH_BYPASS;
-        } else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intVEN_MAX_CFM_WITH_BYPASS;
-        }
-      } else if (intSummerSupplyAirCFM < intVEN_MIN_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intVEN_MIN_CFM_NO_BYPASS;
-      } else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intVEN_MAX_CFM_NO_BYPASS;
-      }
+          if (intSummerSupplyAirCFM < intVEN_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intVEN_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_MAX_CFM_NO_BYPASS; }
       break;
     case ClsID.intProdTypeVentumLiteID:
-      if (
-        intUAL === ClsID.intUAL_Admin ||
-        intUAL === ClsID.intUAL_IntAdmin ||
-        intUAL === ClsID.intUAL_IntLvl_2 ||
-        intUAL === ClsID.intUAL_IntLvl_1
-      ) {
+      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS;
-          } else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS;
-          }
-        } else if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS;
-        } else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS;
-        }
+          if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS; }
       } else if (ckbBypassVal === 1) {
-        if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intVENLITE_MIN_CFM_WITH_BYPASS;
-        } else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intVENLITE_MAX_CFM_WITH_BYPASS;
-        }
-      } else if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intVENLITE_MIN_CFM_NO_BYPASS;
-      } else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intVENLITE_MAX_CFM_NO_BYPASS;
-      }
+          if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MAX_CFM_NO_BYPASS; }
       break;
     case ClsID.intProdTypeVentumPlusID:
-      if (
-        intUAL === ClsID.intUAL_Admin ||
-        intUAL === ClsID.intUAL_IntAdmin ||
-        intUAL === ClsID.intUAL_IntLvl_2 ||
-        intUAL === ClsID.intUAL_IntLvl_1
-      ) {
+      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS;
-          } else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS;
-          }
-        } else if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS;
-        } else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS;
-        }
+          if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS; }
       } else if (ckbBypassVal === 1) {
-        if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_WITH_BYPASS;
-        } else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_WITH_BYPASS;
-        }
-      } else if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_NO_BYPASS;
-      } else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_NO_BYPASS;
-      }
+          if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_NO_BYPASS; }
       break;
     case ClsID.intProdTypeTerraID:
-      if (
-        intUAL === ClsID.intUAL_Admin ||
-        intUAL === ClsID.intUAL_IntAdmin ||
-        intUAL === ClsID.intUAL_IntLvl_2 ||
-        intUAL === ClsID.intUAL_IntLvl_1
-      ) {
+      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_WITH_BYPASS;
-          } else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_WITH_BYPASS) {
-            intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_WITH_BYPASS;
-          }
-        } else if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_NO_BYPASS;
-        } else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_NO_BYPASS) {
-          intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_NO_BYPASS;
-        }
+          if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_NO_BYPASS; }
       } else if (ckbBypassVal === 1) {
-        if (intSummerSupplyAirCFM < intTERA_MIN_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intTERA_MIN_CFM_WITH_BYPASS;
-        } else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_WITH_BYPASS) {
-          intSummerSupplyAirCFM = intTERA_MAX_CFM_WITH_BYPASS;
-        }
-      } else if (intSummerSupplyAirCFM < intTERA_MIN_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intTERA_MIN_CFM_NO_BYPASS;
-      } else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_NO_BYPASS) {
-        intSummerSupplyAirCFM = intTERA_MAX_CFM_NO_BYPASS;
-      }
+          if (intSummerSupplyAirCFM < intTERA_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_MIN_CFM_WITH_BYPASS; }
+          else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_MAX_CFM_WITH_BYPASS; }
+        } else if (intSummerSupplyAirCFM < intTERA_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_MIN_CFM_NO_BYPASS; }
+          else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_MAX_CFM_NO_BYPASS; }
       break;
     default:
       break;
