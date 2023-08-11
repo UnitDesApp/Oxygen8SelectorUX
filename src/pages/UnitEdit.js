@@ -101,7 +101,7 @@ export default function UnitEdit() {
             ]}
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
             action={
-              currentStep === 1 && (
+              (currentStep === 1 || currentStep === 2) && (
                 <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
                   Export report
                 </Button>
@@ -154,8 +154,8 @@ export default function UnitEdit() {
         <ExportSelectionDialog
           isOpen={openRPDialog}
           onClose={closeDialog}
-          intProjectID={projectId}
-          intUnitNo={unitId}
+          intProjectID={projectId.toString()}
+          intUnitNo={unitId.toString()}
         />
       </RootStyle>
     </Page>

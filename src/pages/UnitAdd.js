@@ -238,8 +238,8 @@ export default function AddNewUnit() {
         <ExportSelectionDialog
           isOpen={openRPDialog}
           onClose={closeDialog}
-          intProjectID={projectId}
-          intUnitNo={intUnitNo}
+          intProjectID={projectId.toString()}
+          intUnitNo={intUnitNo.toString()}
         />
       </RootStyle>
     </Page>

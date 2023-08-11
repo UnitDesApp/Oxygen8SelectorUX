@@ -17,26 +17,12 @@ export default function Register() {
         <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h4" textAlign="center" gutterBottom>
-              Get started absolutely free.
-            </Typography>
-            <Typography sx={{ color: 'text.secondary' }} textAlign="center">
-              Free forever. No credit card needed.
+              Request Registration to Support Team
             </Typography>
           </Box>
         </Box>
         <RegisterForm />
 
-        <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-          By registering, I agree to OXYGEN8&nbsp;
-          <Link underline="always" color="text.primary" href="#">
-            Terms of Service
-          </Link>{' '}
-          and{' '}
-          <Link underline="always" color="text.primary" href="#">
-            Privacy Policy
-          </Link>
-          .
-        </Typography>
         <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
           Already have an account?{' '}
           <Link variant="subtitle2" to={PATH_AUTH.login} component={RouterLink}>
