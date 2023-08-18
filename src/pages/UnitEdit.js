@@ -14,7 +14,7 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { useDispatch, useSelector } from '../redux/store';
 import { getAllBaseData } from '../redux/slices/BaseReducer';
 // sections
-import { UnitInfo, Selection } from '../sections/unit-edit';
+import { UnitInfo, Selection } from '../sections/unit';
 import { ExportSelectionDialog } from '../sections/dialog';
 
 // ----------------------------------------------------------------------
@@ -109,9 +109,15 @@ export default function UnitEdit() {
             }
           />
           {currentStep === 1 && (
-            <UnitInfo projectId={projectId} unitId={unitId} unitData={state} setFunction={setFunction} />
+            <UnitInfo
+              projectId={Number(projectId)}
+              unitId={Number(unitId)}
+              unitTypeData={state}
+              setFunction={setFunction}
+              edit
+            />
           )}
-          {currentStep === 2 && <Selection unitTypeData={state} intUnitNo={unitId} />}
+          {currentStep === 2 && <Selection unitTypeData={state} intUnitNo={Number(unitId)} />}
         </Container>
         <FooterStepStyle>
           <Grid container>
@@ -144,9 +150,13 @@ export default function UnitEdit() {
               </Stack>
             </Grid>
             <Grid item xs={4} textAlign="center" alignContent="right">
-              <Button variant="contained" color="primary" onClick={onClickDone}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onClickDone}
+                endIcon={<Iconify icon="icons8:cancel-2" />}
+              >
                 Done
-                <Iconify icon="icons8:cancel-2" />
               </Button>
             </Grid>
           </Grid>

@@ -146,13 +146,13 @@ export default function UnitList() {
     (row) => {
       if (Number(user?.verified)) {
         navigate(PATH_UNIT.edit(projectId, row.unit_no), {
-          state: { ...row, intUnitTypeID: row.unit_nbr, intProductTypeID: row.product_type_id },
+          state: { ...row, intUnitTypeID: row.unit_type_id, intProductTypeID: row.product_type_id },
         });
       } else {
         handleOpenVerifyAlert();
       }
     },
-    [navigate, projectId]
+    [navigate, projectId, user?.verified]
   );
 
   const onDuplicate = useCallback(

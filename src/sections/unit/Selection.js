@@ -24,7 +24,6 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
-// import { LoadingButton } from '@mui/lab';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
 import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
@@ -33,11 +32,6 @@ import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import Image from '../../components/Image';
-// utils
-// import axios from '../../utils/axios';
-// config
-// import { serverUrl } from '../../config';
-// theme
 
 //------------------------------------------------
 
