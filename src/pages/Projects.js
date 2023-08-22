@@ -215,7 +215,7 @@ export default function MyProjects() {
     <Page title="Projects">
       <RootStyle>
         <Container>
-          {!Number(user.verified) && (
+          {!Number(user?.verified || 0) && (
             <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
               <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
               <a href="" onClick={moveToVerificationPage}>

@@ -42,8 +42,8 @@ export default function Router() {
         { path: 'register', element: <Register /> },
         { path: 'reset-password/:token', element: <ResetPassword /> },
         { path: 'verify', element: <VerifyCode /> },
-        { path: 'email-verification', element: <EmailVerification />},
-        { path: 'email-verification/:token', element: <EmailVerification />}
+        { path: 'email-verification', element: <EmailVerification /> },
+        { path: 'email-verification/:token', element: <EmailVerification /> },
       ],
     },
     // Main Routes

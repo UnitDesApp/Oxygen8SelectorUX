@@ -183,8 +183,7 @@ export const getUnitModel = (
   ckbBypassVal,
   intUAL
 ) => {
-  let unitModel = new Array([]);
-
+  let unitModel = [];
   if (locationId > -1 && orientationId > -1) {
     let unitModelLink;
     let location;
@@ -198,7 +197,8 @@ export const getUnitModel = (
 
         unitModelLink = unitModelLink.filter(
           (item) =>
-            item.location_value === location[0].value.toString() && item.orientation_value === orientation[0].value
+            item.location_value === location?.[0]?.value.toString() &&
+            item.orientation_value === orientation?.[0]?.value
         );
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
@@ -337,7 +337,7 @@ export const getUnitModel = (
         }
         location = data.generalLocation?.filter((item) => item.id === locationId);
         unitModel = unitModel?.filter(
-          (item) => item.location_id_key === location[0].id_key && item.enabled === 1 && item.bypass === ckbBypassVal
+          (item) => item.location_id_key === location?.[0]?.id_key && item.enabled === 1 && item.bypass === ckbBypassVal
         );
         break;
       case ClsID.intProdTypeTerraID:
@@ -480,15 +480,15 @@ export const getSummerReturnAirCFM = (summerReturnAirCFM, values, intUAL, data) 
           intSummerReturnAirCFM = Number(Math.min(intSummerSupplyAirCFM * 2, intVEN_INT_USERS_MAX_CFM_NO_BYPASS));
         }
       } else if (ckbBypassVal === 1) {
-        if (intSummerReturnAirCFM < Number(dtModel.Rows[0].erv_cfm_min_ext_users)) {
-          intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_min_ext_users);
-        } else if (intSummerReturnAirCFM > Number(dtModel.Rows[0].erv_cfm_max_ext_users)) {
-          intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_max_ext_users);
+        if (intSummerReturnAirCFM < Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users)) {
+          intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users);
+        } else if (intSummerReturnAirCFM > Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users)) {
+          intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users);
         }
-      } else if (intSummerReturnAirCFM < Number(dtModel.Rows[0].erv_cfm_min_ext_users)) {
-        intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_min_ext_users);
-      } else if (intSummerReturnAirCFM > Number(dtModel.Rows[0].erv_cfm_max_ext_users)) {
-        intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_max_ext_users);
+      } else if (intSummerReturnAirCFM < Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users)) {
+        intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users);
+      } else if (intSummerReturnAirCFM > Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users)) {
+        intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users);
       }
       break;
     case ClsID.intProdTypeVentumLiteID:
@@ -522,15 +522,15 @@ export const getSummerReturnAirCFM = (summerReturnAirCFM, values, intUAL, data) 
           intSummerReturnAirCFM = Number(Math.min(intSummerSupplyAirCFM * 2, intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS));
         }
       } else if (ckbBypassVal === 1) {
-        if (intSummerReturnAirCFM < Number(dtModel.Rows[0].erv_cfm_min_ext_users)) {
-          intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_min_ext_users);
-        } else if (intSummerReturnAirCFM > Number(dtModel.Rows[0].erv_cfm_max_ext_users)) {
-          intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_max_ext_users);
+        if (intSummerReturnAirCFM < Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users)) {
+          intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users);
+        } else if (intSummerReturnAirCFM > Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users)) {
+          intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users);
         }
-      } else if (intSummerReturnAirCFM < Number(dtModel.Rows[0].erv_cfm_min_ext_users)) {
-        intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_min_ext_users);
-      } else if (intSummerReturnAirCFM > Number(dtModel.Rows[0].erv_cfm_max_ext_users)) {
-        intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_max_ext_users);
+      } else if (intSummerReturnAirCFM < Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users)) {
+        intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users);
+      } else if (intSummerReturnAirCFM > Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users)) {
+        intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users);
       }
       break;
     case ClsID.intProdTypeVentumPlusID:
@@ -564,15 +564,15 @@ export const getSummerReturnAirCFM = (summerReturnAirCFM, values, intUAL, data) 
           intSummerReturnAirCFM = Number(Math.min(intSummerSupplyAirCFM * 2, intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS));
         }
       } else if (ckbBypassVal === 1) {
-        if (intSummerReturnAirCFM < Number(dtModel.Rows[0].erv_cfm_min_ext_users)) {
-          intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_min_ext_users);
-        } else if (intSummerReturnAirCFM > Number(dtModel.Rows[0].erv_cfm_max_ext_users)) {
-          intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_max_ext_users);
+        if (intSummerReturnAirCFM < Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users)) {
+          intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users);
+        } else if (intSummerReturnAirCFM > Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users)) {
+          intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users);
         }
-      } else if (intSummerReturnAirCFM < Number(dtModel.Rows[0].erv_cfm_min_ext_users)) {
-        intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_min_ext_users);
-      } else if (intSummerReturnAirCFM > Number(dtModel.Rows[0].erv_cfm_max_ext_users)) {
-        intSummerReturnAirCFM = Number(dtModel.Rows[0].erv_cfm_max_ext_users);
+      } else if (intSummerReturnAirCFM < Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users)) {
+        intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_min_ext_users);
+      } else if (intSummerReturnAirCFM > Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users)) {
+        intSummerReturnAirCFM = Number(dtModel.Rows?.[0]?.erv_cfm_max_ext_users);
       }
       break;
     default:
@@ -692,10 +692,10 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
   const unitCoolingHeadingInfo = data?.components;
   const heatExchangeInfo = data?.heatExch;
 
-  let dtPreheatComp = [];
-  let dtHeatExchComp = [];
-  let dtCoolingComp = [];
-  let dtHeatingComp = [];
+  let dtPreheatComp = unitCoolingHeadingInfo;
+  let dtHeatExchComp = heatExchangeInfo;
+  let dtCoolingComp = unitCoolingHeadingInfo;
+  let dtHeatingComp = unitCoolingHeadingInfo;
 
   if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
     dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
@@ -1066,7 +1066,7 @@ export const getReheatInfo = (data, values) => {
     }
 
     reheatInfo.ddlReheatCompDataTbl = dtReheatComp;
-    reheatInfo.ddlReheatCompId = dtReheatComp[0].id;
+    reheatInfo.ddlReheatCompId = dtReheatComp?.[0]?.id;
     reheatInfo.divReheatCompVisible = true;
   } else {
     dtReheatComp = data.components;
@@ -1089,13 +1089,13 @@ export const getHeatingFluidDesignCondInfo = (data, intPreheatCompID, intHeating
 
   const dtHeatingFluidType = data.fluidType;
   returnInfo.ddlHeatingFluidTypeDataTbl = dtHeatingFluidType;
-  returnInfo.ddlHeatingFluidTypeId = dtHeatingFluidType[0].id;
+  returnInfo.ddlHeatingFluidTypeId = dtHeatingFluidType?.[0]?.id;
   returnInfo.ddlHeatingFluidConcentrationDataTbl = getItemsAddedOnIDDataTable(
     data.fluidConcentration,
     'fluid_type_id',
     returnInfo.ddlHeatingFluidTypeId
   );
-  returnInfo.ddlHeatingFluidConcentrationId = returnInfo.ddlHeatingFluidConcentrationDataTbl[0].id;
+  returnInfo.ddlHeatingFluidConcentrationId = returnInfo.ddlHeatingFluidConcentrationDataTbl?.[0]?.id;
 
   return returnInfo;
 };
@@ -1120,7 +1120,7 @@ export const getDamperAndActuatorInfo = (data, intProductTypeID, intLocationID) 
   }
 
   returnInfo.ddlDamperAndActuatorDataTbl = dtDamperAndAct;
-  returnInfo.ddlDamperAndActuatorId = dtDamperAndAct[0].id;
+  returnInfo.ddlDamperAndActuatorId = dtDamperAndAct?.[0]?.id;
 
   if (intLocationID === ClsID.intLocationOutdoorID) {
     switch (intProductTypeID) {
@@ -1300,7 +1300,7 @@ export const getHandingInfo = (data) => {
   const returnInfo = [];
 
   returnInfo.ddlHandingDataTbl = data.handing;
-  returnInfo.ddlHandingId = returnInfo.ddlHandingDataTbl[0].id;
+  returnInfo.ddlHandingId = returnInfo.ddlHandingDataTbl?.[0]?.id;
 
   return returnInfo;
 };
@@ -1319,6 +1319,7 @@ export const getSupplyAirOpeningInfo = (
   intProductTypeID,
   intLocationID,
   intOrientationID,
+  intSupplyAirOpeningId,
   strSupplyAirOpening,
   intCoolingCompID,
   intHeatingCompID,
@@ -1339,7 +1340,7 @@ export const getSupplyAirOpeningInfo = (
     dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_sa', dtLink);
 
     returnInfo.ddlSupplyAirOpeningDataTbl = dtSelectionFinalTable;
-    returnInfo.ddlSupplyAirOpeningId = dtSelectionTable[0].id;
+
     if (
       intOrientationID === ClsID.intOrientationVerticalID &&
       (intCoolingCompID > 1 || intHeatingCompID > 1 || intReheatCompID > 1)
@@ -1348,18 +1349,23 @@ export const getSupplyAirOpeningInfo = (
     }
 
     if (isContain(dtSelectionFinalTable, 'items', strSupplyAirOpening)) {
+      returnInfo.ddlSupplyAirOpeningId = intSupplyAirOpeningId;
       returnInfo.ddlSupplyAirOpeningText = strSupplyAirOpening;
     } else {
-      returnInfo.ddlSupplyAirOpeningText = dtSelectionTable[0].items;
-      strSupplyAirOpening = dtSelectionTable[0].items.toString();
+      returnInfo.ddlSupplyAirOpeningId = dtSelectionTable?.[0]?.id;
+      returnInfo.ddlSupplyAirOpeningText = dtSelectionTable?.[0]?.items.toString();
     }
   } else if (intUnitTypeID === ClsID.intUnitTypeAHU_ID) {
     dtSelectionTable = data.openingAHU_SA;
 
     returnInfo.ddlSupplyAirOpeningDataTbl = dtSelectionTable;
-    returnInfo.ddlSupplyAirOpeningId = dtSelectionTable[0].id;
-    returnInfo.ddlSupplyAirOpeningText = dtSelectionTable.items;
-    strSupplyAirOpening = dtSelectionTable[0].items.toString();
+    if (isContain(dtSelectionFinalTable, 'items', strSupplyAirOpening)) {
+      returnInfo.ddlSupplyAirOpeningId = intSupplyAirOpeningId;
+      returnInfo.ddlSupplyAirOpeningText = strSupplyAirOpening;
+    } else {
+      returnInfo.ddlSupplyAirOpeningId = dtSelectionTable?.[0]?.id;
+      returnInfo.ddlSupplyAirOpeningText = dtSelectionTable?.[0]?.items.toString();
+    }
   }
 
   return returnInfo;

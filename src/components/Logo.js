@@ -24,7 +24,7 @@ export default function Logo({ width, disabledLink = false, sx }) {
 
   const logo = (
     <Box sx={{ width, height: 40, ...sx }}>
-      <LogoStyle src = "/logo/logo_single.svg" width="400px" height="100%" viewBox="0 0 512 512"/>
+      <LogoStyle src = "/logo/logo_full.png" width="400px" height="100%" viewBox="0 0 512 512"/>
     </Box>
   );
 

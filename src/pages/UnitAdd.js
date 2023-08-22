@@ -1,28 +1,21 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
-// file-saver
-import { saveAs } from 'file-saver';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import { Grid, Card, Divider, Container, Paper, Button, Stack, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 // routes
-import { PATH_PROJECT } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // redux
 import { getAllBaseData } from '../redux/slices/BaseReducer';
-import { useDispatch, useSelector } from '../redux/store';
+import { useDispatch } from '../redux/store';
 // sections
-import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
+import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit';
 import { ExportSelectionDialog } from '../sections/dialog';
-// utils
-import axios from '../utils/axios';
-// config
-import { serverUrl } from '../config';
 
 // ----------------------------------------------------------------------
 
@@ -73,7 +66,6 @@ export default function AddNewUnit() {
   const [isAddedNewUnit, setIsAddedNewUnit] = useState(false);
   const [unitTypeData, setUnitTypeData] = useState(DEFAULT_UNIT_DATA);
   const [intUnitNo, setIntUnitNo] = useState(0);
-  const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
   const [openRPDialog, setOpenRPDialog] = useState(false);
   const dispatch = useDispatch();
 
@@ -89,6 +81,10 @@ export default function AddNewUnit() {
   const onSelectAppliaionItem = (value, txb) => {
     setUnitTypeData({ ...unitTypeData, intApplicationTypeID: value, txbApplicationType: txb });
   };
+
+  const openDialog = useCallback(() => {
+    setOpenRPDialog(true);
+  }, []);
 
   const onSelectProductTypeItem = (value, txb) => {
     setUnitTypeData({ ...unitTypeData, intProductTypeID: value, txbProductType: txb });
@@ -120,34 +116,6 @@ export default function AddNewUnit() {
     return true;
   };
 
-  const downloadPDF = async () => {
-    const data = {
-      intProjectID: projectId,
-      intUnitNo,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-    setIsSelectionDownloading(true);
-
-    await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
-      // Get File Name
-      let filename = '';
-      const disposition = response.headers['content-disposition'];
-      if (disposition && disposition.indexOf('attachment') !== -1) {
-        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-        const matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) {
-          filename = matches[1].replace(/['"]/g, '');
-        }
-      }
-
-      // Save File
-      saveAs(response.data, `${filename}.pdf`);
-    });
-
-    setIsSelectionDownloading(false);
-  };
-
   return (
     <Page title="Unit: Add">
       <RootStyle>
@@ -155,31 +123,17 @@ export default function AddNewUnit() {
           <HeaderBreadcrumbs
             heading={`Add New: ${STEP_PAGE_NAME[currentStep]}`}
             links={[
-              { name: 'My project', href: PATH_PROJECT.project(projectId, 'unitlist') },
-              // { name: 'Selected Project', href: PATH_MY_JOBS.dashboard },
+              { name: 'My projects', href: PATH_PROJECTS.root },
+              { name: 'Dashboard', href: PATH_PROJECT.project(projectId, 'unitlist') },
               { name: 'Add New Unit' },
             ]}
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
             action={
-              <>
-                {/* {currentStep === 1 && (
-                  <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
-                    Export report
-                  </Button>
-                )} */}
-                {currentStep === 2 && (
-                  <Stack direction="row" spacing={5}>
-                    <LoadingButton
-                      loading={isSelectionDownloading}
-                      variant="text"
-                      onClick={downloadPDF}
-                      startIcon={<Iconify icon="mdi:download-outline" />}
-                    >
-                      Export selection
-                    </LoadingButton>
-                  </Stack>
-                )}
-              </>
+              currentStep === 2 && (
+                <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
+                  Export report
+                </Button>
+              )
             }
           />
 
@@ -192,6 +146,7 @@ export default function AddNewUnit() {
           )}
           {currentStep === 1 && (
             <UnitInfo
+              projectId={Number(projectId)}
               unitTypeData={unitTypeData}
               intProductTypeID={unitTypeData.intProductTypeID}
               isAddedNewUnit={isAddedNewUnit}
@@ -201,7 +156,7 @@ export default function AddNewUnit() {
               }}
             />
           )}
-          {currentStep === 2 && <Selection unitTypeData={unitTypeData} intUnitNo={intUnitNo} />}
+          {currentStep === 2 && <Selection unitTypeData={unitTypeData} intUnitNo={Number(intUnitNo)} />}
         </Container>
         <FooterStepStyle>
           <Grid container>
@@ -238,8 +193,8 @@ export default function AddNewUnit() {
         <ExportSelectionDialog
           isOpen={openRPDialog}
           onClose={closeDialog}
-          intProjectID={projectId}
-          intUnitNo={intUnitNo}
+          intProjectID={projectId.toString()}
+          intUnitNo={intUnitNo.toString()}
         />
       </RootStyle>
     </Page>

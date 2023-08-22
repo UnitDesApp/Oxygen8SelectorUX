@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, IconButton, InputAdornment, Alert } from '@mui/material';
+import { Stack, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
-import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField, RHFSelect } from '../../../components/hook-form';
+import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -20,24 +19,32 @@ export default function RegisterForm() {
 
   const isMountedRef = useIsMountedRef();
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const RegisterSchema = Yup.object().shape({
-    firstname: Yup.string().required('First name required'),
-    lastname: Yup.string().required('Last name required'),
-    username: Yup.string().required('User name required'),
+    firstname: Yup.string().required('First name is required'),
+    lastname: Yup.string().required('Last name is required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
-    accessLevel: Yup.string().required('Access Level is required'),
+    company_name: Yup.string().required('Company name is required'),
+    job_title: Yup.string().required('Job title is required'),
+    phone_number: Yup.string().required('Phone number is required'),
+    address1: Yup.string().required('Address is required'),
+    address2: Yup.string(),
+    city: Yup.string().required('City is required'),
+    province: Yup.string().required('State/Province is required'),
+    country: Yup.string().required('Country is required'),
   });
 
   const defaultValues = {
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
-    password: '',
-    accessLevel: 10,
+    company_name: '',
+    job_title: '',
+    phone_number: '',
+    address1: '',
+    address2: '',
+    city: '',
+    province: '',
+    country: '',
   };
 
   const methods = useForm({
@@ -84,33 +91,22 @@ export default function RegisterForm() {
           <RHFTextField name="firstname" label="First name" />
           <RHFTextField name="lastname" label="Last name" />
         </Stack>
-        <RHFTextField name="username" label="User name" />
         <RHFTextField name="email" label="Email address" />
-        <RHFSelect size="small" name="accessLevel" label="Access level" placeholder="">
-          <option value="10">Admin</option>
-          <option value="4">Internal Admin</option>
-          <option value="3">Internal 2</option>
-          <option value="2">Internal 1</option>
-          <option value="1">External</option>
-          <option value="5">External Special</option>
-        </RHFSelect>
-        <RHFTextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+        <RHFTextField name="company_name" label="Company Name" />
+        <RHFTextField name="job_title" label="Job Title" />
+        <RHFTextField name="phone_number" label="Phone Number" />
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <RHFTextField name="address1" label="Address1" />
+          <RHFTextField name="address2" label="Address2 (optional)" />
+        </Stack>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <RHFTextField name="city" label="City" />
+          <RHFTextField name="province" label="State/Province" />
+          <RHFTextField name="country" label="Country" />
+        </Stack>
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Register
+          Request to register
         </LoadingButton>
       </Stack>
     </FormProvider>
