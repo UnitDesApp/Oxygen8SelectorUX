@@ -698,7 +698,8 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
   let dtHeatingComp = unitCoolingHeadingInfo;
 
   if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-    dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
+    // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
+    dtPreheatComp = unitCoolingHeadingInfo.filter(e => e.erv_preheat === 1).map(e => { return { value: e.id, items: e.items}})
 
     if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
       dtPreheatComp = unitCoolingHeadingInfo?.filter((item) => Number(item.id) !== ClsID.intCompHWC_ID) || [];
@@ -730,6 +731,7 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
     dtCoolingComp,
     dtHeatingComp,
     dtReheatComp: unitCoolingHeadingInfo,
+    // dtReheatComp = getReheatInfo().dtReheatComp;
   };
 };
 

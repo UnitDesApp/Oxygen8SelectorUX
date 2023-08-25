@@ -57,10 +57,8 @@ export default function MyProjects() {
   const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
-    if (!data) {
-      dispatch(getAllBaseData());
-    }
-  }, [data, dispatch]);
+    dispatch(getAllBaseData());
+  }, [dispatch]);
 
   const {
     page,

@@ -1,67 +1,67 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // @mui
-import { styled } from '@mui/material/styles';
+import { LoadingButton } from '@mui/lab';
 import {
-  Container,
-  Box,
-  Grid,
-  Typography,
-  LinearProgress,
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
+  Box,
+  Container,
+  Grid,
+  LinearProgress,
+  Snackbar,
   Stack,
   TextField,
-  Snackbar,
-  Alert,
+  Typography,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { styled } from '@mui/material/styles';
 // hooks
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useUnitEditFormSchema } from '../../hooks/useUnitEditForm';
 import useAuth from '../../hooks/useAuth';
+import { useUnitEditFormSchema } from '../../hooks/useUnitEditForm';
 // redux
-import { useSelector, useDispatch } from '../../redux/store';
 import * as unitReducer from '../../redux/slices/unitReducer';
+import { useDispatch, useSelector } from '../../redux/store';
 // components
+import Iconify from '../../components/Iconify';
 import Page from '../../components/Page';
 import {
   FormProvider,
-  RHFTextField,
-  RHFSelect,
-  RHFControlCheckbox,
   RHFCheckbox,
+  RHFControlCheckbox,
+  RHFSelect,
+  RHFTextField,
   RHFUploadSingleFile,
 } from '../../components/hook-form';
-import Iconify from '../../components/Iconify';
 // config
 import * as IDs from '../../config';
 import {
   getComponentInfo,
-  getPreheatElecHeaterInstallationInfo,
+  getCustomInputsInfo,
+  getDXCoilRefrigDesignCondInfo,
+  getDamperAndActuatorInfo,
+  getDehumidificationInfo,
+  getDrainPanInfo,
+  getElecHeaterVoltageInfo,
   getExhaustAirESP,
+  getHandingInfo,
+  getHeatElecHeaterInstallationInfo,
+  getHeatPumpInfo,
+  getHeatingFluidDesignCondInfo,
+  getItemsAddedOnIDDataTable,
+  getPreheatElecHeaterInstallationInfo,
+  getRemainingOpeningsInfo,
   getSummerReturnAirCFM,
   getSummerSupplyAirCFM,
   getSupplyAirESPInfo,
+  getSupplyAirOpeningInfo,
+  getUALInfo,
   getUnitModel,
   getUnitVoltage,
-  getItemsAddedOnIDDataTable,
-  getCustomInputsInfo,
-  getUALInfo,
-  getHeatPumpInfo,
-  getDehumidificationInfo,
-  getDXCoilRefrigDesignCondInfo,
-  getHeatElecHeaterInstallationInfo,
-  getHeatingFluidDesignCondInfo,
-  getDamperAndActuatorInfo,
-  getElecHeaterVoltageInfo,
   getValveAndActuatorInfo,
-  getDrainPanInfo,
-  getHandingInfo,
-  getSupplyAirOpeningInfo,
-  getRemainingOpeningsInfo,
 } from '../../utils/handleUnitControls';
 import { getUnitModelCodes } from '../../utils/handleUnitModelCodes';
 
