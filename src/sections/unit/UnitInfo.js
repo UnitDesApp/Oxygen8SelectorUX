@@ -62,6 +62,7 @@ import {
   getHandingInfo,
   getSupplyAirOpeningInfo,
   getRemainingOpeningsInfo,
+  getReheatInfo,
 } from '../../utils/handleUnitControls';
 import { getUnitModelCodes } from '../../utils/handleUnitModelCodes';
 
@@ -649,7 +650,7 @@ export default function UnitInfo({
       Number(values.ddlOrientationId),
       values.txbSummerSupplyAirCFM,
       Number(ckbBypassVal),
-      Number(user.UAL)
+      Number(user?.UAL || 0)
     );
 
     // set unit model value based calculated value
@@ -672,7 +673,7 @@ export default function UnitInfo({
     values.ddlOrientationId,
     values.txbSummerSupplyAirCFM,
     ckbBypassVal,
-    user.UAL,
+    user?.UAL || 0,
     setValue,
   ]);
 
@@ -692,11 +693,32 @@ export default function UnitInfo({
     [data, values]
   );
 
-  const { dtPreheatComp, dtCoolingComp, dtHeatingComp, dtReheatComp } = useMemo(
-    () => getComponentInfo(data, Number(intProductTypeID), Number(intUnitTypeID)),
-    [data, intProductTypeID, intUnitTypeID]
+  const { dtPreheatComp, dtCoolingComp, dtHeatingComp } = useMemo(
+    () => getComponentInfo(data, Number(intProductTypeID), Number(intUnitTypeID), values),
+    [data, intProductTypeID, intUnitTypeID, values]
   );
 
+  const { dtReheatComp } = useMemo(
+    () =>
+      getReheatInfo(
+        data,
+        ckbDehumidificationVal,
+        Number(values.ddlCoolingCompId),
+        Number(user?.UAL || 0),
+        Number(intUnitTypeID),
+        Number(intProductTypeID),
+        Number(values.ddlUnitModelId)
+      ),
+    [
+      ckbDehumidificationVal,
+      data,
+      intProductTypeID,
+      intUnitTypeID,
+      user?.UAL || 0,
+      values.ddlCoolingCompId,
+      values.ddlUnitModelId,
+    ]
+  );
 
   const preheatElecHeaterInstallationInfo = useMemo(() => {
     const result = getPreheatElecHeaterInstallationInfo(
@@ -877,18 +899,23 @@ export default function UnitInfo({
   // onChange functions
   const handleBlurSummerSupplyAirCFM = useCallback(
     (e) => {
-      const value = getSummerSupplyAirCFM(e.target.value, getAllFormData(), Number(user.UAL), Number(ckbBypassVal));
+      const value = getSummerSupplyAirCFM(
+        e.target.value,
+        getAllFormData(),
+        Number(user?.UAL || 0),
+        Number(ckbBypassVal)
+      );
       setValue('txbSummerSupplyAirCFM', value);
     },
-    [ckbBypassVal, getAllFormData, setValue, user.UAL]
+    [ckbBypassVal, getAllFormData, setValue, user?.UAL || 0]
   );
 
   const handleBlurSummerReturnAirCFM = useCallback(
     (e) => {
-      const value = getSummerReturnAirCFM(e.target.value, getAllFormData(), Number(user.UAL), data);
+      const value = getSummerReturnAirCFM(e.target.value, getAllFormData(), Number(user?.UAL || 0), data);
       setValue('txbSummerReturnAirCFM', value);
     },
-    [data, getAllFormData, setValue, user.UAL]
+    [data, getAllFormData, setValue, user?.UAL || 0]
   );
 
   const handleBlurSupplyAirESP = useCallback(

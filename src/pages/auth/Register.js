@@ -22,8 +22,7 @@ export default function Register() {
           </Box>
         </Box>
         <RegisterForm />
-
-        <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ mt: 3, pb: 3, textAlign: 'center' }}>
           Already have an account?{' '}
           <Link variant="subtitle2" to={PATH_AUTH.login} component={RouterLink}>
             Login

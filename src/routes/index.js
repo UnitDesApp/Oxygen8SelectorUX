@@ -11,6 +11,7 @@ import GuestGuard from '../guards/GuestGuard';
 // import { PATH_AFTER_LOGIN } from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+import RegisterSuccess from '../pages/auth/RegisterSuccess';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +41,7 @@ export default function Router() {
         },
         { path: 'reset-password', element: <ResetPassword /> },
         { path: 'register', element: <Register /> },
+        { path: 'register-success', element: <RegisterSuccess /> },
         { path: 'reset-password/:token', element: <ResetPassword /> },
         { path: 'verify', element: <VerifyCode /> },
         { path: 'email-verification', element: <EmailVerification /> },

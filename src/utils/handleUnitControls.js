@@ -821,7 +821,6 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
     dtHeatExchComp,
     dtCoolingComp,
     dtHeatingComp,
-    dtReheatComp: unitCoolingHeadingInfo,
   };
 };
 
@@ -1113,27 +1112,35 @@ export const getHeatElecHeaterInstallationInfo = (data, intHeatingCompID, intReh
   return returnInfo;
 };
 
-export const getReheatInfo = (data, values) => {
+export const getReheatInfo = (
+  data,
+  ckbDehumidificationVal,
+  intCoolingCompID,
+  intUAL,
+  intUnitTypeID,
+  intProductTypeID,
+  intUnitModelID
+) => {
   const reheatInfo = [];
   let dtReheatComp = [];
 
-  if (values.ckbDehumidificationVal) {
+  if (ckbDehumidificationVal) {
     dtReheatComp = data.components;
 
-    switch (values.intCoolingCompID) {
+    switch (intCoolingCompID) {
       case ClsID.intCompCWC_ID:
         dtReheatComp = dtReheatComp.filter((item) => item.id.toString() !== ClsID.intCompHGRH_ID.toString());
         break;
       case ClsID.intCompDX_ID:
         if (
-          values.intUAL === ClsID.intUAL_External &&
-          (values.intUnitTypeID === ClsID.intUnitTypeERV_ID || values.intUnitTypeID === ClsID.intUnitTypeHRV_ID)
+          intUAL === ClsID.intUAL_External &&
+          (intUnitTypeID === ClsID.intUnitTypeERV_ID || intUnitTypeID === ClsID.intUnitTypeHRV_ID)
         ) {
           dtReheatComp = dtReheatComp.filter((item) => item.id.toString() !== ClsID.intCompHGRH_ID.toString());
         } else if (
-          values.intProductTypeID === ClsID.intProdTypeVentumID &&
-          (values.intUnitModelID === ClsID.intVentumUnitModelID_H05IN_ERV ||
-            values.intUnitModelID === ClsID.intVentumUnitModelID_H05IN_HRV)
+          intProductTypeID === ClsID.intProdTypeVentumID &&
+          (intUnitModelID === ClsID.intVentumUnitModelID_H05IN_ERV ||
+            intUnitModelID === ClsID.intVentumUnitModelID_H05IN_HRV)
         ) {
           dtReheatComp = dtReheatComp.fitler((item) => item.id.toString() !== ClsID.intCompHGRH_ID.toString());
         }
@@ -1142,7 +1149,7 @@ export const getReheatInfo = (data, values) => {
         break;
     }
 
-    switch (values.intUnitTypeID) {
+    switch (intUnitTypeID) {
       case ClsID.intUnitTypeERV_ID:
         dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'erv_reheat', 1);
         break;
@@ -1157,12 +1164,12 @@ export const getReheatInfo = (data, values) => {
         break;
     }
 
-    reheatInfo.ddlReheatCompDataTbl = dtReheatComp;
+    reheatInfo.dtReheatComp = dtReheatComp;
     reheatInfo.ddlReheatCompId = dtReheatComp?.[0]?.id;
     reheatInfo.divReheatCompVisible = true;
   } else {
     dtReheatComp = data.components;
-    reheatInfo.ddlReheatCompDataTbl = dtReheatComp;
+    reheatInfo.dtReheatComp = dtReheatComp;
     reheatInfo.ddlReheatCompId = ClsID.intCompNA_ID;
     reheatInfo.divReheatCompVisible = false;
   }

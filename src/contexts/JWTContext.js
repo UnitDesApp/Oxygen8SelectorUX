@@ -143,7 +143,7 @@ function AuthProvider({ children }) {
     // if (password !== '1234') return;
 
     const { action, data, accessToken } = response.data;
-    console.log(data)
+    console.log(data);
 
     if (action === 'success') {
       setSession(accessToken);
@@ -208,14 +208,9 @@ function AuthProvider({ children }) {
     });
   };
 
-  const register = async (email, password, username, firstname, lastname, accessLevel) => {
+  const register = async (userData) => {
     const response = await axios.post(`${serverUrl}/api/auth/register`, {
-      email,
-      password,
-      username,
-      firstname,
-      lastname,
-      accessLevel,
+      ...userData,
       createdDate: new Date(),
     });
     const { action, accessToken, data } = response.data;
