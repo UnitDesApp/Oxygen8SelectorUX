@@ -58,9 +58,7 @@ export default function UnitEdit() {
   const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
-    if (!data) {
-      dispatch(getAllBaseData());
-    }
+    dispatch(getAllBaseData());
   }, [data, dispatch]);
 
   const openDialog = useCallback(() => {

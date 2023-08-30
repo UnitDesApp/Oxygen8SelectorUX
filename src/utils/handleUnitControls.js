@@ -698,31 +698,50 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
   let dtHeatingComp = unitCoolingHeadingInfo;
 
   if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-    // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
-    dtPreheatComp = unitCoolingHeadingInfo.filter(e => e.erv_preheat === 1).map(e => { return { value: e.id, items: e.items}})
+   // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
+    dtPreheatComp = unitCoolingHeadingInfo?.filter((e) => Number(e.erv_preheat) === 1) || [];
 
     if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
       dtPreheatComp = unitCoolingHeadingInfo?.filter((item) => Number(item.id) !== ClsID.intCompHWC_ID) || [];
     }
 
-    dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'erv', 1);
-    dtCoolingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_cooling', 1);
-    dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_heating', 1);
+    // dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'erv', 1);
+    dtHeatExchComp = heatExchangeInfo?.filter((e) => Number(e.erv) === 1) || [];
+
+    // dtCoolingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_cooling', 1);
+    dtCoolingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.erv_cooling) === 1) || [];
+
+
+    // dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_heating', 1);
+    dtHeatingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.erv_heating) === 1) || [];
+
+
   } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-    dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_preheat', 1);
+    // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_preheat', 1);
+    dtPreheatComp = unitCoolingHeadingInfo?.filter((e) => Number(e.hrv_preheat) === 1) || [];
+
 
     if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
-      dtPreheatComp = unitCoolingHeadingInfo.filter((x) => parseInt(x.id, 10) !== ClsID.intCompHWC_ID);
+      dtPreheatComp = unitCoolingHeadingInfo.filter((e) => parseInt(e.id, 10) !== ClsID.intCompHWC_ID);
     }
 
-    dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'hrv', 1);
-    dtCoolingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_cooling', 1);
-    dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_heating', 1);
+    // dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'hrv', 1);
+    dtHeatExchComp = heatExchangeInfo?.filter((e) => Number(e.hrv) === 1) || [];
+
+    // dtCoolingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_cooling', 1);
+    dtCoolingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.hrv_cooling) === 1) || [];
+
+    // dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_heating', 1);
+    dtHeatingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.hrv_heating) === 1) || [];
+
   } else if (intUnitTypeID === ClsID.intUnitTypeAHU_ID) {
-    dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'fc', 1);
-    dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'fc_preheat', 1);
-    dtCoolingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'fc_cooling', 1);
-    dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'fc_heating', 1);
+    // dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'fc', 1);
+    dtHeatExchComp = heatExchangeInfo?.filter((e) => Number(e.fc) === 1) || [];
+
+    // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'fc_preheat', 1);
+    dtPreheatComp = unitCoolingHeadingInfo?.filter((e) => Number(e.fc_preheat) === 1) || [];
+    dtCoolingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.fc_cooling) === 1) || [];
+    dtHeatingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.fc_heating) === 1) || [];
   }
 
   return {
@@ -1023,27 +1042,35 @@ export const getHeatElecHeaterInstallationInfo = (data, intHeatingCompID, intReh
   return returnInfo;
 };
 
-export const getReheatInfo = (data, values) => {
+export const getReheatInfo = (
+  data,
+  ckbDehumidificationVal,
+  intCoolingCompID,
+  intUAL,
+  intUnitTypeID,
+  intProductTypeID,
+  intUnitModelID
+) => {
   const reheatInfo = [];
   let dtReheatComp = [];
 
-  if (values.ckbDehumidificationVal) {
+  if (ckbDehumidificationVal) {
     dtReheatComp = data.components;
 
-    switch (values.intCoolingCompID) {
+    switch (intCoolingCompID) {
       case ClsID.intCompCWC_ID:
         dtReheatComp = dtReheatComp.filter((item) => item.id.toString() !== ClsID.intCompHGRH_ID.toString());
         break;
       case ClsID.intCompDX_ID:
         if (
-          values.intUAL === ClsID.intUAL_External &&
-          (values.intUnitTypeID === ClsID.intUnitTypeERV_ID || values.intUnitTypeID === ClsID.intUnitTypeHRV_ID)
+          intUAL === ClsID.intUAL_External &&
+          (intUnitTypeID === ClsID.intUnitTypeERV_ID || intUnitTypeID === ClsID.intUnitTypeHRV_ID)
         ) {
           dtReheatComp = dtReheatComp.filter((item) => item.id.toString() !== ClsID.intCompHGRH_ID.toString());
         } else if (
-          values.intProductTypeID === ClsID.intProdTypeVentumID &&
-          (values.intUnitModelID === ClsID.intVentumUnitModelID_H05IN_ERV ||
-            values.intUnitModelID === ClsID.intVentumUnitModelID_H05IN_HRV)
+          intProductTypeID === ClsID.intProdTypeVentumID &&
+          (intUnitModelID === ClsID.intVentumUnitModelID_H05IN_ERV ||
+            intUnitModelID === ClsID.intVentumUnitModelID_H05IN_HRV)
         ) {
           dtReheatComp = dtReheatComp.fitler((item) => item.id.toString() !== ClsID.intCompHGRH_ID.toString());
         }
@@ -1052,7 +1079,7 @@ export const getReheatInfo = (data, values) => {
         break;
     }
 
-    switch (values.intUnitTypeID) {
+    switch (intUnitTypeID) {
       case ClsID.intUnitTypeERV_ID:
         dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'erv_reheat', 1);
         break;
@@ -1067,12 +1094,12 @@ export const getReheatInfo = (data, values) => {
         break;
     }
 
-    reheatInfo.ddlReheatCompDataTbl = dtReheatComp;
+    reheatInfo.dtReheatComp = dtReheatComp;
     reheatInfo.ddlReheatCompId = dtReheatComp?.[0]?.id;
     reheatInfo.divReheatCompVisible = true;
   } else {
     dtReheatComp = data.components;
-    reheatInfo.ddlReheatCompDataTbl = dtReheatComp;
+    reheatInfo.dtReheatComp = dtReheatComp;
     reheatInfo.ddlReheatCompId = ClsID.intCompNA_ID;
     reheatInfo.divReheatCompVisible = false;
   }

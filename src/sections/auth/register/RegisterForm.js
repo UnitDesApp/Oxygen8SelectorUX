@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,12 +19,12 @@ export default function RegisterForm() {
   const isMountedRef = useIsMountedRef();
 
   const RegisterSchema = Yup.object().shape({
-    firstname: Yup.string().required('First name is required'),
-    lastname: Yup.string().required('Last name is required'),
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    company_name: Yup.string().required('Company name is required'),
-    job_title: Yup.string().required('Job title is required'),
-    phone_number: Yup.string().required('Phone number is required'),
+    companyName: Yup.string().required('Company name is required'),
+    jobTitle: Yup.string().required('Job title is required'),
+    phoneNumber: Yup.string().required('Phone number is required'),
     address1: Yup.string().required('Address is required'),
     address2: Yup.string(),
     city: Yup.string().required('City is required'),
@@ -34,17 +33,17 @@ export default function RegisterForm() {
   });
 
   const defaultValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    company_name: '',
-    job_title: '',
-    phone_number: '',
-    address1: '',
-    address2: '',
-    city: '',
-    province: '',
-    country: '',
+    firstName: 'Nadja',
+    lastName: 'da',
+    email: 'erik.soon.my@gmail.com',
+    companyName: 'NIKE',
+    jobTitle: 'Full Stack Engineer',
+    phoneNumber: '+381 69898746',
+    address1: '123',
+    address2: '123',
+    city: '123',
+    province: '123',
+    country: '123',
   };
 
   const methods = useForm({
@@ -61,18 +60,11 @@ export default function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
-      const result = await register(
-        data.email,
-        data.password,
-        data.username,
-        data.firstname,
-        data.lastname,
-        data.accessLevel
-      );
+      const result = await register(data);
       if (!result) {
-        setError('afterSubmit', { message: 'Your email is already existed!' });
+        setError('afterSubmit', { message: result.message });
       } else {
-        location.href = '/';
+        location.href = '/register-success';
       }
     } catch (error) {
       console.error(error);
@@ -88,13 +80,13 @@ export default function RegisterForm() {
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstname" label="First name" />
-          <RHFTextField name="lastname" label="Last name" />
+          <RHFTextField name="firstName" label="First name" />
+          <RHFTextField name="lastName" label="Last name" />
         </Stack>
         <RHFTextField name="email" label="Email address" />
-        <RHFTextField name="company_name" label="Company Name" />
-        <RHFTextField name="job_title" label="Job Title" />
-        <RHFTextField name="phone_number" label="Phone Number" />
+        <RHFTextField name="companyName" label="Company Name" />
+        <RHFTextField name="jobTitle" label="Job Title" />
+        <RHFTextField name="phoneNumber" label="Phone Number" />
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <RHFTextField name="address1" label="Address1" />
           <RHFTextField name="address2" label="Address2 (optional)" />

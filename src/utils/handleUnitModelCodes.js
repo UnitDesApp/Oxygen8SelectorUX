@@ -131,9 +131,9 @@ export const getUnitModelCodes = (
   }
 
   if (_intUnitProdId === ClsID.intProdTypeNovaID && _intIsBypass === 1) {
-    const dtModelBypassAccs = data.filter((item) => item.unit_model_value === strUnitModelLocValue);
+    const dtModelBypassAccs = data.novaUnitModelBypass.filter((item) => item.unit_model_value === strUnitModelLocValue);
 
-    if (dtModelBypassAccs || dtModelBypassAccs?.length > 0) {
+    if (dtModelBypassAccs && dtModelBypassAccs?.length > 0) {
       strUnitModelValueNovaBypass = dtModelBypassAccs[0].model_bypass_dwg_code.ToString();
       strUnitModelValueNovaBypassAccCoupled = dtModelBypassAccs[0].coupled_dwg_code.ToString();
       strUnitModelValueNovaBypassAccElecCoil = dtModelBypassAccs[0].electric_coil_dwg_code.ToString();

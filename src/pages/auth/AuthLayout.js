@@ -1,83 +1,70 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Card, Container } from '@mui/material';
-// hooks
-// import useAuth from '../../hooks/useAuth';
-import useResponsive from '../../hooks/useResponsive';
+import { Box, Card } from '@mui/material';
 // components
 import Logo from '../../components/Logo';
 
 // ----------------------------------------------------------------------
-
-const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('md')]: {
-    display: 'flex',
-  },
-}));
-
-const HeaderStyle = styled('header')(({ theme }) => ({
-  top: 0,
-  zIndex: 9,
-  lineHeight: 0,
+const HeaderStyle = styled('div')(({ theme }) => ({
   width: '100%',
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(3),
-  position: 'absolute',
   justifyContent: 'center',
-  [theme.breakpoints.up('md')]: {
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    padding: theme.spacing(3, 5, 0, 7),
-  },
 }));
 
-const SectionStyle = styled(Card)(() => ({
-  width: '50%',
-  minWidth: '50%',
-  minHeight: '100vh',
+const BoxStyle = styled('div')(() => ({
   display: 'flex',
-  flexDirection: 'column',
   justifyContent: 'center',
-  borderRadius: '0',
-  backgroundImage: 'url("/assets/illustrations/illustration_login.png")',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
+  flexDirection: 'column',
+  alignItems: 'center',
+  backgroundColor: 'transparent',
+  height: '100vh',
+  overflowY: 'scroll',
 }));
 
-const ContentStyle = styled('div')(({ theme }) => ({
-  width: '50%',
+const ContentStyle = styled('div')(() => ({
+  backgroundColor: 'white',
+  borderRadius: '4px',
+  width: '40%',
   minWidth: 280,
+  marginTop: 40,
   margin: 'auto',
-  minHeight: '100vh',
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
-  padding: theme.spacing(12, 0),
+  paddingBottom: '24px',
+  zIndex: 999,
+  maxHeight: '90vh',
+  overflowY: 'scroll',
 }));
 
 // ----------------------------------------------------------------------
 AuthLayout.propTypes = {
-  children: PropTypes.element
-}
+  children: PropTypes.any,
+};
 
 export default function AuthLayout(props) {
-  const mdUp = useResponsive('up', 'md');
-
   return (
-    <RootStyle>
-      <HeaderStyle>
-        <Logo sx={{height: '30px', width: '300px'}}/>
-      </HeaderStyle>
-      <Container>
-        <ContentStyle>
-          {props.children}
-        </ContentStyle>
-      </Container>
-      {mdUp && (
-        <SectionStyle />
-      )}
-    </RootStyle>
+    <div>
+      <Box>
+        <BoxStyle>
+          <ContentStyle>
+            <Box sx={{ minHeight: '100%', padding: '24px' }}>
+              <HeaderStyle>
+                <Logo sx={{ height: '25px', width: '200px' }} />
+              </HeaderStyle>
+              {props.children}
+            </Box>
+          </ContentStyle>
+        </BoxStyle>
+        <img
+          src="/assets/illustrations/illustration_login.png"
+          alt="auth background"
+          style={{ width: '100vw', height: '100%', position: 'absolute', top: 0, left: 0 }}
+        />
+      </Box>
+    </div>
   );
 }
