@@ -100,71 +100,71 @@ const getFromLink = (data, linkColumn, dataLink, sortColumn) => {
   return dtSelected;
 };
 
-const get_ddlItemsAddedOnValue = (_dt, _strLinkColumn, _dtLink) => {
-  const dt = Array.from(_dt);
-  const dtLink = Array.from(_dtLink);
-  let intID = '';
-  let intLinkID = '';
-  let intDummyID = 0;
+// const get_ddlItemsAddedOnValue = (_dt, _strLinkColumn, _dtLink) => {
+//   const dt = Array.from(_dt);
+//   const dtLink = Array.from(_dtLink);
+//   let intID = '';
+//   let intLinkID = '';
+//   let intDummyID = 0;
 
-  const dtSelected = [];
+//   const dtSelected = [];
 
-  for (let i = 0; i < dt.length; i += 1) {
-    intID = dt[i].items.toString();
-    for (let j = 0; j < dtLink.length; j += 1) {
-      intLinkID = dtLink[j][_strLinkColumn].toString();
+//   for (let i = 0; i < dt.length; i += 1) {
+//     intID = dt[i].items.toString();
+//     for (let j = 0; j < dtLink.length; j += 1) {
+//       intLinkID = dtLink[j][_strLinkColumn].toString();
 
-      if (intID === intLinkID) {
-        const dr = {
-          id: 0,
-          items: '',
-        };
-        dr.id = ++intDummyID;
-        dr.items = dt[i].items.toString();
+//       if (intID === intLinkID) {
+//         const dr = {
+//           id: 0,
+//           items: '',
+//         };
+//         dr.id = ++intDummyID;
+//         dr.items = dt[i].items.toString();
 
-        dtSelected.push(dr);
-        break;
-      }
-    }
-  }
+//         dtSelected.push(dr);
+//         break;
+//       }
+//     }
+//   }
 
-  return dtSelected;
-};
+//   return dtSelected;
+// };
 
-const get_ddlItemsAddedOnID = (_dt, _strLinkColumn, _dtLink) => {
-  if (!_dt?.length || !_dtLink?.length) return;
-  const dt = Array.from(_dt);
-  const dtLink = Array.from(_dtLink);
-  dt.sort((a, b) => a.id - b.id);
-  dtLink.sort((a, b) => a[_strLinkColumn] - b[_strLinkColumn]);
-  let intID = 0;
-  let intLinkID = 0;
+// const get_ddlItemsAddedOnID = (_dt, _strLinkColumn, _dtLink) => {
+//   if (!_dt?.length || !_dtLink?.length) return;
+//   const dt = Array.from(_dt);
+//   const dtLink = Array.from(_dtLink);
+//   dt.sort((a, b) => a.id - b.id);
+//   dtLink.sort((a, b) => a[_strLinkColumn] - b[_strLinkColumn]);
+//   let intID = 0;
+//   let intLinkID = 0;
 
-  const dtSelected = [];
+//   const dtSelected = [];
 
-  for (let i = 0; i < dt.length; i += 1) {
-    intID = Number(dt[i].id);
-    for (let j = 0; j < dtLink.length; j += 1) {
-      intLinkID = Number(dtLink[j][_strLinkColumn]);
+//   for (let i = 0; i < dt.length; i += 1) {
+//     intID = Number(dt[i].id);
+//     for (let j = 0; j < dtLink.length; j += 1) {
+//       intLinkID = Number(dtLink[j][_strLinkColumn]);
 
-      if (intID === intLinkID) {
-        const dr = {};
-        dr.id = Number(dt[i].id);
-        dr.items = dt[i].items.toString();
+//       if (intID === intLinkID) {
+//         const dr = {};
+//         dr.id = Number(dt[i].id);
+//         dr.items = dt[i].items.toString();
 
-        dtSelected.push(dr);
-        break;
-      }
+//         dtSelected.push(dr);
+//         break;
+//       }
 
-      if (intLinkID > intID) {
-        break;
-      }
-    }
-  }
+//       if (intLinkID > intID) {
+//         break;
+//       }
+//     }
+//   }
 
-  // eslint-disable-next-line consistent-return
-  return dtSelected;
-};
+//   // eslint-disable-next-line consistent-return
+//   return dtSelected;
+// };
 
 const sortColume = (data, colume) => data.sort((a, b) => a[colume] - b[colume]);
 
@@ -663,30 +663,36 @@ export const getUnitVoltage = (data, values, strUnitModelValue) => {
     dtVoltage = data.electricalVoltage?.filter((item) => item.terra_spp === 1);
   }
 
-  const unitVoltage = get_ddlItemsAddedOnID(dtVoltage, 'voltage_id', dtLink);
+  // const unitVoltage = get_ddlItemsAddedOnID(dtVoltage, 'voltage_id', dtLink);
+  const unitVoltage = dtVoltage.filter((e) => {
+    return dtLink.filter((e_link) => {
+      return e.id === e_link.voltage_id;
+    }).length === 1 // 1: Matching items, 0: Not matching items
+  });
+
   const ddlUnitVoltageId = unitVoltage?.[0]?.id || 0;
 
   return { unitVoltage, ddlUnitVoltageId };
 };
 
-const get_dtDataFromImportRows = (_dt, _strColumnMultipleID, _intMatchID) => {
-  const dtData = [];
-  for (let i = 0; i < _dt.length; i += 1) {
-    const strArrID = _dt[i][_strColumnMultipleID].toString().split(',');
+// const get_dtDataFromImportRows = (_dt, _strColumnMultipleID, _intMatchID) => {
+//   const dtData = [];
+//   for (let i = 0; i < _dt.length; i += 1) {
+//     const strArrID = _dt[i][_strColumnMultipleID].toString().split(',');
 
-    for (let j = 0; j < strArrID.length; j += 1) {
-      const strID = strArrID[j];
+//     for (let j = 0; j < strArrID.length; j += 1) {
+//       const strID = strArrID[j];
 
-      if (strID !== '') {
-        if (Number(strID) === Number(_intMatchID) || strID === _intMatchID) {
-          dtData.push(_dt[i]);
-        }
-      }
-    }
-  }
+//       if (strID !== '') {
+//         if (Number(strID) === Number(_intMatchID) || strID === _intMatchID) {
+//           dtData.push(_dt[i]);
+//         }
+//       }
+//     }
+//   }
 
-  return dtData;
-};
+//   return dtData;
+// };
 
 export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
   const unitCoolingHeadingInfo = data?.components;
@@ -787,11 +793,12 @@ export const getPreheatElecHeaterInstallationInfo = (data, intPreheatCompID, int
       let dtLink = data.electricHeaterInstallProdTypeLink;
       dtLink = dtLink?.filter((item) => item.product_type_id === intProductTypeID) || [];
 
-      dtPreheatElecHeaterInstallation = get_ddlItemsAddedOnID(
-        dtPreheatElecHeaterInstallation,
-        'elec_heater_install_id',
-        dtLink
-      );
+      // dtPreheatElecHeaterInstallation = get_ddlItemsAddedOnID(dtPreheatElecHeaterInstallation, 'elec_heater_install_id', dtLink);
+      dtPreheatElecHeaterInstallation = dtPreheatElecHeaterInstallation.filter((e) => {
+        return dtLink.filter((e_link) => {
+          return e.id === e_link.elec_heater_install_id;
+        }).length === 1 // 1: Matching items, 0: Not matching items
+      });
 
       switch (intProductTypeID) {
         case ClsID.intProdTypeNovaID:
@@ -1081,13 +1088,16 @@ export const getReheatInfo = (
 
     switch (intUnitTypeID) {
       case ClsID.intUnitTypeERV_ID:
-        dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'erv_reheat', 1);
+        // dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'erv_reheat', 1);
+        dtReheatComp = dtReheatComp?.filter((e) => Number(e.erv_reheat) === 1) || [];
         break;
       case ClsID.intUnitTypeHRV_ID:
-        dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'hrv_reheat', 1);
+        // dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'hrv_reheat', 1);
+        dtReheatComp = dtReheatComp?.filter((e) => Number(e.hrv_reheat) === 1) || [];
         break;
       case ClsID.intUnitTypeAHU_ID:
-        dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'fc_reheat', 1);
+        // dtReheatComp = get_dtDataFromImportRows(dtReheatComp, 'fc_reheat', 1);
+        dtReheatComp = dtReheatComp?.filter((e) => Number(e.fc_reheat) === 1) || [];
         break;
       default:
         // code block
@@ -1361,12 +1371,20 @@ export const getSupplyAirOpeningInfo = (
 
   if (intUnitTypeID === ClsID.intUnitTypeERV_ID || intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
     dtLink = data.oriOpeningERV_SA_Link.filter((item) => item.product_type_id === Number(intProductTypeID));
-    dtLink = get_dtDataFromImportRows(dtLink, 'location_id', intLocationID);
-    dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'location_id', intLocationID);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    dtLink = dtLink.filter((item) => item.location_id === Number(intLocationID));
+    dtLink = dtLink.filter((item) => item.orientation_id === Number(intOrientationID));
 
     dtSelectionTable = data.openingERV_SA;
-    dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', Number(intProductTypeID));
-    dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_sa', dtLink);
+    // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', Number(intProductTypeID));
+    dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
+    // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_sa', dtLink);
+    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
+      return dtLink.filter((e_link) => {
+        return e.items === e_link.openings_sa;
+      }).length === 1 // 1: Matching items, 0: Not matching items
+    });
 
     returnInfo.ddlSupplyAirOpeningDataTbl = dtSelectionFinalTable;
 
@@ -1414,12 +1432,20 @@ export const getRemainingOpeningsInfo = (
 
   if (intUnitTypeID === ClsID.intUnitTypeERV_ID || intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
     dtLink = data.openingERV_SA_EA_Link.filter((item) => item.product_type_id === intProductTypeID);
-    dtLink = get_dtDataFromImportRows(dtLink, 'openings_sa', strSupplyAirOpening);
-    dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'openings_sa', strSupplyAirOpening);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    dtLink = dtLink.filter((item) => item.openings_sa === strSupplyAirOpening);
+    dtLink = dtLink.filter((item) => item.orientation_id === Number(intOrientationID));
 
     dtSelectionTable = data.openingERV_EA;
-    dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
-    dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_ea', dtLink);
+    // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
+    dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
+    // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_ea', dtLink);
+    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
+      return dtLink.filter((e_link) => {
+        return e.items === e_link.openings_ea;
+      }).length === 1 // 1: Matching items, 0: Not matching items
+    });
 
     returnInfo.ddlExhaustAirOpeningDataTbl = dtSelectionFinalTable;
     returnInfo.ddlExhaustAirOpeningId = dtSelectionFinalTable[0]?.id;
@@ -1427,22 +1453,40 @@ export const getRemainingOpeningsInfo = (
     returnInfo.ddlExhaustAirOpeningVisible = true;
 
     dtLink = data.openingERV_SA_OA_Link.filter((item) => item.product_type_id === intProductTypeID);
-    dtLink = get_dtDataFromImportRows(dtLink, 'openings_sa', strSupplyAirOpening);
-    dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'openings_sa', strSupplyAirOpening);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    dtLink = dtLink.filter((item) => item.openings_sa === strSupplyAirOpening);
+    dtLink = dtLink.filter((item) => item.orientation_id === intOrientationID);
+
     dtSelectionTable = data.openingERV_OA;
-    dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
-    dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_oa', dtLink);
+    // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
+    dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
+    // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_oa', dtLink);
+    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
+      return dtLink.filter((e_link) => {
+        return e.items === e_link.openings_oa;
+      }).length === 1 // 1: Matching items, 0: Not matching items
+    });
 
     returnInfo.ddlOutdoorAirOpeningDataTbl = dtSelectionFinalTable;
     returnInfo.ddlOutdoorAirOpeningId = dtSelectionFinalTable[0]?.id;
     returnInfo.ddlOutdoorAirOpeningText = dtSelectionFinalTable[0]?.items;
 
     dtLink = data.openingERV_SA_RA_Link.filter((item) => item.product_type_id === intProductTypeID);
-    dtLink = get_dtDataFromImportRows(dtLink, 'openings_sa', strSupplyAirOpening);
-    dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'openings_sa', strSupplyAirOpening);
+    // dtLink = get_dtDataFromImportRows(dtLink, 'orientation_id', intOrientationID);
+    dtLink = dtLink.filter((item) => item.openings_sa === strSupplyAirOpening);
+    dtLink = dtLink.filter((item) => item.orientation_id === Number(intOrientationID));
+
     dtSelectionTable = data.openingERV_RA;
-    dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
-    dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_ra', dtLink);
+    // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
+    dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
+    // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_ra', dtLink);
+    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
+      return dtLink.filter((e_link) => {
+        return e.items === e_link.openings_ra;
+      }).length === 1 // 1: Matching items, 0: Not matching items
+    });
 
     returnInfo.ddlReturnAirOpeningDataTbl = dtSelectionFinalTable;
     returnInfo.ddlReturnAirOpeningId = dtSelectionFinalTable[0]?.id;
