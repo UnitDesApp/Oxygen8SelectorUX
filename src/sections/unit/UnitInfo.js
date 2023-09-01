@@ -714,7 +714,7 @@ export default function UnitInfo({
       data,
       intProductTypeID,
       intUnitTypeID,
-      user?.UAL || 0,
+      user?.UAL,
       values.ddlCoolingCompId,
       values.ddlUnitModelId,
     ]
