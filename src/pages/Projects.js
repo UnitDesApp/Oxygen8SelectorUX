@@ -54,7 +54,6 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 export default function MyProjects() {
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
     dispatch(getAllBaseData());

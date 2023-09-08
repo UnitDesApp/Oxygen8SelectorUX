@@ -664,6 +664,7 @@ export default function UnitInfo({
     }
 
     return unitModel;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     data,
     intUnitTypeID,
@@ -673,7 +674,7 @@ export default function UnitInfo({
     values.ddlOrientationId,
     values.txbSummerSupplyAirCFM,
     ckbBypassVal,
-    user?.UAL || 0,
+    user?.UAL,
     setValue,
   ]);
 
@@ -907,6 +908,7 @@ export default function UnitInfo({
       );
       setValue('txbSummerSupplyAirCFM', value);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [ckbBypassVal, getAllFormData, setValue, user?.UAL || 0]
   );
 
@@ -915,6 +917,7 @@ export default function UnitInfo({
       const value = getSummerReturnAirCFM(e.target.value, getAllFormData(), Number(user?.UAL || 0), data);
       setValue('txbSummerReturnAirCFM', value);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, getAllFormData, setValue, user?.UAL || 0]
   );
 

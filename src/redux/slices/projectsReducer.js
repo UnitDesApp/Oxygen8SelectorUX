@@ -81,7 +81,7 @@ export default ProjectsSlice.reducer;
 export function getProjectsInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/jobs/get`);
+    const response = await axios.post(`${serverUrl}/api/jobs/Get`);
     dispatch(ProjectsSlice.actions.setProjectInfo(response.data));
   };
 };

@@ -1,11 +1,11 @@
 const ClsID = require('../config');
 
-const bolExecuteSummerWB = true;
-const bolExecuteSummerRH = true;
-const bolExecuteWinterWB = true;
-const bolExecuteWinterRH = true;
+// const bolExecuteSummerWB = true;
+// const bolExecuteSummerRH = true;
+// const bolExecuteWinterWB = true;
+// const bolExecuteWinterRH = true;
 
-const dblTempErrorValue = 0.0;
+// const dblTempErrorValue = 0.0;
 
 const intNOVA_MIN_CFM = 325;
 const intNOVA_MAX_CFM = 9000;
@@ -54,11 +54,11 @@ const intTERA_INT_USERS_MAX_CFM_NO_BYPASS = 2500;
 const intTERA_INT_USERS_MIN_CFM_WITH_BYPASS = 400;
 const intTERA_INT_USERS_MAX_CFM_WITH_BYPASS = 2500;
 
-const bolPreheatRequired = false;
-const intVelocity = 0;
-const intSelectedValue = 0;
-const dblHtgEntFluidTempSavedByInternalUser = 0;
-const dblHtgLvgFluidTempSavedByInternalUser = 0;
+// const bolPreheatRequired = false;
+// const intVelocity = 0;
+// const intSelectedValue = 0;
+// const dblHtgEntFluidTempSavedByInternalUser = 0;
+// const dblHtgLvgFluidTempSavedByInternalUser = 0;
 
 const getFromLink = (data, linkColumn, dataLink, sortColumn) => {
   if (!data || !dataLink) return [];
@@ -169,7 +169,8 @@ const getFromLink = (data, linkColumn, dataLink, sortColumn) => {
 const sortColume = (data, colume) => data.sort((a, b) => a[colume] - b[colume]);
 
 const unitModelFilter = (data, value, minColumeName, maxColumeName, unitModelId) =>
-  data?.filter((item) => (item[minColumeName] >= value && value <= item[maxColumeName]) || item.id === unitModelId)
+  data
+    ?.filter((item) => (item[minColumeName] >= value && value <= item[maxColumeName]) || item.id === unitModelId)
     .sort((a, b) => a.cfm_max - b.cfm_max);
 
 export const getUnitModel = (
@@ -328,9 +329,21 @@ export const getUnitModel = (
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
           if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-            unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'erv_cfm_min_ext_users', 'erv_cfm_max_ext_users', unitModelId);
+            unitModel = unitModelFilter(
+              data.ventumPlusUnitModel,
+              summerSupplyAirCFM,
+              'erv_cfm_min_ext_users',
+              'erv_cfm_max_ext_users',
+              unitModelId
+            );
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            unitModel = unitModelFilter(data.ventumPlusUnitModel,summerSupplyAirCFM,'hrv_cfm_min_ext_users','hrv_cfm_max_ext_users',unitModelId);
+            unitModel = unitModelFilter(
+              data.ventumPlusUnitModel,
+              summerSupplyAirCFM,
+              'hrv_cfm_min_ext_users',
+              'hrv_cfm_max_ext_users',
+              unitModelId
+            );
           }
         } else {
           unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
@@ -369,63 +382,142 @@ export const getSummerSupplyAirCFM = (summerSupplyAirCFM, intProductTypeID, intU
   let intSummerSupplyAirCFM = Number(summerSupplyAirCFM);
   switch (intProductTypeID) {
     case ClsID.intProdTypeNovaID:
-      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
-        if (intSummerSupplyAirCFM < intNOVA_MIN_CFM) { intSummerSupplyAirCFM = intNOVA_MIN_CFM; }
-        else if (intSummerSupplyAirCFM > intNOVA_MAX_CFM) { intSummerSupplyAirCFM = intNOVA_MAX_CFM; }
-      } else if (intSummerSupplyAirCFM < intNOVA_INT_USERS_MIN_CFM) { intSummerSupplyAirCFM = intNOVA_INT_USERS_MIN_CFM; }
-        else if (intSummerSupplyAirCFM > intNOVA_INT_USERS_MAX_CFM) { intSummerSupplyAirCFM = intNOVA_INT_USERS_MAX_CFM; }
+      if (
+        intUAL === ClsID.intUAL_Admin ||
+        intUAL === ClsID.intUAL_IntAdmin ||
+        intUAL === ClsID.intUAL_IntLvl_2 ||
+        intUAL === ClsID.intUAL_IntLvl_1
+      ) {
+        if (intSummerSupplyAirCFM < intNOVA_MIN_CFM) {
+          intSummerSupplyAirCFM = intNOVA_MIN_CFM;
+        } else if (intSummerSupplyAirCFM > intNOVA_MAX_CFM) {
+          intSummerSupplyAirCFM = intNOVA_MAX_CFM;
+        }
+      } else if (intSummerSupplyAirCFM < intNOVA_INT_USERS_MIN_CFM) {
+        intSummerSupplyAirCFM = intNOVA_INT_USERS_MIN_CFM;
+      } else if (intSummerSupplyAirCFM > intNOVA_INT_USERS_MAX_CFM) {
+        intSummerSupplyAirCFM = intNOVA_INT_USERS_MAX_CFM;
+      }
       break;
     case ClsID.intProdTypeVentumID:
-      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
+      if (
+        intUAL === ClsID.intUAL_Admin ||
+        intUAL === ClsID.intUAL_IntAdmin ||
+        intUAL === ClsID.intUAL_IntLvl_2 ||
+        intUAL === ClsID.intUAL_IntLvl_1
+      ) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_NO_BYPASS; }
+          if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_WITH_BYPASS;
+          } else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_WITH_BYPASS;
+          }
+        } else if (intSummerSupplyAirCFM < intVEN_INT_USERS_MIN_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intVEN_INT_USERS_MIN_CFM_NO_BYPASS;
+        } else if (intSummerSupplyAirCFM > intVEN_INT_USERS_MAX_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intVEN_INT_USERS_MAX_CFM_NO_BYPASS;
+        }
       } else if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVEN_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVEN_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intVEN_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVEN_MAX_CFM_NO_BYPASS; }
+        if (intSummerSupplyAirCFM < intVEN_MIN_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intVEN_MIN_CFM_WITH_BYPASS;
+        } else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intVEN_MAX_CFM_WITH_BYPASS;
+        }
+      } else if (intSummerSupplyAirCFM < intVEN_MIN_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intVEN_MIN_CFM_NO_BYPASS;
+      } else if (intSummerSupplyAirCFM > intVEN_MAX_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intVEN_MAX_CFM_NO_BYPASS;
+      }
       break;
     case ClsID.intProdTypeVentumLiteID:
-      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
+      if (
+        intUAL === ClsID.intUAL_Admin ||
+        intUAL === ClsID.intUAL_IntAdmin ||
+        intUAL === ClsID.intUAL_IntLvl_2 ||
+        intUAL === ClsID.intUAL_IntLvl_1
+      ) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS; }
+          if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_WITH_BYPASS;
+          } else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_WITH_BYPASS;
+          }
+        } else if (intSummerSupplyAirCFM < intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intVENLITE_INT_USERS_MIN_CFM_NO_BYPASS;
+        } else if (intSummerSupplyAirCFM > intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intVENLITE_INT_USERS_MAX_CFM_NO_BYPASS;
+        }
       } else if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENLITE_MAX_CFM_NO_BYPASS; }
+        if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intVENLITE_MIN_CFM_WITH_BYPASS;
+        } else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intVENLITE_MAX_CFM_WITH_BYPASS;
+        }
+      } else if (intSummerSupplyAirCFM < intVENLITE_MIN_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intVENLITE_MIN_CFM_NO_BYPASS;
+      } else if (intSummerSupplyAirCFM > intVENLITE_MAX_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intVENLITE_MAX_CFM_NO_BYPASS;
+      }
       break;
     case ClsID.intProdTypeVentumPlusID:
-      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
+      if (
+        intUAL === ClsID.intUAL_Admin ||
+        intUAL === ClsID.intUAL_IntAdmin ||
+        intUAL === ClsID.intUAL_IntLvl_2 ||
+        intUAL === ClsID.intUAL_IntLvl_1
+      ) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS; }
+          if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_WITH_BYPASS;
+          } else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_WITH_BYPASS;
+          }
+        } else if (intSummerSupplyAirCFM < intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MIN_CFM_NO_BYPASS;
+        } else if (intSummerSupplyAirCFM > intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intVENPLUS_INT_USERS_MAX_CFM_NO_BYPASS;
+        }
       } else if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_NO_BYPASS; }
+        if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_WITH_BYPASS;
+        } else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_WITH_BYPASS;
+        }
+      } else if (intSummerSupplyAirCFM < intVENPLUS_MIN_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intVENPLUS_MIN_CFM_NO_BYPASS;
+      } else if (intSummerSupplyAirCFM > intVENPLUS_MAX_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intVENPLUS_MAX_CFM_NO_BYPASS;
+      }
       break;
     case ClsID.intProdTypeTerraID:
-      if (intUAL === ClsID.intUAL_Admin || intUAL === ClsID.intUAL_IntAdmin || intUAL === ClsID.intUAL_IntLvl_2 || intUAL === ClsID.intUAL_IntLvl_1) {
+      if (
+        intUAL === ClsID.intUAL_Admin ||
+        intUAL === ClsID.intUAL_IntAdmin ||
+        intUAL === ClsID.intUAL_IntLvl_2 ||
+        intUAL === ClsID.intUAL_IntLvl_1
+      ) {
         if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_NO_BYPASS; }
+          if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_WITH_BYPASS;
+          } else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_WITH_BYPASS) {
+            intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_WITH_BYPASS;
+          }
+        } else if (intSummerSupplyAirCFM < intTERA_INT_USERS_MIN_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intTERA_INT_USERS_MIN_CFM_NO_BYPASS;
+        } else if (intSummerSupplyAirCFM > intTERA_INT_USERS_MAX_CFM_NO_BYPASS) {
+          intSummerSupplyAirCFM = intTERA_INT_USERS_MAX_CFM_NO_BYPASS;
+        }
       } else if (ckbBypassVal === 1) {
-          if (intSummerSupplyAirCFM < intTERA_MIN_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_MIN_CFM_WITH_BYPASS; }
-          else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_WITH_BYPASS) { intSummerSupplyAirCFM = intTERA_MAX_CFM_WITH_BYPASS; }
-        } else if (intSummerSupplyAirCFM < intTERA_MIN_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_MIN_CFM_NO_BYPASS; }
-          else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_NO_BYPASS) { intSummerSupplyAirCFM = intTERA_MAX_CFM_NO_BYPASS; }
+        if (intSummerSupplyAirCFM < intTERA_MIN_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intTERA_MIN_CFM_WITH_BYPASS;
+        } else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_WITH_BYPASS) {
+          intSummerSupplyAirCFM = intTERA_MAX_CFM_WITH_BYPASS;
+        }
+      } else if (intSummerSupplyAirCFM < intTERA_MIN_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intTERA_MIN_CFM_NO_BYPASS;
+      } else if (intSummerSupplyAirCFM > intTERA_MAX_CFM_NO_BYPASS) {
+        intSummerSupplyAirCFM = intTERA_MAX_CFM_NO_BYPASS;
+      }
       break;
     default:
       break;
@@ -664,11 +756,9 @@ export const getUnitVoltage = (data, values, strUnitModelValue) => {
   }
 
   // const unitVoltage = get_ddlItemsAddedOnID(dtVoltage, 'voltage_id', dtLink);
-  const unitVoltage = dtVoltage.filter((e) => {
-    return dtLink.filter((e_link) => {
-      return e.id === e_link.voltage_id;
-    }).length === 1 // 1: Matching items, 0: Not matching items
-  });
+  const unitVoltage = dtVoltage.filter(
+    (e) => dtLink.filter((e_link) => e.id === e_link.voltage_id).length === 1 // 1: Matching items, 0: Not matching items
+  );
 
   const ddlUnitVoltageId = unitVoltage?.[0]?.id || 0;
 
@@ -704,7 +794,7 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
   let dtHeatingComp = unitCoolingHeadingInfo;
 
   if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-   // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
+    // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_preheat', 1);
     dtPreheatComp = unitCoolingHeadingInfo?.filter((e) => Number(e.erv_preheat) === 1) || [];
 
     if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
@@ -717,15 +807,11 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
     // dtCoolingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_cooling', 1);
     dtCoolingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.erv_cooling) === 1) || [];
 
-
     // dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'erv_heating', 1);
     dtHeatingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.erv_heating) === 1) || [];
-
-
   } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
     // dtPreheatComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_preheat', 1);
     dtPreheatComp = unitCoolingHeadingInfo?.filter((e) => Number(e.hrv_preheat) === 1) || [];
-
 
     if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
       dtPreheatComp = unitCoolingHeadingInfo.filter((e) => parseInt(e.id, 10) !== ClsID.intCompHWC_ID);
@@ -739,7 +825,6 @@ export const getComponentInfo = (data, intProductTypeID, intUnitTypeID) => {
 
     // dtHeatingComp = get_dtDataFromImportRows(unitCoolingHeadingInfo, 'hrv_heating', 1);
     dtHeatingComp = unitCoolingHeadingInfo?.filter((e) => Number(e.hrv_heating) === 1) || [];
-
   } else if (intUnitTypeID === ClsID.intUnitTypeAHU_ID) {
     // dtHeatExchComp = get_dtDataFromImportRows(heatExchangeInfo, 'fc', 1);
     dtHeatExchComp = heatExchangeInfo?.filter((e) => Number(e.fc) === 1) || [];
@@ -794,11 +879,9 @@ export const getPreheatElecHeaterInstallationInfo = (data, intPreheatCompID, int
       dtLink = dtLink?.filter((item) => item.product_type_id === intProductTypeID) || [];
 
       // dtPreheatElecHeaterInstallation = get_ddlItemsAddedOnID(dtPreheatElecHeaterInstallation, 'elec_heater_install_id', dtLink);
-      dtPreheatElecHeaterInstallation = dtPreheatElecHeaterInstallation.filter((e) => {
-        return dtLink.filter((e_link) => {
-          return e.id === e_link.elec_heater_install_id;
-        }).length === 1 // 1: Matching items, 0: Not matching items
-      });
+      dtPreheatElecHeaterInstallation = dtPreheatElecHeaterInstallation.filter(
+        (e) => dtLink.filter((e_link) => e.id === e_link.elec_heater_install_id).length === 1 // 1: Matching items, 0: Not matching items
+      );
 
       switch (intProductTypeID) {
         case ClsID.intProdTypeNovaID:
@@ -1380,11 +1463,9 @@ export const getSupplyAirOpeningInfo = (
     // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', Number(intProductTypeID));
     dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
     // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_sa', dtLink);
-    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
-      return dtLink.filter((e_link) => {
-        return e.items === e_link.openings_sa;
-      }).length === 1 // 1: Matching items, 0: Not matching items
-    });
+    dtSelectionFinalTable = dtSelectionTable.filter(
+      (e) => dtLink.filter((e_link) => e.items === e_link.openings_sa).length === 1 // 1: Matching items, 0: Not matching items
+    );
 
     returnInfo.ddlSupplyAirOpeningDataTbl = dtSelectionFinalTable;
 
@@ -1441,11 +1522,9 @@ export const getRemainingOpeningsInfo = (
     // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
     dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
     // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_ea', dtLink);
-    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
-      return dtLink.filter((e_link) => {
-        return e.items === e_link.openings_ea;
-      }).length === 1 // 1: Matching items, 0: Not matching items
-    });
+    dtSelectionFinalTable = dtSelectionTable.filter(
+      (e) => dtLink.filter((e_link) => e.items === e_link.openings_ea).length === 1 // 1: Matching items, 0: Not matching items
+    );
 
     returnInfo.ddlExhaustAirOpeningDataTbl = dtSelectionFinalTable;
     returnInfo.ddlExhaustAirOpeningId = dtSelectionFinalTable[0]?.id;
@@ -1462,11 +1541,9 @@ export const getRemainingOpeningsInfo = (
     // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
     dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
     // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_oa', dtLink);
-    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
-      return dtLink.filter((e_link) => {
-        return e.items === e_link.openings_oa;
-      }).length === 1 // 1: Matching items, 0: Not matching items
-    });
+    dtSelectionFinalTable = dtSelectionTable.filter(
+      (e) => dtLink.filter((e_link) => e.items === e_link.openings_oa).length === 1 // 1: Matching items, 0: Not matching items
+    );
 
     returnInfo.ddlOutdoorAirOpeningDataTbl = dtSelectionFinalTable;
     returnInfo.ddlOutdoorAirOpeningId = dtSelectionFinalTable[0]?.id;
@@ -1482,11 +1559,9 @@ export const getRemainingOpeningsInfo = (
     // dtSelectionTable = get_dtDataFromImportRows(dtSelectionTable, 'product_type_id', intProductTypeID);
     dtSelectionTable = dtSelectionTable.filter((item) => item.product_type_id === Number(intProductTypeID));
     // dtSelectionFinalTable = get_ddlItemsAddedOnValue(dtSelectionTable, 'openings_ra', dtLink);
-    dtSelectionFinalTable = dtSelectionTable.filter((e) => {
-      return dtLink.filter((e_link) => {
-        return e.items === e_link.openings_ra;
-      }).length === 1 // 1: Matching items, 0: Not matching items
-    });
+    dtSelectionFinalTable = dtSelectionTable.filter(
+      (e) => dtLink.filter((e_link) => e.items === e_link.openings_ra).length === 1 // 1: Matching items, 0: Not matching items
+    );
 
     returnInfo.ddlReturnAirOpeningDataTbl = dtSelectionFinalTable;
     returnInfo.ddlReturnAirOpeningId = dtSelectionFinalTable[0]?.id;

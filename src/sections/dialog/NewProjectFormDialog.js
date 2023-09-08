@@ -429,7 +429,7 @@ export default function NewProjectFormDialog({
                   {usersInfo.map(
                     (info, index) =>
                       info.id.toString() !== localStorage.getItem('userId') &&
-                      info.customer_id.toString() === companyNameId && (
+                      info.customer_id.toString() === companyNameId.toString() && (
                         <option key={index} value={info.id}>
                           {`${info.first_name} ${info.last_name}`}
                         </option>

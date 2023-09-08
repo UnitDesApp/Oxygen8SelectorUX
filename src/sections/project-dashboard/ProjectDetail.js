@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   // useNavigate,
   useParams,
-  useLocation,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -60,7 +59,6 @@ ProjectDetail.propTypes = {
 export default function ProjectDetail({ projectInfo }) {
   const dispatch = useDispatch();
   const { projectId } = useParams();
-  const { state } = useLocation();
   const { user } = useAuth();
   const { projectInitInfo, isLoading } = useSelector((state) => state.projects);
   const [shouldRunEffect, setShouldRunEffect] = useState(false);
@@ -72,9 +70,6 @@ export default function ProjectDetail({ projectInfo }) {
   const { baseOfDesign, UoM, applications, designCondition, companyInfo, weatherData, usersInfo } = projectInitInfo;
 
   const [expanded, setExpanded] = React.useState({ panel1: true, panel2: true });
-  const [companyNameId, setCompanyNameId] = useState(
-    state !== null ? state.companyNameId : !isLoading && projectInfo.company_name_id
-  );
 
   const [openSuccess, setOpenSuccess] = useState(false);
   const handleCloseSuccess = (event, reason) => {
@@ -134,9 +129,9 @@ export default function ProjectDetail({ projectInfo }) {
       createdDate: !isLoading ? projectInfo.created_date : '',
       revisedDate: !isLoading ? projectInfo.revised_date : '',
       companyName: !isLoading ? projectInfo.company_name : '',
-      companyNameId: !isLoading ? projectInfo.company_name_id : '',
+      companyNameId: !isLoading ? Number(projectInfo?.company_name_id || 0) : '',
       contactName: !isLoading ? projectInfo.contact_name : '',
-      contactNameId: !isLoading ? projectInfo.contact_name_id : '',
+      contactNameId: !isLoading ? Number(projectInfo?.company_contact_name_id || 0) : '',
       application: !isLoading ? projectInfo.application_id : '',
       uom: !isLoading ? projectInfo.uom_id : '',
       country: !isLoading ? projectInfo.country : '',
@@ -399,7 +394,6 @@ export default function ProjectDetail({ projectInfo }) {
     (e) => {
       setValue('companyNameId', e.target.value);
       setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
-      setCompanyNameId(e.target.value);
     },
     [setValue]
   );
@@ -543,6 +537,7 @@ export default function ProjectDetail({ projectInfo }) {
                                 )
                             )}
                           </RHFSelect>
+                          {console.log(getValues("contactNameId"), localStorage.getItem('userId'))}
                           <RHFSelect
                             size="small"
                             name="contactNameId"
@@ -555,7 +550,7 @@ export default function ProjectDetail({ projectInfo }) {
                             {usersInfo.map(
                               (info, index) =>
                                 info.id.toString() !== localStorage.getItem('userId') &&
-                                info.customer_id.toString() === companyNameId && (
+                                info.customer_id.toString() === getValues("companyNameId").toString() && (
                                   <option key={index} value={info.id}>
                                     {`${info.first_name} ${info.last_name}`}
                                   </option>
