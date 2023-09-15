@@ -1996,7 +1996,7 @@ export default function UnitInfo({
                           name="ckbValveAndActuatorVal"
                           label="Include Valves & Actuator"
                           sx={getDisplay(valveAndActuatorInfo.divValveAndActuatorVisible)}
-                          checked={ckbValveAndActuatorVal}
+                          defaultChecked={ckbValveAndActuatorVal}
                           onChange={() => setCkbValveAndActuatorVal(!ckbValveAndActuatorVal)}
                         />
                         <RHFControlCheckbox
