@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import {
@@ -295,26 +296,22 @@ export default function Quote() {
 
   return (
     <Box sx={{ paddingTop: 5, paddingBottom: 5 }}>
-      {isLoading ? (
-        <LinearProgress color="info" />
+      {isLoading && <LinearProgress color="info" />}
+      {!isLoading && isEmpty(gvPricingGeneral) && isEmpty(gvPricingUnits) && isEmpty(gvPricingTotal) && !doWannaGenerate ? (
+        <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
+          <Typography variant="h5" sx={{ color: theme.palette.primary.main }}>
+            Select a stage to generate a quote
+          </Typography>
+          <Button
+            onClick={wannaGenerate}
+            color="primary"
+            variant="contained"
+            endIcon={<Iconify icon="ooui:arrow-next-ltr" />}
+          >
+            Generate Group
+          </Button>
+        </Stack>
       ) : (
-        !doWannaGenerate && (
-          <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
-            <Typography variant="h5" sx={{ color: theme.palette.primary.main }}>
-              Select a stage to generate a quote
-            </Typography>
-            <Button
-              onClick={wannaGenerate}
-              color="primary"
-              variant="contained"
-              endIcon={<Iconify icon="ooui:arrow-next-ltr" />}
-            >
-              Generate Group
-            </Button>
-          </Stack>
-        )
-      )}
-      {!isLoading && doWannaGenerate && (
         <>
           <Container sx={{ mb: '50px' }}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onQuoteSubmit)}>
@@ -335,7 +332,7 @@ export default function Quote() {
                             <option value="2">USA</option>
                           </RHFSelect>
                           <RHFTextField size="small" name="txbProjectName" label="Project Name" />
-                          <RHFTextField size="small" name="txbQuoteNo" label="Quote No" />
+                          <RHFTextField size="small" name="txbQuoteNo" label="Quote No" disabled />
                           <RHFSelect size="small" name="ddlFOB_PointVal" label="F.O.B. Point" placeholder="">
                             <option value="" />
                             {quoteControlInfo?.ddlFOB_Point?.map((ele, index) => (

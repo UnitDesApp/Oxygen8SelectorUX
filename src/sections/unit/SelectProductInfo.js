@@ -1,5 +1,5 @@
 // react
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 // prop-types
 import PropTypes from 'prop-types';
 // @mui

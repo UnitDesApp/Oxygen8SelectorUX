@@ -145,7 +145,7 @@ export default function Project() {
           ]
         : []),
     ],
-    [projectInfo]
+    [projectInfo, user?.verified]
   );
 
   return (

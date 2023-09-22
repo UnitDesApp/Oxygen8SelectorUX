@@ -11,7 +11,6 @@ export const strColumnAttachedUnitNo = 'attached_Unit_no';
 // -------------------------------------------------------------------------
 // SESSION
 // -------------------------------------------------------------------------
-// export const strCtrlName = "CtrlName";
 export const strSesVarElecHeaterVoltageID = 'ElecHeaterVoltageID';
 
 // -------------------------------------------------------------------------

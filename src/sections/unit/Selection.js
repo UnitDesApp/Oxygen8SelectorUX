@@ -24,6 +24,8 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
+// lodash
+import { isEmpty } from 'lodash';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
 import { getViewSelectionInfo } from '../../redux/slices/unitReducer';
@@ -61,7 +63,6 @@ const CustomGroupBoxTitle = styled(Typography)(() => ({
   fontSize: '25px',
   fontFamily: '"Public Sans", sans-serif',
   fontWeight: 400,
-  // color: 'rgb(145, 158, 171)',
   display: 'block',
   transformOrigin: 'left top',
   whiteSpace: 'nowrap',
@@ -179,11 +180,10 @@ export default function Selection({ unitTypeData, intUnitNo }) {
     exhaustFan,
     soundData,
   } = viewSelectionInfo;
-  // console.log(electricalRequirements);
 
   const SelectionInfo = useMemo(
     () =>
-      JSON.stringify(viewSelectionInfo) !== '{}'
+      isEmpty(viewSelectionInfo)
         ? [
             {
               groupName: 'Pricing',
