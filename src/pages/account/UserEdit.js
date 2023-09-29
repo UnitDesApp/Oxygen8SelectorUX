@@ -134,9 +134,8 @@ export default function UserEdit() {
             <HeaderBreadcrumbs
               heading="Project Submittal"
               links={[
-                { name: 'My account', href: PATH_ACCOUNT.account },
                 { name: 'Users', href: PATH_ACCOUNT.users },
-                { name: '' },
+                { name: 'User Edit' },
               ]}
               action={
                 <Stack direction="row" justifyContent="center" spacing={1}>

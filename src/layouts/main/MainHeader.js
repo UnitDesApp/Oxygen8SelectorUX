@@ -4,18 +4,18 @@ import { AppBar, Toolbar, Container, Stack, Typography } from '@mui/material';
 // hooks
 import useOffSetTop from '../../hooks/useOffSetTop';
 import useResponsive from '../../hooks/useResponsive';
-// import useAuth from '../../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 // utils
 import cssStyles from '../../utils/cssStyles';
 // config
-import { HEADER } from '../../config';
+import { HEADER, intUAL_Admin } from '../../config';
 // components
 import Logo from '../../components/Logo';
 import AccountPopover from './AccountPopover';
 //
 import MenuDesktop from './MenuDesktop';
 import MenuMobile from './MenuMobile';
-import navConfig from './MenuConfig';
+import navConfig, { ICONS } from './MenuConfig';
 import MyAvatar from '../../components/MyAvatar';
 
 // ----------------------------------------------------------------------
@@ -49,10 +49,23 @@ const ToolbarShadowStyle = styled('div')(({ theme }) => ({
 
 export default function MainHeader() {
   const isOffset = useOffSetTop(HEADER.MAIN_DESKTOP_HEIGHT);
-  // const { user } = useAuth();
+  const { user } = useAuth();
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'md');
+
+  const getNavHeader = () => {
+    if (user?.UAL?.toString() === intUAL_Admin.toString()) {
+      return [
+        {
+          ...navConfig[0],
+          items: [...navConfig[0].items, { title: 'Admin Panel', path: '/admin-panel', icon: ICONS.adminPanel }],
+        },
+      ];
+    }
+
+    return navConfig;
+  };
 
   return (
     <AppBar sx={{ boxShadow: 0, zIndex: 1000, bgcolor: 'transparent', background: '#ffff' }}>
@@ -74,7 +87,7 @@ export default function MainHeader() {
         >
           <Logo sx={{ width: { xs: '138px', md: '300px' }, height: { xs: '30px', md: '40px' } }} />
 
-          {isDesktop && <MenuDesktop isOffset={isOffset} navConfig={navConfig} />}
+          {isDesktop && <MenuDesktop isOffset={isOffset} navConfig={getNavHeader()} />}
 
           <Stack direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 0.5, sm: 1.5 }}>
             <MyAvatar />
@@ -84,7 +97,7 @@ export default function MainHeader() {
             <AccountPopover />
           </Stack>
 
-          {!isDesktop && <MenuMobile isOffset={isOffset} navConfig={navConfig} />}
+          {!isDesktop && <MenuMobile isOffset={isOffset} navConfig={getNavHeader()} />}
         </Container>
       </ToolbarStyle>
 

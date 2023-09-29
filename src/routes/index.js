@@ -12,6 +12,7 @@ import GuestGuard from '../guards/GuestGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 import RegisterSuccess from '../pages/auth/RegisterSuccess';
+import AdminPanel from '../pages/AdminPanel';
 
 // ----------------------------------------------------------------------
 
@@ -82,6 +83,8 @@ export default function Router() {
             { path: 'resources', element: <Resources /> },
             { path: 'unit/add/:projectId/', element: <UnitAdd /> },
             { path: 'unit/edit/:projectId/:unitId', element: <UnitEdit /> },
+            { path: 'admin-panel', element: <AdminPanel /> },
+            { path: 'admin-panel/:tab', element: <AdminPanel /> },
           ],
         },
       ],

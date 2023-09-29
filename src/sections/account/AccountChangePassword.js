@@ -18,13 +18,11 @@ import { serverUrl } from '../../config';
 
 export default function AccountChangePassword() {
   const ChangePassWordSchema = Yup.object().shape({
-    oldPassword: Yup.string().required('Old Password is required'),
     newPassword: Yup.string().min(6, 'Password must be at least 6 characters').required('New Password is required'),
     confirmNewPassword: Yup.string().oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
   });
 
   const defaultValues = {
-    oldPassword: '',
     newPassword: '',
     confirmNewPassword: '',
   };
@@ -45,7 +43,6 @@ export default function AccountChangePassword() {
       try {
         const response = await axios.post(`${serverUrl}/api/user/updatePassword`, {
           userId: localStorage.getItem('userId'),
-          currentPassword: data.oldPassword,
           updatedPassword: data.newPassword,
         });
 
@@ -75,8 +72,6 @@ export default function AccountChangePassword() {
               {errors.afterSubmitSuccess.message}
             </Alert>
           )}
-
-          <RHFTextField size="small" name="oldPassword" type="password" label="Old Password" />
 
           <RHFTextField size="small" name="newPassword" type="password" label="New Password" />
 

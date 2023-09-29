@@ -21,9 +21,11 @@ import Scrollbar from '../../components/Scrollbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
+  { id: 'name', label: 'Customer Name', align: 'left' },
+  { id: 'customer_type', label: 'Customer Type', align: 'left' },
+  { id: 'add_text', label: 'Region', align: 'left' },
+  { id: 'shipping_factor', label: 'Shipping Factor', align: 'left' },
   { id: 'address', label: 'Address', align: 'left' },
-  { id: 'created_date', label: 'Created Date', align: 'left' },
   { id: '' },
 ];
 
@@ -234,21 +236,16 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   });
 
   tableData = stabilizedThis.map((el) => el[0]);
-
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        Object.values(item).filter((value) => value.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+        Object.values(item).filter((value) => value.toString().toLowerCase().includes(filterName.toLowerCase()))
           .length > 0
     );
   }
 
   if (filterStatus !== 'All') {
     tableData = tableData.filter((item) => item.status === filterStatus);
-  }
-
-  if (filterRole !== 'All') {
-    tableData = tableData.filter((item) => item.role === filterRole);
   }
 
   return tableData;

@@ -143,7 +143,6 @@ function AuthProvider({ children }) {
     // if (password !== '1234') return;
 
     const { action, data, accessToken } = response.data;
-    console.log(data);
 
     if (action === 'success') {
       setSession(accessToken);

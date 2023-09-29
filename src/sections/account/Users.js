@@ -63,6 +63,7 @@ export default function Users({ toolbar = true, checkbox = true }) {
 
   const [filterName, setFilterName] = useState('');
   const [tableData, setTableData] = useState(userList);
+  const [customerType, setCustomerType] = useState();
   const filterRole = 'All';
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
@@ -129,8 +130,9 @@ export default function Users({ toolbar = true, checkbox = true }) {
         filterName,
         filterRole,
         filterStatus,
+        customerType,
       }),
-    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+    [filterName, filterRole, filterStatus, order, orderBy, tableData, customerType]
   );
 
   const denseHeight = useMemo(() => (dense ? 52 : 72), [dense]);
@@ -143,12 +145,17 @@ export default function Users({ toolbar = true, checkbox = true }) {
     [filterName, filterRole, filterStatus, filteredData.length]
   );
 
+  const handleFilterByCustomerName = (customerType) => {
+    setCustomerType(customerType);
+  };
+
   return (
     <Box>
       {toolbar && (
         <UserTableToolbar
           filterName={filterName}
           onFilterName={handleFilterName}
+          onFilterByCustomerName={handleFilterByCustomerName}
           userNum={filteredData.length}
           onDeleteSelectedData={handleMultiConfirmDialogOpen}
         />
@@ -237,7 +244,7 @@ export default function Users({ toolbar = true, checkbox = true }) {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole, customerType }) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -265,6 +272,10 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
 
   if (filterRole !== 'All') {
     tableData = tableData.filter((item) => item.role === filterRole);
+  }
+
+  if (customerType && customerType !== "1") {
+    tableData = tableData.filter((item) => item.customer_type_id.toString() === customerType.toString());
   }
 
   return tableData;
