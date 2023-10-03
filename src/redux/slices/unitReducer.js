@@ -551,53 +551,53 @@ export function saveLayout(data) {
   };
 }
 
-export function ddlLocationChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/LocationChanged`, data);
-    dispatch(UnitSlice.actions.ddlLocationChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlLocationChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/LocationChanged`, data);
+//     dispatch(UnitSlice.actions.ddlLocationChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ddlOrientationChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/OrientationChanged`, data);
-    dispatch(UnitSlice.actions.ddlOrientationChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlOrientationChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/OrientationChanged`, data);
+//     dispatch(UnitSlice.actions.ddlOrientationChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSummerSupplyAirCFMChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/SummerSupplyAirCFMChanged`, data);
-    dispatch(UnitSlice.actions.txbSummerSupplyAirCFMChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSummerSupplyAirCFMChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/SummerSupplyAirCFMChanged`, data);
+//     dispatch(UnitSlice.actions.txbSummerSupplyAirCFMChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSummerReturnAirCFMChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirCFMChanged`, data);
-    dispatch(UnitSlice.actions.txbSummerReturnAirCFMChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSummerReturnAirCFMChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirCFMChanged`, data);
+//     dispatch(UnitSlice.actions.txbSummerReturnAirCFMChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSupplyAirESPChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/SupplyAirESPChanged`, data);
-    dispatch(UnitSlice.actions.txbSupplyAirESPChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSupplyAirESPChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/SupplyAirESPChanged`, data);
+//     dispatch(UnitSlice.actions.txbSupplyAirESPChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbExhaustAirESPChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ExhaustAirESPChanged`, data);
-    dispatch(UnitSlice.actions.txbExhaustAirESPChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbExhaustAirESPChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ExhaustAirESPChanged`, data);
+//     dispatch(UnitSlice.actions.txbExhaustAirESPChanged(response.data));
+//     return response.data;
+//   };
+// }
 
 export function ddlUnitModelChanged(data) {
   return async () => {
@@ -607,125 +607,125 @@ export function ddlUnitModelChanged(data) {
   };
 }
 
-export function ddlUnitVoltageChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/UnitVoltageChanged`, data);
-    dispatch(UnitSlice.actions.ddlUnitVoltageChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlUnitVoltageChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/UnitVoltageChanged`, data);
+//     dispatch(UnitSlice.actions.ddlUnitVoltageChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSummerOutdoorAirWBChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/SummerOutdoorAirWBChanged`, data);
-    dispatch(UnitSlice.actions.txbSummerOutdoorAirWBChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSummerOutdoorAirWBChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/SummerOutdoorAirWBChanged`, data);
+//     dispatch(UnitSlice.actions.txbSummerOutdoorAirWBChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSummerOutdoorAirRHChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api//units/SummerOutdoorAirRHChanged`, data);
-    dispatch(UnitSlice.actions.txbSummerOutdoorAirRHChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSummerOutdoorAirRHChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api//units/SummerOutdoorAirRHChanged`, data);
+//     dispatch(UnitSlice.actions.txbSummerOutdoorAirRHChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbWinterOutdoorAirWBChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api//units/WinterOutdoorAirWBChanged`, data);
-    dispatch(UnitSlice.actions.txbWinterOutdoorAirWBChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbWinterOutdoorAirWBChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api//units/WinterOutdoorAirWBChanged`, data);
+//     dispatch(UnitSlice.actions.txbWinterOutdoorAirWBChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbWinterOutdoorAirRHChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/WinterOutdoorAirRHChanged`, data);
-    dispatch(UnitSlice.actions.txbWinterOutdoorAirRHChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbWinterOutdoorAirRHChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/WinterOutdoorAirRHChanged`, data);
+//     dispatch(UnitSlice.actions.txbWinterOutdoorAirRHChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSummerReturnAirWBChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirWBChanged`, data);
-    dispatch(UnitSlice.actions.txbSummerReturnAirWBChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSummerReturnAirWBChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirWBChanged`, data);
+//     dispatch(UnitSlice.actions.txbSummerReturnAirWBChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbSummerReturnAirRHChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirRHChanged`, data);
-    dispatch(UnitSlice.actions.txbSummerReturnAirRHChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbSummerReturnAirRHChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirRHChanged`, data);
+//     dispatch(UnitSlice.actions.txbSummerReturnAirRHChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbWinterReturnAirWBChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirWBChanged`, data);
-    dispatch(UnitSlice.actions.txbWinterReturnAirWBChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbWinterReturnAirWBChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirWBChanged`, data);
+//     dispatch(UnitSlice.actions.txbWinterReturnAirWBChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function txbWinterReturnAirRHChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirRHChanged`, data);
-    dispatch(UnitSlice.actions.txbWinterReturnAirRHChanged(response.data));
-    return response.data;
-  };
-}
+// export function txbWinterReturnAirRHChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirRHChanged`, data);
+//     dispatch(UnitSlice.actions.txbWinterReturnAirRHChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ddlPreheatCompChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ddlPreheatCompChanged`, data);
-    dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, unitInfo: data }));
-    return response.data;
-  };
-}
+// export function ddlPreheatCompChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ddlPreheatCompChanged`, data);
+//     dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, unitInfo: data }));
+//     return response.data;
+//   };
+// }
 
-export function ddlCoolingCompChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ddlCoolingCompChanged`, data);
-    dispatch(UnitSlice.actions.ddlCoolingCompChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlCoolingCompChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ddlCoolingCompChanged`, data);
+//     dispatch(UnitSlice.actions.ddlCoolingCompChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ckbHeatPumpChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ckbHeatPumpChanged`, data);
-    dispatch(UnitSlice.actions.ckbHeatPumpChanged(response.data));
-    return response.data;
-  };
-}
+// export function ckbHeatPumpChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ckbHeatPumpChanged`, data);
+//     dispatch(UnitSlice.actions.ckbHeatPumpChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ckbDehumidificationChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ckbDehumidificationChanged`, data);
-    dispatch(UnitSlice.actions.ckbDehumidificationChanged(response.data));
-    return response.data;
-  };
-}
+// export function ckbDehumidificationChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ckbDehumidificationChanged`, data);
+//     dispatch(UnitSlice.actions.ckbDehumidificationChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ddlHeatingCompChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
-    dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlHeatingCompChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
+//     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ddlReheatCompChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
-    dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlReheatCompChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
+//     dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
+//     return response.data;
+//   };
+// }
 
 export function getViewSelectionInfo(data) {
   return async () => {
@@ -742,19 +742,19 @@ export function updateLayoutValues(data) {
   };
 }
 
-export function ddlHandingChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ddlHandingChanged`, data);
-    dispatch(UnitSlice.actions.ddlHandingChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlHandingChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ddlHandingChanged`, data);
+//     dispatch(UnitSlice.actions.ddlHandingChanged(response.data));
+//     return response.data;
+//   };
+// }
 
-export function ddlSupplyAirOpeningChanged(data) {
-  return async () => {
-    const response = await axios.post(`${serverUrl}/api/units/ddlSupplyAirOpeningChanged`, data);
-    dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged(response.data));
-    return response.data;
-  };
-}
+// export function ddlSupplyAirOpeningChanged(data) {
+//   return async () => {
+//     const response = await axios.post(`${serverUrl}/api/units/ddlSupplyAirOpeningChanged`, data);
+//     dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged(response.data));
+//     return response.data;
+//   };
+// }
 // ----------------------------------------------------------------------
