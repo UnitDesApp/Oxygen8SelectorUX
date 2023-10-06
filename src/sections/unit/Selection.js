@@ -193,7 +193,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Pricing Detail',
-                  data: pricingDetail.map((item) => [item.cLabel, item.cValue, item.cNotes]),
+                  data: pricingDetail?.map((item) => [item.cLabel, item.cValue, item.cNotes]),
                   visible: performanceVisible,
                 },
               ],
@@ -274,7 +274,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Actual',
-                  // data: preheatElecHeater !== undefined && preheatElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
                   data: preheatElecHeater?.Data,
                   visible: preheatElecHeater?.Visible,
                 },
@@ -291,22 +290,18 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: preheatHWC !== undefined  && preheatHWC.Data.map((item) => [item.cLabel, item.cValue]),
                   data: preheatHWC?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: preheatHWC !== undefined  && preheatHWC.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: preheatHWC?.Entering,
                 },
                 {
                   title: 'Leaving',
-                  // data: preheatHWC !== undefined  && preheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                   data: preheatHWC?.Leaving,
                 },
                 {
                   title: 'Valve & Actuator',
-                  // data: preheatHWC !== undefined  && preheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
                   data: preheatHWC?.ValveActuator,
                 },
               ],
@@ -322,17 +317,14 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Design Conditions',
-                  // data: heatExchCORE !== undefined  && heatExchCORE.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchCORE?.designConditions,
                 },
                 {
                   title: 'Performance Leaving Air',
-                  // data: heatExchCORE !== undefined  && heatExchCORE.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchCORE?.performanceLeavingAir,
                 },
                 {
                   title: 'Performance',
-                  // data: heatExchCORE !== undefined  && heatExchCORE.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchCORE?.performance,
                 },
               ],
@@ -348,17 +340,14 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Design Conditions',
-                  // data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchRECUTECH?.designConditions,
                 },
                 {
                   title: 'Performance Leaving Air',
-                  // data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchRECUTECH?.performanceLeavingAir,
                 },
                 {
                   title: 'Performance',
-                  // data: heatExchRECUTECH !== undefined  && heatExchRECUTECH.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchRECUTECH?.performance,
                 },
               ],
@@ -374,17 +363,14 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Design Conditions',
-                  // data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.designConditions.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchPOLYBLOC?.designConditions,
                 },
                 {
                   title: 'Performance Leaving Air',
-                  // data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performanceLeavingAir.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchPOLYBLOC?.performanceLeavingAir,
                 },
                 {
                   title: 'Performance',
-                  // data: heatExchPOLYBLOC !== undefined  && heatExchPOLYBLOC.performance.map((item) => [item.cLabel, item.cValue_1, item.cValue_2]),
                   data: heatExchPOLYBLOC?.performance,
                 },
               ],
@@ -400,22 +386,18 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: coolingCWC !== undefined  && coolingCWC.Data.map((item) => [item.cLabel, item.cValue]),
                   data: coolingCWC?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: coolingCWC !== undefined  && coolingCWC.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: coolingCWC?.Entering,
                 },
                 {
                   title: 'Leaving',
-                  // data: coolingCWC !== undefined  && coolingCWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                   data: coolingCWC?.Leaving,
                 },
                 {
                   title: 'Valve & Actuator',
-                  // data: coolingCWC !== undefined  && coolingCWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
                   data: coolingCWC?.ValveActuator,
                 },
               ],
@@ -431,29 +413,24 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: coolingDXC !== undefined  && coolingDXC.Data.map((item) => [item.cLabel, item.cValue]),
                   data: coolingDXC?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: coolingDXC !== undefined  && coolingDXC.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: coolingDXC?.Entering,
                 },
                 [
                   {
                     title: 'Setpoint',
-                    // data: coolingDXC !== undefined  && coolingDXC.Leaving.map((item) => [item.cLabel, item.cValue]),
                     data: coolingDXC?.Leaving,
                   },
                   {
                     title: 'Coil Performance',
-                    // data: coolingDXC !== undefined  && coolingDXC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
                     data: coolingDXC?.PerfOutputs,
                   },
                 ],
                 {
                   title: 'VRV Integration Kit',
-                  // data: coolingDXC !== undefined  && coolingDXC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),
                   data: coolingDXC?.EKEXV_Kit,
                 },
               ],
@@ -466,17 +443,14 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: heatingCondCoil !== undefined  && heatingCondCoil.Data.map((item) => [item.cLabel, item.cValue]),
                   data: heatingCondCoil?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: heatingCondCoil !== undefined  && heatingCondCoil.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: heatingCondCoil?.Entering,
                 },
                 {
                   title: 'Setpoint',
-                  // data: heatingCondCoil !== undefined  && heatingCondCoil.Leaving.map((item) => [item.cLabel, item.cValue]),
                   data: heatingCondCoil?.Leaving,
                 },
               ],
@@ -489,7 +463,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Actual',
-                  // data: heatingElecHeater !== undefined && heatingElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
                   data: heatingElecHeater?.Data,
                 },
               ],
@@ -505,17 +478,14 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: heatingHWC !== undefined && heatingHWC.Data.map((item) => [item.cLabel, item.cValue]),
                   data: heatingHWC?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: heatingHWC !== undefined && heatingHWC.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: heatingHWC?.Entering,
                 },
                 {
                   title: 'Leaving',
-                  // data: heatingHWC !== undefined && heatingHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                   data: heatingHWC?.Leaving,
                 },
                 {
@@ -532,7 +502,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Actual',
-                  // data: reheatElecHeater !== undefined && reheatElecHeater.Data.map((item) => [item.cLabel, item.cValue]),
                   data: reheatElecHeater?.Data,
                 },
               ],
@@ -548,22 +517,18 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: reheatHWC !== undefined && reheatHWC.Data.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHWC?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: reheatHWC !== undefined && reheatHWC.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHWC?.Entering,
                 },
                 {
                   title: 'Leaving',
-                  //  data: reheatHWC !== undefined && reheatHWC.Leaving.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHWC?.Leaving,
                 },
                 {
                   title: 'Valve & Actuator',
-                  // data: reheatHWC !== undefined && reheatHWC.ValveActuator.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHWC?.ValveActuator,
                 },
               ],
@@ -579,29 +544,24 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Coil',
-                  // data: reheatHGRC !== undefined && reheatHGRC.Data.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHGRC?.Data,
                 },
                 {
                   title: 'Entering',
-                  // data: reheatHGRC !== undefined && reheatHGRC.Entering.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHGRC?.Entering,
                 },
                 [
                   {
                     title: 'Setpoint',
-                    // data: reheatHGRC !== undefined && reheatHGRC.Leaving.map((item) => [item.cLabel, item.cValue]),
                     data: reheatHGRC?.Leaving,
                   },
                   {
                     title: 'Coil Performance',
-                    // data: reheatHGRC !== undefined && reheatHGRC.PerfOutputs.map((item) => [item.cLabel, item.cValue]),
                     data: reheatHGRC?.PerfOutputs,
                   },
                 ],
                 {
                   title: 'VRV Integration Kit',
-                  // data: reheatHGRC !== undefined && reheatHGRC.EKEXV_Kit.map((item) => [item.cLabel, item.cValue]),
                   data: reheatHGRC?.EKEXV_Kit,
                 },
               ],
@@ -617,7 +577,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Fan Data',
-                  // data: supplyFan !== undefined && supplyFan.Data.map((item) => [item.cLabel, item.cValue]),
                   data: supplyFan?.Data,
                 },
                 {
@@ -626,7 +585,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
                 },
                 {
                   title: 'Sound Data',
-                  // data: supplyFan !== undefined && supplyFan.SoundData.map((item) => [item.cLabel, item.cValue_1]),
                   data: supplyFan?.SoundData,
                 },
               ],
@@ -634,7 +592,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
             {
               groupName: 'Exhaust Fan',
               direction: 'row',
-              visible: exhaustFan.Visible,
+              visible: exhaustFan?.Visible,
               style: {
                 display: 'grid',
                 gridTemplateColumns: 'repeat(2, 1fr)',
@@ -642,7 +600,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               subGroups: [
                 {
                   title: 'Fan Data',
-                  // data: exhaustFan !== undefined && exhaustFan.Data.map((item) => [item.cLabel, item.cValue]),
                   data: exhaustFan?.Data,
                 },
                 {
@@ -651,7 +608,6 @@ export default function Selection({ unitTypeData, intUnitNo }) {
                 },
                 {
                   title: 'Sound Data',
-                  // data: exhaustFan !== undefined && exhaustFan.SoundData.map((item) => [item.cLabel, item.cValue_1]),
                   data: exhaustFan?.SoundData,
                 },
               ],
@@ -660,7 +616,7 @@ export default function Selection({ unitTypeData, intUnitNo }) {
               groupName: 'Unit Sound Data (Hz)',
               direction: 'row',
               style: {},
-              visible: soundData.Visible,
+              visible: soundData?.Visible,
               subGroups: [
                 {
                   data: soundData?.Data,

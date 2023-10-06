@@ -47,32 +47,41 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {job_name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {reference_no}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {revision_no}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         <Label color={statusValue === 'draft' ? 'default' : statusValue} sx={{ borderRadius: '15px' }} variant="filled">
           {statusValue}
         </Label>
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {Customer_Name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {User_Full_Name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {User_Full_Name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {created_date}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {revised_date}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }}>
         <Stack direction="row" spacing={1}>
           <IconButton disabled={!Number(user?.verified)} aria-label="delete" onClick={onDuplicate}>
@@ -83,6 +92,7 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
           </IconButton>
         </Stack>
       </TableCell>
+      
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}

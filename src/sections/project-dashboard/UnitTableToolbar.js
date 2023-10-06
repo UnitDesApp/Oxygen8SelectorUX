@@ -44,6 +44,7 @@ export default function UserTableToolbar({
   const handleSortClick = useCallback((event) => {
     setSortAnchorEl(event.currentTarget);
   }, []);
+  
   const handleSortClose = useCallback(
     (event) => {
       onSort(event);

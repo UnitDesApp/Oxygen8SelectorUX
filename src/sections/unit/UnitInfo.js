@@ -1458,6 +1458,7 @@ export default function UnitInfo({
                             setValueWithCheck(e, 'txbRefrigSuctionTemp');
                           }}
                         />
+
                         <RHFTextField
                           size="small"
                           name="txbRefrigLiquidTemp"
@@ -1466,6 +1467,7 @@ export default function UnitInfo({
                             setValueWithCheck(e, 'txbRefrigLiquidTemp');
                           }}
                         />
+
                         <RHFTextField
                           size="small"
                           name="txbRefrigSuperheatTemp"
@@ -1506,6 +1508,7 @@ export default function UnitInfo({
                             setValueWithCheck(e, 'txbCoolingFluidEntTemp');
                           }}
                         />
+                        
                         <RHFTextField
                           size="small"
                           name="txbCoolingFluidLvgTemp"

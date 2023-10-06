@@ -46,9 +46,7 @@ export default function AccountChangePassword() {
           updatedPassword: data.newPassword,
         });
 
-        if (response.data === 'incorrect_current_password') {
-          setError('afterSubmit', { message: 'Incorrect Old Password!' });
-        } else if (response.data === 'success') {
+        if (response.data === 'success') {
           setError('afterSubmitSuccess', { message: 'Updated successfully!' });
         }
       } catch (error) {
