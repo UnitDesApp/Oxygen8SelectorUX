@@ -50,7 +50,7 @@ export default function UserTableToolbar({
   onDeleteSelectedData,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [customerType, setCustomerType] = useState();
+  const [customerType, setCustomerType] = useState("");
 
   const open = Boolean(anchorEl);
 
@@ -59,6 +59,7 @@ export default function UserTableToolbar({
   }, []);
 
   const handleClose = useCallback((type) => {
+    console.log(type, "Type");
     onFilterByCustomerName(type);
     setCustomerType(type);
     setAnchorEl(null);
@@ -92,7 +93,7 @@ export default function UserTableToolbar({
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={() => handleClose('All')}
+            onClose={() => handleClose(customerType)}
             PaperProps={{
               style: {
                 maxHeight: '300px',
@@ -117,7 +118,7 @@ export default function UserTableToolbar({
               </MenuItem>
             ))}
           </Menu>
-          <Button startIcon={<Iconify icon={'ic:sharp-sort'} />}>Sort</Button>
+          {/* <Button startIcon={<Iconify icon={'ic:sharp-sort'} />}>Sort</Button> */}
           <Button startIcon={<Iconify icon={'ic:outline-delete-outline'} />} onClick={onDeleteSelectedData}>
             Delete
           </Button>

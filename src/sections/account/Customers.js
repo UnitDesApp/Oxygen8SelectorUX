@@ -55,6 +55,7 @@ export default function Customers() {
 
   const [filterName, setFilterName] = useState('');
   const [tableData, setTableData] = useState(customerList);
+  const [customerType, setCustomerType] = useState();
   const filterRole = useState('All');
 
   // Delete one row
@@ -122,9 +123,14 @@ export default function Customers() {
         filterName,
         filterRole,
         filterStatus,
+        customerType
       }),
-    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+    [filterName, filterRole, filterStatus, order, orderBy,customerType, tableData]
   );
+
+  const handleFilterByCustomerName = (customerType) => {
+    setCustomerType(customerType);
+  };
 
   const denseHeight = useMemo(() => (dense ? 52 : 72), [dense]);
 
@@ -143,6 +149,7 @@ export default function Customers() {
         onFilterName={handleFilterName}
         userNum={filteredData.length}
         onDeleteSelectedData={handleMultiConfirmDialogOpen}
+        onFilterByCustomerName={handleFilterByCustomerName}
       />
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
@@ -226,7 +233,7 @@ export default function Customers() {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole, customerType }) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -246,6 +253,10 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
 
   if (filterStatus !== 'All') {
     tableData = tableData.filter((item) => item.status === filterStatus);
+  }
+
+  if (customerType && customerType !== "1") {
+    tableData = tableData.filter((item) => item.customer_type_id.toString() === customerType.toString());
   }
 
   return tableData;

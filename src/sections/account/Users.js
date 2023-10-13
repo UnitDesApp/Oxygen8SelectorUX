@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
+import { firstName } from 'src/_mock/name';
 // hooks
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
@@ -100,6 +101,7 @@ export default function Users({ toolbar = true, checkbox = true }) {
 
   const handleFilterName = useCallback(
     (filterName) => {
+      console.log(filterName);
       setFilterName(filterName);
       setPage(0);
     },
@@ -256,16 +258,22 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
+    console.log(filterName, "++++++++")
     tableData = tableData.filter(
       (item) =>
-        item.user_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.username.toLowerCase().indexOf(filterName.toLowerCase()) !== -1  ||
         item.first_name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.last_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.customer.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.email?.indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.access.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.access_level.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.access_pricing.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.created_date.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
+    
   }
-
+  console.log(tableData, "**********");
   if (filterStatus !== 'All') {
     tableData = tableData.filter((item) => item.status === filterStatus);
   }
@@ -277,6 +285,5 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (customerType && customerType !== "1") {
     tableData = tableData.filter((item) => item.customer_type_id.toString() === customerType.toString());
   }
-
   return tableData;
 }
