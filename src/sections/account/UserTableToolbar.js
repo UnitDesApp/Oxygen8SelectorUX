@@ -59,7 +59,6 @@ export default function UserTableToolbar({
   }, []);
 
   const handleClose = useCallback((type) => {
-    console.log(type, "Type");
     onFilterByCustomerName(type);
     setCustomerType(type);
     setAnchorEl(null);

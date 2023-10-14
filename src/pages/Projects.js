@@ -83,7 +83,6 @@ export default function MyProjects() {
   }, []);
 
   const { projectList: tableData, isLoading, projectInitInfo } = useSelector((state) => state.projects);
-  console.log(tableData, "TTTTTTTTT");
 
   const [openDuplicateSuccess, setOpenDuplicateSuccess] = useState(false);
 
