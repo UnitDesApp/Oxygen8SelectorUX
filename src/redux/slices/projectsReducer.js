@@ -35,7 +35,7 @@ const ProjectsSlice = createSlice({
       state.projectInitInfo = action.payload;
     },
     addNewProject(state, action) {
-      state.projectList.push(action.payload);
+      state.projectList = action.payload;
     },
     setProjectsAndUnitsInfo(state, action) {
       state.isLoading = false;
@@ -97,8 +97,8 @@ export function getProjectsInitInfo() {
 export function addNewProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/add`, data);
-    dispatch(ProjectsSlice.actions.addNewProject(response.data[0]));
-    return response.data[0].id;
+    dispatch(ProjectsSlice.actions.addNewProject(response.data));
+    // return response.data[0].id;
   };
 }
 

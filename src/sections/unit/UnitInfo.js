@@ -1075,7 +1075,7 @@ export default function UnitInfo({
                             size="small"
                             name="txbSummerReturnAirCFM"
                             label="Exhaust Air (CFM)"
-                            sx={getDisplay(!isUnitTypeAHU())}
+                            // sx={getDisplay(!isUnitTypeAHU())}
                             onChange={(e) => {
                               setValueWithCheck(e, 'txbSummerReturnAirCFM');
                             }}

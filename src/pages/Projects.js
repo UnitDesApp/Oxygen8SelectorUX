@@ -369,13 +369,13 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.job_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.reference_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.revision_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.Customer_Name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.User_Full_Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.created_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.revised_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item?.job_name?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.reference_no?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.revision_no?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.Customer_Name?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.User_Full_Name?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.created_date?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.revised_date?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

@@ -110,6 +110,7 @@ export const getUnitModel = (
     let unitModelLink;
     let location;
     let orientation;
+    unitModelId = isNaN(unitModelId) ? 0 : unitModelId
 
     switch (intProductTypeID) {
       case ClsID.intProdTypeNovaID:
@@ -124,15 +125,15 @@ export const getUnitModel = (
         );
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
-          unitModel = unitModelFilter(
-            data.novaUnitModel,
-            summerSupplyAirCFM,
-            'cfm_min_ext_users',
-            'cfm_max_ext_users',
-            unitModelId
-          );
+          // unitModel = unitModelFilter(data.novaUnitModel, summerSupplyAirCFM, 'cfm_min_ext_users', 'cfm_max_ext_users', unitModelId);
+          // unitModel = data.novaUnitModel?.filter((item) => item.terra_spp === 1);
+          // unitModel = data.novaUnitModel?.filter((item) => (item['cfm_min_ext_users'] >= summerSupplyAirCFM && summerSupplyAirCFM <= item['cfm_max_ext_users']) || item.id === unitModelId).sort((a, b) => a.cfm_max - b.cfm_max);
+          unitModel = data.novaUnitModel?.filter((item) => (item.cfm_min_ext_users <= summerSupplyAirCFM &&  item.cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
+      
         } else {
-          unitModel = unitModelFilter(data.novaUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          // unitModel = unitModelFilter(data.novaUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+
+          unitModel = data.novaUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM  && item.cfm_max >= summerSupplyAirCFM) || item.id === unitModelId);
         }
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
@@ -164,30 +165,20 @@ export const getUnitModel = (
         break;
       case ClsID.intProdTypeVentumID:
         if (ckbBypassVal === 1) {
-          summerSupplyAirCFM =
-            summerSupplyAirCFM > intVEN_MAX_CFM_WITH_BYPASS ? intVEN_MAX_CFM_WITH_BYPASS : summerSupplyAirCFM;
+          summerSupplyAirCFM = summerSupplyAirCFM > intVEN_MAX_CFM_WITH_BYPASS ? intVEN_MAX_CFM_WITH_BYPASS : summerSupplyAirCFM;
         }
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
           if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumHUnitModel,
-              summerSupplyAirCFM,
-              'erv_cfm_min_ext_users',
-              'erv_cfm_max_ext_users',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumHUnitModel,summerSupplyAirCFM,'erv_cfm_min_ext_users','erv_cfm_max_ext_users',unitModelId);
+            unitModel = data.ventumHUnitModel?.filter((item) => (item.erv_cfm_min_ext_users <= summerSupplyAirCFM &&  item.erv_cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumHUnitModel,
-              summerSupplyAirCFM,
-              'hrv_cfm_min_ext_users',
-              'hrv_cfm_max_ext_users',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumHUnitModel,summerSupplyAirCFM,'hrv_cfm_min_ext_users','hrv_cfm_max_ext_users', unitModelId);
+            unitModel = data.ventumHUnitModel?.filter((item) => (item.hrv_cfm_min_ext_users <= summerSupplyAirCFM &&  item.hrv_cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           }
         } else {
-          unitModel = unitModelFilter(data.ventumHUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          // unitModel = unitModelFilter(data.ventumHUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          unitModel = data.ventumHUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM &&  item.cfm_max >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
         }
 
         unitModel = unitModel?.filter((item) => item.bypass === ckbBypassVal);
@@ -199,95 +190,61 @@ export const getUnitModel = (
 
         if (intUAL === ClsID.intUAL_IntLvl_1 || intUAL === ClsID.intUAL_IntLvl_2) {
           if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumLiteUnitModel,
-              summerSupplyAirCFM,
-              'cfm_min',
-              'cfm_max',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumLiteUnitModel,summerSupplyAirCFM,'cfm_min','cfm_max', unitModelId);
+            unitModel = data.ventumLiteUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM &&  item.cfm_max >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumLiteUnitModel,
-              summerSupplyAirCFM,
-              'cfm_min',
-              'cfm_max',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumLiteUnitModel,summerSupplyAirCFM,'cfm_min','cfm_max',unitModelId);
+            unitModel = data.ventumLiteUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM &&  item.cfm_max >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           }
         } else if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
           if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumLiteUnitModel,
-              summerSupplyAirCFM,
-              'erv_cfm_min_ext_users',
-              'erv_cfm_max_ext_users',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumLiteUnitModel,summerSupplyAirCFM,'erv_cfm_min_ext_users','erv_cfm_max_ext_users',unitModelId);
+            unitModel = data.ventumLiteUnitModel?.filter((item) => (item.erv_cfm_min_ext_users <= summerSupplyAirCFM &&  item.erv_cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumLiteUnitModel,
-              summerSupplyAirCFM,
-              'hrv_cfm_min_ext_users',
-              'hrv_cfm_max_ext_users',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumLiteUnitModel, summerSupplyAirCFM,'hrv_cfm_min_ext_users','hrv_cfm_max_ext_users',unitModelId);
+            unitModel = data.ventumLiteUnitModel?.filter((item) => (item.hrv_cfm_min_ext_users <= summerSupplyAirCFM &&  item.hrv_cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           }
 
           const drUnitModel = unitModel.filter((item) => item.enabled_ext_users === 1);
           unitModel = drUnitModel || [];
         } else {
-          unitModel = unitModelFilter(data.ventumLiteUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          // unitModel = unitModelFilter(data.ventumLiteUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          unitModel = data.ventumLiteUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM &&  item.cfm_max >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
         }
 
         unitModel = unitModel?.filter((item) => item.enabled === 1 && item.bypass === ckbBypassVal);
         break;
       case ClsID.intProdTypeVentumPlusID:
         if (ckbBypassVal === 1) {
-          summerSupplyAirCFM =
-            summerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS ? intVENPLUS_MAX_CFM_WITH_BYPASS : summerSupplyAirCFM;
+          summerSupplyAirCFM = summerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS ? intVENPLUS_MAX_CFM_WITH_BYPASS : summerSupplyAirCFM;
         }
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
           if (intUnitTypeID === ClsID.intUnitTypeERV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumPlusUnitModel,
-              summerSupplyAirCFM,
-              'erv_cfm_min_ext_users',
-              'erv_cfm_max_ext_users',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'erv_cfm_min_ext_users', 'erv_cfm_max_ext_users', unitModelId);
+            unitModel = data.ventumPlusUnitModel?.filter((item) => (item.cfm_min_ext_users <= summerSupplyAirCFM &&  item.cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            unitModel = unitModelFilter(
-              data.ventumPlusUnitModel,
-              summerSupplyAirCFM,
-              'hrv_cfm_min_ext_users',
-              'hrv_cfm_max_ext_users',
-              unitModelId
-            );
+            // unitModel = unitModelFilter(data.ventumPlusUnitModel,summerSupplyAirCFM,'hrv_cfm_min_ext_users','hrv_cfm_max_ext_users',unitModelId);
+            unitModel = data.ventumPlusUnitModel?.filter((item) => (item.hrv_cfm_min_ext_users <= summerSupplyAirCFM &&  item.hrv_cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
           }
         } else {
-          unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          // unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          unitModel = data.ventumPlusUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM &&  item.cfm_max >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
         }
         location = data.generalLocation?.filter((item) => item.id === locationId);
-        unitModel = unitModel?.filter(
-          (item) => item.location_id_key === location?.[0]?.id_key && item.enabled === 1 && item.bypass === ckbBypassVal
+        unitModel = unitModel?.filter((item) => item.location_id_key === location?.[0]?.id_key && item.enabled === 1 && item.bypass === ckbBypassVal
         );
         break;
       case ClsID.intProdTypeTerraID:
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
-          unitModel = unitModelFilter(
-            data.terraUnitModel,
-            summerSupplyAirCFM,
-            'cfm_min_ext_users',
-            'cfm_max_ext_users',
-            unitModelId
-          );
+          // unitModel = unitModelFilter(data.terraUnitModel,summerSupplyAirCFM,'cfm_min_ext_users','cfm_max_ext_users',unitModelId);
+          unitModel = data.terraUnitModel?.filter((item) => (item.cfm_min_ext_users <= summerSupplyAirCFM &&  item.cfm_max_ext_users >= summerSupplyAirCFM) || item.id === unitModelId) || [];;
 
           const drUnitModel = unitModel.filter((item) => item.enabled_ext_users === 1);
           unitModel = drUnitModel || [];
         } else {
-          unitModel = unitModelFilter(data.terraUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          // unitModel = unitModelFilter(data.terraUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max', unitModelId);
+          unitModel = data.terraUnitModel?.filter((item) => (item.cfm_min <= summerSupplyAirCFM &&  item.cfm_max>= summerSupplyAirCFM) || item.id === unitModelId) || [];;
         }
 
         break;
@@ -298,6 +255,8 @@ export const getUnitModel = (
 
   return { unitModel, summerSupplyAirCFM };
 };
+
+
 
 export const getSummerSupplyAirCFM = (summerSupplyAirCFM, intProductTypeID, intUAL, ckbBypassVal) => {
   let intSummerSupplyAirCFM = Number(summerSupplyAirCFM);

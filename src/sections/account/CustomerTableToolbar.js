@@ -1,7 +1,20 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { useCallback, useState } from 'react';
 // materials
-import { Stack, InputAdornment, TextField, Button, Paper, Divider, Typography } from '@mui/material';
+import {
+  Stack,
+  InputAdornment,
+  TextField,
+  Button,
+  Paper,
+  Divider,
+  Typography,
+  Menu,
+  MenuItem,
+} from '@mui/material';
+// materials
+// import { Stack, InputAdornment, TextField, Button, Paper, Divider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // components
 import Iconify from '../../components/Iconify';
@@ -22,7 +35,32 @@ CustomerTableToolbar.propTypes = {
   onDeleteSelectedData: PropTypes.func,
 };
 
-export default function CustomerTableToolbar({ filterName, onFilterName, userNum, onDeleteSelectedData }) {
+const CustomerTypeOptions = [
+  { name: 'All', value: '1' },
+  { name: 'Admin', value: '2' },
+  { name: 'Internal', value: '3' },
+  { name: 'Rep Firm', value: '4' },
+  { name: 'Specifying Firm', value: '5' },
+];
+
+export default function CustomerTableToolbar({ filterName, onFilterName, onFilterByCustomerName, userNum, onDeleteSelectedData }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [customerType, setCustomerType] = useState("");
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = useCallback((event) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
+
+  const handleClose = useCallback((type) => {
+    console.log(type, "Type");
+    onFilterByCustomerName(type);
+    onFilterName(type);
+    setCustomerType(type);
+    setAnchorEl(null);
+  }, [onFilterByCustomerName]);
+
   return (
     <Stack
       spacing={2}
@@ -35,8 +73,47 @@ export default function CustomerTableToolbar({ filterName, onFilterName, userNum
       </Item>
       <Item sx={{ width: { md: '60%', xs: '100%' } }}>
         <Stack direction="row" justifyContent="left" spacing={3}>
-          <Button startIcon={<Iconify icon={'ic:outline-filter-alt'} />}>Filter</Button>
-          <Button startIcon={<Iconify icon={'ic:sharp-sort'} />}>Sort</Button>
+          <Button
+            aria-label="filter"
+            id="filter"
+            label="Filter"
+            startIcon={<Iconify icon={'ic:outline-filter-alt'} />}
+            onClick={handleClick}
+          >
+            {CustomerTypeOptions?.[customerType - 1]?.name || 'Customer Type'}
+          </Button>
+          <Menu
+            id="filter"
+            MenuListProps={{
+              'aria-labelledby': 'filter',
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={() => handleClose(customerType)}
+            PaperProps={{
+              style: {
+                maxHeight: '300px',
+                width: '20ch',
+              },
+            }}
+          >
+            {CustomerTypeOptions.map((item, key) => (
+              <MenuItem
+                key={key}
+                value={item.value}
+                sx={{
+                  mx: 1,
+                  my: 0.5,
+                  borderRadius: 0.75,
+                  typography: 'body2',
+                  textTransform: 'capitalize',
+                }}
+                onClick={(event) => handleClose(event.target.attributes.value.value)}
+              >
+                {item.name}
+              </MenuItem>
+            ))}
+          </Menu>
           <Button startIcon={<Iconify icon={'ic:outline-delete-outline'} />} onClick={onDeleteSelectedData}>
             Delete
           </Button>
@@ -46,7 +123,7 @@ export default function CustomerTableToolbar({ filterName, onFilterName, userNum
         <TextField
           fullWidth
           size="small"
-          value={filterName}
+          // value={filterName}
           onChange={(event) => onFilterName(event.target.value)}
           placeholder="Search Jobs..."
           InputProps={{

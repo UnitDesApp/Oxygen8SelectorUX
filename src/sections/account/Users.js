@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 // @mui
 import { Box, TableContainer, Table, TableBody, TablePagination, Tooltip, IconButton } from '@mui/material';
+import { firstName } from 'src/_mock/name';
 // hooks
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 import useTabs from '../../hooks/useTabs';
@@ -62,13 +63,17 @@ export default function Users({ toolbar = true, checkbox = true }) {
   } = useTable();
 
   const [filterName, setFilterName] = useState('');
-  const [tableData, setTableData] = useState(userList);
+  const [tableData, setTableData] = useState([]);
   const [customerType, setCustomerType] = useState();
   const filterRole = 'All';
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
   const [deleteRowID, setDeleteRowID] = useState(-1);
+
+  useEffect(() => {
+    setTableData(userList);
+  }, [userList]);
 
   const handleOneConfirmDialogOpen = useCallback((id) => {
     setDeleteRowID(id);
@@ -258,14 +263,18 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.user_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.username.toLowerCase().indexOf(filterName.toLowerCase()) !== -1  ||
         item.first_name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.last_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.customer.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        (item.email && item.email.indexOf(filterName.toLowerCase()) !== -1 )||
+        item.name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.access.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.access_level.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.access_pricing.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.created_date.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
+    
   }
-
   if (filterStatus !== 'All') {
     tableData = tableData.filter((item) => item.status === filterStatus);
   }
@@ -277,6 +286,5 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (customerType && customerType !== "1") {
     tableData = tableData.filter((item) => item.customer_type_id.toString() === customerType.toString());
   }
-
   return tableData;
 }
