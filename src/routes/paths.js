@@ -63,6 +63,6 @@ export const PATH_ACCOUNT = {
   account: '/account',
   users: '/admin-panel/users',
   customers: '/admin-panel/customers',
-  edituser: (userId) => path(ROOTS_ACCOUNT, `/edit/user/${userId}`),
-  editCustomer: (customerId) => path(ROOTS_ACCOUNT, `/edit/customer/${customerId}`),
+  edituser: (userId) => path('/admin-panel', `/edit/user/${userId}`),
+  editCustomer: (customerId) => path('/admin-panel', `/edit/customer/${customerId}`),
 };

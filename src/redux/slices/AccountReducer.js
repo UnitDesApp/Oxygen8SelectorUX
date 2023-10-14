@@ -28,6 +28,7 @@ const AccountSlice = createSlice({
       state.country = action.payload.country;
     },
     setUserInfo(state, action) {
+      console.log(action.payload, "!!!!!!!!!");
       state.userList = action.payload;
     },
     setCustomerInfo(state, action) {
@@ -72,7 +73,9 @@ export function updateCustomer(customerInfo) {
 
 export function addNewUser(userInfo) {
   return async () => {
+    console.log(userInfo, "UserINFO");
     const response = await axios.post(`${serverUrl}/api/account/addNewUser`, userInfo);
+    console.log(response.data, "DATA");
     dispatch(AccountSlice.actions.setUserInfo(response.data));
   }
 }

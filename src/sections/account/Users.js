@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 // @mui
@@ -63,13 +63,17 @@ export default function Users({ toolbar = true, checkbox = true }) {
   } = useTable();
 
   const [filterName, setFilterName] = useState('');
-  const [tableData, setTableData] = useState(userList);
+  const [tableData, setTableData] = useState([]);
   const [customerType, setCustomerType] = useState();
   const filterRole = 'All';
   // Delete one row
   const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
   const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
   const [deleteRowID, setDeleteRowID] = useState(-1);
+
+  useEffect(() => {
+    setTableData(userList);
+  }, [userList]);
 
   const handleOneConfirmDialogOpen = useCallback((id) => {
     setDeleteRowID(id);
@@ -101,7 +105,6 @@ export default function Users({ toolbar = true, checkbox = true }) {
 
   const handleFilterName = useCallback(
     (filterName) => {
-      console.log(filterName);
       setFilterName(filterName);
       setPage(0);
     },
@@ -258,13 +261,12 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    console.log(filterName, "++++++++")
     tableData = tableData.filter(
       (item) =>
         item.username.toLowerCase().indexOf(filterName.toLowerCase()) !== -1  ||
         item.first_name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.last_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.email?.indexOf(filterName.toLowerCase()) !== -1 ||
+        (item.email && item.email.indexOf(filterName.toLowerCase()) !== -1 )||
         item.name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.access.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.access_level.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
@@ -273,7 +275,6 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
     );
     
   }
-  console.log(tableData, "**********");
   if (filterStatus !== 'All') {
     tableData = tableData.filter((item) => item.status === filterStatus);
   }
