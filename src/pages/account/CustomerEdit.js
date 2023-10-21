@@ -136,30 +136,6 @@ export default function UserEdit() {
               { name: 'Customers', href: PATH_ACCOUNT.customers },
               { name: 'Customer Edit' },
             ]}
-            action={
-              <Stack direction="row" justifyContent="center" spacing={1}>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  startIcon={<Iconify icon="mdi:plus" />}
-                  onClick={() => {
-                    setAddCustomerDlgOpen(true);
-                  }}
-                >
-                  Add new customer
-                </Button>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  startIcon={<Iconify icon="mdi:user" />}
-                  onClick={() => {
-                    setAddUserDlgOpen(true);
-                  }}
-                >
-                  Add new user
-                </Button>
-              </Stack>
-            }
           />
           <Stack spacing={2}>
             <Accordion
