@@ -203,7 +203,7 @@ export default function UnitInfo({
   const defaultValues = useMemo(
     () => ({
       txtTag: edit ? unitInfo?.txbTagText : '',
-      txbQty: edit ? unitInfo?.txbQtyText : 0,
+      txbQty: edit ? unitInfo?.txbQtyText : 1,
       ddlLocationId: edit ? unitInfo?.locationID : 1,
       ddlOrientationId: edit ? unitInfo?.orientationID : 1,
       ddlUnitTypeId: edit ? unitInfo?.unitTypeID : 1,
