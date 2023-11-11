@@ -280,6 +280,7 @@ export default function UnitInfo({
 
   // function that check if the compoment is okay for displaying
   const getDisplay = useCallback((key) => ({ display: key ? 'block' : 'none' }), []);
+  const getInlineDisplay = useCallback((key) => ({ display: key ? 'inline-flex' : 'none' }), []);
 
   // function that merge all data include checkbox and unit types, etc, everything!
   const getAllFormData = useCallback(
@@ -493,9 +494,14 @@ export default function UnitInfo({
       Number(user?.UAL || 0)
     );
 
+    const filteredUnitModel = unitModel.filter((item) => item.id);
+
     // set unit model value based calculated value
-    if (unitModel.length > 0 && unitModel.filter((item) => item.id === Number(values.ddlUnitModelId)).length === 0) {
-      setValue('ddlUnitModelId', unitModel?.[0]?.id);
+    if (
+      unitModel.length > 0 &&
+      filteredUnitModel.filter((item) => item.id === Number(values.ddlUnitModelId)).length === 0
+    ) {
+      setValue('ddlUnitModelId', filteredUnitModel?.[0]?.id);
     }
 
     // set supply air CFM value based calculated value
@@ -561,9 +567,11 @@ export default function UnitInfo({
 
   const unitVoltage = useMemo(() => {
     const { unitVoltage, ddlUnitVoltageId } = getUnitVoltage(data, intProductTypeID, strUnitModelValue);
-    if (!edit) setValue('ddlUnitVoltageId', ddlUnitVoltageId);
+    if (unitVoltage.filter((item) => item.id === values.ddlUnitVoltageId)?.length === 0) {
+      setValue('ddlUnitVoltageId', ddlUnitVoltageId);
+    }
     return unitVoltage;
-  }, [edit, data, intProductTypeID, setValue, strUnitModelValue]);
+  }, [data, intProductTypeID, strUnitModelValue, values.ddlUnitVoltageId, setValue]);
 
   const QAFilterModel = useMemo(
     () => data.filterModel?.filter((item) => item.outdoor_air === 1 || item.id === values.ddlOA_FilterModelId),
@@ -822,6 +830,9 @@ export default function UnitInfo({
   const isAvailable = useCallback((value) => !!value && value.length > 0, []);
   if (edit) setFunction(handleSubmit(onSubmit));
 
+
+  console.log(values.ddlUnitVoltageId);
+
   return (
     <Page title="Project: Edit">
       <RootStyle>
@@ -898,7 +909,7 @@ export default function UnitInfo({
                             size="small"
                             name="ckbDownshotVal"
                             label="Downshot"
-                            sx={getDisplay(ckbDownshotVal === 1)}
+                            sx={getInlineDisplay(ckbDownshotVal === 1)}
                             checked={ckbDownshotVal}
                             onChange={() => setCkbDownshotVal(!ckbDownshotVal)}
                           />
@@ -1187,7 +1198,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbPreheatHWC_UseCap"
                           label="Preheat HWC Use Capacity"
-                          sx={getDisplay(customInputs.divPreheatHWC_UseCapVisible)}
+                          sx={getInlineDisplay(customInputs.divPreheatHWC_UseCapVisible)}
                           checked={ckbFlowRateAndCap.ckbPreheatHWC_UseCap}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1209,7 +1220,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbPreheatHWC_UseFlowRate"
                           label="Preheat HWC Use Flow Rate"
-                          sx={getDisplay(customInputs.divPreheatHWC_UseFlowRateVisible)}
+                          sx={getInlineDisplay(customInputs.divPreheatHWC_UseFlowRateVisible)}
                           checked={!!ckbFlowRateAndCap.ckbPreheatHWC_UseFlowRate}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1301,7 +1312,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbHeatPumpVal"
                           label="Heat Pump"
-                          sx={getDisplay(heatPumpInfo.divHeatPumpVisible)}
+                          sx={getInlineDisplay(heatPumpInfo.divHeatPumpVisible)}
                           checked={ckbHeatPumpVal}
                           onChange={ckbHeatPumpChanged}
                         />
@@ -1309,7 +1320,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbDehumidificationVal"
                           label="Dehumidification"
-                          sx={getDisplay(dehumidificationInfo.divDehumidificationVisible)}
+                          sx={getInlineDisplay(dehumidificationInfo.divDehumidificationVisible)}
                           checked={ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
@@ -1407,7 +1418,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbCoolingCWC_UseCap"
                           label="Cooling CWC Use Capacity"
-                          sx={{ ...getDisplay(customInputs.divCoolingCWC_UseCapVisible), margin: 0 }}
+                          sx={{ ...getInlineDisplay(customInputs.divCoolingCWC_UseCapVisible), margin: 0 }}
                           checked={!!ckbFlowRateAndCap.ckbCoolingCWC_UseCap}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1429,7 +1440,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbCoolingCWC_UseFlowRate"
                           label="Cooling CWC Use Flow Rate"
-                          sx={getDisplay(customInputs.divCoolingCWC_UseFlowRateVisible)}
+                          sx={getInlineDisplay(customInputs.divCoolingCWC_UseFlowRateVisible)}
                           checked={!!ckbFlowRateAndCap.ckbCoolingCWC_UseFlowRate}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1592,7 +1603,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbHeatingHWC_UseCap"
                           label="Heating HWC Use Capacity"
-                          sx={getDisplay(customInputs.divHeatingHWC_UseCapVisible)}
+                          sx={getInlineDisplay(customInputs.divHeatingHWC_UseCapVisible)}
                           checked={ckbFlowRateAndCap.ckbHeatingHWC_UseCap}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1614,7 +1625,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbHeatingHWC_UseFlowRate"
                           label="Heating HWC Use Flow Rate"
-                          sx={getDisplay(customInputs.divHeatingHWC_UseFlowRateVisible)}
+                          sx={getInlineDisplay(customInputs.divHeatingHWC_UseFlowRateVisible)}
                           checked={ckbFlowRateAndCap.ckbHeatingHWC_UseFlowRate}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1738,7 +1749,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbReheatHWC_UseCap"
                           label="Reheat HWC Use Capacity"
-                          sx={getDisplay(customInputs.divReheatHWC_UseCapVisible)}
+                          sx={getInlineDisplay(customInputs.divReheatHWC_UseCapVisible)}
                           checked={ckbFlowRateAndCap.ckbReheatHWC_UseCap}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1760,7 +1771,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbReheatHWC_UseFlowRate"
                           label="Reheat HWC Use Flow Rate"
-                          sx={getDisplay(customInputs.divReheatHWC_UseFlowRateVisible)}
+                          sx={getInlineDisplay(customInputs.divReheatHWC_UseFlowRateVisible)}
                           checked={ckbFlowRateAndCap.ckbReheatHWC_UseFlowRate}
                           onChange={() => {
                             setCkbFlowRateAndCap({
@@ -1889,7 +1900,7 @@ export default function UnitInfo({
                           size="small"
                           name="ckbDrainPanVal"
                           label="Drain Pan Required"
-                          sx={getDisplay(drainPanInfo.divDrainPanVisible)}
+                          sx={getInlineDisplay(drainPanInfo.divDrainPanVisible)}
                           checked={ckbDrainPanVal}
                           onChange={() => setCkbDrainPanVal(!ckbDrainPanVal)}
                         />
