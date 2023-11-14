@@ -11,7 +11,7 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 // redux
-import { useDispatch, useSelector } from '../redux/store';
+import { useDispatch } from '../redux/store';
 import { getAllBaseData } from '../redux/slices/BaseReducer';
 // sections
 import { UnitInfo, Selection } from '../sections/unit';
@@ -55,11 +55,10 @@ export default function UnitEdit() {
   const [openRPDialog, setOpenRPDialog] = useState(false);
   let onSubmitRef = useRef < Function > null;
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
     dispatch(getAllBaseData());
-  }, [data, dispatch]);
+  }, [dispatch]);
 
   const openDialog = useCallback(() => {
     setOpenRPDialog(true);

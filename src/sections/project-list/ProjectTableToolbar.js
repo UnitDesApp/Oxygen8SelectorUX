@@ -28,9 +28,11 @@ export default function ProjectTableToolbar({ filterName, onFilterName, onFilter
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { user } = useAuth();
   const open = Boolean(anchorEl);
+  
   const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
   }, []);
+
   const handleClose = useCallback(
     (event) => {
       onFilterRole(event);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 // import { useNavigate } from 'react-router-dom';
 
@@ -12,8 +12,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // redux
 import { addNewProject } from '../../redux/slices/projectsReducer';
 import { useDispatch } from '../../redux/store';
+import axios from '../../utils/axios';
 // components
 import { FormProvider, RHFSelect, RHFTextField } from '../../components/hook-form';
+// config
+import { serverUrl } from '../../config';
 
 NewProjectFormDialog.propTypes = {
   newProjectDialogOpen: PropTypes.bool,
@@ -92,7 +95,7 @@ export default function NewProjectFormDialog({
     contactNameId: 0,
     application: '',
     uom: '',
-    country: '',
+    country: 'CA',
     state: '',
     city: '',
     ashareDesignConditions: '',
@@ -119,20 +122,23 @@ export default function NewProjectFormDialog({
 
   const {
     setValue,
+    watch,
     getValues,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const handleOnChangeCountry = (e) => {
-    let { value } = e.target;
-    setValue('country', value);
-    if (value === 'CA') {
+  const values = watch();
+
+  useEffect(() => {
+    let value = '';
+    if (values.country === 'CA') {
       value = 'CAN';
+    } else {
+      value = 'USA';
     }
-     const data = weatherData
-      ?.filter((item) => item.country === value)
-      .map((item) => item.prov_state);
+
+    const data = weatherData?.filter((item) => item.country === value).map((item) => item.prov_state);
     if (data) {
       const uniqueArray = [...new Set(data)];
       setValue('state', uniqueArray && uniqueArray[0] ? uniqueArray[0] : []);
@@ -140,21 +146,22 @@ export default function NewProjectFormDialog({
       setCityInfo([]);
     } else {
       setProvStateInfo([]);
-      setCityInfo([]);  
+      setCityInfo([]);
     }
-  };
+  }, [setValue, values.country, weatherData]);
 
-  const handleOnChangeProvState = (e) => {
-    const { value } = e.target;
-    let country = getValues('country');
-    if (country === 'CA') {
+  useEffect(() => {
+    let country = '';
+    if (values.country === 'CA') {
       country = 'CAN';
+    } else {
+      country = 'USA';
     }
-    setValue('state', value);
-    const newCity = weatherData.filter((ele) => ele.prov_state === value && ele.country === country);
+
+    const newCity = weatherData.filter((ele) => ele.prov_state === values.state && ele.country === country);
     setCityInfo(newCity);
-    setValue('city', newCity[0].id);
-  };
+    setValue('city', newCity?.[0]?.id || '');
+  }, [setValue, values.state, values.country, weatherData]);
 
   // onChange handle for company Name
   const handleChangeCompanyName = (e) => {
@@ -186,7 +193,7 @@ export default function NewProjectFormDialog({
       setOpenSuccess();
       handleNewProjectDialogClose();
     } catch (error) {
-      setOpenFail()
+      setOpenFail();
     }
   };
 
@@ -199,6 +206,169 @@ export default function NewProjectFormDialog({
       handleNewProjectDialogClose();
     }
   };
+
+  useEffect(() => {
+    if (!values.country || !values.city || !values.ashareDesignConditions) return;
+    axios
+      .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+        action: 'GET_ALL_DATA',
+        country: values.country,
+        cityId: values.city,
+        designCondition: values.ashareDesignConditions,
+      })
+      .then((response) => {
+        const { data } = response;
+        setValue('altitude', data.altitude);
+        setValue('summer_air_db', data.summerOutdoorAirDB);
+        setValue('summer_air_wb', data.summerOutdoorAirWB);
+        setValue('summer_air_rh', data.summerOutdoorAirRH);
+        setValue('winter_air_db', data.winterOutdoorAirDB);
+        setValue('winter_air_wb', data.winterOutdoorAirWB);
+        setValue('winter_air_rh', data.winterOutdoorAirRH);
+      });
+  }, [setValue, values.country, values.city, values.ashareDesignConditions]);
+
+  const get_RH_By_DBWB = useCallback(
+    (first, second, setValueId) => {
+      if (first === '' || second === '') return;
+      axios
+        .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+          action: 'GET_RH_BY_DB_WB',
+          first,
+          second,
+          altitude: values.alltitude,
+        })
+        .then((response) => {
+          setValue(setValueId, response.data);
+        });
+    },
+    [setValue, values.alltitude]
+  );
+
+  // get WB value from server
+  const get_WB_By_DBRH = useCallback(
+    (first, second, setValueId) => {
+      if (first === '' || second === '') return;
+      axios
+        .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+          action: 'GET_WB_BY_DB_HR',
+          first,
+          second,
+          altitude: values.altitude,
+        })
+        .then((response) => {
+          setValue(setValueId, response.data);
+        });
+    },
+    [setValue, values.altitude]
+  );
+
+  const handleChangeSummerOutdoorAirDBChanged = useCallback(
+    (e) => {
+      setValue('summer_air_db', e.target.value);
+      get_RH_By_DBWB(values.summer_air_db, values.summer_air_wb, 'summer_air_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.summer_air_db, values.summer_air_wb]
+  );
+
+  // Summer Outdoor Air WB
+  const handleChangeSummerOutdoorAirWBChanged = useCallback(
+    (e) => {
+      setValue('summer_air_wb', e.target.value);
+      get_RH_By_DBWB(values.summer_air_db, values.summer_air_wb, 'summer_air_rh');
+    },
+    [get_RH_By_DBWB, values.summer_air_db, values.summer_air_wb, setValue]
+  );
+
+  // Summer Outdoor Air RH
+  const handleChangeSummerOutdoorAirRHChanged = useCallback(
+    (e) => {
+      setValue('summer_air_rh', e.target.value);
+      get_WB_By_DBRH(values.summer_air_db, values.summer_air_rh, 'summer_air_wb');
+    },
+    [get_WB_By_DBRH, setValue, values.summer_air_db, values.summer_air_rh]
+  );
+
+  // Winter Outdoor Air DB
+  const handleChangeWinterOutdoorAirDBChanged = useCallback(
+    (e) => {
+      setValue('winter_air_db', e.target.value);
+      get_RH_By_DBWB(values.winter_air_db, values.winter_air_wb, 'winter_air_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.winter_air_db, values.winter_air_wb]
+  );
+
+  // Winter Outdoor Air WB
+  const handleChangeWinterOutdoorAirWBChanged = useCallback(
+    (e) => {
+      setValue('winter_air_wb', e.target.value);
+      get_RH_By_DBWB(values.winter_air_db, values.winter_air_wb, 'winter_air_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.winter_air_db, values.winter_air_wb]
+  );
+
+  // Winter Outdoor Air RH
+  const handleChangeWinterOutdoorAirRHChanged = useCallback(
+    (e) => {
+      setValue('winter_air_rh', e.target.value);
+      get_WB_By_DBRH(values.winter_air_db, values.winter_air_rh, 'winter_air_wb');
+    },
+    [get_WB_By_DBRH, setValue, values.winter_air_db, values.winter_air_rh]
+  );
+
+  // Summer Return Air DB
+  const handleChangeSummerReturnAirDBChanged = useCallback(
+    (e) => {
+      setValue('summer_return_db', e.target.value);
+      get_RH_By_DBWB(values.summer_return_db, values.summer_return_wb, 'summer_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.summer_return_db, values.summer_return_wb]
+  );
+
+  // Summer Return Air WB
+  const handleChangeSummerReturnAirWBChanged = useCallback(
+    (e) => {
+      setValue('summer_return_wb', e.target.value);
+      get_RH_By_DBWB(values.summer_return_db, values.summer_return_wb, 'summer_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.summer_return_db, values.summer_return_wb]
+  );
+
+  // Summer Return Air RH
+  const handleChangeSummerReturnAirRHChanged = useCallback(
+    (e) => {
+      setValue('summer_return_rh', e.target.value);
+      get_WB_By_DBRH(values.summer_return_db, values.summer_return_rh, 'summer_return_wb');
+    },
+    [get_WB_By_DBRH, setValue, values.summer_return_db, values.summer_return_rh]
+  );
+
+  // Winter Return Air DB
+  const handleChangeWinterReturnAirDBChanged = useCallback(
+    (e) => {
+      setValue('winter_return_db', e.target.value);
+      get_RH_By_DBWB(values.winter_return_db, values.winter_return_wb, 'winter_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.winter_return_db, values.winter_return_wb]
+  );
+
+  // Winter Return Air WB
+  const handleChangeWinterReturnAirWBChanged = useCallback(
+    (e) => {
+      setValue('winter_return_wb', e.target.value);
+      get_RH_By_DBWB(values.winter_return_db, values.winter_return_wb, 'winter_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, values.winter_return_db, values.winter_return_wb]
+  );
+
+  // Winter Return Air RH
+  const handleChangeWinterReturnAirRHChanged = useCallback(
+    (e) => {
+      setValue('winter_return_rh', e.target.value);
+      get_WB_By_DBRH(values.winter_return_db, values.winter_return_rh, 'winter_return_wb');
+    },
+    [get_WB_By_DBRH, setValue, values.winter_return_db, values.winter_return_rh]
+  );
 
   const onContinueBtnClicked = () => {
     handleSubmit(() => {})();
@@ -259,7 +429,7 @@ export default function NewProjectFormDialog({
                   {usersInfo.map(
                     (info, index) =>
                       info.id.toString() !== localStorage.getItem('userId') &&
-                      info.customer_id.toString() === companyNameId && (
+                      info.customer_id.toString() === companyNameId.toString() && (
                         <option key={index} value={info.id}>
                           {`${info.first_name} ${info.last_name}`}
                         </option>
@@ -292,13 +462,7 @@ export default function NewProjectFormDialog({
                   <Typography variant="subtitle1">LOCATION</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFSelect
-                    size="small"
-                    name="country"
-                    label="Country"
-                    placeholder="Please select country"
-                    onChange={handleOnChangeCountry}
-                  >
+                  <RHFSelect size="small" name="country" label="Country" placeholder="Please select country">
                     <option value="" />
                     {country !== undefined &&
                       country.map((option) => (
@@ -313,7 +477,6 @@ export default function NewProjectFormDialog({
                     name="state"
                     label="Province/state"
                     placeholder="Please select province/state"
-                    onChange={handleOnChangeProvState}
                   >
                     <option value="" />
                     {provStateInfo !== undefined &&
@@ -356,31 +519,104 @@ export default function NewProjectFormDialog({
                   <Typography variant="subtitle1">OUTDOOR AIR DESIGN CONDITIONS</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField type="number" size="small" name="winter_air_db" label="Winter Outdoor Air DB (F)" />
-                  <RHFTextField type="number" size="small" name="summer_air_db" label="Summer Outdoor Air DB (F)" />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="winter_air_db"
+                    label="Winter Outdoor Air DB (F)"
+                    onBlur={handleChangeWinterOutdoorAirDBChanged}
+                  />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="summer_air_db"
+                    label="Summer Outdoor Air DB (F)"
+                    onBlur={handleChangeSummerOutdoorAirDBChanged}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField type="number" size="small" name="winter_air_wb" label="Winter Outdoor Air WB (F)" />
-                  <RHFTextField type="number" size="small" name="summer_air_wb" label="Summer Outdoor Air WB (F)" />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="winter_air_wb"
+                    label="Winter Outdoor Air WB (F)"
+                    onBlur={handleChangeWinterOutdoorAirWBChanged}
+                  />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="summer_air_wb"
+                    label="Summer Outdoor Air WB (F)"
+                    onBlur={handleChangeSummerOutdoorAirWBChanged}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField type="number" size="small" name="winter_air_rh" label="Winter Outdoor Air RH (%)" />
-                  <RHFTextField type="number" size="small" name="summer_air_rh" label="Summer Outdoor Air RH (%)" />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="winter_air_rh"
+                    label="Winter Outdoor Air RH (%)"
+                    onBlur={handleChangeWinterOutdoorAirRHChanged}
+                  />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="summer_air_rh"
+                    label="Summer Outdoor Air RH (%)"
+                    onBlur={handleChangeSummerOutdoorAirRHChanged}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={2}>
                   <Typography variant="subtitle1">RETURN AIR DESIGN CONDITIONS</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField type="number" size="small" name="winter_return_db" label="Winter Return Air DB (F)" />
-                  <RHFTextField type="number" size="small" name="summer_return_db" label="Summer Return Air DB (F)" />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="winter_return_db"
+                    label="Winter Return Air DB (F)"
+                    onBlur={handleChangeWinterReturnAirDBChanged}
+                  />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="summer_return_db"
+                    label="Summer Return Air DB (F)"
+                    onBlur={handleChangeSummerReturnAirDBChanged}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField type="number" size="small" name="winter_return_wb" label="Winter Return Air WB (F)" />
-                  <RHFTextField type="number" size="small" name="summer_return_wb" label="Summer Return Air WB (F)" />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="winter_return_wb"
+                    label="Winter Return Air WB (F)"
+                    onBlur={handleChangeWinterReturnAirWBChanged}
+                  />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="summer_return_wb"
+                    label="Summer Return Air WB (F)"
+                    onBlur
+                    hange={handleChangeSummerReturnAirWBChanged}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <RHFTextField type="number" size="small" name="winter_return_rh" label="Winter Return Air RH (%)" />
-                  <RHFTextField type="number" size="small" name="summer_return_rh" label="Summer Return Air RH (%)" />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="winter_return_rh"
+                    label="Winter Return Air RH (%)"
+                    onBlur={handleChangeWinterReturnAirRHChanged}
+                  />
+                  <RHFTextField
+                    type="number"
+                    size="small"
+                    name="summer_return_rh"
+                    label="Summer Return Air RH (%)"
+                    onBlur={handleChangeSummerReturnAirRHChanged}
+                  />
                 </Stack>
               </Box>
             </Card>

@@ -85,7 +85,7 @@ export function RHFControlCheckbox({ name, checked, onChange, ...other }) {
         <Controller
           name={name}
           control={control}
-          render={({ field }) => <Checkbox {...field} checked={checked} onChange={(e) => onChange(e)} />}
+          render={({ field }) => <Checkbox {...field} checked={checked} onChange={(e) => onChange(e)} {...other}/>}
         />
       }
       {...other}

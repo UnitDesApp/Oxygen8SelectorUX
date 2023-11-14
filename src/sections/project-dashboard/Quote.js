@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import {
@@ -119,16 +120,21 @@ export default function Quote() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const wannaGenerate = useCallback(() => {
-    if (unitList.length > 0) setDoWannaGenerate(true);
-  }, [unitList.length]);
-
   const { quoteFormInfo, quoteControlInfo, gvPricingGeneral, gvPricingUnits, gvPricingTotal, gvMisc, gvNotes } =
     useSelector((state) => state.quote);
 
   // State
   const [success, setSuccess] = useState(false);
+  const [noUnit, setNoUnit] = useState(false);
   const [fail, setFail] = useState(false);
+
+  const wannaGenerate = useCallback(() => {
+    if (unitList.length > 0) {
+      setDoWannaGenerate(true);
+    } else {
+      setNoUnit(true);
+    }
+  }, [unitList.length, setNoUnit, setDoWannaGenerate]);
 
   // Form Schema
   const UpdateJobInfoSchema = Yup.object().shape({
@@ -295,10 +301,13 @@ export default function Quote() {
 
   return (
     <Box sx={{ paddingTop: 5, paddingBottom: 5 }}>
-      {isLoading ? (
-        <LinearProgress color="info" />
-      ) : (
-        !doWannaGenerate && (
+      {isLoading && <LinearProgress color="info" />}
+      {!isLoading &&
+      isEmpty(gvPricingGeneral) &&
+      isEmpty(gvPricingUnits) &&
+      isEmpty(gvPricingTotal) &&
+      !doWannaGenerate ? (
+        <>
           <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
             <Typography variant="h5" sx={{ color: theme.palette.primary.main }}>
               Select a stage to generate a quote
@@ -312,9 +321,25 @@ export default function Quote() {
               Generate Group
             </Button>
           </Stack>
-        )
-      )}
-      {!isLoading && doWannaGenerate && (
+          <Snackbar
+            open={noUnit}
+            autoHideDuration={6000}
+            onClose={() => {
+              setNoUnit(false);
+            }}
+          >
+            <Alert
+              onClose={() => {
+                setNoUnit(false);
+              }}
+              severity="error"
+              sx={{ width: '100%' }}
+            >
+              No Unit! Please add new unit to generate Quote!
+            </Alert>
+          </Snackbar>
+        </>
+      ) : (
         <>
           <Container sx={{ mb: '50px' }}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onQuoteSubmit)}>
@@ -335,7 +360,7 @@ export default function Quote() {
                             <option value="2">USA</option>
                           </RHFSelect>
                           <RHFTextField size="small" name="txbProjectName" label="Project Name" />
-                          <RHFTextField size="small" name="txbQuoteNo" label="Quote No" />
+                          <RHFTextField size="small" name="txbQuoteNo" label="Quote No" disabled />
                           <RHFSelect size="small" name="ddlFOB_PointVal" label="F.O.B. Point" placeholder="">
                             <option value="" />
                             {quoteControlInfo?.ddlFOB_Point?.map((ele, index) => (
@@ -573,6 +598,7 @@ export default function Quote() {
               </Grid>
             </FormProvider>
           </Container>
+
           <Snackbar
             open={success}
             autoHideDuration={6000}

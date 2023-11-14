@@ -54,7 +54,6 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 export default function MyProjects() {
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.base);
 
   useEffect(() => {
     dispatch(getAllBaseData());
@@ -232,6 +231,7 @@ export default function MyProjects() {
             links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]}
             sx={{ mt: 5 }}
           />
+          
           <Card>
             <ProjectTableToolbar
               filterName={filterName}
@@ -369,13 +369,13 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.job_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.reference_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.revision_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.Customer_Name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.User_Full_Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.created_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.revised_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item?.job_name?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.reference_no?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.revision_no?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.Customer_Name?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.User_Full_Name?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.created_date?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.revised_date?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

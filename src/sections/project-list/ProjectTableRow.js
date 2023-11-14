@@ -10,7 +10,7 @@ import useAuth from '../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
-const statusArr = ['draft', 'closed', 'released', 'quoted'];
+const statusArr = ['draft', 'quoted', 'released', 'closed'];
 
 ProjectTableRow.propTypes = {
   row: PropTypes.object,
@@ -22,11 +22,11 @@ ProjectTableRow.propTypes = {
 };
 
 export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow, onDuplicate, onDeleteRow }) {
-  const { job_name, reference_no, revision_no, Customer_Name, User_Full_Name, created_date, revised_date } = row;
+  const { job_name, reference_no, revision_no, Customer_Name, User_Full_Name, created_date, revised_date, status } = row;
 
   const { user } = useAuth();
 
-  const status = statusArr[Math.floor(Math.random() * 10) % 4];
+  const statusValue = statusArr[status || 0];
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -47,32 +47,41 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {job_name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {reference_no}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {revision_no}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        <Label color={status === 'draft' ? 'default' : status} sx={{ borderRadius: '15px' }} variant="filled">
-          {status}
+        <Label color={statusValue === 'draft' ? 'default' : statusValue} sx={{ borderRadius: '15px' }} variant="filled">
+          {statusValue}
         </Label>
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {Customer_Name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {User_Full_Name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {User_Full_Name}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {created_date}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
         {revised_date}
       </TableCell>
+
       <TableCell align="left" sx={{ cursor: 'pointer' }}>
         <Stack direction="row" spacing={1}>
           <IconButton disabled={!Number(user?.verified)} aria-label="delete" onClick={onDuplicate}>
@@ -83,6 +92,7 @@ export default function ProjectTableRow({ row, selected, onEditRow, onSelectRow,
           </IconButton>
         </Stack>
       </TableCell>
+      
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}

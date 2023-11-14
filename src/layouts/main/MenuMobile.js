@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
-import { NavLink as RouterLink, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-import { Box, List, Link, Drawer, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
+import { List, Drawer, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 // config
 import { NAVBAR } from '../../config';
 // components

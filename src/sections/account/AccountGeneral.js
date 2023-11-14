@@ -37,19 +37,33 @@ export default function AccountGeneral() {
     createdDate: Yup.string().required('This field is required!'),
   });
 
-  const defaultValues = useMemo(() => ({
-    username: user?.username,
-    firstname: user?.firstname,
-    lastname: user?.lastname,
-    email: user?.email,
-    customerType: customerType[0]?.id,
-    customerId: customerList[0]?.id,
-    access: user?.access,
-    accessLevel: 10,
-    accessPricing: user?.accessPricing,
-    fobPoint: fobPoint[0]?.id,
-    createdDate: user?.createdDate,
-  }), [customerList, customerType, fobPoint, user?.access, user?.accessPricing, user?.createdDate, user?.email, user?.firstname, user?.lastname, user?.username]);
+  const defaultValues = useMemo(
+    () => ({
+      username: user?.username,
+      firstname: user?.firstname,
+      lastname: user?.lastname,
+      email: user?.email,
+      customerType: customerType[0]?.id,
+      customerId: customerList[0]?.id,
+      access: user?.access,
+      accessLevel: 10,
+      accessPricing: user?.accessPricing,
+      fobPoint: fobPoint[0]?.id,
+      createdDate: user?.createdDate,
+    }),
+    [
+      customerList,
+      customerType,
+      fobPoint,
+      user?.access,
+      user?.accessPricing,
+      user?.createdDate,
+      user?.email,
+      user?.firstname,
+      user?.lastname,
+      user?.username,
+    ]
+  );
 
   const methods = useForm({
     resolver: yupResolver(UpdateUserSchema),
@@ -61,14 +75,17 @@ export default function AccountGeneral() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = useCallback(async (data) => {
-    try {
-      await dispatch(updateMyProfile({ ...data, userId: user?.userId }));
-      updateUser(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [dispatch, updateUser, user?.userId]);
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await dispatch(updateMyProfile({ ...data, userId: user?.userId }));
+        updateUser(data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dispatch, updateUser, user?.userId]
+  );
 
   return (
     <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -81,53 +98,18 @@ export default function AccountGeneral() {
                 <RHFTextField size="small" name="lastname" label="Last Name" />
               </Stack>
               <RHFTextField size="small" name="email" label="Email" />
-              <RHFTextField size="small" name="username" label="User Name" />
-              <Divider />
-              <Stack direction="row" justifyContent="space-around" spacing={1}>
-                <RHFSelect size="small" name="customerType" label="Customer type" placeholder="">
-                  {customerType?.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.items}
-                    </option>
-                  ))}
-                  {!customerType && <option value="" />}
-                </RHFSelect>
-                <RHFSelect size="small" name="customerId" label="Customer name" placeholder="">
-                  {customerList?.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                  {!customerList && <option value="" />}
-                </RHFSelect>
+              <RHFTextField size="small" name="company_name" label="Company Name" />
+              <RHFTextField size="small" name="job_name" label="Job Name" />
+              <RHFTextField size="small" name="phone_number" label="Phone Number" />
+              <Stack direction="row" justifyContent="space_around" spacing={1}>
+                <RHFTextField size="small" name="address1" label="Address1" />
+                <RHFTextField size="small" name="address2" label="Address2" />
               </Stack>
-              <Stack direction="row" justifyContent="space-around" spacing={1}>
-                <RHFSelect size="small" name="access" label="Access" placeholder="">
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
-                </RHFSelect>
-                <RHFSelect size="small" name="accessLevel" label="Access level" placeholder="">
-                  <option value="10">Admin</option>
-                  <option value="4">Internal Admin</option>
-                  <option value="3">Internal 2</option>
-                  <option value="2">Internal 1</option>
-                  <option value="1">External</option>
-                  <option value="5">External Special</option>
-                </RHFSelect>
-                <RHFSelect size="small" name="accessPricing" label="Access pricing" placeholder="">
-                  <option value="0">No</option>
-                  <option value="1">Yes</option>
-                </RHFSelect>
+              <Stack direction="row" justifyContent="space_around" spacing={1}>
+                <RHFTextField size="small" name="city" label="City" />
+                <RHFTextField size="small" name="status" label="Status" />
+                <RHFTextField size="small" name="country" label="Country" />
               </Stack>
-              <RHFSelect size="small" name="fobPoint" label="FOB point" placeholder="">
-                {fobPoint?.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.items}
-                  </option>
-                ))}
-                {!fobPoint && <option value="" />}
-              </RHFSelect>
-              <RHFTextField size="small" name="createdDate" label="Created Date" />
               <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
                 <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                   Save Changes

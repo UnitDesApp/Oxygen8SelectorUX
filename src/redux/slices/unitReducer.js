@@ -276,183 +276,189 @@ const UnitSlice = createSlice({
       };
     },
     getViewSelectionInfo(state, actions) {
-      state.isLoading = false;
-      const data = actions.payload;
-      state.viewSelectionInfo = {
-        pricingDetail: data.pricingOutput?.pricingDataTbl,
-        pricingVisible: data.pricingOutput?.visible,
-        unitDetails: data.unitDetailsOutput?.unitDetails_1DataTbl.concat(data.unitDetailsOutput?.unitDetails_2DataTbl),
-        unitDetailsVisible: data.unitDetailsOutput.visible,
-        electricalRequirements: {
-          unitData: data.elecReqOutput?.unitDataTbl,
-          unitDataVisible: data.elecReqOutput?.unitVisible,
-          unitOnlyData: data.elecReqOutput?.unitOnlyDataTbl,
-          unitOnlyDataVisible: data.elecReqOutput?.unitOnlyVisible,
-          coolingDXCData: data.elecReqOutput?.coolingDXCDataTbl,
-          coolingDXCVisible: data.elecReqOutput?.coolingDXCVisible,
-          preheatElecHeaterData: data.elecReqOutput?.preheatElecHeaterDataTbl,
-          preheatElecHeaterVisible: data.elecReqOutput?.preheatElecHeaterVisible,
-          heatingElecHeaterData: data.elecReqOutput?.heatingElecHeaterDataTbl,
-          heatingElecHeaterVisible: data.elecReqOutput?.heatingElecHeaterVisible,
-        },
-        preheatElecHeater: {
-          Visible: data?.preheatElecHeaterOutput?.visible,
-          Data: data?.preheatElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        preheatHWC: {
-          Visible: data?.preheatHWC_Output?.visible,
-          Data: data?.preheatHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.preheatHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.preheatHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          ValveActuatorVisible: data?.preheatHWC_Output?.valveActuatorVisible,
-          ValveActuator: data?.preheatHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        heatExchCORE: {
-          performanceVisible: data?.fixedPlateCORE_Output?.visible,
-          performance: data?.fixedPlateCORE_Output?.performanceDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          designConditions: data?.fixedPlateCORE_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          performanceLeavingAir: data?.fixedPlateCORE_Output?.leavingDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          // performanceLeavingAirVisible: data?.fixedPlateCORE_Output?.gvOutHX_FP_LvgAirVisible,
-        },
-        heatExchRECUTECH: {
-          performanceVisible: data?.fixedPlateRECUTECH_Output?.visible,
-          performance: data?.fixedPlateRECUTECH_Output?.performanceDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          designConditions: data?.fixedPlateRECUTECH_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          // designConditionsVisible: data?.fixedPlateRECUTECH_Output?.gvOutHX_FP_EntAirVisible,
-          performanceLeavingAir: data?.fixedPlateRECUTECH_Output?.leavingDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          // performanceLeavingAirVisible: data?.fixedPlateRECUTECH_Output?.gvOutHX_FP_LvgAirVisible,
-        },
-        heatExchPOLYBLOC: {
-          performanceVisible: data?.fixedPlatePOLYBLOC_Output?.visible,
-          performance: data?.fixedPlatePOLYBLOC_Output?.performanceDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          designConditions: data?.fixedPlatePOLYBLOC_Output?.enteringDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          // designConditionsVisible: data?.fixedPlatePOLYBLOC_Output?.gvOutHX_FP_EntAirVisible,
-          performanceLeavingAir: data?.fixedPlatePOLYBLOC_Output?.leavingDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-          ]),
-          // performanceLeavingAirVisible: data?.fixedPlatePOLYBLOC_Output?.gvOutHX_FP_LvgAirVisible,
-        },
-        coolingCWC: {
-          Visible: data?.coolingCWC_Output?.visible,
-          Data: data?.coolingCWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.coolingCWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.coolingCWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          ValveActuatorVisible: data?.coolingCWC_Output?.valveActuatorVisible,
-          ValveActuator: data?.coolingCWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        coolingDXC: {
-          Visible: data?.coolingDXC_Output?.visible,
-          Data: data?.coolingDXC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.coolingDXC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.coolingDXC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          PerfOutputs: data?.coolingDXC_Output?.perfOutputsDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          EKEXV_Kit: data?.coolingDXC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        heatingCondCoil: {
-          Visible: data?.heatingCondCoilOutput?.visible,
-          Data: data?.heatingCondCoilOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.heatingCondCoilOutput?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.heatingCondCoilOutput?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        heatingElecHeater: {
-          Visible: data?.heatingElecHeaterOutput?.visible,
-          Data: data?.heatingElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        heatingHWC: {
-          Visible: data?.heatingHWC_Output?.visible,
-          Data: data?.heatingHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.heatingHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.heatingHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          ValveActuatorVisible: data?.heatingHWC_Output?.valveActuatorVisible,
-          ValveActuator: data?.heatingHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        reheatElecHeater: {
-          Visible: data?.reheatElecHeaterOutput?.visible,
-          Data: data?.reheatElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        reheatHWC: {
-          Visible: data?.reheatHWC_Output?.visible,
-          Data: data?.reheatHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.reheatHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.reheatHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          ValveActuatorVisible: data?.reheatHWC_Output?.valveActuatorVisible,
-          ValveActuator: data?.reheatHWC_Output?.valveActuatorDataTbl.map((item) => [item.cLabel, item.cValue]),
-        },
-        reheatHGRC: {
-          Visible: data?.reheatHGRC_Output?.visible,
-          Data: data?.reheatHGRC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Entering: data?.reheatHGRC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          Leaving: data?.reheatHGRC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          PerfOutputs: data?.reheatHGRC_Output?.performanceDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          EKEXV_Kit: data?.reheatHGRC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
-        },
-        supplyFan: {
-          Visible: data?.supplyFanOutput?.visible,
-          Data: data?.supplyFanOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          GraphImageUrl: data?.supplyFanOutput?.graphImageUrl,
-          soundDataVisible: data?.supplyFanOutput?.soundDataVisible,
-          soundData: data?.supplyFanOutput?.soundDataDataTbl,
-        },
-        exhaustFan: {
-          Visible: data?.exhaustFanOutput?.visible,
-          Data: data?.exhaustFanOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
-          GraphImageUrl: data?.exhaustFanOutput?.graphImageUrl,
-          soundDataVisible: data?.exhaustFanOutput?.soundDataVisible,
-          soundData: data?.exhaustFanOutput?.soundDataDataTbl,
-        },
-        soundData: {
-          Visible: data?.soundDataOutput?.visible,
-          Data: data?.soundDataOutput?.soundDataDataTbl?.map((item) => [
-            item.cLabel,
-            item.cValue_1,
-            item.cValue_2,
-            item.cValue_3,
-            item.cValue_4,
-            item.cValue_5,
-            item.cValue_6,
-            item.cValue_7,
-            item.cValue_8,
-            item.cValue_9,
-            item.cValue_10,
-          ]),
-        },
-        // heatingElectricHeater: data.outputHeatingElecHeater.gvOutHeatElecHeaterDataSource,
-        // heatingElectricHeaterVisible: data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
-      };
+      try {
+        const data = actions.payload;
+        state.viewSelectionInfo = {
+          pricingDetail: data.pricingOutput?.pricingDataTbl,
+          pricingVisible: data.pricingOutput?.visible,
+          unitDetails: data.unitDetailsOutput?.unitDetails_1DataTbl.concat(
+            data.unitDetailsOutput?.unitDetails_2DataTbl
+          ),
+          unitDetailsVisible: data.unitDetailsOutput.visible,
+          electricalRequirements: {
+            unitData: data.elecReqOutput?.unitDataTbl,
+            unitDataVisible: data.elecReqOutput?.unitVisible,
+            unitOnlyData: data.elecReqOutput?.unitOnlyDataTbl,
+            unitOnlyDataVisible: data.elecReqOutput?.unitOnlyVisible,
+            coolingDXCData: data.elecReqOutput?.coolingDXCDataTbl,
+            coolingDXCVisible: data.elecReqOutput?.coolingDXCVisible,
+            preheatElecHeaterData: data.elecReqOutput?.preheatElecHeaterDataTbl,
+            preheatElecHeaterVisible: data.elecReqOutput?.preheatElecHeaterVisible,
+            heatingElecHeaterData: data.elecReqOutput?.heatingElecHeaterDataTbl,
+            heatingElecHeaterVisible: data.elecReqOutput?.heatingElecHeaterVisible,
+          },
+          preheatElecHeater: {
+            Visible: data?.preheatElecHeaterOutput?.visible,
+            Data: data?.preheatElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          preheatHWC: {
+            Visible: data?.preheatHWC_Output?.visible,
+            Data: data?.preheatHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.preheatHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.preheatHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            ValveActuatorVisible: data?.preheatHWC_Output?.valveActuatorVisible,
+            ValveActuator: data?.preheatHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          heatExchCORE: {
+            performanceVisible: data?.fixedPlateCORE_Output?.visible,
+            performance: data?.fixedPlateCORE_Output?.performanceDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            designConditions: data?.fixedPlateCORE_Output?.enteringDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            performanceLeavingAir: data?.fixedPlateCORE_Output?.leavingDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            // performanceLeavingAirVisible: data?.fixedPlateCORE_Output?.gvOutHX_FP_LvgAirVisible,
+          },
+          heatExchRECUTECH: {
+            performanceVisible: data?.fixedPlateRECUTECH_Output?.visible,
+            performance: data?.fixedPlateRECUTECH_Output?.performanceDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            designConditions: data?.fixedPlateRECUTECH_Output?.enteringDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            // designConditionsVisible: data?.fixedPlateRECUTECH_Output?.gvOutHX_FP_EntAirVisible,
+            performanceLeavingAir: data?.fixedPlateRECUTECH_Output?.leavingDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            // performanceLeavingAirVisible: data?.fixedPlateRECUTECH_Output?.gvOutHX_FP_LvgAirVisible,
+          },
+          heatExchPOLYBLOC: {
+            performanceVisible: data?.fixedPlatePOLYBLOC_Output?.visible,
+            performance: data?.fixedPlatePOLYBLOC_Output?.performanceDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            designConditions: data?.fixedPlatePOLYBLOC_Output?.enteringDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            // designConditionsVisible: data?.fixedPlatePOLYBLOC_Output?.gvOutHX_FP_EntAirVisible,
+            performanceLeavingAir: data?.fixedPlatePOLYBLOC_Output?.leavingDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+            ]),
+            // performanceLeavingAirVisible: data?.fixedPlatePOLYBLOC_Output?.gvOutHX_FP_LvgAirVisible,
+          },
+          coolingCWC: {
+            Visible: data?.coolingCWC_Output?.visible,
+            Data: data?.coolingCWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.coolingCWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.coolingCWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            ValveActuatorVisible: data?.coolingCWC_Output?.valveActuatorVisible,
+            ValveActuator: data?.coolingCWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          coolingDXC: {
+            Visible: data?.coolingDXC_Output?.visible,
+            Data: data?.coolingDXC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.coolingDXC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.coolingDXC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            PerfOutputs: data?.coolingDXC_Output?.perfOutputsDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            EKEXV_Kit: data?.coolingDXC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          heatingCondCoil: {
+            Visible: data?.heatingCondCoilOutput?.visible,
+            Data: data?.heatingCondCoilOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.heatingCondCoilOutput?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.heatingCondCoilOutput?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          heatingElecHeater: {
+            Visible: data?.heatingElecHeaterOutput?.visible,
+            Data: data?.heatingElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          heatingHWC: {
+            Visible: data?.heatingHWC_Output?.visible,
+            Data: data?.heatingHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.heatingHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.heatingHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            ValveActuatorVisible: data?.heatingHWC_Output?.valveActuatorVisible,
+            ValveActuator: data?.heatingHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          reheatElecHeater: {
+            Visible: data?.reheatElecHeaterOutput?.visible,
+            Data: data?.reheatElecHeaterOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          reheatHWC: {
+            Visible: data?.reheatHWC_Output?.visible,
+            Data: data?.reheatHWC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.reheatHWC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.reheatHWC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            ValveActuatorVisible: data?.reheatHWC_Output?.valveActuatorVisible,
+            ValveActuator: data?.reheatHWC_Output?.valveActuatorDataTbl?.map((item) => [item.cLabel, item.cValue]) || [],
+          },
+          reheatHGRC: {
+            Visible: data?.reheatHGRC_Output?.visible,
+            Data: data?.reheatHGRC_Output?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Entering: data?.reheatHGRC_Output?.enteringDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            Leaving: data?.reheatHGRC_Output?.leavingDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            PerfOutputs: data?.reheatHGRC_Output?.performanceDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            EKEXV_Kit: data?.reheatHGRC_Output?.ekexvKitDataTbl?.map((item) => [item.cLabel, item.cValue]),
+          },
+          supplyFan: {
+            Visible: data?.supplyFanOutput?.visible,
+            Data: data?.supplyFanOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            GraphImageUrl: data?.supplyFanOutput?.graphImageUrl,
+            soundDataVisible: data?.supplyFanOutput?.soundDataVisible,
+            soundData: data?.supplyFanOutput?.soundDataDataTbl,
+          },
+          exhaustFan: {
+            Visible: data?.exhaustFanOutput?.visible,
+            Data: data?.exhaustFanOutput?.featuresDataTbl?.map((item) => [item.cLabel, item.cValue]),
+            GraphImageUrl: data?.exhaustFanOutput?.graphImageUrl,
+            soundDataVisible: data?.exhaustFanOutput?.soundDataVisible,
+            soundData: data?.exhaustFanOutput?.soundDataDataTbl,
+          },
+          soundData: {
+            Visible: data?.soundDataOutput?.visible,
+            Data: data?.soundDataOutput?.soundDataDataTbl?.map((item) => [
+              item.cLabel,
+              item.cValue_1,
+              item.cValue_2,
+              item.cValue_3,
+              item.cValue_4,
+              item.cValue_5,
+              item.cValue_6,
+              item.cValue_7,
+              item.cValue_8,
+              item.cValue_9,
+              item.cValue_10,
+            ]),
+          },
+          // heatingElectricHeater: data.outputHeatingElecHeater.gvOutHeatElecHeaterDataSource,
+          // heatingElectricHeaterVisible: data.outputHeatingElecHeater.divOutHeatingElecHeaterVisible,
+        };
+        state.isLoading = false;
+      } catch (e) {
+        console.log(e);
+      }
     },
     updateLayoutValues(state, action) {
       state.controlInfo = {
@@ -731,7 +737,7 @@ export function getViewSelectionInfo(data) {
   return async () => {
     dispatch(UnitSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/units/ViewSelection`, data);
-    dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
+    await dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
     return response.data;
   };
 }

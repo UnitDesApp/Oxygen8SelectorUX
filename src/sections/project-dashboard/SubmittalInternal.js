@@ -84,6 +84,10 @@ export default function SubmittalInternal() {
   const isResetCalled = useRef(false);
 
   // State
+  const [note, setNote] = useState('');
+  const [shippingNote, setShippingNote] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [fail, setFail] = useState(false);
   const [expanded, setExpanded] = useState({
     panel1: true,
     panel2: true,
@@ -91,10 +95,6 @@ export default function SubmittalInternal() {
     panel4: true,
     panel5: true,
   });
-  const [note, setNote] = useState('');
-  const [shippingNote, setShippingNote] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [fail, setFail] = useState(false);
 
   // Form Schema
   const UpdateProjectInfoSchema = Yup.object().shape({

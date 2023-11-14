@@ -24,7 +24,7 @@ import { useExport } from '../../hooks/useExport';
 
 const EXPORT_METHODS = [
   { label: 'Submittal', id: 'submittal' },
-  { label: 'Schedule', id: 'schedule' },
+  { label: 'Selection', id: 'selection' },
   { label: 'Revit files', id: 'revit_files' },
   { label: 'Quote', id: 'quote' },
 ];
@@ -40,7 +40,7 @@ ReportDialog.propTypes = {
 export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo, QuoteTitle }) {
   const [methods, setMethods] = useState({
     submittal: false,
-    schedule: false,
+    selection: false,
     revit_files: false,
     quote: false,
   });
@@ -50,7 +50,7 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo,
   const [successNotifyText, setSuccessNotifyText] = useState(false);
   const [openFailNotify, setOpenFailNotify] = useState(false);
   const [failNotifyText, setFailNotifyText] = useState(false);
-  const { ExportSubmittal, ExportSubmittalEpicor, ExportQuote, ExportRevit, ExportSchedule } = useExport();
+  const { ExportSubmittal, ExportSubmittalEpicor, ExportQuote, ExportRevit, ExportAllSelectionPDF } = useExport();
 
   const onChangeMethods = useCallback(
     (label, value) => {
@@ -80,8 +80,8 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo,
       }
     }
 
-    if (methods.schedule) {
-      await ExportSchedule(intProjectID);
+    if (methods.selection) {
+      await ExportAllSelectionPDF(intProjectID);
     }
 
     if (methods.revit_files) {
@@ -100,18 +100,18 @@ export default function ReportDialog({ isOpen, onClose, intProjectID, intUnitNo,
     }
     setIsLoading(false);
   }, [
-    ExportQuote,
-    ExportRevit,
-    ExportSchedule,
-    ExportSubmittal,
-    ExportSubmittalEpicor,
-    intProjectID,
-    methods.quote,
-    methods.revit_files,
-    methods.schedule,
     methods.submittal,
-    openFailNotify,
+    methods.selection,
+    methods.revit_files,
+    methods.quote,
+    ExportSubmittal,
+    intProjectID,
+    ExportSubmittalEpicor,
     openSuccessNotify,
+    openFailNotify,
+    ExportAllSelectionPDF,
+    ExportRevit,
+    ExportQuote,
   ]);
 
   const onCloseDialog = useCallback(() => {

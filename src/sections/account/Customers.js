@@ -21,9 +21,11 @@ import Scrollbar from '../../components/Scrollbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
+  { id: 'name', label: 'Customer Name', align: 'left' },
+  { id: 'customer_type', label: 'Customer Type', align: 'left' },
+  { id: 'add_text', label: 'Region', align: 'left' },
+  { id: 'shipping_factor', label: 'Shipping Factor', align: 'left' },
   { id: 'address', label: 'Address', align: 'left' },
-  { id: 'created_date', label: 'Created Date', align: 'left' },
   { id: '' },
 ];
 
@@ -53,6 +55,7 @@ export default function Customers() {
 
   const [filterName, setFilterName] = useState('');
   const [tableData, setTableData] = useState(customerList);
+  const [customerType, setCustomerType] = useState();
   const filterRole = useState('All');
 
   // Delete one row
@@ -120,9 +123,14 @@ export default function Customers() {
         filterName,
         filterRole,
         filterStatus,
+        customerType
       }),
-    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+    [filterName, filterRole, filterStatus, order, orderBy,customerType, tableData]
   );
+
+  const handleFilterByCustomerName = (customerType) => {
+    setCustomerType(customerType);
+  };
 
   const denseHeight = useMemo(() => (dense ? 52 : 72), [dense]);
 
@@ -141,6 +149,7 @@ export default function Customers() {
         onFilterName={handleFilterName}
         userNum={filteredData.length}
         onDeleteSelectedData={handleMultiConfirmDialogOpen}
+        onFilterByCustomerName={handleFilterByCustomerName}
       />
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
@@ -224,7 +233,7 @@ export default function Customers() {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole, customerType }) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -234,11 +243,10 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   });
 
   tableData = stabilizedThis.map((el) => el[0]);
-
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        Object.values(item).filter((value) => value.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+        Object.values(item).filter((value) => value.toString().toLowerCase().includes(filterName.toLowerCase()))
           .length > 0
     );
   }
@@ -247,8 +255,8 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
     tableData = tableData.filter((item) => item.status === filterStatus);
   }
 
-  if (filterRole !== 'All') {
-    tableData = tableData.filter((item) => item.role === filterRole);
+  if (customerType && customerType !== "1") {
+    tableData = tableData.filter((item) => item.customer_type_id.toString() === customerType.toString());
   }
 
   return tableData;

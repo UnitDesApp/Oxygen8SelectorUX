@@ -21,6 +21,8 @@ export default function Notes() {
   const { projectId } = useParams();
 
   const [openSuccess, setOpenSuccess] = useState(false);
+  const [openFail, setOpenFail] = useState(false);
+
   const handleCloseSuccess = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -28,13 +30,13 @@ export default function Notes() {
     setOpenSuccess(false);
   };
 
-  const [openFail, setOpenFail] = useState(false);
   const handleCloseFail = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setOpenFail(false);
   };
+
   // const navigate = useNavigate();
   const projectInfoSchema = Yup.object().shape({
     notes: Yup.string().required('Please enter a Project Name'),

@@ -12,6 +12,7 @@ import GuestGuard from '../guards/GuestGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 import RegisterSuccess from '../pages/auth/RegisterSuccess';
+import AdminPanel from '../pages/AdminPanel';
 
 // ----------------------------------------------------------------------
 
@@ -77,15 +78,13 @@ export default function Router() {
             { path: 'project/:projectId/:pageId', element: <Project /> },
             { path: 'account', element: <Account /> },
             { path: 'account/:tab', element: <Account /> },
-            { path: 'account/edit/user/:userId', element: <UserEdit /> },
-            { path: 'account/edit/customer/:customerId', element: <CustomerEdit /> },
+            { path: 'admin-panel/edit/user/:userId', element: <UserEdit /> },
+            { path: 'admin-panel/edit/customer/:customerId', element: <CustomerEdit /> },
             { path: 'resources', element: <Resources /> },
-            { path: 'project/new/', element: <ProjectEdit /> },
-            { path: 'project/dashboard/:projectId', element: <ProjectDashboard /> },
-            { path: 'project/edit/:projectId', element: <ProjectEdit /> },
-            { path: 'project/quote/:projectId', element: <ProjectQuote /> },
             { path: 'unit/add/:projectId/', element: <UnitAdd /> },
             { path: 'unit/edit/:projectId/:unitId', element: <UnitEdit /> },
+            { path: 'admin-panel', element: <AdminPanel /> },
+            { path: 'admin-panel/:tab', element: <AdminPanel /> },
           ],
         },
       ],
@@ -105,9 +104,6 @@ const EmailVerification = Loadable(lazy(() => import('../pages/auth/EmailVerific
 // Projects
 const Projects = Loadable(lazy(() => import('../pages/Projects')));
 const Project = Loadable(lazy(() => import('../pages/Project')));
-const ProjectDashboard = Loadable(lazy(() => import('../pages/ProjectDashboard')));
-const ProjectEdit = Loadable(lazy(() => import('../pages/ProjectEdit')));
-const ProjectQuote = Loadable(lazy(() => import('../pages/ProjectQuote')));
 // Unit
 const UnitAdd = Loadable(lazy(() => import('../pages/UnitAdd')));
 const UnitEdit = Loadable(lazy(() => import('../pages/UnitEdit')));

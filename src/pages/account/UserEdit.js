@@ -134,34 +134,9 @@ export default function UserEdit() {
             <HeaderBreadcrumbs
               heading="Project Submittal"
               links={[
-                { name: 'My account', href: PATH_ACCOUNT.account },
                 { name: 'Users', href: PATH_ACCOUNT.users },
-                { name: '' },
+                { name: 'User Edit' },
               ]}
-              action={
-                <Stack direction="row" justifyContent="center" spacing={1}>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    startIcon={<Iconify icon="mdi:plus" />}
-                    onClick={() => {
-                      setAddCustomerDlgOpen(true);
-                    }}
-                  >
-                    Add new customer
-                  </Button>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    startIcon={<Iconify icon="mdi:user" />}
-                    onClick={() => {
-                      setAddUserDlgOpen(true);
-                    }}
-                  >
-                    Add new user
-                  </Button>
-                </Stack>
-              }
             />
 
             <Grid container spacing={2} sx={{ mb: 3 }}>

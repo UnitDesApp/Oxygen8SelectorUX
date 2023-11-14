@@ -23,7 +23,7 @@ CustomerTableRow.propTypes = {
 };
 
 export default function CustomerTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, address, created_date } = row;
+  const { name, items, address, shipping_factor_percent, region } = row;
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>
@@ -34,10 +34,16 @@ export default function CustomerTableRow({ row, selected, onEditRow, onSelectRow
         {name}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {address}
+        {items}
       </TableCell>
       <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
-        {created_date}
+        {region}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {shipping_factor_percent}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {address}
       </TableCell>
       <TableCell align="right">
         <Stack direction="row">
