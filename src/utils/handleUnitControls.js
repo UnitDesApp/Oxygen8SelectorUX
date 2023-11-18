@@ -89,7 +89,7 @@ const sortColume = (data, colume) => data.sort((a, b) => a[colume] - b[colume]);
 
 const unitModelFilter = (data, value, minColumeName, maxColumeName) =>
   data
-    ?.filter((item) => (item[minColumeName] <= value && value <= item[maxColumeName]))
+    ?.filter((item) => item[minColumeName] <= value && value <= item[maxColumeName])
     .sort((a, b) => a.cfm_max - b.cfm_max);
 
 export const getUnitModel = (
@@ -289,7 +289,7 @@ export const getUnitModel = (
             summerSupplyAirCFM > intVENPLUS_MAX_CFM_WITH_BYPASS ? intVENPLUS_MAX_CFM_WITH_BYPASS : summerSupplyAirCFM;
         }
         if (summerSupplyAirCFM < 1200) {
-          summerSupplyAirCFM = 1200; 
+          summerSupplyAirCFM = 1200;
         }
 
         if (intUAL === ClsID.intUAL_External || intUAL === ClsID.intUAL_ExternalSpecial) {
@@ -321,7 +321,7 @@ export const getUnitModel = (
           unitModel = unitModelFilter(data.ventumPlusUnitModel, summerSupplyAirCFM, 'cfm_min', 'cfm_max');
           unitModel = unitModel.map((item) => ({
             ...item,
-            items: `${item.items} - (${  item.cfm_min  }-${  item.cfm_max  } CFM)`,
+            items: `${item.items} - (${item.cfm_min}-${item.cfm_max} CFM)`,
           }));
         }
         location = data.generalLocation?.filter((item) => item.id === locationId);
@@ -1365,6 +1365,15 @@ export const getDamperAndActuatorInfo = (data, intProductTypeID, intLocationID) 
   return returnInfo;
 };
 
+const getDdlLockItem = (dt, id) => {
+  const temp = dt.filter((item) => item.id === id);
+  if (temp.length > 0) {
+    return id;
+  }
+
+  return dt[0].id;
+};
+
 export const getElecHeaterVoltageInfo = (
   data,
   intPreheatCompID,
@@ -1374,10 +1383,15 @@ export const getElecHeaterVoltageInfo = (
   intUnitModelID,
   intElecHeaterVoltageID,
   intUnitVoltageID,
-  ckbVoltageSPPVal
+  ckbVoltageSPPVal,
+  strUnitModelValue
 ) => {
-  let dtElecHeaterVoltage = [];
   const returnInfo = [];
+
+  let dtElecHeaterVoltage = [];
+  let intSelectedValue = intUnitVoltageID;
+  let visibled = true;
+  let enabled = true;
 
   if (
     intPreheatCompID === ClsID.intCompElecHeaterID ||
@@ -1387,23 +1401,21 @@ export const getElecHeaterVoltageInfo = (
     returnInfo.divElecHeaterVoltageVisible = true;
 
     let bol208V_1Ph = false;
-
+    // intProdTypeNovaID
     if (intProductTypeID === ClsID.intProdTypeNovaID) {
-      if (
-        intUnitModelID === ClsID.intNovaUnitModelID_A16IN ||
-        intUnitModelID === ClsID.intNovaUnitModelID_B20IN ||
-        intUnitModelID === ClsID.intNovaUnitModelID_A18OU ||
-        intUnitModelID === ClsID.intNovaUnitModelID_B22OU
-      ) {
-        bol208V_1Ph = true;
-        dtElecHeaterVoltage = data.electricalVoltage.filter(
-          (item) => item.electric_heater_2 === 1 || item.id === intElecHeaterVoltageID
-        );
-      } else {
-        dtElecHeaterVoltage = data.electricalVoltage.filter(
-          (item) => item.electric_heater === 1 || item.id === intElecHeaterVoltageID
-        );
+      if (intUnitModelID) {
+        dtElecHeaterVoltage = data.electricalVoltage;
+        // const dtLink = data.novaElecHeatVoltageLink.filter((x) => x.unit_model_value === strUnitModelValue);
+
+        if (intUnitVoltageID) {
+          intSelectedValue = intUnitModelID;
+        }
+
+        // dtElecHeaterVoltage = dtElecHeaterVoltage.map(
+        //   (item) => dtLink.filter((el) => el.voltage_id === item.id).length > 0
+        // );
       }
+      // intProdTypeVentumID
     } else if (intProductTypeID === ClsID.intProdTypeVentumID) {
       if (
         intUnitModelID === ClsID.intVentumUnitModelID_H05IN_ERV ||
@@ -1420,55 +1432,119 @@ export const getElecHeaterVoltageInfo = (
           (item) => item.electric_heater === 1 || item.id === intElecHeaterVoltageID
         );
       }
+
+      if (bol208V_1Ph) {
+        returnInfo.ddlElecHeaterVoltageId = ClsID.intElectricVoltage_208V_1Ph_60HzID;
+        enabled = false;
+      } else {
+        returnInfo.ddlElecHeaterVoltageId = ClsID.intElectricVoltage_208V_3Ph_60HzID;
+      }
+
+      if (ckbVoltageSPPVal) {
+        returnInfo.ddlElecHeaterVoltageEnabled = false;
+      } else {
+        returnInfo.ddlElecHeaterVoltageEnabled = true;
+      }
+      // intProdTypeVentumLiteID
     } else if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
       bol208V_1Ph = true;
       dtElecHeaterVoltage = data.electricalVoltage.filter(
         (item) => item.electric_heater_3 === 1 || item.id === intElecHeaterVoltageID
       );
+
+      if (dtElecHeaterVoltage.length > 0) {
+        if (bol208V_1Ph) {
+          intSelectedValue = ClsID.intElectricVoltage_208V_1Ph_60HzID;
+        } else {
+          intSelectedValue = ClsID.intElectricVoltage_208V_3Ph_60HzID;
+        }
+      }
+      // intProdTypeVentumPlusID
+    } else if (intProductTypeID === ClsID.intProdTypeVentumPlusID) {
+      dtElecHeaterVoltage = data.electricalVoltage.filter(
+        (item) => item.ventumplus_elec_heater === 1 || item.id === intElecHeaterVoltageID
+      );
+
+      if (ckbVoltageSPPVal) {
+        intSelectedValue = getDdlLockItem(dtElecHeaterVoltage, intUnitVoltageID);
+        visibled = false;
+        enabled = false;
+      } else {
+        enabled = true;
+      }
+
+      if (dtElecHeaterVoltage.length > 0) {
+        if (bol208V_1Ph) {
+          intSelectedValue = ClsID.intElectricVoltage_208V_1Ph_60HzID;
+        } else {
+          intSelectedValue = ClsID.intElectricVoltage_208V_3Ph_60HzID;
+        }
+      }
+      // intProdTypeTerraID
     } else if (intProductTypeID === ClsID.intProdTypeTerraID) {
-      if (ckbVoltageSPPVal === 1) {
+      if (ckbVoltageSPPVal) {
         dtElecHeaterVoltage = data.electricalVoltage.filter(
           (item) => item.terra_spp === 1 || item.id === intElecHeaterVoltageID
         );
-        returnInfo.ddlElecHeaterVoltageOldId = intUnitVoltageID;
-        returnInfo.ddlElecHeaterVoltageEnabled = false;
+        intSelectedValue = getDdlLockItem(dtElecHeaterVoltage, intUnitVoltageID);
+        enabled = false;
       } else {
         dtElecHeaterVoltage = data.electricalVoltage.filter(
           (item) => item.terra_non_spp === 1 || item.id === intElecHeaterVoltageID
         );
-        returnInfo.ddlElecHeaterVoltageEnabled = true;
+        enabled = true;
+      }
+
+      if (dtElecHeaterVoltage.length > 0) {
+        if (bol208V_1Ph) {
+          intSelectedValue = ClsID.intElectricVoltage_208V_1Ph_60HzID;
+        } else {
+          intSelectedValue = ClsID.intElectricVoltage_208V_3Ph_60HzID;
+        }
       }
     }
-
-    if (dtElecHeaterVoltage.length > 0) {
-      returnInfo.ddlElecHeaterVoltageDataTbl = dtElecHeaterVoltage;
-
-      if (bol208V_1Ph) {
-        returnInfo.ddlElecHeaterVoltageId = ClsID.intElectricVoltage_208V_1Ph_60HzID;
-      } else {
-        returnInfo.ddlElecHeaterVoltageId = ClsID.intElectricVoltage_208V_3Ph_60HzID;
-      }
-
-      returnInfo.ddlElecHeaterVoltageOldId = intUnitVoltageID;
+    if (
+      intPreheatCompID === ClsID.intCompAutoID &&
+      intHeatingCompID !== ClsID.intCompElecHeaterID &&
+      intReheatCompID !== ClsID.intCompElecHeaterID
+    ) {
+      visibled = false;
     }
   } else {
     if (intProductTypeID === ClsID.intProdTypeVentumLiteID) {
       dtElecHeaterVoltage = data.electricalVoltage.filter(
         (item) => item.electric_heater_3 === 1 || item.id === intElecHeaterVoltageID
       );
-      returnInfo.ddlElecHeaterVoltageDataTbl = dtElecHeaterVoltage;
-      returnInfo.ddlElecHeaterVoltageId = intUnitVoltageID;
-      returnInfo.ddlElecHeaterVoltageEnabled = false;
+      intSelectedValue = intUnitVoltageID;
+      enabled = false;
+    } else if (intProductTypeID === ClsID.intProdTypeTerraID && ckbVoltageSPPVal)
+    {
+      dtElecHeaterVoltage = data.electricalVoltage.filter(
+        (item) => item.terra_spp === 1 || item.id === intElecHeaterVoltageID
+      );
+      intSelectedValue = getDdlLockItem(dtElecHeaterVoltage, intUnitVoltageID);
+      enabled = false;
+    } else if (intProductTypeID === ClsID.intProdTypeVentumPlusID && (ckbVoltageSPPVal || intPreheatCompID === ClsID.intCompAutoID))
+    {
+      dtElecHeaterVoltage = data.electricalVoltage.filter(
+        (item) => item.ventumplus_elec_heater === 1 || item.id === intElecHeaterVoltageID
+      );
+      intSelectedValue = getDdlLockItem(dtElecHeaterVoltage, intUnitVoltageID);
+      enabled = false;
     } else {
       dtElecHeaterVoltage = data.electricalVoltage.filter(
         (item) => item.electric_heater === 1 || item.id === intElecHeaterVoltageID
       );
-      returnInfo.ddlElecHeaterVoltageDataTbl = dtElecHeaterVoltage;
-      returnInfo.ddlElecHeaterVoltageId = ClsID.intElectricVoltage_208V_3Ph_60HzID;
+      intSelectedValue = ClsID.intElectricVoltage_208V_3Ph_60HzID;
     }
 
-    returnInfo.divElecHeaterVoltageVisible = false;
+    visibled = false;
   }
+
+  returnInfo.ddlElecHeaterVoltageDataTbl = dtElecHeaterVoltage;
+  returnInfo.ddlElecHeaterVoltageId = intSelectedValue;
+  returnInfo.ddlElecHeaterVoltageEnabled = enabled;
+  returnInfo.divElecHeaterVoltageVisible = visibled;
 
   return returnInfo;
 };

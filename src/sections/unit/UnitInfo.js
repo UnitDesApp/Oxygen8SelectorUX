@@ -692,7 +692,8 @@ export default function UnitInfo({
       Number(intUnitTypeID),
       Number(values.ddlElecHeaterVoltageId),
       Number(values.ddlUnitVoltageId),
-      Number(ckbVoltageSPPVal)
+      Number(ckbVoltageSPPVal),
+      strUnitModelValue
     );
 
     if (!edit) setValue('ddlElecHeaterVoltageId', result?.ddlElecHeaterVoltageId);
@@ -710,7 +711,10 @@ export default function UnitInfo({
     values.ddlPreheatCompId,
     values.ddlReheatCompId,
     values.ddlUnitVoltageId,
+    strUnitModelValue
   ]);
+
+  console.log(elecHeaterVoltageInfo);
 
   const valveAndActuatorInfo = useMemo(
     () =>
