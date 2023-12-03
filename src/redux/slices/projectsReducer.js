@@ -81,10 +81,22 @@ export default ProjectsSlice.reducer;
 export function getProjectsInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
+    // const response = JSON.stringify(await axios.post(`${serverUrl}/api/jobs/Get`));
     const response = await axios.post(`${serverUrl}/api/jobs/Get`);
     dispatch(ProjectsSlice.actions.setProjectInfo(response.data));
   };
 };
+
+// export async function getProjectsInfo() {
+//   const response = await fetch(`${serverUrl}/api/jobs/Get`,
+//     {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(response),
+//     }
+//   );
+//   return response.json();
+// }
 
 export function getProjectsInitInfo() {
   return async () => {
