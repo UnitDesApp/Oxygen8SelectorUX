@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, MenuItem } from '@mui/material';
 // routes
-import { PATH_AUTH } from '../../routes/paths';
+import { PATH_ACCOUNT, PATH_AUTH } from '../../routes/paths';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
@@ -49,6 +49,14 @@ export default function AccountPopover() {
     }
   };
 
+  const handleViewProfile = async () => {
+    try {
+      navigate(PATH_ACCOUNT.account, { replace: true });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <IconButtonAnimate
@@ -57,7 +65,7 @@ export default function AccountPopover() {
           p: 0,
           ...(open && {
             '&:before': {
-              zIndex: 1,
+              zIndex: 4000,
               content: "''",
               width: '100%',
               height: '100%',
@@ -85,7 +93,7 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 3, px: 2.5 }}>
+        <Box sx={{ my: 3, px: 2.5, cursor: "pointer" }} onClick={handleViewProfile}>
           <Typography variant="subtitle2" noWrap>
             {localStorage.getItem("username")}
           </Typography>

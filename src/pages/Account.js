@@ -1,18 +1,21 @@
-import { capitalCase } from 'change-case';
+import { useState, useEffect } from 'react';
 
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Box, Tab, Tabs } from '@mui/material';
+import { Container } from '@mui/material';
 
 // components
 import Page from '../components/Page';
-import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 
-// hooks
-import useTabs from '../hooks/useTabs';
+// redux
+import { getAccountInfo } from '../redux/slices/AccountReducer';
+import { useDispatch } from '../redux/store';
 
-import { AccountGeneral, AccountChangePassword } from '../sections/user/account';
+// components
+import { AccountGeneral} from '../sections/account';
+import Loading from '../sections/Loading';
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -23,46 +26,26 @@ const RootStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
+export default function Account() {
+  const dispatch = useDispatch();
+  const [isLoading, setIsloading] = useState(true);
 
-export default function MyAccount() {
-  const { currentTab, onChangeTab } = useTabs('general');
+  useEffect(() => {
+    const get = async () => {
+      await dispatch(getAccountInfo());
+      setIsloading(false);
+    };
+    get();
+  }, [dispatch]);
 
-  const ACCOUNT_TABS = [
-    {
-      value: 'general',
-      icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <AccountGeneral />,
-    },
-    {
-      value: 'change_password',
-      icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
-      component: <AccountChangePassword />,
-    },
-  ];
+  if (isLoading) return <Loading />;
+
   return (
     <Page title="User: Account Settings">
       <RootStyle>
         <Container sx={{ mt: '20px' }}>
           <HeaderBreadcrumbs heading="My Account" links={[{ name: 'Edit Account' }]} />
-
-          <Tabs
-            allowScrollButtonsMobile
-            variant="scrollable"
-            scrollButtons="auto"
-            value={currentTab}
-            onChange={onChangeTab}
-          >
-            {ACCOUNT_TABS.map((tab) => (
-              <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
-            ))}
-          </Tabs>
-
-          <Box sx={{ mb: 5 }} />
-
-          {ACCOUNT_TABS.map((tab) => {
-            const isMatched = tab.value === currentTab;
-            return isMatched && <Box key={tab.value}>{tab.component}</Box>;
-          })}
+          <AccountGeneral />
         </Container>
       </RootStyle>
     </Page>

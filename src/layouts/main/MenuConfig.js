@@ -5,10 +5,11 @@ import Iconify from '../../components/Iconify';
 
 const getIcon = (name) => <Iconify icon={name} sx={{ width: 1, height: 1 }} />;
 
-const ICONS = {
+export const ICONS = {
   user: getIcon('mdi:user-outline'),
-  dashboard: getIcon('grommet-icons:projects'),
+  dashboard: getIcon('mdi-light:view-dashboard'),
   download: getIcon('ic:outline-download'),
+  adminPanel: getIcon('mdi:monitor-dashboard')
 };
 
 const navConfig = [
@@ -21,7 +22,7 @@ const navConfig = [
       { title: 'My Account', path: '/account', icon: ICONS.user },
       { title: 'Resources', path: '/resources', icon: ICONS.download },
     ],
-  }
+  },
 ];
 
 export default navConfig;

@@ -4,6 +4,8 @@ import { HOST_API } from '../config';
 
 // ----------------------------------------------------------------------
 
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+
 const axiosInstance = axios.create({
   baseURL: HOST_API,
 });

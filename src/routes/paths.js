@@ -23,7 +23,7 @@ export const PATH_AUTH = {
 const ROOT_PROJECTS = '/projects';
 export const PATH_PROJECTS = {
   root: ROOT_PROJECTS,
-}
+};
 
 const ROOT_PROJECT = '/project';
 export const PATH_PROJECT = {
@@ -33,7 +33,7 @@ export const PATH_PROJECT = {
   dashboard: (id) => path(ROOT_PROJECT, `/dashboard/${id}`),
   projectEdit: (id) => path(ROOT_PROJECT, `/edit/${id}`),
   submittal: (id) => path(ROOT_PROJECT, `/submittal/${id}`),
-  quote: (id) => path(ROOT_PROJECT, `/quote/${id}`)
+  quote: (id) => path(ROOT_PROJECT, `/quote/${id}`),
 };
 
 // ----------------------------------------------------------------------
@@ -57,4 +57,12 @@ export const PATH_PAGE = {
   page404: '/404',
   page500: '/500',
   components: '/components',
+};
+const ROOTS_ACCOUNT = '/account';
+export const PATH_ACCOUNT = {
+  account: '/account',
+  users: '/admin-panel/users',
+  customers: '/admin-panel/customers',
+  edituser: (userId) => path('/admin-panel', `/edit/user/${userId}`),
+  editCustomer: (customerId) => path('/admin-panel', `/edit/customer/${customerId}`),
 };

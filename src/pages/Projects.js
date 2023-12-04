@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -16,7 +16,6 @@ import {
   Alert,
   Snackbar,
 } from '@mui/material';
-
 // routes
 import { PATH_PROJECTS, PATH_PROJECT } from '../routes/paths';
 // hooks
@@ -24,7 +23,8 @@ import useTabs from '../hooks/useTabs';
 import useTable, { getComparator, emptyRows } from '../hooks/useTable';
 // redux
 import { useSelector, useDispatch } from '../redux/store';
-import { getProjectsInfo, deleteProject } from '../redux/slices/projectsReducer';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
+import { getProjectsInfo, deleteProject, duplicateProject } from '../redux/slices/projectsReducer';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -37,13 +37,13 @@ import {
   TableLoadingData,
   TableSelectedActions,
 } from '../components/table';
-
 // sections
 import { ProjectTableRow, ProjectTableToolbar } from '../sections/project-list';
 import { NewProjectFormDialog, ConfirmDialog } from '../sections/dialog';
 import Loading from '../sections/Loading';
-
-// ----------------------------------------------------------------------
+// utils
+import { ROLE_OPTIONS, TABLE_HEAD } from '../utils/constants';
+import useAuth from '../hooks/useAuth';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(8),
@@ -52,28 +52,12 @@ const RootStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-// ----------------------------------------------------------------------
-
-const ROLE_OPTIONS = ['All', 'Projects', 'By Others'];
-
-const TABLE_HEAD = [
-  { id: 'job_name', label: 'Project Name', align: 'left', width: 200 },
-  { id: 'reference_no', label: 'Ref no.', align: 'left', width: 80 },
-  { id: 'revision_no', label: 'Rev no.', align: 'left', width: 80 },
-  { id: 'status', label: 'status', align: 'left', width: 80 },
-  { id: 'Customer_Name', label: 'Rep', align: 'left', width: 120 },
-  { id: 'Created_User_Full_Name', label: 'Created By', align: 'left', width: 100 },
-  { id: 'Revised_User_Full_Name', label: 'Revisied By', align: 'left', width: 100 },
-  { id: 'created_date', label: 'Date created', align: 'left', width: 140 },
-  { id: 'revised_date', label: 'Date revised', align: 'left', width: 140 },
-  { id: '', label: 'Actions', align: 'center', width: 30 },
-  { id: '', width: 10 },
-];
-
-// ----------------------------------------------------------------------
-
 export default function MyProjects() {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllBaseData());
+  }, [dispatch]);
 
   const {
     page,
@@ -90,123 +74,153 @@ export default function MyProjects() {
     onChangeRowsPerPage,
   } = useTable();
 
-  const dense = true;
-
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     dispatch(getProjectsInfo());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { projectList, isLoading, projectInitInfo } = useSelector((state) => state.projects);
-  const tableData = projectList;
+  const { projectList: tableData, isLoading, projectInitInfo } = useSelector((state) => state.projects);
 
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const handleCloseSuccess = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSuccess(false);
-  };
+  const [openDuplicateSuccess, setOpenDuplicateSuccess] = useState(false);
 
-  const [openFail, setOpenFail] = useState(false);
-  const handleCloseFail = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFail(false);
-  };
-
-  // console.log(projectInitInfo);
-
-  const [filterName, setFilterName] = useState('');
-
-  const [filterRole, setFilterRole] = useState('All');
-
-  const [newProjectDialogOpen, setNewProjectDialog] = useState(false);
-
-  const handleClickNewProjectDialogOpen = () => {
-    setNewProjectDialog(true);
-  };
-
-  const handleNewProjectDialogClose = () => {
-    setNewProjectDialog(false);
-  };
-
-  // Delete one row
-  const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
-  const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
-  const [deleteRowID, setDeleteRowID] = useState(-1);
-
-  const handleOneConfirmDialogOpen = (id) => {
-    setDeleteRowID(id);
-    setOneConfirmDialogState(true);
-  };
-
-  const handleOneConfirmDialogClose = () => {
-    setDeleteRowID(-1);
-    setOneConfirmDialogState(false);
-  };
-
-  const handleDeleteRow = () => {
-    dispatch(deleteProject({ action: 'DELETE_ONE', jobId: deleteRowID }));
-    setSelected([]);
-    setDeleteRowID(-1);
-    handleOneConfirmDialogClose(false);
-  };
-
-  const handleMultiConfirmDialogOpen = () => {
-    setMultiConfirmDialogState(true);
-  };
-
-  const handleMultiConfirmDialogClose = () => {
-    setMultiConfirmDialogState(false);
-  };
+  const handleDuplicateCloseSuccess = useCallback(() => {
+    setOpenDuplicateSuccess(false);
+  }, []);
 
   // eslint-disable-next-line no-unused-vars
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
-  const handleFilterName = (filterName) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openFail, setOpenFail] = useState(false);
+  const [filterName, setFilterName] = useState('');
+  const [filterRole, setFilterRole] = useState('All');
+  const [newProjectDialogOpen, setNewProjectDialog] = useState(false);
+  const [isOneConfirmDialog, setOneConfirmDialogState] = useState(false);
+  const [isOpenMultiConfirmDialog, setMultiConfirmDialogState] = useState(false);
+  const [deleteRowID, setDeleteRowID] = useState(-1);
 
-  const handleFilterRole = (value) => {
+  const handleCloseSuccess = useCallback((event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSuccess(false);
+  }, []);
+
+  const handleCloseFail = useCallback((event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFail(false);
+  }, []);
+
+  const handleClickNewProjectDialogOpen = useCallback(() => {
+    setNewProjectDialog(true);
+  }, []);
+
+  const handleNewProjectDialogClose = useCallback(() => {
+    setNewProjectDialog(false);
+  }, []);
+
+  const handleOneConfirmDialogOpen = useCallback((id) => {
+    setDeleteRowID(id);
+    setOneConfirmDialogState(true);
+  }, []);
+
+  const handleOneConfirmDialogClose = useCallback(() => {
+    setDeleteRowID(-1);
+    setOneConfirmDialogState(false);
+  }, []);
+
+  const handleDeleteRow = useCallback(() => {
+    dispatch(deleteProject({ action: 'DELETE_ONE', projectId: deleteRowID }));
+    setSelected([]);
+    setDeleteRowID(-1);
+    handleOneConfirmDialogClose(false);
+  }, [deleteRowID, dispatch, handleOneConfirmDialogClose, setSelected]);
+
+  const handleMultiConfirmDialogOpen = useCallback(() => {
+    setMultiConfirmDialogState(true);
+  }, []);
+
+  const handleMultiConfirmDialogClose = useCallback(() => {
+    setMultiConfirmDialogState(false);
+  }, []);
+
+  const handleFilterName = useCallback(
+    (filterName) => {
+      setFilterName(filterName);
+      setPage(0);
+    },
+    [setPage]
+  );
+
+  const handleFilterRole = useCallback((value) => {
     setFilterRole(value);
-  };
+  }, []);
 
-  const handleDeleteRows = () => {
+  const handleDeleteRows = useCallback(() => {
     dispatch(deleteProject({ action: 'DELETE_MULTIPUL', projectIdData: selected }));
     setSelected([]);
     setMultiConfirmDialogState(false);
+  }, [dispatch, selected, setSelected]);
+
+  const handleDuplicate = useCallback(
+    (row) => {
+      dispatch(duplicateProject(row));
+      setOpenDuplicateSuccess(true);
+    },
+    [dispatch]
+  );
+
+  const handleEditRow = useCallback(
+    (projectid) => {
+      navigate(PATH_PROJECT.project(projectid, 'unitlist'));
+    },
+    [navigate]
+  );
+
+  const dataFiltered = useMemo(
+    () =>
+      applySortFilter({
+        tableData,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterRole,
+        filterStatus,
+      }),
+    [filterName, filterRole, filterStatus, order, orderBy, tableData]
+  );
+
+  const isNotFound = useMemo(
+    () =>
+      (!dataFiltered.length && !!filterName) ||
+      (!dataFiltered.length && !!filterRole) ||
+      (!dataFiltered.length && !!filterStatus),
+    [dataFiltered.length, filterName, filterRole, filterStatus]
+  );
+
+  const moveToVerificationPage = () => {
+    navigate('/auth/email-verification');
   };
 
-  const handleEditRow = (projectid) => {
-    navigate(PATH_PROJECT.project(projectid, 'unitlist'));
-  };
+  if (isLoading) return <Loading />;
 
-  const dataFiltered = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterRole,
-    filterStatus,
-  });
-
-  const denseHeight = dense ? 52 : 72;
-
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) || 
-    (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
-
-  return isLoading ? (
-    <Loading />
-  ) : (
+  return (
     <Page title="Projects">
       <RootStyle>
         <Container>
+          {!Number(user?.verified || 0) && (
+            <Alert sx={{ width: '100%', mt: 3 }} severity="warning">
+              <b>You are not verified!</b> - Please check your email inbox, if you didn't receive the message,{' '}
+              <a href="" onClick={moveToVerificationPage}>
+                please resend verification link!
+              </a>
+              .
+            </Alert>
+          )}
           <Alert sx={{ width: '100%', mt: 3 }} severity="info">
             <b>Pricing module is now availble</b> - select Quote after making a selection to review and generate a PDF.
             All values shown are Net prices.
@@ -217,6 +231,7 @@ export default function MyProjects() {
             links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]}
             sx={{ mt: 5 }}
           />
+          
           <Card>
             <ProjectTableToolbar
               filterName={filterName}
@@ -231,9 +246,9 @@ export default function MyProjects() {
               <TableContainer sx={{ minWidth: 800, position: 'relative', overflowX: 'initial!important' }}>
                 {selected.length > 0 && (
                   <TableSelectedActions
-                    dense={dense}
+                    dense
                     numSelected={selected.length}
-                    rowCount={tableData.length}
+                    rowCount={tableData?.length || 0}
                     onSelectAllRows={(checked) =>
                       onSelectAllRows(
                         checked,
@@ -250,13 +265,13 @@ export default function MyProjects() {
                   />
                 )}
 
-                <Table size={dense ? 'small' : 'medium'}>
+                <Table size={'small'}>
                   <TableHeadCustom
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={tableData.length}
-                    numSelected={selected.length}
+                    rowCount={tableData?.length || 0}
+                    numSelected={selected?.length || 0}
                     onSort={onSort}
                     onSelectAllRows={(checked) =>
                       onSelectAllRows(
@@ -273,10 +288,11 @@ export default function MyProjects() {
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         onDeleteRow={() => handleOneConfirmDialogOpen(row.id)}
+                        onDuplicate={() => handleDuplicate(row)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={52} emptyRows={emptyRows(page, rowsPerPage, tableData?.length || 0)} />
                     <TableLoadingData isLoading={isLoading} />
                     <TableNoData isNotFound={isNotFound} isLoading={isLoading} />
                   </TableBody>
@@ -297,6 +313,11 @@ export default function MyProjects() {
             </Box>
           </Card>
         </Container>
+        <Snackbar open={openDuplicateSuccess} autoHideDuration={3000} onClose={handleDuplicateCloseSuccess}>
+          <Alert onClose={handleDuplicateCloseSuccess} severity="success" sx={{ width: '100%' }}>
+            Project duplicate successfully!
+          </Alert>
+        </Snackbar>
         <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
           <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
             New project added success!
@@ -311,7 +332,7 @@ export default function MyProjects() {
           newProjectDialogOpen={newProjectDialogOpen}
           handleNewProjectDialogClose={handleNewProjectDialogClose}
           setOpenSuccess={() => setOpenSuccess(true)}
-          setOpenFail={()=> setOpenFail(true)}
+          setOpenFail={() => setOpenFail(true)}
           initialInfo={projectInitInfo}
         />
         <ConfirmDialog
@@ -334,6 +355,7 @@ export default function MyProjects() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+  if (!tableData || tableData.length === 0) return [];
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -347,13 +369,13 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.job_name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.reference_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.revision_no.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.Customer_Name.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.User_Full_Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.created_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.revised_date.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item?.job_name?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.reference_no?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.revision_no?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.Customer_Name?.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.User_Full_Name?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.created_date?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item?.revised_date?.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

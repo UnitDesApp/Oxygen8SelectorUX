@@ -11,6 +11,8 @@ import GuestGuard from '../guards/GuestGuard';
 // import { PATH_AFTER_LOGIN } from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+import RegisterSuccess from '../pages/auth/RegisterSuccess';
+import AdminPanel from '../pages/AdminPanel';
 
 // ----------------------------------------------------------------------
 
@@ -40,8 +42,11 @@ export default function Router() {
         },
         { path: 'reset-password', element: <ResetPassword /> },
         { path: 'register', element: <Register /> },
+        { path: 'register-success', element: <RegisterSuccess /> },
         { path: 'reset-password/:token', element: <ResetPassword /> },
         { path: 'verify', element: <VerifyCode /> },
+        { path: 'email-verification', element: <EmailVerification /> },
+        { path: 'email-verification/:token', element: <EmailVerification /> },
       ],
     },
     // Main Routes
@@ -72,15 +77,14 @@ export default function Router() {
             { path: 'projects', element: <Projects /> },
             { path: 'project/:projectId/:pageId', element: <Project /> },
             { path: 'account', element: <Account /> },
+            { path: 'account/:tab', element: <Account /> },
+            { path: 'admin-panel/edit/user/:userId', element: <UserEdit /> },
+            { path: 'admin-panel/edit/customer/:customerId', element: <CustomerEdit /> },
             { path: 'resources', element: <Resources /> },
-            { path: 'project/new/', element: <ProjectEdit /> },
-            { path: 'project/dashboard/:projectId', element: <ProjectDashboard /> },
-            { path: 'project/edit/:projectId', element: <ProjectEdit /> },
-            { path: 'project/submittal/:projectId', element: <ProjectSubmittal /> },
-            { path: 'project/quote/:projectId', element: <ProjectQuote /> },
-            { path: 'unit/view/:projectId/', element: <UnitView /> },
             { path: 'unit/add/:projectId/', element: <UnitAdd /> },
             { path: 'unit/edit/:projectId/:unitId', element: <UnitEdit /> },
+            { path: 'admin-panel', element: <AdminPanel /> },
+            { path: 'admin-panel/:tab', element: <AdminPanel /> },
           ],
         },
       ],
@@ -94,22 +98,20 @@ const Login = Loadable(lazy(() => import('../pages/auth/Login')));
 const Register = Loadable(lazy(() => import('../pages/auth/Register')));
 const ResetPassword = Loadable(lazy(() => import('../pages/auth/ResetPassword')));
 const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
+const EmailVerification = Loadable(lazy(() => import('../pages/auth/EmailVerification')));
 // const NewPassword = Loadable(lazy(() => import('../pages/auth/NewPassword')));
 
 // Projects
 const Projects = Loadable(lazy(() => import('../pages/Projects')));
 const Project = Loadable(lazy(() => import('../pages/Project')));
-const ProjectDashboard = Loadable(lazy(() => import('../pages/ProjectDashboard')));
-const ProjectEdit = Loadable(lazy(() => import('../pages/ProjectEdit')));
-const ProjectSubmittal = Loadable(lazy(() => import('../pages/ProjectSubmittal')));
-const ProjectQuote = Loadable(lazy(() => import('../pages/ProjectQuote')));
 // Unit
-const UnitView = Loadable(lazy(() => import('../pages/UnitView')));
 const UnitAdd = Loadable(lazy(() => import('../pages/UnitAdd')));
 const UnitEdit = Loadable(lazy(() => import('../pages/UnitEdit')));
 // MyAccount
 const Account = Loadable(lazy(() => import('../pages/Account')));
+const UserEdit = Loadable(lazy(() => import('../pages/account/UserEdit')));
+const CustomerEdit = Loadable(lazy(() => import('../pages/account/CustomerEdit')));
 
 // Resource
-const Resources = Loadable(lazy(() => import('../pages/Recources')));
+const Resources = Loadable(lazy(() => import('../pages/Resources')));
 const Page404 = Loadable(lazy(() => import('../pages/Page404')));

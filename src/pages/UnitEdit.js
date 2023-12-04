@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import { Grid, Card, Divider, Container, Paper, Button, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_PROJECT } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+// redux
+import { useDispatch } from '../redux/store';
+import { getAllBaseData } from '../redux/slices/BaseReducer';
 // sections
-import { UnitInfo, Selection } from '../sections/unit-edit';
+import { UnitInfo, Selection } from '../sections/unit';
+import { ExportSelectionDialog } from '../sections/dialog';
 
 // ----------------------------------------------------------------------
 
@@ -44,18 +48,41 @@ const Item = styled(Paper)(({ theme }) => ({
 UnitEdit.prototype = {};
 
 export default function UnitEdit() {
+  const theme = useTheme();
   const { projectId, unitId } = useParams();
   const { state } = useLocation();
-  // eslint-disable-next-line no-unused-vars
-  console.log(state, unitId);
-  const theme = useTheme();
   const [currentStep, setCurrentStep] = useState(1);
+  const [openRPDialog, setOpenRPDialog] = useState(false);
+  let onSubmitRef = useRef < Function > null;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllBaseData());
+  }, [dispatch]);
+
+  const openDialog = useCallback(() => {
+    setOpenRPDialog(true);
+  }, []);
+
+  const closeDialog = useCallback(() => {
+    setOpenRPDialog(false);
+  }, []);
 
   const navigate = useNavigate();
-  // const isComplete = activeStep === STEPS.length;
 
-  const onClickDone = () => {
+  const onClickDone = useCallback(() => {
     navigate(PATH_PROJECT.project(projectId, 'unitlist'));
+  }, [navigate, projectId]);
+
+  const setFunction = (refCheckIsChagned) => {
+    onSubmitRef = refCheckIsChagned;
+  };
+
+  const handleMakeSelection = async () => {
+    if (onSubmitRef) {
+      await onSubmitRef();
+      setCurrentStep(2);
+    }
   };
 
   return (
@@ -65,14 +92,29 @@ export default function UnitEdit() {
           <HeaderBreadcrumbs
             heading={'Edit Unit'}
             links={[
-              { name: 'My projects', href: PATH_PROJECT.root },
+              { name: 'My projects', href: PATH_PROJECTS.root },
               { name: 'Dashboard', href: PATH_PROJECT.project(projectId, 'unitlist') },
               { name: 'Edit Unit' },
             ]}
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
+            action={
+              (currentStep === 1 || currentStep === 2) && (
+                <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
+                  Export report
+                </Button>
+              )
+            }
           />
-          {currentStep === 1 && <UnitInfo projectId={projectId} unitId={unitId} unitData={state} />}
-          {currentStep === 2 && <Selection unitTypeData={state} intUnitNo={unitId} />}
+          {currentStep === 1 && (
+            <UnitInfo
+              projectId={Number(projectId)}
+              unitId={Number(unitId)}
+              unitTypeData={state}
+              setFunction={setFunction}
+              edit
+            />
+          )}
+          {currentStep === 2 && <Selection unitTypeData={state} intUnitNo={Number(unitId)} />}
         </Container>
         <FooterStepStyle>
           <Grid container>
@@ -90,12 +132,12 @@ export default function UnitEdit() {
                 >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-two-fill" width="25px" height="25px" />
-                    <Typography variant="body1">Add unit info</Typography>
+                    <Typography variant="body1">Edit unit info</Typography>
                   </Stack>
                 </Item>
                 <Item
                   sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(2)}
+                  onClick={handleMakeSelection}
                 >
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
@@ -105,13 +147,23 @@ export default function UnitEdit() {
               </Stack>
             </Grid>
             <Grid item xs={4} textAlign="center" alignContent="right">
-              <Button variant="contained" color="primary" onClick={onClickDone}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onClickDone}
+                endIcon={<Iconify icon="icons8:cancel-2" />}
+              >
                 Done
-                <Iconify icon="icons8:cancel-2" />
               </Button>
             </Grid>
           </Grid>
         </FooterStepStyle>
+        <ExportSelectionDialog
+          isOpen={openRPDialog}
+          onClose={closeDialog}
+          intProjectID={projectId.toString()}
+          intUnitNo={unitId.toString()}
+        />
       </RootStyle>
     </Page>
   );

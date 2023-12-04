@@ -12,6 +12,8 @@ const initialState = {
   isLoading: true,
   projectInfo: {},
   unitList: [],
+  ableToDownload: {},
+  projectNote: ""
 };
 
 const ProjectDashboardSlice = createSlice({
@@ -25,12 +27,19 @@ const ProjectDashboardSlice = createSlice({
       state.isLoading = false;
       state.projectInfo = action.payload.jobInfo[0];
       state.unitList = action.payload.unitList;
+      state.ableToDownload = action.payload.ableToDownload;
     },
     updateProjectInfo(state, action) {
       state.projectInfo = action.payload;
     },
-    setUnitInfo(state, action){
+    setUnitInfo(state, action) {
       state.unitList = action.payload;
+    },
+    getAbleToDownload(state, action) {
+      state.ableToDownload = action.payload;
+    },
+    setProjectNote(state, action) {
+      state.projectNote = action.payload;
     }
   },
 });
@@ -50,7 +59,6 @@ export function getProjectsAndUnitsInfo(data) {
   };
 }
 
-
 export function updateProjectInfo(data) {
   return async () => {
     await dispatch(ProjectDashboardSlice.actions.updateProjectInfo(data));
@@ -61,6 +69,43 @@ export const deleteUnits = async (data) => {
   const response = await axios.post(`${serverUrl}/api/units/Delete`, data);
   dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
   return response.data;
+};
+
+export const getAbleToDownload = async (data) => {
+  const response = await axios.post(`${serverUrl}/api/job/abletodownload`, data);
+  dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
+  return response.data;
+};
+
+export function duplicateUnit(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/duplicateInfo`, data);
+    dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
+    return response.data;
+  };
+}
+
+export function multiDuplicateUnits(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/multiduplicate`, data);
+    dispatch(ProjectDashboardSlice.actions.setUnitInfo(response.data));
+    return response.data;
+  }
+}
+
+export function saveNotes(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/saveNotes`, data);
+    return response.data;
+  }
+}
+
+export function getProjectNote(data) {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/units/getNotes`, data);
+    dispatch(ProjectDashboardSlice.actions.setProjectNote(response.data));
+    return response.data;
+  }
 }
 
 // ----------------------------------------------------------------------

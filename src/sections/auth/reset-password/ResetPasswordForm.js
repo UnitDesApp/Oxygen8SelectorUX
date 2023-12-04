@@ -53,12 +53,12 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(`${serverUrl}/api/user/saveresetpassword`, data);
+      const response = await axios.post(`${serverUrl}/api/user/SaveResetpassword`, data);
 
       if (response.data) {
         const now = new Date();
         const jwt = sign({ email: data.email, expireTime: now.getTime() + 900000 }, 'secret');
-        const emailBody = `https://oxygen8selector.netlify.app/auth/reset-password/${jwt}`;
+        const emailBody = `https://oxygen8selectorv08nike.netlify.app/auth/reset-password/${jwt}`;
         axios.post(`${serverUrl}/api/auth/sendrequest`, {
           email: data.email,
           subject: 'Oxygent8Selctor Reset Password',

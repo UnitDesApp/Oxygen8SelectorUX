@@ -1,11 +1,10 @@
-import * as React from 'react';
-
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Stack, IconButton, InputAdornment, TextField, Menu, MenuItem, Button, Paper, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
 // components
 import Iconify from '../../components/Iconify';
+import useAuth from '../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -27,14 +26,20 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function ProjectTableToolbar({ filterName, onFilterName, onFilterRole, optionsRole, onOpneDialog }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { user } = useAuth();
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  
+  const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClose = (event) => {
-    onFilterRole(event);
-    setAnchorEl(null);
-  };
+  }, []);
+
+  const handleClose = useCallback(
+    (event) => {
+      onFilterRole(event);
+      setAnchorEl(null);
+    },
+    [onFilterRole]
+  );
 
   return (
     <Stack
@@ -64,7 +69,7 @@ export default function ProjectTableToolbar({ filterName, onFilterName, onFilter
         >
           {optionsRole.map((option, key) => (
             <MenuItem
-              key={option}
+              key={key}
               value={option}
               sx={{
                 mx: 1,
@@ -97,7 +102,12 @@ export default function ProjectTableToolbar({ filterName, onFilterName, onFilter
         />
       </Item>
       <Item sx={{ width: { md: '20%', xs: '100%' } }}>
-        <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />} onClick={onOpneDialog}>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon={'eva:plus-fill'} />}
+          onClick={onOpneDialog}
+          disabled={!Number(user?.verified)}
+        >
           Create New Project
         </Button>
       </Item>

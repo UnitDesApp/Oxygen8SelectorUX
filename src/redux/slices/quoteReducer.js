@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-// utils
-// import axios from '../../utils/axios';
 // store
 import { dispatch } from '../store';
 // utils
@@ -12,6 +10,7 @@ import { serverUrl } from '../../config';
 
 const initialState = {
   isLoading: true,
+  isEdit: false,
   quoteFormInfo: {},
   quoteControlInfo: {},
   gvPricingGeneral: {},
@@ -37,13 +36,13 @@ const QuoteSlice = createSlice({
         pricingTotal,
       } = action.payload;
 
-      state.gvPricingGeneral = action.payload.pricingGeneral;
-      state.gvPricingUnits = action.payload.pricingUnits;
-      state.gvPricingMisc = action.payload.pricingMisc;
-      state.gvPricingShipping = action.payload.pricingShipping;
-      state.gvMisc = action.payload.gvMisc;
-      state.gvNotes = action.payload.gvNotes;
-      state.gvPricingTotal = pricingTotal;
+      state.gvPricingGeneral = action.payload?.pricingGeneral || {};
+      state.gvPricingUnits = action.payload?.pricingUnits || {};
+      state.gvPricingMisc = action.payload?.pricingMisc || {};
+      state.gvPricingShipping = action.payload?.pricingShipping || {};
+      state.gvMisc = action.payload?.gvMisc || {};
+      state.gvNotes = action.payload?.gvNotes || {};
+      state.gvPricingTotal = pricingTotal || {};
 
       const isEdit = controlInfo.isSaved;
       state.quoteFormInfo = {
@@ -57,12 +56,12 @@ const QuoteSlice = createSlice({
         txbCurrencyRate: isEdit ? controlInfo.txbCurrencyRate : '0',
         txbShippingFactor: isEdit ? controlInfo.txbShippingFactor : '0',
         txbDiscountFactor: isEdit ? controlInfo.txbDiscountFactor : '0',
-        txbPriceAllUnits: isEdit ? controlInfo.txbPriceAllUnits : pricingTotal.txbPriceAllUnits,
-        txbPriceMisc: isEdit ? controlInfo.txbPriceMisc : pricingTotal.txbPriceMisc,
-        txbPriceShipping: isEdit ? controlInfo.txbPriceShipping : pricingTotal.txbPriceShipping,
-        txbPriceSubtotal: isEdit ? controlInfo.txbPriceSubtotal : pricingTotal.txbPriceSubtotal,
-        txbPriceDiscount: isEdit ? controlInfo.txbPriceDiscount : pricingTotal.txbPriceDiscount,
-        txbPriceFinalTotal: isEdit ? controlInfo.txbPriceFinalTotal : pricingTotal.txbPriceFinalTotal,
+        txbPriceAllUnits: isEdit ? controlInfo.txbPriceAllUnits : pricingTotal?.txbPriceAllUnits || '0',
+        txbPriceMisc: isEdit ? controlInfo.txbPriceMisc : pricingTotal?.txbPriceMisc || '0',
+        txbPriceShipping: isEdit ? controlInfo.txbPriceShipping : pricingTotal?.txbPriceShipping || '0',
+        txbPriceSubtotal: isEdit ? controlInfo.txbPriceSubtotal : pricingTotal?.txbPriceSubtotal || '0',
+        txbPriceDiscount: isEdit ? controlInfo.txbPriceDiscount : pricingTotal?.txbPriceDiscount || '0',
+        txbPriceFinalTotal: isEdit ? controlInfo.txbPriceFinalTotal : pricingTotal?.txbPriceFinalTotal || '0',
         ddlQuoteStageVal: isEdit ? controlInfo.ddlQuoteStageVal : '1',
         ddlFOB_PointVal: isEdit ? controlInfo.ddlFOB_PointVal : '1',
         ddlCountryVal: isEdit ? controlInfo.ddlCountryVal : '2',
@@ -88,6 +87,7 @@ const QuoteSlice = createSlice({
 
 
       state.isLoading = false;
+      state.isEdit = isEdit;
     },
     updateQuoteInfo(state, action) {
       const { quoteFormInfo, updatedInfo } = action.payload;
@@ -148,9 +148,8 @@ export default QuoteSlice.reducer;
 export function getQuoteInfo(data) {
   return async () => {
     dispatch(QuoteSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/Quote/get`, data);
-    console.log(response.data);
-    if (response.data.status === "success") dispatch(QuoteSlice.actions.setQuoteInfo(response.data));
+    const response = await axios.post(`${serverUrl}/api/quote/get`, data);
+    dispatch(QuoteSlice.actions.setQuoteInfo(response.data));
     return response.data.status;
   };
 }
@@ -158,7 +157,6 @@ export function getQuoteInfo(data) {
 export function saveQuoteInfo(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/Quote/save`, data);
-    console.log(response.data);
     if (response.data.status === "success") dispatch(QuoteSlice.actions.updateQuoteInfo({quoteFormInfo: data, updatedInfo: response.data}));
     return response.data.status;
   }
@@ -168,7 +166,6 @@ export function saveQuoteInfo(data) {
 export function addNewMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/addMisc`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
@@ -176,7 +173,6 @@ export function addNewMisc(data) {
 export function updateMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/updateMisc`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
@@ -184,7 +180,6 @@ export function updateMisc(data) {
 export function deleteMisc(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/deleteMisc`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedMisc(response.data));
   }
 }
@@ -192,7 +187,6 @@ export function deleteMisc(data) {
 export function addNewNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/addNotes`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }
@@ -200,7 +194,6 @@ export function addNewNotes(data) {
 export function updateNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/updateNotes`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }
@@ -209,7 +202,6 @@ export function updateNotes(data) {
 export function deleteNotes(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/quote/deleteNotes`, data);
-    console.log(response.data);
     dispatch(QuoteSlice.actions.updatedNotes(response.data));
   }
 }

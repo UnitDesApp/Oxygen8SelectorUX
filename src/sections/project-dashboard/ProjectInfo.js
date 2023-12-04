@@ -1,11 +1,10 @@
+import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-
 // @mui
 import { styled } from '@mui/material/styles';
 import { Card, Stack, Button, CardHeader, Typography, CardContent, Divider } from '@mui/material';
 import { PATH_PROJECT } from '../../routes/paths';
-
 // components
 import Iconify from '../../components/Iconify';
 
@@ -30,7 +29,6 @@ const LabelInfoOutdoorAir = {
   winter_outdoor_air_db: 'Winter Outdoor Air DB',
   winter_outdoor_air_wb: 'Winter Outdoor Air WB',
   winter_outdoor_air_rh: 'Winter Outdoor Air RH',
-
 };
 
 const LabelInfoIndoorAir = {
@@ -54,9 +52,9 @@ ProjectInfo.propTypes = {
 export default function ProjectInfo({ projectInfo }) {
   const navigate = useNavigate();
 
-  const handleEditProjectInfo = () => {
+  const handleEditProjectInfo = useCallback(() => {
     navigate(PATH_PROJECT.projectEdit(projectInfo.id));
-  };
+  }, [navigate, projectInfo.id]);
 
   return (
     <Card sx={{ mb: 3 }}>

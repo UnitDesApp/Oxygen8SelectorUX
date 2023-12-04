@@ -1,9 +1,8 @@
 import * as Yup from 'yup';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   // useNavigate,
   useParams,
-  useLocation,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -40,6 +39,7 @@ import Iconify from '../../components/Iconify';
 import axios from '../../utils/axios';
 // config
 import { serverUrl } from '../../config';
+import useAuth from '../../hooks/useAuth';
 // theme
 
 //------------------------------------------------
@@ -57,25 +57,19 @@ ProjectDetail.propTypes = {
 };
 
 export default function ProjectDetail({ projectInfo }) {
-  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projectId } = useParams();
-  const { state } = useLocation();
+  const { user } = useAuth();
   const { projectInitInfo, isLoading } = useSelector((state) => state.projects);
+  const [shouldRunEffect, setShouldRunEffect] = useState(false);
 
   useEffect(() => {
     dispatch(getProjectsInfo());
   }, [dispatch]);
 
-  const { baseOfDesign, UoM, country, applications, designCondition, companyInfo, weatherData, provState, usersInfo } =
-    projectInitInfo;
+  const { baseOfDesign, UoM, applications, designCondition, companyInfo, weatherData, usersInfo } = projectInitInfo;
 
-  const [expanded, setExpanded] = React.useState({ panel1: true, panel2: false });
-  const [provStateInfo, setProvStateInfo] = useState([]);
-  const [cityInfo, setCityInfo] = useState([]);
-  const [companyNameId, setCompanyNameId] = useState(
-    state !== null ? state.companyNameId : !isLoading && projectInfo.company_name_id
-  );
+  const [expanded, setExpanded] = React.useState({ panel1: true, panel2: true });
 
   const [openSuccess, setOpenSuccess] = useState(false);
   const handleCloseSuccess = (event, reason) => {
@@ -93,7 +87,6 @@ export default function ProjectDetail({ projectInfo }) {
     setOpenFail(false);
   };
 
-  console.log(projectInfo, projectInitInfo, isLoading);
   const projectInfoSchema = Yup.object().shape({
     jobName: Yup.string().required('Please enter a Project Name'),
     basisOfDesign: Yup.string().required('Please enter a Basis Of Design'),
@@ -111,7 +104,7 @@ export default function ProjectDetail({ projectInfo }) {
     state: Yup.string().required('Please select a Province / State'),
     city: Yup.string().required('Please select a City'),
     ashareDesignConditions: Yup.string().required('Please enter an ASHARE Design Conditions'),
-    alltitude: Yup.string(),
+    altitude: Yup.string(),
     summer_air_db: Yup.string(),
     summer_air_wb: Yup.string(),
     summer_air_rh: Yup.string(),
@@ -136,9 +129,9 @@ export default function ProjectDetail({ projectInfo }) {
       createdDate: !isLoading ? projectInfo.created_date : '',
       revisedDate: !isLoading ? projectInfo.revised_date : '',
       companyName: !isLoading ? projectInfo.company_name : '',
-      companyNameId: !isLoading ? projectInfo.company_name_id : '',
+      companyNameId: !isLoading ? Number(projectInfo?.company_name_id || 0) : '',
       contactName: !isLoading ? projectInfo.contact_name : '',
-      contactNameId: !isLoading ? projectInfo.contact_name_id : '',
+      contactNameId: !isLoading ? Number(projectInfo?.company_contact_name_id || 0) : '',
       application: !isLoading ? projectInfo.application_id : '',
       uom: !isLoading ? projectInfo.uom_id : '',
       country: !isLoading ? projectInfo.country : '',
@@ -173,26 +166,210 @@ export default function ProjectDetail({ projectInfo }) {
     getValues,
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
 
+  const formState = watch();
+
   useEffect(() => {
-    if (!isLoading) {
-      const provStateInfoTemp = provState.filter((item) => item.country === defaultValues.country);
-      const cityInfoTemp = weatherData.filter(
-        (item) => item.country === defaultValues.country && item.prov_state === defaultValues.state
-      );
-      setProvStateInfo(provStateInfoTemp);
-      setCityInfo(cityInfoTemp);
+    if (!formState.country || !formState.city || !formState.ashareDesignConditions || !shouldRunEffect) return;
+    axios
+      .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+        action: 'GET_ALL_DATA',
+        country: formState.country,
+        cityId: formState.city,
+        designCondition: formState.ashareDesignConditions,
+      })
+      .then((response) => {
+        const { data } = response;
+        setValue('altitude', data.altitude);
+        setValue('summer_air_db', data.summerOutdoorAirDB);
+        setValue('summer_air_wb', data.summerOutdoorAirWB);
+        setValue('summer_air_rh', data.summerOutdoorAirRH);
+        setValue('winter_air_db', data.winterOutdoorAirDB);
+        setValue('winter_air_wb', data.winterOutdoorAirWB);
+        setValue('winter_air_rh', data.winterOutdoorAirRH);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setValue, formState.country, formState.city, formState.ashareDesignConditions]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShouldRunEffect(true);
+    }, 1000);
+  }, []);
+
+  const get_RH_By_DBWB = useCallback(
+    (first, second, setValueId) => {
+      if (first === '' || second === '') return;
+      axios
+        .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+          action: 'GET_RH_BY_DB_WB',
+          first,
+          second,
+          altitude: formState.altitude,
+        })
+        .then((response) => {
+          setValue(setValueId, response.data);
+        });
+    },
+    [setValue, formState.altitude]
+  );
+
+  // get WB value from server
+  const get_WB_By_DBRH = useCallback(
+    (first, second, setValueId) => {
+      if (first === '' || second === '') return;
+      axios
+        .post(`${serverUrl}/api/job/getoutdoorinfo`, {
+          action: 'GET_WB_BY_DB_HR',
+          first,
+          second,
+          altitude: formState.altitude,
+        })
+        .then((response) => {
+          setValue(setValueId, response.data);
+        });
+    },
+    [setValue, formState.altitude]
+  );
+
+  const handleChangeSummerOutdoorAirDBChanged = useCallback(
+    (e) => {
+      setValue('summer_air_db', e.target.value);
+      get_RH_By_DBWB(formState.summer_air_db, formState.summer_air_wb, 'summer_air_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.summer_air_db, formState.summer_air_wb]
+  );
+
+  // Summer Outdoor Air WB
+  const handleChangeSummerOutdoorAirWBChanged = useCallback(
+    (e) => {
+      setValue('summer_air_wb', e.target.value);
+      get_RH_By_DBWB(formState.summer_air_db, formState.summer_air_wb, 'summer_air_rh');
+    },
+    [get_RH_By_DBWB, formState.summer_air_db, formState.summer_air_wb, setValue]
+  );
+
+  // Summer Outdoor Air RH
+  const handleChangeSummerOutdoorAirRHChanged = useCallback(
+    (e) => {
+      setValue('summer_air_rh', e.target.value);
+      get_WB_By_DBRH(formState.summer_air_db, formState.summer_air_rh, 'summer_air_wb');
+    },
+    [get_WB_By_DBRH, setValue, formState.summer_air_db, formState.summer_air_rh]
+  );
+
+  // Winter Outdoor Air DB
+  const handleChangeWinterOutdoorAirDBChanged = useCallback(
+    (e) => {
+      setValue('winter_air_db', e.target.value);
+      get_RH_By_DBWB(formState.winter_air_db, formState.winter_air_wb, 'winter_air_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.winter_air_db, formState.winter_air_wb]
+  );
+
+  // Winter Outdoor Air WB
+  const handleChangeWinterOutdoorAirWBChanged = useCallback(
+    (e) => {
+      setValue('winter_air_wb', e.target.value);
+      get_RH_By_DBWB(formState.winter_air_db, formState.winter_air_wb, 'winter_air_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.winter_air_db, formState.winter_air_wb]
+  );
+
+  // Winter Outdoor Air RH
+  const handleChangeWinterOutdoorAirRHChanged = useCallback(
+    (e) => {
+      setValue('winter_air_rh', e.target.value);
+      get_WB_By_DBRH(formState.winter_air_db, formState.winter_air_rh, 'winter_air_wb');
+    },
+    [get_WB_By_DBRH, setValue, formState.winter_air_db, formState.winter_air_rh]
+  );
+
+  // Summer Return Air DB
+  const handleChangeSummerReturnAirDBChanged = useCallback(
+    (e) => {
+      setValue('summer_return_db', e.target.value);
+      get_RH_By_DBWB(formState.summer_return_db, formState.summer_return_wb, 'summer_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.summer_return_db, formState.summer_return_wb]
+  );
+
+  // Summer Return Air WB
+  const handleChangeSummerReturnAirWBChanged = useCallback(
+    (e) => {
+      setValue('summer_return_wb', e.target.value);
+      get_RH_By_DBWB(formState.summer_return_db, formState.summer_return_wb, 'summer_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.summer_return_db, formState.summer_return_wb]
+  );
+
+  // Summer Return Air RH
+  const handleChangeSummerReturnAirRHChanged = useCallback(
+    (e) => {
+      setValue('summer_return_rh', e.target.value);
+      get_WB_By_DBRH(formState.summer_return_db, formState.summer_return_rh, 'summer_return_wb');
+    },
+    [get_WB_By_DBRH, setValue, formState.summer_return_db, formState.summer_return_rh]
+  );
+
+  // Winter Return Air DB
+  const handleChangeWinterReturnAirDBChanged = useCallback(
+    (e) => {
+      setValue('winter_return_db', e.target.value);
+      get_RH_By_DBWB(formState.winter_return_db, formState.winter_return_wb, 'winter_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.winter_return_db, formState.winter_return_wb]
+  );
+
+  // Winter Return Air WB
+  const handleChangeWinterReturnAirWBChanged = useCallback(
+    (e) => {
+      setValue('winter_return_wb', e.target.value);
+      get_RH_By_DBWB(formState.winter_return_db, formState.winter_return_wb, 'winter_return_rh');
+    },
+    [get_RH_By_DBWB, setValue, formState.winter_return_db, formState.winter_return_wb]
+  );
+
+  // Winter Return Air RH
+  const handleChangeWinterReturnAirRHChanged = useCallback(
+    (e) => {
+      setValue('winter_return_rh', e.target.value);
+      get_WB_By_DBRH(formState.winter_return_db, formState.winter_return_rh, 'winter_return_wb');
+    },
+    [get_WB_By_DBRH, setValue, formState.winter_return_db, formState.winter_return_rh]
+  );
+
+  const provStateInfo = useMemo(() => {
+    const data = weatherData
+      ?.filter((item) => item.country === (formState.country === 'CA' ? 'CAN' : formState.country))
+      .map((item) => item.prov_state);
+    if (data) {
+      const uniqueArray = [...new Set(data)];
+      setValue('state', uniqueArray && uniqueArray[0] ? uniqueArray[0] : []);
+      return uniqueArray;
     }
-  }, [country, provState, weatherData, defaultValues, isLoading]);
+    return [];
+  }, [weatherData, formState.country, setValue]);
+
+  const cityInfo = useMemo(() => {
+    const data = weatherData?.filter(
+      (item) =>
+        item.country === (formState.country === 'CA' ? 'CAN' : formState.country) && item.prov_state === formState.state
+    );
+    setValue('city', data && data[0] ? data[0].id : '');
+    return data;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weatherData, setValue, provStateInfo, formState.state]);
 
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
   // get all ourdoor infomation from server
-  const getAllOutdoorInfo = () => {
+  const getAllOutdoorInfo = useCallback(() => {
     axios
       .post(`${serverUrl}/api/project/getoutdoorinfo`, {
         action: 'GET_ALL_DATA',
@@ -210,188 +387,81 @@ export default function ProjectDetail({ projectInfo }) {
         setValue('winter_air_wb', data.winterOutdoorAirWB);
         setValue('winter_air_rh', data.winterOutdoorAirRH);
       });
-  };
-
-  // // get HR value from server
-  // const get_RH_By_DBWB = (first, second, setValueId) => {
-  //   if (first === '' || second === '') return;
-  //   axios
-  //     .post(`${serverUrl}/api/project/getoutdoorinfo`, {
-  //       action: 'GET_RH_BY_DB_WB',
-  //       first,
-  //       second,
-  //       altitude: getValues('altitude'),
-  //     })
-  //     .then((response) => {
-  //       setValue(setValueId, response.data);
-  //     });
-  // };
-
-  // // get WB value from server
-  // const get_WB_By_DBRH = (first, second, setValueId) => {
-  //   if (first === '' || second === '') return;
-  //   axios
-  //     .post(`${serverUrl}/api/project/getoutdoorinfo`, {
-  //       action: 'GET_WB_BY_DB_HR',
-  //       first,
-  //       second,
-  //       altitude: getValues('altitude'),
-  //     })
-  //     .then((response) => {
-  //       setValue(setValueId, response.data);
-  //     });
-  // };
+  }, [getValues, setValue]);
 
   // onChange handle for company Name
-  const handleChangeCompanyName = (e) => {
-    setValue('companyNameId', e.target.value);
-    setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
-    setCompanyNameId(e.target.value);
-  };
+  const handleChangeCompanyName = useCallback(
+    (e) => {
+      setValue('companyNameId', e.target.value);
+      setValue('companyName', e.nativeEvent.target[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
 
   // onChange handle for contactName
-  const handleChangeContactName = (e) => {
-    setValue('contactNameId', e.target.value);
-    setValue('contactName', e.nativeEvent.target[e.target.selectedIndex].text);
-  };
+  const handleChangeContactName = useCallback(
+    (e) => {
+      setValue('contactNameId', e.target.value);
+      setValue('contactName', e.nativeEvent.target[e.target.selectedIndex].text);
+    },
+    [setValue]
+  );
 
   // onChange handle for country
-  const handleChangeCountry = (e) => {
-    try {
+  const handleChangeCountry = useCallback(
+    (e) => {
       setValue('country', e.target.value);
-
-      const provStateInfoTemp = provState.filter((item) => item.country === e.target.value);
-      setProvStateInfo(provStateInfoTemp);
-      setValue('state', provStateInfoTemp[0].prov_state);
-
-      const cityInfoTemp = weatherData.filter(
-        (item) => item.prov_state === provStateInfoTemp[0].prov_state && item.country === e.target.value
-      );
-      setCityInfo(cityInfoTemp);
-      setValue('city', cityInfoTemp[0].id);
-
-      // getAllOutdoorInfo();
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    },
+    [setValue]
+  );
 
   // onChange handle for State
-  const handleChangeProvState = (e) => {
-    try {
+  const handleChangeProvState = useCallback(
+    (e) => {
       setValue('state', e.target.value);
-
-      const cityInfoTemp = weatherData.filter(
-        (item) => item.prov_state === e.target.value && item.country === getValues('country')
-      );
-      setCityInfo(cityInfoTemp);
-      setValue('city', cityInfoTemp[0].id);
-
-      // getAllOutdoorInfo();
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    },
+    [setValue]
+  );
 
   // onChange handle for city
-  const handleChangeCity = (e) => {
-    setValue('city', e.target.value);
-    // getAllOutdoorInfo();
-  };
+  const handleChangeCity = useCallback(
+    (e) => {
+      setValue('city', e.target.value);
+    },
+    [setValue]
+  );
 
   // Onchange handle for design condition
-  const handleChangeDesignCondition = (e) => {
-    setValue('ashareDesignConditions', e.target.value);
-    getAllOutdoorInfo();
-  };
-
-  // Summer Outdoor Air DB
-  const handleChangeSummerOutdoorAirDBChanged = (e) => {
-    setValue('summer_air_db', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
-  };
-  // Summer Outdoor Air WB
-  const handleChangeSummerOutdoorAirWBChanged = (e) => {
-    setValue('summer_air_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_air_db'), getValues('summer_air_wb'), 'summer_air_rh');
-  };
-  // Summer Outdoor Air RH
-  const handleChangeSummerOutdoorAirRHChanged = (e) => {
-    setValue('summer_air_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('summer_air_db'), getValues('summer_air_rh'), 'summer_air_wb');
-  };
-
-  // Winter Outdoor Air DB
-  const handleChangeWinterOutdoorAirDBChanged = (e) => {
-    setValue('winter_air_db', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
-  };
-
-  // Winter Outdoor Air WB
-  const handleChangeWinterOutdoorAirWBChanged = (e) => {
-    setValue('winter_air_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_air_db'), getValues('winter_air_wb'), 'winter_air_rh');
-  };
-
-  // Winter Outdoor Air RH
-  const handleChangeWinterOutdoorAirRHChanged = (e) => {
-    setValue('winter_air_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('winter_air_db'), getValues('winter_air_rh'), 'winter_air_wb');
-  };
-
-  // Summer Return Air DB
-  const handleChangeSummerReturnAirDBChanged = (e) => {
-    setValue('summer_return_db', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
-  };
-  // Summer Return Air WB
-  const handleChangeSummerReturnAirWBChanged = (e) => {
-    setValue('summer_return_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('summer_return_db'), getValues('summer_return_wb'), 'summer_return_rh');
-  };
-  // Summer Return Air RH
-  const handleChangeSummerReturnAirRHChanged = (e) => {
-    setValue('summer_return_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('summer_return_db'), getValues('summer_return_rh'), 'summer_return_wb');
-  };
-
-  // Winter Return Air DB
-  const handleChangeWinterReturnAirDBChanged = (e) => {
-    setValue('winter_return_db', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
-  };
-
-  // Winter Return Air WB
-  const handleChangeWinterReturnAirWBChanged = (e) => {
-    setValue('winter_return_wb', e.target.value);
-    // get_RH_By_DBWB(getValues('winter_return_db'), getValues('winter_return_wb'), 'winter_return_rh');
-  };
-
-  // Winter Return Air RH
-  const handleChangeWinterReturnAirRHChanged = (e) => {
-    setValue('winter_return_rh', e.target.value);
-    // get_WB_By_DBRH(getValues('winter_return_db'), getValues('winter_return_rh'), 'winter_return_wb');
-  };
+  const handleChangeDesignCondition = useCallback(
+    (e) => {
+      setValue('ashareDesignConditions', e.target.value);
+      getAllOutdoorInfo();
+    },
+    [getAllOutdoorInfo, setValue]
+  );
 
   // handle submit
-  const onProjectInfoSubmit = async (data) => {
-    try {
-      const newData = await dispatch(
-        updateProject({
-          ...data,
-          jobId: projectId,
-          createdUserId: projectInfo.created_user_id,
-          revisedUserId: localStorage.getItem('userId'),
-          applicationOther: '',
-        })
-      );
-      await dispatch(updateProjectInfo(newData));
-      setOpenSuccess(true);
-    } catch (error) {
-      setOpenFail(true);
-      console.error(error);
-    }
-  };
+  const onProjectInfoSubmit = useCallback(
+    async (data) => {
+      try {
+        const newData = await dispatch(
+          updateProject({
+            ...data,
+            jobId: projectId,
+            createdUserId: projectInfo.created_user_id,
+            revisedUserId: localStorage.getItem('userId'),
+            applicationOther: '',
+          })
+        );
+        await dispatch(updateProjectInfo(newData));
+        setOpenSuccess(true);
+      } catch (error) {
+        setOpenFail(true);
+        console.error(error);
+      }
+    },
+    [dispatch, projectId, projectInfo.created_user_id]
+  );
 
   return (
     <Page title="Project: Edit">
@@ -417,15 +487,32 @@ export default function ProjectDetail({ projectInfo }) {
                     <Grid container spacing={5}>
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFTextField size="small" name="jobName" label="Project Name" />
-                          <RHFSelect size="small" name="application" label="Applicaton" placeholder="">
+                          <RHFTextField
+                            size="small"
+                            name="jobName"
+                            label="Project Name"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFSelect
+                            size="small"
+                            name="application"
+                            label="Applicaton"
+                            disabled={!Number(user?.verified)}
+                            placeholder=""
+                          >
                             {applications.map((info, index) => (
                               <option key={index} value={info.id}>
                                 {info.items}
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFSelect size="small" name="basisOfDesign" label="Basis of Design" placeholder="">
+                          <RHFSelect
+                            size="small"
+                            name="basisOfDesign"
+                            label="Basis of Design"
+                            disabled={!Number(user?.verified)}
+                            placeholder=""
+                          >
                             {baseOfDesign.map((info, index) => (
                               <option key={index} value={info.id}>
                                 {info.items}
@@ -438,6 +525,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Company Name"
                             placeholder=""
                             onChange={handleChangeCompanyName}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
                             {companyInfo.map(
@@ -449,18 +537,20 @@ export default function ProjectDetail({ projectInfo }) {
                                 )
                             )}
                           </RHFSelect>
+                          {console.log(getValues("contactNameId"), localStorage.getItem('userId'))}
                           <RHFSelect
                             size="small"
                             name="contactNameId"
                             label="Contact Name"
                             placeholder=""
                             onChange={handleChangeContactName}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
                             {usersInfo.map(
                               (info, index) =>
                                 info.id.toString() !== localStorage.getItem('userId') &&
-                                info.customer_id.toString() === companyNameId && (
+                                info.customer_id.toString() === getValues("companyNameId").toString() && (
                                   <option key={index} value={info.id}>
                                     {`${info.first_name} ${info.last_name}`}
                                   </option>
@@ -471,7 +561,13 @@ export default function ProjectDetail({ projectInfo }) {
                       </Grid>
                       <Grid item xs={4} md={4}>
                         <Box sx={{ display: 'grid', rowGap: 1, columnGap: 1 }}>
-                          <RHFSelect size="small" name="uom" label="UoM" placeholder="">
+                          <RHFSelect
+                            size="small"
+                            name="uom"
+                            label="UoM"
+                            placeholder=""
+                            disabled={!Number(user?.verified)}
+                          >
                             <option value="" />
                             {UoM.map((info, index) => (
                               <option key={index} value={info.id}>
@@ -479,10 +575,30 @@ export default function ProjectDetail({ projectInfo }) {
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFTextField size="small" name="referenceNo" label="Reference no" />
-                          <RHFTextField size="small" name="revision" label="Revision no" />
-                          <RHFTextField size="small" name="createdDate" label="Date Created" />
-                          <RHFTextField size="small" name="revisedDate" label="Date Revised" />
+                          <RHFTextField
+                            size="small"
+                            name="referenceNo"
+                            label="Reference no"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFTextField
+                            size="small"
+                            name="revision"
+                            label="Revision no"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFTextField
+                            size="small"
+                            name="createdDate"
+                            label="Date Created"
+                            disabled={!Number(user?.verified)}
+                          />
+                          <RHFTextField
+                            size="small"
+                            name="revisedDate"
+                            label="Date Revised"
+                            disabled={!Number(user?.verified)}
+                          />
                         </Box>
                       </Grid>
                       <Grid item xs={4} md={4}>
@@ -493,9 +609,10 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Country"
                             placeholder=""
                             onChange={handleChangeCountry}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
-                            {country.map((info, index) => (
+                            {projectInitInfo?.country?.map((info, index) => (
                               <option key={index} value={info.value}>
                                 {info.items}
                               </option>
@@ -507,17 +624,25 @@ export default function ProjectDetail({ projectInfo }) {
                             label="Province / State"
                             placeholder=""
                             onChange={handleChangeProvState}
+                            disabled={!Number(user?.verified)}
                           >
                             <option value="" />
-                            {provStateInfo.map((info, index) => (
-                              <option key={index} value={info.prov_state}>
-                                {info.prov_state}
+                            {provStateInfo?.map((info, index) => (
+                              <option key={index} value={info}>
+                                {info}
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFSelect size="small" name="city" label="City" placeholder="" onChange={handleChangeCity}>
+                          <RHFSelect
+                            size="small"
+                            name="city"
+                            label="City"
+                            placeholder=""
+                            onChange={handleChangeCity}
+                            disabled={!Number(user?.verified)}
+                          >
                             <option value="" />
-                            {cityInfo.map((info, index) => (
+                            {cityInfo?.map((info, index) => (
                               <option key={index} value={info.id}>
                                 {info.station}
                               </option>
@@ -529,6 +654,7 @@ export default function ProjectDetail({ projectInfo }) {
                             label="ASHRAE Design Conditions"
                             placeholder=""
                             onChange={handleChangeDesignCondition}
+                            disabled={!Number(user?.verified)}
                           >
                             {designCondition.map((info, index) => (
                               <option key={index} value={info.id}>
@@ -536,7 +662,12 @@ export default function ProjectDetail({ projectInfo }) {
                               </option>
                             ))}
                           </RHFSelect>
-                          <RHFTextField size="small" name="altitude" label="Altitude" />
+                          <RHFTextField
+                            size="small"
+                            name="altitude"
+                            label="Altitude"
+                            disabled={!Number(user?.verified)}
+                          />
                         </Box>
                       </Grid>
                     </Grid>
@@ -561,37 +692,43 @@ export default function ProjectDetail({ projectInfo }) {
                             size="small"
                             name="summer_air_db"
                             label="Summer Outdoor Air DB (F)"
-                            onChange={handleChangeSummerOutdoorAirDBChanged}
+                            onBlur={handleChangeSummerOutdoorAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_air_wb"
                             label="Summer Outdoor Air WB (F)"
-                            onChange={handleChangeSummerOutdoorAirWBChanged}
+                            onBlur={handleChangeSummerOutdoorAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_air_rh"
                             label="Summer Outdoor Air RH (%)"
-                            onChange={handleChangeSummerOutdoorAirRHChanged}
+                            onBlur={handleChangeSummerOutdoorAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_air_db"
                             label="Winter Outdoor Air DB"
-                            onChange={handleChangeWinterOutdoorAirDBChanged}
+                            onBlur={handleChangeWinterOutdoorAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_air_wb"
                             label="Winter Outdoor Air WB"
-                            onChange={handleChangeWinterOutdoorAirWBChanged}
+                            onBlur={handleChangeWinterOutdoorAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_air_rh"
                             label="Winter Outdoor Air RH"
-                            onChange={handleChangeWinterOutdoorAirRHChanged}
+                            onBlur={handleChangeWinterOutdoorAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                         </Box>
                       </Grid>
@@ -601,56 +738,67 @@ export default function ProjectDetail({ projectInfo }) {
                             size="small"
                             name="summer_return_db"
                             label="Summer Return Air DB (F)"
-                            onChange={handleChangeSummerReturnAirDBChanged}
+                            onBlur={handleChangeSummerReturnAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_return_wb"
                             label="Summer Return Air WB (F)"
-                            onChange={handleChangeSummerReturnAirWBChanged}
+                            onBlur={handleChangeSummerReturnAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="summer_return_rh"
                             label="Summer Return Air RH (%)"
-                            onChange={handleChangeSummerReturnAirRHChanged}
+                            onBlur={handleChangeSummerReturnAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_return_db"
                             label="Winter Return Air DB"
-                            onChange={handleChangeWinterReturnAirDBChanged}
+                            onBlur={handleChangeWinterReturnAirDBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_return_wb"
                             label="Winter Return Air WB"
-                            onChange={handleChangeWinterReturnAirWBChanged}
+                            onBlur={handleChangeWinterReturnAirWBChanged}
+                            disabled={!Number(user?.verified)}
                           />
                           <RHFTextField
                             size="small"
                             name="winter_return_rh"
                             label="Winter Return Air RH"
-                            onChange={handleChangeWinterReturnAirRHChanged}
+                            onBlur={handleChangeWinterReturnAirRHChanged}
+                            disabled={!Number(user?.verified)}
                           />
                         </Box>
                       </Grid>
                     </Grid>
                   </AccordionDetails>
                 </Accordion>
-                <Stack sx={{ mb: '20px!important' }} direction="row" justifyContent="flex-end">
-                  <Box sx={{ width: '150px' }}>
-                    <LoadingButton
-                      type="submit"
-                      variant="contained"
-                      onClick={() => console.log(getValues())}
-                      loading={isSubmitting}
-                      sx={{ width: '150px' }}
-                    >
-                      Save
-                    </LoadingButton>
-                  </Box>
-                </Stack>
+                {Number(user?.verified) ? (
+                  <Stack sx={{ mb: '20px!important' }} direction="row" justifyContent="flex-end">
+                    <Box sx={{ width: '150px' }}>
+                      <LoadingButton
+                        type="submit"
+                        variant="contained"
+                        onClick={() => console.log(getValues())}
+                        loading={isSubmitting}
+                        sx={{ width: '150px' }}
+                        disabled={!Number(user?.verified)}
+                      >
+                        Save
+                      </LoadingButton>
+                    </Box>
+                  </Stack>
+                ) : (
+                  <></>
+                )}
               </Stack>
             )}
           </FormProvider>

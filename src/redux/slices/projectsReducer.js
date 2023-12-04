@@ -35,7 +35,7 @@ const ProjectsSlice = createSlice({
       state.projectInitInfo = action.payload;
     },
     addNewProject(state, action) {
-      state.projectList.push(action.payload);
+      state.projectList = action.payload;
     },
     setProjectsAndUnitsInfo(state, action) {
       state.isLoading = false;
@@ -81,11 +81,22 @@ export default ProjectsSlice.reducer;
 export function getProjectsInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/jobs/get`);
-    console.log(response.data);
+    // const response = JSON.stringify(await axios.post(`${serverUrl}/api/jobs/Get`));
+    const response = await axios.post(`${serverUrl}/api/jobs/Get`);
     dispatch(ProjectsSlice.actions.setProjectInfo(response.data));
   };
 };
+
+// export async function getProjectsInfo() {
+//   const response = await fetch(`${serverUrl}/api/jobs/Get`,
+//     {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(response),
+//     }
+//   );
+//   return response.json();
+// }
 
 export function getProjectsInitInfo() {
   return async () => {
@@ -98,8 +109,8 @@ export function getProjectsInitInfo() {
 export function addNewProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/add`, data);
-    dispatch(ProjectsSlice.actions.addNewProject(response.data[0]));
-    return response.data[0].id;
+    dispatch(ProjectsSlice.actions.addNewProject(response.data));
+    // return response.data[0].id;
   };
 }
 
@@ -114,6 +125,13 @@ export function updateProject(data) {
 export function deleteProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/delete`, data);
+    dispatch(ProjectsSlice.actions.updateProject(response.data));
+  };
+}
+
+export function duplicateProject(data)  {
+  return async () => {
+    const response = await axios.post(`${serverUrl}/api/job/duplicate`, data);
     dispatch(ProjectsSlice.actions.updateProject(response.data));
   };
 }

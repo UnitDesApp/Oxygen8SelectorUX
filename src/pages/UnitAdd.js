@@ -1,24 +1,21 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
-// file-saver
-import { saveAs } from 'file-saver';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import { Grid, Card, Divider, Container, Paper, Button, Stack, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 // routes
-import { PATH_PROJECT } from '../routes/paths';
+import { PATH_PROJECT, PATH_PROJECTS } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+// redux
+import { getAllBaseData } from '../redux/slices/BaseReducer';
+import { useDispatch } from '../redux/store';
 // sections
-import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit-add';
-// utils
-import axios from '../utils/axios';
-// config
-import { serverUrl } from '../config';
+import { SelectProductInfo, UnitInfo, Selection } from '../sections/unit';
+import { ExportSelectionDialog } from '../sections/dialog';
 
 // ----------------------------------------------------------------------
 
@@ -48,18 +45,16 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-// ----------------------------------------------------------------------
-
 const DEFAULT_UNIT_DATA = {
   intProductTypeID: -1,
   txbProductType: '',
+  intUnitTypeID: -1,
+  txbUnitType: '',
   intApplicationTypeID: -1,
   txbApplicationType: '',
 };
 
 const STEP_PAGE_NAME = ['Select product type', 'Info', 'Selection'];
-
-// ----------------------------------------------------------------------
 
 AddNewUnit.prototype = {};
 
@@ -71,14 +66,25 @@ export default function AddNewUnit() {
   const [isAddedNewUnit, setIsAddedNewUnit] = useState(false);
   const [unitTypeData, setUnitTypeData] = useState(DEFAULT_UNIT_DATA);
   const [intUnitNo, setIntUnitNo] = useState(0);
-  const [isSelectionDownloading, setIsSelectionDownloading] = useState(false);
+  const [openRPDialog, setOpenRPDialog] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllBaseData());
+  }, [dispatch]);
+
+  const closeDialog = useCallback(() => {
+    setOpenRPDialog(false);
+  }, []);
 
   const navigate = useNavigate();
-  // const isComplete = activeStep === STEPS.length;
-
   const onSelectAppliaionItem = (value, txb) => {
     setUnitTypeData({ ...unitTypeData, intApplicationTypeID: value, txbApplicationType: txb });
   };
+
+  const openDialog = useCallback(() => {
+    setOpenRPDialog(true);
+  }, []);
 
   const onSelectProductTypeItem = (value, txb) => {
     setUnitTypeData({ ...unitTypeData, intProductTypeID: value, txbProductType: txb });
@@ -95,44 +101,19 @@ export default function AddNewUnit() {
 
   const validateContinue = () => {
     if (currentStep === 0) {
-      console.log(unitTypeData);
-      if (unitTypeData.intProductTypeID !== -1 && unitTypeData.intUnitTypeID !== -1) return false;
-      return true;
+      if (
+        unitTypeData.intProductTypeID === -1 ||
+        unitTypeData.intUnitTypeID === -1 ||
+        unitTypeData.intApplicationTypeID === ''
+      )
+        return true;
+      return false;
     }
 
     if (currentStep === 1 && isAddedNewUnit) return false;
     if (currentStep === 2 && intUnitNo !== 0) return false;
 
     return true;
-  };
-
-  const downloadPDF = async () => {
-    const data = {
-      intProjectID: projectId,
-      intUnitNo,
-      intUAL: localStorage.getItem('UAL'),
-      intUserID: localStorage.getItem('userId'),
-    };
-    setIsSelectionDownloading(true);
-
-    await axios.post(`${serverUrl}/api/units/DownloadSelection`, data, { responseType: 'blob' }).then((response) => {
-      console.log(response);
-      // Get File Name
-      let filename = '';
-      const disposition = response.headers['content-disposition'];
-      if (disposition && disposition.indexOf('attachment') !== -1) {
-        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-        const matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) {
-          filename = matches[1].replace(/['"]/g, '');
-        }
-      }
-
-      // Save File
-      saveAs(response.data, `${filename}.pdf`);
-    });
-
-    setIsSelectionDownloading(false);
   };
 
   return (
@@ -142,31 +123,17 @@ export default function AddNewUnit() {
           <HeaderBreadcrumbs
             heading={`Add New: ${STEP_PAGE_NAME[currentStep]}`}
             links={[
-              { name: 'My project', href: PATH_PROJECT.project(projectId, 'unitlist') },
-              // { name: 'Selected Project', href: PATH_MY_JOBS.dashboard },
+              { name: 'My projects', href: PATH_PROJECTS.root },
+              { name: 'Dashboard', href: PATH_PROJECT.project(projectId, 'unitlist') },
               { name: 'Add New Unit' },
             ]}
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
             action={
-              <>
-                {currentStep === 1 && (
-                  <Button variant="text" startIcon={<Iconify icon="ic:outline-edit" />}>
-                    Edit project details
-                  </Button>
-                )}
-                {currentStep === 2 && (
-                  <Stack direction="row" spacing={5}>
-                    <LoadingButton
-                      loading={isSelectionDownloading}
-                      variant="text"
-                      onClick={downloadPDF}
-                      startIcon={<Iconify icon="mdi:download-outline" />}
-                    >
-                      Export selection
-                    </LoadingButton>
-                  </Stack>
-                )}
-              </>
+              currentStep === 2 && (
+                <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
+                  Export report
+                </Button>
+              )
             }
           />
 
@@ -179,6 +146,7 @@ export default function AddNewUnit() {
           )}
           {currentStep === 1 && (
             <UnitInfo
+              projectId={Number(projectId)}
               unitTypeData={unitTypeData}
               intProductTypeID={unitTypeData.intProductTypeID}
               isAddedNewUnit={isAddedNewUnit}
@@ -188,34 +156,25 @@ export default function AddNewUnit() {
               }}
             />
           )}
-          {currentStep === 2 && <Selection unitTypeData={unitTypeData} intUnitNo={intUnitNo} />}
+          {currentStep === 2 && <Selection unitTypeData={unitTypeData} intUnitNo={Number(intUnitNo)} />}
         </Container>
         <FooterStepStyle>
           <Grid container>
             <Grid item xs={8}>
               <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} spacing={2}>
-                <Item
-                  sx={{ color: currentStep === 0 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(0)}
-                >
+                <Item sx={{ color: currentStep === 0 && theme.palette.primary.main, cursor: 'pointer' }}>
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-one-fill" width="25px" height="25px" />
                     <Typography variant="body1">Select product type</Typography>
                   </Stack>
                 </Item>
-                <Item
-                  sx={{ color: currentStep === 1 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(1)}
-                >
+                <Item sx={{ color: currentStep === 1 && theme.palette.primary.main, cursor: 'pointer' }}>
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-two-fill" width="25px" height="25px" />
                     <Typography variant="body1">Add unit info</Typography>
                   </Stack>
                 </Item>
-                <Item
-                  sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}
-                  onClick={() => setCurrentStep(2)}
-                >
+                <Item sx={{ color: currentStep === 2 && theme.palette.primary.main, cursor: 'pointer' }}>
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Iconify icon="ph:number-circle-three-fill" width="25px" height="25px" />
                     <Typography variant="body1">Make a selection</Typography>
@@ -231,6 +190,12 @@ export default function AddNewUnit() {
             </Grid>
           </Grid>
         </FooterStepStyle>
+        <ExportSelectionDialog
+          isOpen={openRPDialog}
+          onClose={closeDialog}
+          intProjectID={projectId.toString()}
+          intUnitNo={intUnitNo.toString()}
+        />
       </RootStyle>
     </Page>
   );

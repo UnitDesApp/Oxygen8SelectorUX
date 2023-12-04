@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 // @mui
 // import { useTheme } from '@mui/material/styles';
 import { Checkbox, TableRow, TableCell, MenuItem, Divider } from '@mui/material';
@@ -15,36 +15,45 @@ UserTableRow.propTypes = {
   selected: PropTypes.bool,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
+  onDuplicate: PropTypes.func,
   onDeleteRow: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function UserTableRow({ row, selected, onEditRow, onDuplicate, onSelectRow, onDeleteRow }) {
   // const theme = useTheme();
 
   const { tag, qty, unit_type, unit_model, cfm } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = useCallback((event) => {
     setOpenMenuActions(event.currentTarget);
-  };
+  }, []);
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = useCallback(() => {
     setOpenMenuActions(null);
-  };
+  }, []);
 
   return (
     <TableRow hover sx={{ borderBottom: '1px solid #a7b1bc' }} selected={selected}>
       <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
-
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{tag}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{qty}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{unit_type}</TableCell>
-
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{unit_model}</TableCell>
-      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>{cfm}</TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {tag}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {qty}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {unit_type}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {unit_model}
+      </TableCell>
+      <TableCell align="left" sx={{ cursor: 'pointer' }} onClick={onEditRow}>
+        {cfm}
+      </TableCell>
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}
@@ -56,7 +65,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                 <Iconify icon={'fa-solid:pen'} />
                 Edit Unit
               </MenuItem>
-              <MenuItem sx={{ color: 'info.main' }}>
+              <MenuItem sx={{ color: 'info.main' }} onClick={onDuplicate}>
                 <Iconify icon={'codicon:copy'} />
                 Duplicate
               </MenuItem>

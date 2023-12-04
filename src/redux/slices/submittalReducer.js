@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-// utils
-// import axios from '../../utils/axios';
 // store
 import { dispatch } from '../store';
 // utils
@@ -75,7 +73,6 @@ export function getSubmittalInfo(data) {
   return async () => {
     dispatch(SubmittalSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/Submittals/getAllData`, data);
-    console.log(response.data);
     dispatch(SubmittalSlice.actions.getSubmittalInfo(response.data));
   };
 }
@@ -90,7 +87,6 @@ export function saveSubmittalInfo(data) {
 export function addNewNote(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/Submittals/noteadd`, data);
-    console.log(response.data);
     dispatch(SubmittalSlice.actions.addNewNote(response.data));
   }
 }
@@ -98,7 +94,6 @@ export function addNewNote(data) {
 export function addNewShippingNote(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/Submittals/shippingnoteadd`, data);
-    console.log(response.data);
     dispatch(SubmittalSlice.actions.addNewShippingNote(response.data));
   }
 }

@@ -11,7 +11,7 @@ export default function Loading() {
       direction="column"
     >
       <CircularProgress />
-      <p>Please wait for a moment...</p>
+      <p><i>Please wait for a moment...</i></p>
     </Stack>
   );
 }
