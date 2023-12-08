@@ -27,6 +27,6 @@ export default BaseSlice.reducer;
 export function getAllBaseData() {
   return async () => {
     const response = await axios.get(`${serverUrl}/api/Selection/GetAll`);
-    dispatch(BaseSlice.actions.setBaseInfo(response.data));
+    dispatch(BaseSlice.actions.setBaseInfo(JSON.parse(response.data)));
   };
 }
