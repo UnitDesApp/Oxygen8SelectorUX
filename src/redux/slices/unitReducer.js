@@ -58,29 +58,29 @@ const UnitSlice = createSlice({
       };
       state.isLoading = false;
     },
-    ddlLocationChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        orientationInfo: data.orientationInfo,
-        downshotInfo: data.downshotInfo,
-        unitModelInfo: data.unitModelInfo,
-        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
-        preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
-        bypassInfo: data.bypassInfo,
-        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
-      };
-      state.isLoading = false;
-    },
-    ddlOrientationChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        unitModelInfo: data.unitModelInfo,
-        bypassInfo: data.bypassInfo,
-        supplyAirOpeningInfo: data.others.supplyAirOpeningInfo,
-      };
-    },
+    // ddlLocationChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     orientationInfo: data.orientationInfo,
+    //     downshotInfo: data.downshotInfo,
+    //     unitModelInfo: data.unitModelInfo,
+    //     elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+    //     preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
+    //     bypassInfo: data.bypassInfo,
+    //     supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+    //   };
+    //   state.isLoading = false;
+    // },
+    // ddlOrientationChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     unitModelInfo: data.unitModelInfo,
+    //     bypassInfo: data.bypassInfo,
+    //     supplyAirOpeningInfo: data.others.supplyAirOpeningInfo,
+    //   };
+    // },
     txbSummerSupplyAirCFMChanged(state, actions) {
       const data = actions.payload;
       state.controlInfo = {
@@ -111,122 +111,122 @@ const UnitSlice = createSlice({
         exhaustAirESPInfo: actions.payload,
       };
     },
-    ddlUnitModelChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        unitVoltageInfo: data.unitVoltageInfo,
-        supplyAirESPInfo: data.supplyAirESPInfo,
-        exhaustAirESPInfo: data.exhaustAirESPInfo,
-        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
-        bypassInfo: data.bypassInfo,
-      };
-    },
-    ddlPreheatCompChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        preheatRequiredInfo: data.preheatRequiredInfo,
-        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
-        preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
-        valveAndActuatorInfo: data.valveAndActuatorInfo,
-        preheatCoilHandingInfo: data.preheatCoilHandingInfo,
-        valveTypeInfo: data.valveTypeInfo,
-        preheatSetpointInfo: data.preheatSetpointInfo,
-        setpointsInfo: data.setpointsInfo,
-        customInputsInfo: data.customInputsInfo,
-        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
-      };
+    // ddlUnitModelChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     unitVoltageInfo: data.unitVoltageInfo,
+    //     supplyAirESPInfo: data.supplyAirESPInfo,
+    //     exhaustAirESPInfo: data.exhaustAirESPInfo,
+    //     elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+    //     bypassInfo: data.bypassInfo,
+    //   };
+    // },
+    // ddlPreheatCompChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     preheatRequiredInfo: data.preheatRequiredInfo,
+    //     elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+    //     preheatElecHeaterInstallationInfo: data.preheatElecHeaterInstallationInfo,
+    //     valveAndActuatorInfo: data.valveAndActuatorInfo,
+    //     preheatCoilHandingInfo: data.preheatCoilHandingInfo,
+    //     valveTypeInfo: data.valveTypeInfo,
+    //     preheatSetpointInfo: data.preheatSetpointInfo,
+    //     setpointsInfo: data.setpointsInfo,
+    //     customInputsInfo: data.customInputsInfo,
+    //     heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+    //   };
 
-      state.unitInfo = {
-        ...state.unitInfo,
-        ...data.unitInfo,
-      };
-    },
-    ddlCoolingCompChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        heatPumpInfo: data.heatPumpInfo,
-        dehumidificationInfo: data.dehumidificationInfo,
-        reheatInfo: data.reheatInfo,
-        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
-        valveAndActuatorInfo: data.valveAndActuatorInfo,
-        coolingCoilHandingInfo: data.coolingCoilHandingInfo,
-        valveTypeInfo: data.valveTypeInfo,
-        //        setpointsInfo: data.setpointsInfo,
-        coolingSetpointInfo: data.coolingSetpointInfo,
-        heatingSetpointInfo: data.heatingSetpointInfo,
-        reheatSetpointInfo: data.reheatSetpointInfo,
-        customInputsInfo: data.customInputsInfo,
-        coolingFluidDesignCondInfo: data.coolingFluidDesignCondInfo,
-        dxCoilRefrigDesignCondInfo: data.dxCoilRefrigDesignCondInfo,
-        condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
-        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
-        remainingOpeningsInfo: data.remainingOpeningsInfo,
-      };
-    },
-    ddlHeatingCompChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
-        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
-        valveAndActuatorInfo: data.valveAndActuatorInfo,
-        heatingCoilHandingInfo: data.heatingCoilHandingInfo,
-        valveTypeInfo: data.valveTypeInfo,
-        heatingSetpointInfo: data.heatingSetpointInfo,
-        customInputsInfo: data.customInputsInfo,
-        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
-        supplyAirOpeningInfo: data.supplyAirOpeningInfo,
-        setpointsInfo: data.setpointsInfo,
-        // ddlHeatElecHeaterInstallationId: data.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId,
-        // divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
-        // divHeatingSetpointVisible: data.divHeatingSetpointVisible,
-        // divSetpointsVisible: data.divSetpointsVisible,
-        // ddlElecHeaterVoltageId: data.elecHeaterVoltageInfo.ddlElecHeaterVoltageId,
-      };
-    },
-    ckbHeatPumpChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
-        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
-        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
-        valveAndActuatorInfo: data.valveAndActuatorInfo,
-        reheatSetpointInfo: data.reheatSetpointInfo,
-        condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
-      };
-    },
-    ckbDehumidificationChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        reheatInfo: data.reheatInfo,
-        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
-      };
-    },
-    ddlReheatCompChanged(state, actions) {
-      const data = actions.payload;
-      state.controlInfo = {
-        ...state.controlInfo,
-        elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
-        heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
-        valveAndActuatorInfo: data.valveAndActuatorInfo,
-        heatingCoilHandingInfo: data.heatingCoilHandingInfo,
-        valveTypeInfo: data.valveTypeInfo,
-        reheatSetpointInfo: data.reheatSetpointInfo,
-        heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
-        condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
-      };
-    },
-    ddlUnitVoltageChanged(state, actions) {
-      state.controlInfo = {
-        ...state.controlInfo,
-        elecHeaterVoltageInfo: actions.payload,
-      };
-    },
+    //   state.unitInfo = {
+    //     ...state.unitInfo,
+    //     ...data.unitInfo,
+    //   };
+    // },
+    // ddlCoolingCompChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     heatPumpInfo: data.heatPumpInfo,
+    //     dehumidificationInfo: data.dehumidificationInfo,
+    //     reheatInfo: data.reheatInfo,
+    //     heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+    //     valveAndActuatorInfo: data.valveAndActuatorInfo,
+    //     coolingCoilHandingInfo: data.coolingCoilHandingInfo,
+    //     valveTypeInfo: data.valveTypeInfo,
+    //     //        setpointsInfo: data.setpointsInfo,
+    //     coolingSetpointInfo: data.coolingSetpointInfo,
+    //     heatingSetpointInfo: data.heatingSetpointInfo,
+    //     reheatSetpointInfo: data.reheatSetpointInfo,
+    //     customInputsInfo: data.customInputsInfo,
+    //     coolingFluidDesignCondInfo: data.coolingFluidDesignCondInfo,
+    //     dxCoilRefrigDesignCondInfo: data.dxCoilRefrigDesignCondInfo,
+    //     condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
+    //     supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+    //     remainingOpeningsInfo: data.remainingOpeningsInfo,
+    //   };
+    // },
+    // ddlHeatingCompChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+    //     heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+    //     valveAndActuatorInfo: data.valveAndActuatorInfo,
+    //     heatingCoilHandingInfo: data.heatingCoilHandingInfo,
+    //     valveTypeInfo: data.valveTypeInfo,
+    //     heatingSetpointInfo: data.heatingSetpointInfo,
+    //     customInputsInfo: data.customInputsInfo,
+    //     elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+    //     supplyAirOpeningInfo: data.supplyAirOpeningInfo,
+    //     setpointsInfo: data.setpointsInfo,
+    //     // ddlHeatElecHeaterInstallationId: data.heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationId,
+    //     // divHeatingFluidDesignConditionsVisible: data.divHeatingFluidDesignConditionsVisible,
+    //     // divHeatingSetpointVisible: data.divHeatingSetpointVisible,
+    //     // divSetpointsVisible: data.divSetpointsVisible,
+    //     // ddlElecHeaterVoltageId: data.elecHeaterVoltageInfo.ddlElecHeaterVoltageId,
+    //   };
+    // },
+    // ckbHeatPumpChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+    //     heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+    //     heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+    //     valveAndActuatorInfo: data.valveAndActuatorInfo,
+    //     reheatSetpointInfo: data.reheatSetpointInfo,
+    //     condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
+    //   };
+    // },
+    // ckbDehumidificationChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     reheatInfo: data.reheatInfo,
+    //     heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+    //   };
+    // },
+    // ddlReheatCompChanged(state, actions) {
+    //   const data = actions.payload;
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     elecHeaterVoltageInfo: data.elecHeaterVoltageInfo,
+    //     heatElecHeaterInstallationInfo: data.heatElecHeaterInstallationInfo,
+    //     valveAndActuatorInfo: data.valveAndActuatorInfo,
+    //     heatingCoilHandingInfo: data.heatingCoilHandingInfo,
+    //     valveTypeInfo: data.valveTypeInfo,
+    //     reheatSetpointInfo: data.reheatSetpointInfo,
+    //     heatingFluidDesignCondInfo: data.heatingFluidDesignCondInfo,
+    //     condCoilRefrigDesignCondInfo: data.condCoilRefrigDesignCondInfo,
+    //   };
+    // },
+    // ddlUnitVoltageChanged(state, actions) {
+    //   state.controlInfo = {
+    //     ...state.controlInfo,
+    //     elecHeaterVoltageInfo: actions.payload,
+    //   };
+    // },
     txbSummerOutdoorAirWBChanged(state, actions) {
       state.unitInfo = {
         ...state.unitInfo,
@@ -557,53 +557,6 @@ export function saveLayout(data) {
   };
 }
 
-// export function ddlLocationChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/LocationChanged`, data);
-//     dispatch(UnitSlice.actions.ddlLocationChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function ddlOrientationChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/OrientationChanged`, data);
-//     dispatch(UnitSlice.actions.ddlOrientationChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSummerSupplyAirCFMChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/SummerSupplyAirCFMChanged`, data);
-//     dispatch(UnitSlice.actions.txbSummerSupplyAirCFMChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSummerReturnAirCFMChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirCFMChanged`, data);
-//     dispatch(UnitSlice.actions.txbSummerReturnAirCFMChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSupplyAirESPChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/SupplyAirESPChanged`, data);
-//     dispatch(UnitSlice.actions.txbSupplyAirESPChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbExhaustAirESPChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ExhaustAirESPChanged`, data);
-//     dispatch(UnitSlice.actions.txbExhaustAirESPChanged(response.data));
-//     return response.data;
-//   };
-// }
 
 export function ddlUnitModelChanged(data) {
   return async () => {
@@ -612,126 +565,6 @@ export function ddlUnitModelChanged(data) {
     return response.data;
   };
 }
-
-// export function ddlUnitVoltageChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/UnitVoltageChanged`, data);
-//     dispatch(UnitSlice.actions.ddlUnitVoltageChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSummerOutdoorAirWBChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/SummerOutdoorAirWBChanged`, data);
-//     dispatch(UnitSlice.actions.txbSummerOutdoorAirWBChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSummerOutdoorAirRHChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api//units/SummerOutdoorAirRHChanged`, data);
-//     dispatch(UnitSlice.actions.txbSummerOutdoorAirRHChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbWinterOutdoorAirWBChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api//units/WinterOutdoorAirWBChanged`, data);
-//     dispatch(UnitSlice.actions.txbWinterOutdoorAirWBChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbWinterOutdoorAirRHChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/WinterOutdoorAirRHChanged`, data);
-//     dispatch(UnitSlice.actions.txbWinterOutdoorAirRHChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSummerReturnAirWBChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirWBChanged`, data);
-//     dispatch(UnitSlice.actions.txbSummerReturnAirWBChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbSummerReturnAirRHChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/SummerReturnAirRHChanged`, data);
-//     dispatch(UnitSlice.actions.txbSummerReturnAirRHChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbWinterReturnAirWBChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirWBChanged`, data);
-//     dispatch(UnitSlice.actions.txbWinterReturnAirWBChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function txbWinterReturnAirRHChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/WinterReturnAirRHChanged`, data);
-//     dispatch(UnitSlice.actions.txbWinterReturnAirRHChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function ddlPreheatCompChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ddlPreheatCompChanged`, data);
-//     dispatch(UnitSlice.actions.ddlPreheatCompChanged({ ...response.data, unitInfo: data }));
-//     return response.data;
-//   };
-// }
-
-// export function ddlCoolingCompChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ddlCoolingCompChanged`, data);
-//     dispatch(UnitSlice.actions.ddlCoolingCompChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function ckbHeatPumpChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ckbHeatPumpChanged`, data);
-//     dispatch(UnitSlice.actions.ckbHeatPumpChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function ckbDehumidificationChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ckbDehumidificationChanged`, data);
-//     dispatch(UnitSlice.actions.ckbDehumidificationChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function ddlHeatingCompChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ddlHeatingCompChanged`, data);
-//     dispatch(UnitSlice.actions.ddlHeatingCompChanged(response.data));
-//     return response.data;
-//   };
-// }
-
-// export function ddlReheatCompChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ddlReheatCompChanged`, data);
-//     dispatch(UnitSlice.actions.ddlReheatCompChanged(response.data));
-//     return response.data;
-//   };
-// }
 
 export function getViewSelectionInfo(data) {
   return async () => {
@@ -748,19 +581,5 @@ export function updateLayoutValues(data) {
   };
 }
 
-// export function ddlHandingChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ddlHandingChanged`, data);
-//     dispatch(UnitSlice.actions.ddlHandingChanged(response.data));
-//     return response.data;
-//   };
-// }
 
-// export function ddlSupplyAirOpeningChanged(data) {
-//   return async () => {
-//     const response = await axios.post(`${serverUrl}/api/units/ddlSupplyAirOpeningChanged`, data);
-//     dispatch(UnitSlice.actions.ddlSupplyAirOpeningChanged(response.data));
-//     return response.data;
-//   };
-// }
 // ----------------------------------------------------------------------

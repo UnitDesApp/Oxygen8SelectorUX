@@ -30,6 +30,8 @@ import { useForm } from 'react-hook-form';
 // redux
 import { useSelector, useDispatch } from '../../redux/store';
 import { getProjectsInfo, updateProject } from '../../redux/slices/projectsReducer';
+
+
 import { updateProjectInfo } from '../../redux/slices/projectDashboardReducer';
 // components
 import Page from '../../components/Page';

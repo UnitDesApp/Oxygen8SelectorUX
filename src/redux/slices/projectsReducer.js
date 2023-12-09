@@ -8,6 +8,7 @@ import axios from '../../utils/axios';
 // config
 import { serverUrl } from '../../config';
 
+
 // ----------------------------------------------------------------------
 
 const initialState = {
@@ -32,7 +33,7 @@ const ProjectsSlice = createSlice({
     },
     setProjectInitInfo(state, action) {
       state.isLoading = false;
-      state.projectInitInfo = action.payload;
+      state.projectInitInfo = action.payload.jobInitInfo;
     },
     addNewProject(state, action) {
       state.projectList = action.payload;
@@ -81,16 +82,26 @@ export default ProjectsSlice.reducer;
 export function getProjectsInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/jobs/Get`);
-    dispatch(ProjectsSlice.actions.setProjectInfo(response.data));
+    // const response = JSON.stringify(await axios.post(`${serverUrl}/api/jobs/Get`));
+    const response = await axios.get(`${serverUrl}/api/Jobs/Get`);
+    dispatch(ProjectsSlice.actions.setProjectInfo(JSON.parse(response.data)));
   };
 };
+
+
+// export function getProjectsInfo() {
+//   fetch('https://localhost:44324/api/Jobs/Get', { method: 'GET' })
+//     .then(response => response.json())
+//     .then(data => console.log(JSON.parse(data)) ) // Displays the firstName from the API response
+// }
+
+
 
 export function getProjectsInitInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/job/get`);
-    dispatch(ProjectsSlice.actions.setProjectInitInfo(response.data));
+    dispatch(ProjectsSlice.actions.setProjectInitInfo(JSON.parse(response.data)));
   };
 };
 

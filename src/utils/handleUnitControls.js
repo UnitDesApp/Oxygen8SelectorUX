@@ -1162,8 +1162,8 @@ export const getHeatPumpInfo = (intCoolingCompID) => {
     returnInfo.ckbHeatPumpVal = 0;
     returnInfo.divHeatPumpVisible = false;
   } else if (intCoolingCompID === ClsID.intCompDX_ID) {
+    returnInfo.ckbHeatPumpVal = 1;
     returnInfo.divHeatPumpVisible = true;
-    returnInfo.ckbHeatPumpChecked = 0;
   } else {
     returnInfo.ckbHeatPumpVal = 0;
     returnInfo.divHeatPumpVisible = false;
