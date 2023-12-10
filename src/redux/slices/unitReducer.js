@@ -569,7 +569,13 @@ export function ddlUnitModelChanged(data) {
 export function getViewSelectionInfo(data) {
   return async () => {
     dispatch(UnitSlice.actions.startLoading());
-    const response = await axios.post(`${serverUrl}/api/units/ViewSelection`, data);
+    const response = await axios.post(`${serverUrl}/api/units/ViewSelection`, data)
+      .catch(e => {
+        // setErrors([e])
+      })
+      .finally(() => {
+        // setLoading(false)
+      });
     await dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
     return response.data;
   };
