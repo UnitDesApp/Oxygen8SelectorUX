@@ -231,7 +231,7 @@ export default function MyProjects() {
             links={[{ name: 'Project Lists', href: PATH_PROJECTS.root }]}
             sx={{ mt: 5 }}
           />
-          
+
           <Card>
             <ProjectTableToolbar
               filterName={filterName}

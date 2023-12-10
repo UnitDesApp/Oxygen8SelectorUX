@@ -53,6 +53,8 @@ export default function NewProjectFormDialog({
     revisedDate,
   } = initialInfo;
 
+  console.log(initialInfo);
+
   const NewUserSchema = Yup.object().shape({
     jobName: Yup.string().required('Please enter a Project Name'),
     basisOfDesign: Yup.string().required('Please enter a Basis Of Design'),
@@ -426,7 +428,7 @@ export default function NewProjectFormDialog({
                   onChange={handleChangeContactName}
                 >
                   <option value="" />
-                  {usersInfo.map(
+                  {usersInfo?.map(
                     (info, index) =>
                       info.id.toString() !== localStorage.getItem('userId') &&
                       info.customer_id.toString() === companyNameId.toString() && (

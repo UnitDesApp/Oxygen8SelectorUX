@@ -8,7 +8,6 @@ import axios from '../../utils/axios';
 // config
 import { serverUrl } from '../../config';
 
-
 // ----------------------------------------------------------------------
 
 const initialState = {
@@ -82,20 +81,11 @@ export default ProjectsSlice.reducer;
 export function getProjectsInfo() {
   return async () => {
     dispatch(ProjectsSlice.actions.startLoading());
-    // const response = JSON.stringify(await axios.post(`${serverUrl}/api/jobs/Get`));
-    const response = await axios.get(`${serverUrl}/api/Jobs/Get`);
+    const response = await axios.post(`${serverUrl}/api/jobs/Get`);
+    console.log(response, response.data);
     dispatch(ProjectsSlice.actions.setProjectInfo(JSON.parse(response.data)));
   };
-};
-
-
-// export function getProjectsInfo() {
-//   fetch('https://localhost:44324/api/Jobs/Get', { method: 'GET' })
-//     .then(response => response.json())
-//     .then(data => console.log(JSON.parse(data)) ) // Displays the firstName from the API response
-// }
-
-
+}
 
 export function getProjectsInitInfo() {
   return async () => {
@@ -103,7 +93,7 @@ export function getProjectsInitInfo() {
     const response = await axios.post(`${serverUrl}/api/job/get`);
     dispatch(ProjectsSlice.actions.setProjectInitInfo(JSON.parse(response.data)));
   };
-};
+}
 
 export function addNewProject(data) {
   return async () => {
@@ -128,7 +118,7 @@ export function deleteProject(data) {
   };
 }
 
-export function duplicateProject(data)  {
+export function duplicateProject(data) {
   return async () => {
     const response = await axios.post(`${serverUrl}/api/job/duplicate`, data);
     dispatch(ProjectsSlice.actions.updateProject(response.data));
