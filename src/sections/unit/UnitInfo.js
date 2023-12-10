@@ -572,13 +572,13 @@ export default function UnitInfo({
     return unitVoltage;
   }, [data, intProductTypeID, strUnitModelValue, values.ddlUnitVoltageId, setValue]);
 
-  const QAFilterModel = useMemo(
+  const OAFilterModel = useMemo(
     () => data.filterModel?.filter((item) => item.outdoor_air === 1 || item.id === values.ddlOA_FilterModelId),
     [data, values]
   );
 
   const RAFilterModel = useMemo(
-    () => data.filterModel?.filter((item) => item.return_air === 1 || item.id === values.ddlOA_FilterModelId),
+    () => data.filterModel?.filter((item) => item.return_air === 1 || item.id === values.ddlRA_FilterModelId),
     [data, values]
   );
 
@@ -1056,14 +1056,14 @@ export default function UnitInfo({
                             checked={ckbVoltageSPPVal}
                             onChange={() => setCkbVoltageSPPVal(!ckbVoltageSPPVal)}
                           />
-                          {isAvailable(QAFilterModel) && (
+                          {isAvailable(OAFilterModel) && (
                             <RHFSelect
                               size="small"
                               name="ddlOA_FilterModelId"
-                              label="QA Filter"
+                              label="OA Filter"
                               onChange={(e) => setValue('ddlOA_FilterModelId', parseInt(e.target.value, 10))}
                             >
-                              {QAFilterModel?.map((item, index) => (
+                              {OAFilterModel?.map((item, index) => (
                                 <option key={index} value={item.id}>
                                   {item.items}
                                 </option>
