@@ -144,13 +144,13 @@ export default function UnitList() {
 
   const handleEditRow = useCallback(
     (row) => {
-      if (Number(user?.verified)) {
-        navigate(PATH_UNIT.edit(projectId, row.unit_no), {
-          state: { ...row, intUnitTypeID: row.unit_type_id, intProductTypeID: row.product_type_id },
-        });
-      } else {
-        handleOpenVerifyAlert();
-      }
+      // if (Number(user?.verified)) {
+      navigate(PATH_UNIT.edit(projectId, row.unit_no), {
+        state: { ...row, intUnitTypeID: row.unit_type_id, intProductTypeID: row.product_type_id },
+      });
+      // } else {
+      //   handleOpenVerifyAlert();
+      // }
     },
     [navigate, projectId, user?.verified]
   );
