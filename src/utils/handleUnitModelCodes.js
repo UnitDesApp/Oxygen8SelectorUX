@@ -65,9 +65,15 @@ export const getUnitModelCodes = (
     .replace('_VER', '')
     .replace('_IN', '')
     .replace('_OU', '');
-  let strUnitModelLocUnitTypeBypassValue = strUnitModelCodes.replace('_HOR', '').replace('_VER', '');
+  let strUnitModelLocUnitTypeBypassValue = strUnitModelCodes
+  .replace('_HOR', '')
+  .replace('_VER', '');
   let strUnitModelOriLocUnitTypeBypassValue = strUnitModelCodes;
+
   let strUnitModelValueNovaBypass = '';
+  // let strUnitModelLocValueNovaBypass = "";
+  // let strUnitModelOriLocValueNovaBypass = "";
+
   let strUnitModelValueNovaBypassAccCoupled = '';
   let strUnitModelValueNovaBypassAccElecCoil = '';
   let strUnitModelValueNovaBypassAccDecoupled = '';

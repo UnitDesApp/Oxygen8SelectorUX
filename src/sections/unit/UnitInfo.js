@@ -258,16 +258,20 @@ export default function UnitInfo({
 
     const unitModelValue = unitModel.filter((item) => item.id === values.ddlUnitModelId)?.[0]?.value;
 
-    // get unit model codes
-    return getUnitModelCodes(
-      unitModelValue,
-      intProductTypeID,
-      intUnitTypeID,
-      values.ddlLocationId,
-      values.ddlOrientationId,
-      Number(ckbBypassVal),
-      data
-    );
+    if (unitModelValue) { // always check for undefined by adding if 
+      // get unit model codes
+      return getUnitModelCodes(
+        unitModelValue,
+        intProductTypeID,
+        intUnitTypeID,
+        values.ddlLocationId,
+        values.ddlOrientationId,
+        Number(ckbBypassVal),
+        data
+      );
+    } 
+    
+    return "";
   }, [
     ckbBypassVal,
     data,
@@ -497,7 +501,7 @@ export default function UnitInfo({
     const filteredUnitModel = unitModel.filter((item) => item.id);
 
     // set unit model value based calculated value
-    if ( unitModel.length > 0 && filteredUnitModel.filter((item) => item.id === Number(values.ddlUnitModelId)).length === 0) {
+    if (unitModel.length > 0 && filteredUnitModel.filter((item) => item.id === Number(values.ddlUnitModelId)).length === 0) {
       setValue('ddlUnitModelId', filteredUnitModel?.[0]?.id);
     }
 
@@ -641,14 +645,14 @@ export default function UnitInfo({
   //   [values.ddlCoolingCompId],   
   // );
 
-  
+
   const heatPumpInfo = useMemo(() => {
     const result = getHeatPumpInfo(Number(values.ddlCoolingCompId));
 
-      setValue('ckbHeatPumpVal', result?.ckbHeatPumpVal);
-      ckbHeatPumpChanged()
+    setValue('ckbHeatPumpVal', result?.ckbHeatPumpVal);
+    ckbHeatPumpChanged()
     return result;
-  },[values.ddlCoolingCompId]);
+  }, [values.ddlCoolingCompId]);
 
 
   const dehumidificationInfo = useMemo(
@@ -889,9 +893,9 @@ export default function UnitInfo({
                             size="small"
                             name="txbQty"
                             label="Quantity"
-                            // onChange={(e) => {
-                            //   setValueWithCheck(e, 'txbQty');
-                            // }}
+                          // onChange={(e) => {
+                          //   setValueWithCheck(e, 'txbQty');
+                          // }}
                           />
                           {isAvailable(data.unitType) && (
                             <RHFSelect size="small" name="ddlUnitTypeId" label="Unit Type" placeholder="" disabled>
@@ -1141,7 +1145,7 @@ export default function UnitInfo({
                           </RHFSelect>
                         )}
                       </Stack>
-                      <Stack spacing={1} sx={{...getDisplay(values.ddlPreheatCompId === IDs.intCompElecHeaterID),}}>
+                      <Stack spacing={1} sx={{ ...getDisplay(values.ddlPreheatCompId === IDs.intCompElecHeaterID), }}>
                         {isAvailable(preheatElecHeaterInstallationInfo) && (
                           <RHFSelect
                             size="small"
@@ -1306,7 +1310,7 @@ export default function UnitInfo({
                           autoComplete="off"
                           sx={getDisplay(
                             Number(values.ddlCoolingCompId) === IDs.intCompCWC_ID ||
-                              Number(values.ddlCoolingCompId) === IDs.intCompDX_ID
+                            Number(values.ddlCoolingCompId) === IDs.intCompDX_ID
                           )}
                           onChange={(e) => {
                             setValueWithCheck(e, 'txbSummerCoolingSetpointWB');
@@ -1514,8 +1518,8 @@ export default function UnitInfo({
                           autoComplete="off"
                           sx={getDisplay(
                             Number(values.ddlHeatingCompId) === IDs.intCompElecHeaterID ||
-                              Number(values.ddlHeatingCompId) === IDs.intCompHWC_ID ||
-                              ckbHeatPumpVal
+                            Number(values.ddlHeatingCompId) === IDs.intCompHWC_ID ||
+                            ckbHeatPumpVal
                           )}
                           onChange={(e) => {
                             setValueWithCheck(e, 'txbWinterHeatingSetpointDB');
@@ -1730,7 +1734,7 @@ export default function UnitInfo({
                         )}
                       </Stack>
                       <Stack spacing={1} sx={{ ...getDisplay(values.ddlReheatCompId === IDs.intCompHWC_ID) }}>
-                      {isAvailable(data.fluidType) && (
+                        {isAvailable(data.fluidType) && (
                           <RHFSelect size="small" name="ddlHeatingFluidTypeId" label="Reheat Fluid Type">
                             {data.fluidType?.map((item, index) => (
                               <option key={index} value={item.id}>
@@ -1935,9 +1939,9 @@ export default function UnitInfo({
                           name="ddlValveTypeId"
                           sx={getDisplay(
                             values.ddlPreheatCompId === IDs.intCompHWC_ID ||
-                              values.ddlCoolingCompId === IDs.intCompHWC_ID ||
-                              values.ddlHeatingCompId === IDs.intCompHWC_ID ||
-                              values.ddlReheatCompId === IDs.intCompHWC_ID
+                            values.ddlCoolingCompId === IDs.intCompHWC_ID ||
+                            values.ddlHeatingCompId === IDs.intCompHWC_ID ||
+                            values.ddlReheatCompId === IDs.intCompHWC_ID
                           )}
                           label="Valve Type"
                         >
