@@ -103,17 +103,6 @@ export const getUnitModel = (
   ckbBypassVal,
   intUAL
 ) => {
-  console.log('------------------------ GetUnitModel  --------------------------');
-  console.log('intUnitTypeID', intUnitTypeID);
-  console.log('intProductTypeID', intProductTypeID);
-  console.log('unitModelId', unitModelId);
-  console.log('locationId', locationId);
-  console.log('orientationId', orientationId);
-  console.log('summerSupplyAirCFM', summerSupplyAirCFM);
-  console.log('ckbBypassVal', ckbBypassVal);
-  console.log('intUAL', intUAL);
-  console.log('data.novaUnitModelLocOriLink', data.novaUnitModelLocOriLink);
-  console.log('-----------------------------------------------------------------');
   let unitModel = [];
   if (locationId > -1 && orientationId > -1) {
     let unitModelLink;
@@ -305,7 +294,6 @@ export const getUnitModel = (
               items: item.model_erv,
             }));
           } else if (intUnitTypeID === ClsID.intUnitTypeHRV_ID) {
-            console.log(data.ventumPlusUnitModel);
             unitModel = unitModelFilter(
               data.ventumPlusUnitModel,
               summerSupplyAirCFM,
@@ -513,17 +501,6 @@ export const getSummerReturnAirCFM = (summerReturnAirCFM, values, intUAL, data) 
   let intSummerReturnAirCFM = Number(summerReturnAirCFM);
   const intUnitTypeID = Number(values.intUnitTypeID);
   const ckbBypass = Number(values.ckbBypassVal);
-
-  console.log('----------------------- GetSummerReturnAirCFM ------------------------');
-  console.log('intSummerReturnAirCFM ', intSummerReturnAirCFM);
-  console.log('intSummerSupplyAirCFM ', intSummerSupplyAirCFM);
-  console.log('intOrientationID ', intOrientationID);
-  console.log('intUnitModelID ', intUnitModelID);
-  console.log('intProductTypeID ', intProductTypeID);
-  console.log('intUAL', intUAL);
-  console.log('intUnitTypeID ', intUnitTypeID);
-  console.log('ckbBypass', ckbBypass);
-  console.log('----------------------------------------------------------------------');
 
   if (intOrientationID === ClsID.intOrientationHorizontalID && intSummerSupplyAirCFM > intNOVA_HORIZONTAL_MAX_CFM) {
     intSummerReturnAirCFM = intNOVA_HORIZONTAL_MAX_CFM;
@@ -862,8 +839,6 @@ export const getBypass = (data, intProductTypeID, intUnitModelID, intOrientation
 
 export const getUnitVoltage = (data, intProductTypeID, strUnitModelValue) => {
   let modelVoltageLink = [];
-
-  console.log(strUnitModelValue);
 
   switch (intProductTypeID) {
     case ClsID.intProdTypeNovaID:
@@ -1517,15 +1492,16 @@ export const getElecHeaterVoltageInfo = (
       );
       intSelectedValue = intUnitVoltageID;
       enabled = false;
-    } else if (intProductTypeID === ClsID.intProdTypeTerraID && ckbVoltageSPPVal)
-    {
+    } else if (intProductTypeID === ClsID.intProdTypeTerraID && ckbVoltageSPPVal) {
       dtElecHeaterVoltage = data.electricalVoltage.filter(
         (item) => item.terra_spp === 1 || item.id === intElecHeaterVoltageID
       );
       intSelectedValue = getDdlLockItem(dtElecHeaterVoltage, intUnitVoltageID);
       enabled = false;
-    } else if (intProductTypeID === ClsID.intProdTypeVentumPlusID && (ckbVoltageSPPVal || intPreheatCompID === ClsID.intCompAutoID))
-    {
+    } else if (
+      intProductTypeID === ClsID.intProdTypeVentumPlusID &&
+      (ckbVoltageSPPVal || intPreheatCompID === ClsID.intCompAutoID)
+    ) {
       dtElecHeaterVoltage = data.electricalVoltage.filter(
         (item) => item.ventumplus_elec_heater === 1 || item.id === intElecHeaterVoltageID
       );
@@ -1748,13 +1724,6 @@ export const getRemainingOpeningsInfo = (
 };
 
 export const getOrientation = (data, intProductTypeID, intUnitTypeID, intLocationID, intSummerSupplyAirCFM) => {
-  console.log('------------------------ GetOrientation ------------------------');
-  console.log('data', data);
-  console.log('intProductTypeID', intProductTypeID);
-  console.log('intUnitTypeID', intUnitTypeID);
-  console.log('intLocationID', intLocationID);
-  console.log('intSummerSupplyAirCFM', intSummerSupplyAirCFM);
-  console.log('-----------------------------------------------------------------');
   const dtLocOri = data?.locOriLink?.filter(
     (item) =>
       item.product_type_id === intProductTypeID &&
