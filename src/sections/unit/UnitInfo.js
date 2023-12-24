@@ -712,7 +712,6 @@ export default function UnitInfo({
 
   const handingInfo = useMemo(() => {
     const result = getHandingInfo(data);
-    if (!edit) setValue('ddlHandingId', result.ddlHandingId);
     return result;
   }, [edit, data, setValue]);
 
@@ -729,9 +728,6 @@ export default function UnitInfo({
       Number(values.ddlHeatingCompId),
       Number(values.ddlReheatCompId)
     );
-
-    setValue('ddlSupplyAirOpeningId', result?.ddlSupplyAirOpeningId);
-    setValue('ddlSupplyAirOpeningText', result?.ddlSupplyAirOpeningText);
     return result;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -748,7 +744,15 @@ export default function UnitInfo({
   ]);
 
   useEffect(() => {
-    if (!values.ddlOrientationId || !values.ddlSupplyAirOpeningText || !intProductTypeID) return;
+    if (!isLoading && !edit && supplyAirOpeningInfo) {
+      setValue('ddlHandingId', handingInfo.ddlHandingId);
+      setValue('ddlSupplyAirOpeningId', supplyAirOpeningInfo?.ddlSupplyAirOpeningId);
+      setValue('ddlSupplyAirOpeningText', supplyAirOpeningInfo?.ddlSupplyAirOpeningText);  
+    }
+  }, [isLoading, edit, supplyAirOpeningInfo, handingInfo]);
+
+  useEffect(() => {
+    if (!isLoading && !values.ddlOrientationId || !values.ddlSupplyAirOpeningText || !intProductTypeID) return;
 
     const result = getRemainingOpeningsInfo(
       data,
@@ -766,7 +770,7 @@ export default function UnitInfo({
     if (!edit) setValue('ddlReturnAirOpeningText', result?.ddlReturnAirOpeningText);
 
     setRemainingOpeningsInfo(result);
-  }, [edit, data, setValue, intProductTypeID, intUnitTypeID, values.ddlOrientationId, values.ddlSupplyAirOpeningText]);
+  }, [edit, data, setValue, intProductTypeID, intUnitTypeID, values.ddlOrientationId, values.ddlSupplyAirOpeningText, isLoading]);
 
   // onChange functions
   const handleBlurSummerSupplyAirCFM = useCallback(

@@ -100,7 +100,7 @@ export const useGetDefaultValue = (edit, unitInfo, data) => {
       txbExhaustAirESP: edit ? txbExhaustAirESPText : 0.75,
       ddlUnitModelId: edit ? unitModelID : 1,
       ddlUnitVoltageId: edit ? unitVoltageID : 1,
-      txbAltitude: txbAltitudeText || '',
+      txbAltitude: txbAltitudeText || 0,
       txbSummerOutdoorAirDB: txbSummerOutdoorAirDBText || '',
       txbSummerOutdoorAirWB: txbSummerOutdoorAirWBText || '',
       txbSummerOutdoorAirRH: txbSummerOutdoorAirRHText || '',
