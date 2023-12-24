@@ -102,8 +102,8 @@ export default function UnitInfo({
 }) {
   const dispatch = useDispatch();
   const { user } = useAuth();
-  const { unitInfo } = useSelector((state) => state.unit);
   const { data } = useSelector((state) => state.base);
+  const { unitInfo } = useSelector((state) => state.unit);
   const [isLoading, setIsLoading] = useState(true);
   const [remainingOpeningsInfo, setRemainingOpeningsInfo] = useState([]);
   const { intProductTypeID, intUnitTypeID } = unitTypeData;
@@ -129,6 +129,7 @@ export default function UnitInfo({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ----------------------- Success State and Handle Close ---------------------------
   const [openSuccess, setOpenSuccess] = useState(false);
   const handleCloseSuccess = useCallback((event, reason) => {
     if (reason === 'clickaway') {
@@ -137,6 +138,7 @@ export default function UnitInfo({
     setOpenSuccess(false);
   }, []);
 
+  // ----------------------- Error State and Handle Close -----------------------------
   const [openError, setOpenError] = useState(false);
   const handleCloseError = (event, reason) => {
     if (reason === 'clickaway') {
@@ -144,7 +146,8 @@ export default function UnitInfo({
     }
     setOpenError(false);
   };
-  // const [ddlOA_FilterModelId, setDdlOA_FilterModelId] = useState(0);
+
+  // ------------------------------- Checkbox State -----------------------------------
   const [ckbBypassVal, setCkbBypassVal] = useState(false);
   const [ckbDrainPanVal, setCkbDrainPanVal] = useState(false);
   const [ckbVoltageSPPVal, setCkbVoltageSPPVal] = useState(false);
@@ -163,6 +166,7 @@ export default function UnitInfo({
     ckbReheatHWC_UseFlowRate: false,
   });
 
+  // ------------------------- Initialize Checkbox Values -----------------------------
   useEffect(() => {
     if (edit) {
       // setDdlOA_FilterModelId(!!unitInfo?.ddlOA_FilterModelId);
@@ -196,6 +200,7 @@ export default function UnitInfo({
     unitInfo?.ckbVoltageSPPVal,
   ]);
 
+  // -------------------------  Accordion Pannel State -----------------------------
   const [expanded, setExpanded] = useState({
     panel1: true,
     panel2: true,
@@ -206,13 +211,16 @@ export default function UnitInfo({
     panel7: true,
   });
 
+  // ---------------------- Initalize Default Values ---------------------
   const defaultValues = useGetDefaultValue(edit, unitInfo, data);
 
+  // ---------------- Initalize Form with default values -----------------
   const methods = useForm({
     resolver: yupResolver(useUnitEditFormSchema),
     defaultValues,
   });
 
+  // -------------------------- Form Methods -----------------------------
   const {
     setValue,
     getValues,
@@ -229,65 +237,16 @@ export default function UnitInfo({
     }
   }, [isLoading, reset, defaultValues]);
 
+  // ------------------------- Form State Values --------------------------
   const values = watch();
 
-  const { strUnitModelValue } = useMemo(() => {
-    if (!values.ddlUnitModelId || values.ddlUnitModelId === '') return '';
-    let unitModel = [];
-
-    switch (Number(intProductTypeID)) {
-      case IDs.intProdTypeNovaID:
-        unitModel = data.novaUnitModel;
-        break;
-      case IDs.intProdTypeVentumID:
-        unitModel = data.ventumHUnitModel;
-        break;
-      case IDs.intProdTypeVentumLiteID:
-        unitModel = data.ventumLiteUnitModel;
-        break;
-      case IDs.intProdTypeVentumPlusID:
-        unitModel = data.ventumPlusUnitModel;
-        break;
-      case IDs.intProdTypeTerraID:
-        unitModel = data.terraUnitModel;
-        break;
-      default:
-        break;
-    }
-
-    console.log(unitModel, values.ddlUnitModelId);
-
-    const unitModelValue = unitModel.filter((item) => item.id === values.ddlUnitModelId)?.[0]?.value;
-
-    if (unitModelValue) { // always check for undefined by adding if 
-      // get unit model codes
-      return getUnitModelCodes(
-        unitModelValue,
-        intProductTypeID,
-        intUnitTypeID,
-        values.ddlLocationId,
-        values.ddlOrientationId,
-        Number(ckbBypassVal),
-        data
-      );
-    } 
-    
-    return "";
-  }, [
-    ckbBypassVal,
-    data,
-    intProductTypeID,
-    intUnitTypeID,
-    values.ddlLocationId,
-    values.ddlOrientationId,
-    values.ddlUnitModelId,
-  ]);
-
-  // function that check if the compoment is okay for displaying
+  /*
+   * Style functions that check if the compoment should be displayed or not
+   */
   const getDisplay = useCallback((key) => ({ display: key ? 'block' : 'none' }), []);
   const getInlineDisplay = useCallback((key) => ({ display: key ? 'inline-flex' : 'none' }), []);
 
-  // function that merge all data include checkbox and unit types, etc, everything!
+  // -------------------- Get All Unit Information --------------------------
   const getAllFormData = useCallback(
     () => ({
       ...getValues(),
@@ -326,7 +285,7 @@ export default function UnitInfo({
     ]
   );
 
-  // handle submit
+  // --------------------------- Submit (Save) -----------------------------
   const onSubmit = useCallback(async () => {
     try {
       const intUnitNo = await dispatch(unitReducer.saveUnitInfo(getAllFormData()));
@@ -338,81 +297,79 @@ export default function UnitInfo({
     }
   }, [dispatch, edit, getAllFormData, setIsAddedNewUnit]);
 
+  // -------------------- Get String Unit Model Codes ----------------------
+  const { strUnitModelValue } = useMemo(() => {
+    if (!values.ddlUnitModelId || values.ddlUnitModelId === '') return '';
+    let unitModel = [];
 
+    switch (Number(intProductTypeID)) {
+      case IDs.intProdTypeNovaID:
+        unitModel = data.novaUnitModel;
+        break;
+      case IDs.intProdTypeVentumID:
+        unitModel = data.ventumHUnitModel;
+        break;
+      case IDs.intProdTypeVentumLiteID:
+        unitModel = data.ventumLiteUnitModel;
+        break;
+      case IDs.intProdTypeVentumPlusID:
+        unitModel = data.ventumPlusUnitModel;
+        break;
+      case IDs.intProdTypeTerraID:
+        unitModel = data.terraUnitModel;
+        break;
+      default:
+        break;
+    }
 
+    const unitModelValue = unitModel.filter((item) => item.id === values.ddlUnitModelId)?.[0]?.value;
 
+    return getUnitModelCodes(
+      unitModelValue,
+      intProductTypeID,
+      intUnitTypeID,
+      values.ddlLocationId,
+      values.ddlOrientationId,
+      Number(ckbBypassVal),
+      data
+    );
+  }, [
+    ckbBypassVal,
+    data,
+    intProductTypeID,
+    intUnitTypeID,
+    values.ddlLocationId,
+    values.ddlOrientationId,
+    values.ddlUnitModelId,
+  ]);
 
+  /* ---------------------------- Start OnChange functions ---------------------------- */
+  const ddlLocationChanged = useCallback((e) => setValue('ddlLocationId', Number(e.target.value)), [setValue]);
 
-  /* Start OnChange functions */
-  const ddlLocationChanged = useCallback(
-    (e) => {
-      setValue('ddlLocationId', Number(e.target.value));
-    },
-    [setValue]
-  );
+  const ddlOrientationChanged = useCallback((e) => setValue('ddlOrientationId', Number(e.target.value)), [setValue]);
 
-  const ddlOrientationChanged = useCallback(
-    async (e) => {
-      setValue('ddlOrientationId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlUnitModelChanged = useCallback((e) => setValue('ddlUnitModelId', Number(e.target.value)), [setValue]);
 
-  const ddlUnitModelChanged = useCallback(
-    async (e) => {
-      setValue('ddlUnitModelId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlUnitVoltageChanged = useCallback((e) => setValue('ddlUnitVoltageId', Number(e.target.value)), [setValue]);
 
-  const ddlUnitVoltageChanged = useCallback(
-    async (e) => {
-      setValue('ddlUnitVoltageId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlPreheatCompChanged = useCallback((e) => setValue('ddlPreheatCompId', Number(e.target.value)), [setValue]);
 
-  const ddlPreheatCompChanged = useCallback(
-    async (e) => {
-      setValue('ddlPreheatCompId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlCoolingCompChanged = useCallback((e) => setValue('ddlCoolingCompId', Number(e.target.value)), [setValue]);
 
-  const ddlCoolingCompChanged = useCallback(
-    async (e) => {
-      setValue('ddlCoolingCompId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlHeatingCompChanged = useCallback((e) => setValue('ddlHeatingCompId', Number(e.target.value)), [setValue]);
 
-  const ckbHeatPumpChanged = useCallback(async () => {
-    setCkbHeatPumpVal(!ckbHeatPumpVal);
-  }, [ckbHeatPumpVal]);
-
-  const ckbDehumidificationChanged = useCallback(async () => {
-    setCkbDehumidificationVal(!ckbDehumidificationVal);
-  }, [ckbDehumidificationVal]);
-
-  const ddlHeatingCompChanged = useCallback(
-    async (e) => {
-      setValue('ddlHeatingCompId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
-
-  const ddlReheatCompChanged = useCallback(
-    async (e) => {
-      setValue('ddlReheatCompId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlReheatCompChanged = useCallback((e) => setValue('ddlReheatCompId', Number(e.target.value)), [setValue]);
 
   const ddlElecHeaterVoltageChanged = useCallback(
-    async (e) => {
-      setValue('ddlElecHeaterVoltageId', parseInt(e.target.value, 10));
-    },
+    (e) => setValue('ddlElecHeaterVoltageId', Number(e.target.value)),
     [setValue]
+  );
+
+  const ckbHeatPumpChanged = useCallback(() => setCkbHeatPumpVal(!ckbHeatPumpVal), [ckbHeatPumpVal]);
+
+  const ckbDehumidificationChanged = useCallback(
+    () => setCkbDehumidificationVal(!ckbDehumidificationVal),
+    [ckbDehumidificationVal]
   );
 
   const setValueWithCheck = useCallback(
@@ -428,53 +385,46 @@ export default function UnitInfo({
     [setValue]
   );
 
-  const ddlHandingChanged = useCallback(
-    async (e) => {
-      setValue('ddlHandingId', parseInt(e.target.value, 10));
-    },
-    [setValue]
-  );
+  const ddlHandingChanged = useCallback((e) => setValue('ddlHandingId', Number(e.target.value)), [setValue]);
 
   const ddlSupplyAirOpeningChanged = useCallback(
-    async (e) => {
-      setValue('ddlSupplyAirOpeningId', parseInt(e.target.value, 10));
+    (e) => {
+      setValue('ddlSupplyAirOpeningId', Number(e.target.value));
       setValue('ddlSupplyAirOpeningText', e.target.options[e.target.selectedIndex].text);
     },
     [setValue]
   );
 
   const ddlExhaustAirOpeningChanged = useCallback(
-    async (e) => {
-      setValue('ddlExhaustAirOpeningId', parseInt(e.target.value, 10));
+    (e) => {
+      setValue('ddlExhaustAirOpeningId', Number(e.target.value));
       setValue('ddlExhaustAirOpeningText', e.target.options[e.target.selectedIndex].text);
     },
     [setValue]
   );
 
   const ddlOutdoorAirOpeningChanged = useCallback(
-    async (e) => {
-      setValue('ddlOutdoorAirOpeningId', parseInt(e.target.value, 10));
+    (e) => {
+      setValue('ddlOutdoorAirOpeningId', Number(e.target.value));
       setValue('ddlOutdoorAirOpeningText', e.target.options[e.target.selectedIndex].text);
     },
     [setValue]
   );
 
   const ddlReturnAirOpeningChanged = useCallback(
-    async (e) => {
-      setValue('ddlReturnAirOpeningId', parseInt(e.target.value, 10));
+    (e) => {
+      setValue('ddlReturnAirOpeningId', Number(e.target.value));
       setValue('ddlReturnAirOpeningText', e.target.options[e.target.selectedIndex].text);
     },
     [setValue]
   );
 
-  /* End OnChange functions */
+  /* ---------------------------- End OnChange functions ---------------------------- */
 
-  /* Form Controle functions */
-
-  // checking if unit type is AHU
+  // ---------------------------- Check if UnitType is AHU ----------------------------
   const isUnitTypeAHU = useCallback(() => intUnitTypeID === IDs.intUnitTypeAHU_ID, [intUnitTypeID]);
 
-  // file drop functions
+  // ------------------------------- Drop Files Option --------------------------------
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -491,7 +441,7 @@ export default function UnitInfo({
     [setValue]
   );
 
-  // calculating unit model information
+  // ----------------------- Get UnitModel Dropdown List ---------------------------
   const unitModel = useMemo(() => {
     const { unitModel, summerSupplyAirCFM } = getUnitModel(
       data,
@@ -505,14 +455,10 @@ export default function UnitInfo({
       Number(user?.UAL || 0)
     );
 
-    const filteredUnitModel = unitModel.filter((item) => item.id);
-
-    // set unit model value based calculated value
-    if (unitModel.length > 0 && filteredUnitModel.filter((item) => item.id === Number(values.ddlUnitModelId)).length === 0) {
-      setValue('ddlUnitModelId', filteredUnitModel?.[0]?.id);
+    if (unitModel.length > 0 && unitModel.filter((item) => item.id === Number(values.ddlUnitModelId)).length === 0) {
+      setValue('ddlUnitModelId', unitModel?.[0]?.id);
     }
 
-    // set supply air CFM value based calculated value
     if (summerSupplyAirCFM && values.txbSummerSupplyAirCFM === summerSupplyAirCFM.toString()) {
       setValue('txbSummerSupplyAirCFM', summerSupplyAirCFM.toString());
     }
@@ -532,6 +478,7 @@ export default function UnitInfo({
     setValue,
   ]);
 
+  // ------------------------------ Get Bypass State -------------------------------
   const ckbBypassInfo = useMemo(() => {
     const result = getBypass(data, intProductTypeID, values.ddlUnitModelId, values.ddlOrientationId, ckbBypassVal);
     setCkbBypassVal(result.checked);
@@ -539,6 +486,7 @@ export default function UnitInfo({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, intProductTypeID, values.ddlOrientationId, values.ddlUnitModelId]);
 
+  // ---------------------------- Get Orientation Info -----------------------------
   const orientationInfo = useMemo(() => {
     const orientationData = getOrientation(
       data,
@@ -563,7 +511,7 @@ export default function UnitInfo({
     values.txbSummerSupplyAirCFM,
   ]);
 
-
+  // ---------------------------- Get Orientation Info -----------------------------
   const locationInfo = useMemo(() => {
     const locations = getLocation(data, intProductTypeID, intUnitTypeID);
 
@@ -574,7 +522,7 @@ export default function UnitInfo({
     return locations;
   }, [data, intProductTypeID, intUnitTypeID, setValue, values.ddlLocationId]);
 
-
+  // ---------------------------- Get Unit Voltage Info -----------------------------
   const unitVoltage = useMemo(() => {
     const { unitVoltage, ddlUnitVoltageId } = getUnitVoltage(data, intProductTypeID, strUnitModelValue);
     if (unitVoltage.filter((item) => item.id === values.ddlUnitVoltageId)?.length === 0) {
@@ -583,16 +531,27 @@ export default function UnitInfo({
     return unitVoltage;
   }, [data, intProductTypeID, strUnitModelValue, values.ddlUnitVoltageId, setValue]);
 
-  const OAFilterModel = useMemo(
-    () => data.filterModel?.filter((item) => item.outdoor_air === 1 || item.id === values.ddlOA_FilterModelId),
-    [data, values]
-  );
+  // ---------------------------- Get QAFilter Model DDL -----------------------------
+  const OAFilterModel = useMemo(() => data.filterModel?.filter((item) => item.outdoor_air === 1), [data]);
 
-  const RAFilterModel = useMemo(
-    () => data.filterModel?.filter((item) => item.return_air === 1 || item.id === values.ddlRA_FilterModelId),
-    [data, values]
-  );
+  // ---------------------------- Get RAFilter Model DDL -----------------------------
+  const RAFilterModel = useMemo(() => data.filterModel?.filter((item) => item.return_air === 1), [data]);
 
+  // ---------------------------- Initialize QAFilter Model --------------------------
+  useEffect(() => {
+    if (OAFilterModel.filter((item) => item?.id === values.ddlOA_FilterModelId).length === 0) {
+      setValue('ddlOA_FilterModelId', OAFilterModel[0].id);
+    }
+  }, [setValue, OAFilterModel, values.ddlOA_FilterModelId]);
+
+  // ---------------------------- Initialize RAFilter Model --------------------------
+  useEffect(() => {
+    if (RAFilterModel.filter((item) => item?.id === values.ddlRA_FilterModelId).length === 0) {
+      setValue('ddlRA_FilterModelId', RAFilterModel[0].id);
+    }
+  }, [setValue, RAFilterModel, values.ddlOA_FilterModelId]);
+
+  // ------------------------- Get each complete informaiton --------------------------
   const { dtPreheatComp, dtCoolingComp, dtHeatingComp } = useMemo(
     () => getComponentInfo(data, Number(intProductTypeID), Number(intUnitTypeID), values),
     [data, intProductTypeID, intUnitTypeID, values]
@@ -620,6 +579,7 @@ export default function UnitInfo({
     ]
   );
 
+  // ---------------- Get Preheat Elec Heater Installation Info --------------------
   const preheatElecHeaterInstallationInfo = useMemo(() => {
     const result = getPreheatElecHeaterInstallationInfo(
       data,
@@ -645,28 +605,25 @@ export default function UnitInfo({
     [intUnitTypeID, values.ddlCoolingCompId, values.ddlHeatingCompId, values.ddlPreheatCompId, values.ddlReheatCompId]
   );
 
+  // -------------- Get User Authentication Level from LocalStorage ----------------
   const ualInfo = useMemo(() => getUALInfo(Number(localStorage.getItem('UAL'))), []);
 
-  // const heatPumpInfo = useMemo(
-  //   () => getHeatPumpInfo(Number(values.ddlCoolingCompId)), 
-  //   [values.ddlCoolingCompId],   
-  // );
-
-
+  // -------------- Get Heating Pump Information ----------------
   const heatPumpInfo = useMemo(() => {
     const result = getHeatPumpInfo(Number(values.ddlCoolingCompId));
 
     setValue('ckbHeatPumpVal', result?.ckbHeatPumpVal);
-    ckbHeatPumpChanged()
+    ckbHeatPumpChanged();
     return result;
   }, [values.ddlCoolingCompId]);
 
-
+  // -------------- Get Dehumidification Information ----------------
   const dehumidificationInfo = useMemo(
     () => getDehumidificationInfo(Number(values.ddlCoolingCompId)),
     [values.ddlCoolingCompId]
   );
 
+  // -------------- Get Coil Refrigerate Design Condition Information ----------------
   const dxCoilRefrigDesignCondInfo = useMemo(
     () => getDXCoilRefrigDesignCondInfo(Number(localStorage.getItem('UAL')), Number(values.ddlCoolingCompId)),
     [values.ddlCoolingCompId]
@@ -715,7 +672,8 @@ export default function UnitInfo({
       Number(intUnitTypeID),
       Number(values.ddlElecHeaterVoltageId),
       Number(values.ddlUnitVoltageId),
-      Number(ckbVoltageSPPVal)
+      Number(ckbVoltageSPPVal),
+      strUnitModelValue
     );
 
     if (!edit) setValue('ddlElecHeaterVoltageId', result?.ddlElecHeaterVoltageId);
@@ -733,6 +691,7 @@ export default function UnitInfo({
     values.ddlPreheatCompId,
     values.ddlReheatCompId,
     values.ddlUnitVoltageId,
+    strUnitModelValue,
   ]);
 
   const valveAndActuatorInfo = useMemo(
@@ -853,9 +812,6 @@ export default function UnitInfo({
   const isAvailable = useCallback((value) => !!value && value.length > 0, []);
   if (edit) setFunction(handleSubmit(onSubmit));
 
-
-  console.log(values.ddlUnitVoltageId);
-
   return (
     <Page title="Project: Edit">
       <RootStyle>
@@ -958,7 +914,7 @@ export default function UnitInfo({
                               label="Control Preference"
                               placeholder=""
                               onChange={(e) => {
-                                setValue('ddlControlsPreferenceId', parseInt(e.target.value, 10));
+                                setValue('ddlControlsPreferenceId', Number(e.target.value));
                               }}
                             >
                               {data?.controlsPreference?.map((item, index) => (
@@ -1020,8 +976,9 @@ export default function UnitInfo({
                             label={`Bypass for Economizer: ${ckbBypassInfo.text}`}
                             sx={{
                               color: ckbBypassInfo.text !== '' ? colors.red[500] : 'text.primary',
-                              size: "small",
-                              display: intProductTypeID === IDs.intProdTypeVentumLiteID || isUnitTypeAHU() ? 'none' : '',
+                              size: 'small',
+                              display:
+                                intProductTypeID === IDs.intProdTypeVentumLiteID || isUnitTypeAHU() ? 'none' : '',
                             }}
                             checked={ckbBypassVal}
                             onChange={() => setCkbBypassVal(!ckbBypassVal)}
@@ -1068,7 +1025,7 @@ export default function UnitInfo({
                               size="small"
                               name="ddlOA_FilterModelId"
                               label="OA Filter"
-                              onChange={(e) => setValue('ddlOA_FilterModelId', parseInt(e.target.value, 10))}
+                              onChange={(e) => setValue('ddlOA_FilterModelId', Number(e.target.value))}
                             >
                               {OAFilterModel?.map((item, index) => (
                                 <option key={index} value={item.id}>
@@ -1082,7 +1039,7 @@ export default function UnitInfo({
                               size="small"
                               name="ddlRA_FilterModelId"
                               label="RA Filter"
-                              onChange={(e) => setValue('ddlRA_FilterModelId', parseInt(e.target.value, 10))}
+                              onChange={(e) => setValue('ddlRA_FilterModelId', Number(e.target.value))}
                             >
                               {RAFilterModel?.map((item, index) => (
                                 <option key={index} value={item.id}>
@@ -1152,15 +1109,13 @@ export default function UnitInfo({
                           </RHFSelect>
                         )}
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(values.ddlPreheatCompId === IDs.intCompElecHeaterID), }}>
+                      <Stack spacing={1} sx={{ ...getDisplay(values.ddlPreheatCompId === IDs.intCompElecHeaterID) }}>
                         {isAvailable(preheatElecHeaterInstallationInfo) && (
                           <RHFSelect
                             size="small"
                             name="ddlPreheatElecHeaterInstallationId"
                             label="Preheat Elec. Heater Installation"
-                            onChange={(e) =>
-                              setValue('ddlPreheatElecHeaterInstallationId', parseInt(e.target.value, 10))
-                            }
+                            onChange={(e) => setValue('ddlPreheatElecHeaterInstallationId', Number(e.target.value))}
                             placeholder=""
                           >
                             {preheatElecHeaterInstallationInfo?.map((item, index) => (
@@ -1305,7 +1260,10 @@ export default function UnitInfo({
                           name="txbSummerCoolingSetpointDB"
                           label="Cooling LAT Setpoint DB (F):"
                           autoComplete="off"
-                          sx={getDisplay(values.ddlCoolingCompId === IDs.intCompCWC_ID || values.ddlCoolingCompId === IDs.intCompDX_ID)}
+                          sx={getDisplay(
+                            values.ddlCoolingCompId === IDs.intCompCWC_ID ||
+                              values.ddlCoolingCompId === IDs.intCompDX_ID
+                          )}
                           onChange={(e) => {
                             setValueWithCheck(e, 'txbSummerCoolingSetpointDB');
                           }}
@@ -1335,7 +1293,10 @@ export default function UnitInfo({
                           size="small"
                           name="ckbDehumidificationVal"
                           label="Dehumidification"
-                          sx={getInlineDisplay(values.ddlCoolingCompId === IDs.intCompCWC_ID || values.ddlCoolingCompId === IDs.intCompDX_ID)}
+                          sx={getInlineDisplay(
+                            values.ddlCoolingCompId === IDs.intCompCWC_ID ||
+                              values.ddlCoolingCompId === IDs.intCompDX_ID
+                          )}
                           checked={ckbDehumidificationVal}
                           onChange={ckbDehumidificationChanged}
                         />
@@ -1345,7 +1306,7 @@ export default function UnitInfo({
                             name="ddlCoolingCoilHandingId"
                             label="Cooling Coil Handing"
                             sx={getDisplay(Number(values.ddlCoolingCompId) > 1)}
-                            onChange={(e) => setValue('ddlCoolingCoilHandingId', parseInt(e.target.value, 10))}
+                            onChange={(e) => setValue('ddlCoolingCoilHandingId', Number(e.target.value))}
                           >
                             {data.handing?.map((item, index) => (
                               <option key={index} value={item.id}>
@@ -1538,7 +1499,7 @@ export default function UnitInfo({
                             name="ddlHeatingCoilHandingId"
                             label="Heating Coil Handing"
                             sx={getDisplay(Number(values.ddlHeatingCompId) > 1)}
-                            onChange={(e) => setValue('ddlHeatingCoilHandingId', parseInt(e.target.value, 10))}
+                            onChange={(e) => setValue('ddlHeatingCoilHandingId', Number(e.target.value))}
                           >
                             {data.handing?.map((item, index) => (
                               <option key={index} value={item.id}>
@@ -1554,7 +1515,7 @@ export default function UnitInfo({
                             size="small"
                             name="ddlHeatElecHeaterInstallationId"
                             label="Heating Elec. Heater Installation"
-                            onChange={(e) => setValue('ddlHeatElecHeaterInstallationId', parseInt(e.target.value, 10))}
+                            onChange={(e) => setValue('ddlHeatElecHeaterInstallationId', Number(e.target.value))}
                             placeholder=""
                           >
                             {heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationDataTbl?.map((item, index) => (
@@ -1605,7 +1566,12 @@ export default function UnitInfo({
                           }}
                         />
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(values.ddlHeatingCompId === IDs.intCompHWC_ID && ualInfo.divCustomVisible) }}>
+                      <Stack
+                        spacing={1}
+                        sx={{
+                          ...getDisplay(values.ddlHeatingCompId === IDs.intCompHWC_ID && ualInfo.divCustomVisible),
+                        }}
+                      >
                         <RHFControlCheckbox
                           size="small"
                           name="ckbHeatingHWC_UseCap"
@@ -1701,7 +1667,10 @@ export default function UnitInfo({
                           name="txbSummerReheatSetpointDB"
                           label="Dehum. Reheat Setpoint DB (F):"
                           autoComplete="off"
-                          sx={getDisplay(values.ddlReheatCompId === IDs.intCompElecHeaterID || values.ddlReheatCompId === IDs.intCompHWC_ID || values.ddlReheatCompId === IDs.intCompHGRH_ID
+                          sx={getDisplay(
+                            values.ddlReheatCompId === IDs.intCompElecHeaterID ||
+                              values.ddlReheatCompId === IDs.intCompHWC_ID ||
+                              values.ddlReheatCompId === IDs.intCompHGRH_ID
                           )}
                           onChange={(e) => {
                             setValueWithCheck(e, 'txbSummerReheatSetpointDB');
@@ -1713,7 +1682,7 @@ export default function UnitInfo({
                             name="ddlHeatingCoilHandingId"
                             label="Reheat Coil Handing"
                             sx={getDisplay(Number(values.ddlReheatCompId) > 1)}
-                            onChange={(e) => setValue('ddlHeatingCoilHandingId', parseInt(e.target.value, 10))}
+                            onChange={(e) => setValue('ddlHeatingCoilHandingId', Number(e.target.value))}
                           >
                             {data.handing?.map((item, index) => (
                               <option key={index} value={item.id}>
@@ -1729,7 +1698,7 @@ export default function UnitInfo({
                             size="small"
                             name="ddlHeatElecHeaterInstallationId"
                             label="Reheat Elec. Heater Installation"
-                            onChange={(e) => setValue('ddlHeatElecHeaterInstallationId', parseInt(e.target.value, 10))}
+                            onChange={(e) => setValue('ddlHeatElecHeaterInstallationId', Number(e.target.value))}
                             placeholder=""
                           >
                             {heatElecHeaterInstallationInfo.ddlHeatElecHeaterInstallationDataTbl?.map((item, index) => (
@@ -1780,7 +1749,9 @@ export default function UnitInfo({
                           }}
                         />
                       </Stack>
-                      <Stack spacing={1} sx={{ ...getDisplay(values.ddlReheatCompId === IDs.intCompHWC_ID && ualInfo.divCustomVisible) }}
+                      <Stack
+                        spacing={1}
+                        sx={{ ...getDisplay(values.ddlReheatCompId === IDs.intCompHWC_ID && ualInfo.divCustomVisible) }}
                       >
                         <RHFControlCheckbox
                           size="small"
@@ -1896,7 +1867,7 @@ export default function UnitInfo({
                             label="Dampers & Actuator"
                             sx={getDisplay(damperAndActuatorInfo.divDamperAndActuatorVisible)}
                             onChange={(e) => {
-                              setValue('ddlDamperAndActuatorId', parseInt(e.target.value, 10));
+                              setValue('ddlDamperAndActuatorId', Number(e.target.value));
                             }}
                             placeholder=""
                           >
@@ -1952,11 +1923,13 @@ export default function UnitInfo({
                           )}
                           label="Valve Type"
                         >
-                          {data.valveType?.map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.items}
-                            </option>
-                          ))}
+                          {data.valveType
+                            ?.filter((item) => item.items !== '""')
+                            ?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.items}
+                              </option>
+                            ))}
                         </RHFSelect>
                       </Stack>
                     </Box>
