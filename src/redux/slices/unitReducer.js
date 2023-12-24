@@ -571,10 +571,10 @@ export function getViewSelectionInfo(data) {
     dispatch(UnitSlice.actions.startLoading());
     const response = await axios.post(`${serverUrl}/api/units/ViewSelection`, data)
       .catch(e => {
-        // setErrors([e])
+        console.log([e])
       })
       .finally(() => {
-        // setLoading(false)
+        console.log(false)
       });
     await dispatch(UnitSlice.actions.getViewSelectionInfo(response.data));
     return response.data;

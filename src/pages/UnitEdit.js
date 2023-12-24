@@ -98,7 +98,7 @@ export default function UnitEdit() {
             ]}
             sx={{ paddingLeft: '24px', paddingTop: '24px' }}
             action={
-              (currentStep === 1 || currentStep === 2) && (
+              currentStep === 2 && (
                 <Button variant="text" startIcon={<Iconify icon={'bxs:download'} />} onClick={openDialog}>
                   Export report
                 </Button>
