@@ -144,7 +144,7 @@ export default function UnitInfo({
     }
     setOpenError(false);
   };
-
+  // const [ddlOA_FilterModelId, setDdlOA_FilterModelId] = useState(0);
   const [ckbBypassVal, setCkbBypassVal] = useState(false);
   const [ckbDrainPanVal, setCkbDrainPanVal] = useState(false);
   const [ckbVoltageSPPVal, setCkbVoltageSPPVal] = useState(false);
@@ -165,6 +165,7 @@ export default function UnitInfo({
 
   useEffect(() => {
     if (edit) {
+      // setDdlOA_FilterModelId(!!unitInfo?.ddlOA_FilterModelId);
       setCkbBypassVal(!!unitInfo?.ckbBypassVal);
       setCkbDrainPanVal(!!unitInfo?.ckbDrainPanVal);
       setCkbVoltageSPPVal(!!unitInfo?.ckbVoltageSPPVal);
@@ -297,6 +298,7 @@ export default function UnitInfo({
       ddlUnitTypeId: intUnitTypeID,
       intUAL: localStorage.getItem('UAL'),
       intUserID: localStorage.getItem('userId'),
+      // ilterModelId,
       ckbBypassVal,
       ckbDrainPanVal,
       ckbVoltageSPPVal,
@@ -335,6 +337,11 @@ export default function UnitInfo({
       setOpenError(true);
     }
   }, [dispatch, edit, getAllFormData, setIsAddedNewUnit]);
+
+
+
+
+
 
   /* Start OnChange functions */
   const ddlLocationChanged = useCallback(
